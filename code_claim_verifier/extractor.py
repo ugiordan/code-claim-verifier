@@ -8,30 +8,31 @@ logger = logging.getLogger(__name__)
 
 LLMFunction = Callable[[str, str], str]
 
-_EXTRACTION_SYSTEM = """You are a claim extractor for security triage verification.
+_EXTRACTION_SYSTEM = """You are a claim extractor that identifies verifiable factual assertions about source code.
 
-Extract factual claims about code from the agent's reasoning and evidence.
-Each claim must be one of these types:
+Given an LLM's reasoning about a codebase, extract every factual claim it makes that can be checked against the actual code. Each claim must be one of these types:
 
 FILE CLAIMS: FILE_EXISTS, LINE_CONTENT, FILE_CLASSIFICATION, GENERATED_OR_VENDORED
 FUNCTION CLAIMS: FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS
 DEPENDENCY CLAIMS: IMPORT_EXISTS, PACKAGE_VERSION, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION
-SECURITY CLAIMS: ABSENCE, MITIGATION_EXISTS, ENTRY_POINT
+CODE CLAIMS: ABSENCE, MITIGATION_EXISTS, ENTRY_POINT
 
 Output a JSON array of claims:
-[{"claim_type": "FUNCTION_CALLED", "parameters": {"name": "torch.load", "expected": true}, "source_sentence": "torch.load() is called at model.py:42"}]
+[{{"claim_type": "FUNCTION_CALLED", "parameters": {{"name": "torch.load", "expected": true}}, "source_sentence": "torch.load() is called at model.py:42"}}]
 
 Rules:
-- Extract ABSENCE claims when the agent says something does NOT exist
-- Do NOT extract opinions, recommendations, or severity assessments
+- Extract ABSENCE claims when the LLM says something does NOT exist
+- Do NOT extract opinions, recommendations, or quality judgments
 - Do NOT extract claims about what SHOULD be done
 - Each claim must be independently verifiable against the codebase
-- For HAS_CALLERS/FUNCTION_CALLED, set expected=true if agent claims it IS called, false if NOT called"""
+- For HAS_CALLERS/FUNCTION_CALLED, set expected=true if the LLM claims it IS called, false if NOT called
 
-_EXTRACTION_USER = """Agent reasoning:
+{domain_context}"""
+
+_EXTRACTION_USER = """LLM reasoning:
 {reasoning}
 
-Agent evidence:
+Structured evidence:
 {evidence}
 
 Extract all verifiable code claims as a JSON array:"""
@@ -41,11 +42,22 @@ def extract_claims(
     reasoning: str,
     evidence: dict[str, Any],
     llm_function: LLMFunction,
+    domain_context: str = "",
 ) -> list[TypedClaim]:
-    """Extract typed claims from agent reasoning using an LLM."""
+    """Extract typed claims from LLM reasoning using an LLM.
+
+    Args:
+        reasoning: The LLM's natural language reasoning about code.
+        evidence: Structured evidence dict (tool output, triage results, etc.)
+        llm_function: Callable(system_prompt, user_prompt) -> response string.
+        domain_context: Optional domain-specific instructions appended to the
+                        extraction prompt (e.g., "Focus on security claims"
+                        or "This is a code review context").
+    """
     if not reasoning and not evidence:
         return []
 
+    system = _EXTRACTION_SYSTEM.format(domain_context=domain_context)
     evidence_str = json.dumps(evidence, indent=2, default=str)[:3000]
     user_prompt = _EXTRACTION_USER.format(
         reasoning=reasoning[:4000],
@@ -53,7 +65,7 @@ def extract_claims(
     )
 
     try:
-        raw = llm_function(_EXTRACTION_SYSTEM, user_prompt)
+        raw = llm_function(system, user_prompt)
     except Exception as e:
         logger.warning("Claim extraction LLM call failed: %s", e)
         return []
