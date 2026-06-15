@@ -150,6 +150,22 @@ def _make_llm_function(provider: str, model: str | None):
         sys.exit(1)
 
 
+def _cmd_eval(args: argparse.Namespace) -> None:
+    """Run the evaluation framework."""
+    from code_claim_verifier.eval import run_evaluation
+    from code_claim_verifier.eval.report import write_report
+
+    report = run_evaluation(
+        dataset_path=args.dataset,
+        fixtures_path=args.fixtures,
+        mock_extraction=args.mock_extraction,
+    )
+    if args.output:
+        write_report(report, args.output)
+    json.dump(report, sys.stdout, indent=2)
+    sys.stdout.write("\n")
+
+
 def _cmd_list_types(_args: argparse.Namespace) -> None:
     """Output all claim type schemas as JSON."""
     json.dump(CLAIM_SCHEMAS, sys.stdout, indent=2)
@@ -257,6 +273,20 @@ def main(argv: list[str] | None = None) -> None:
     )
     sub_batch.add_argument("--model", default=None, help="Model name override")
     sub_batch.set_defaults(func=_cmd_verify_batch)
+
+    # eval
+    sub_eval = subparsers.add_parser(
+        "eval",
+        help="Run evaluation framework against fixture repos",
+    )
+    sub_eval.add_argument("--dataset", required=True, help="Path to JSONL dataset")
+    sub_eval.add_argument("--fixtures", required=True, help="Path to fixture repos directory")
+    sub_eval.add_argument("--output", default=None, help="Optional path to write JSON report")
+    sub_eval.add_argument(
+        "--mock-extraction", action="store_true", default=True,
+        help="Use ground truth claims instead of LLM extraction (default: true)",
+    )
+    sub_eval.set_defaults(func=_cmd_eval)
 
     args = parser.parse_args(argv)
     args.func(args)
