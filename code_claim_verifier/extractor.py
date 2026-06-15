@@ -115,3 +115,107 @@ def _parse_extraction_output(raw: str, valid_types: frozenset[str] = CLAIM_TYPES
         ))
 
     return claims
+
+
+_BATCH_EXTRACTION_SYSTEM = _EXTRACTION_SYSTEM.replace(
+    "{domain_context}",
+    """
+Multiple findings are provided, each delimited by <<<FINDING_N:filename>>>.
+Include "finding_index": N in each extracted claim to indicate which finding it belongs to.
+
+{domain_context}"""
+)
+
+
+def _build_batch_prompt(items: list[dict]) -> str:
+    parts = []
+    for i, item in enumerate(items):
+        finding_file = item.get("finding_file", "unknown")
+        reasoning = item.get("reasoning", "")[:4000]
+        evidence_str = json.dumps(item.get("evidence", {}), indent=2, default=str)[:3000]
+        parts.append(f"<<<FINDING_{i}:{finding_file}>>>\nReasoning: {reasoning}\nEvidence: {evidence_str}")
+    return "\n\n".join(parts)
+
+
+def extract_claims_batch(
+    items: list[dict],
+    llm_function: LLMFunction,
+    domain_context: str = "",
+    custom_hints: list[str] | None = None,
+    valid_types: frozenset[str] = CLAIM_TYPES,
+    fallback: str = "partial",
+) -> dict[int, list[TypedClaim]]:
+    if not items:
+        return {}
+
+    system = _BATCH_EXTRACTION_SYSTEM.format(domain_context=domain_context)
+    if custom_hints:
+        system += "\n\nCUSTOM CLAIM TYPES:\n" + "\n".join(f"- {h}" for h in custom_hints)
+
+    user_prompt = _build_batch_prompt(items)
+
+    try:
+        raw = llm_function(system, user_prompt)
+    except Exception as e:
+        logger.warning("Batch extraction LLM call failed: %s", e)
+        return {i: [] for i in range(len(items))}
+
+    return _parse_batch_output(raw, len(items), valid_types, fallback)
+
+
+def _parse_batch_output(
+    raw: str, num_items: int,
+    valid_types: frozenset[str],
+    fallback: str,
+) -> dict[int, list[TypedClaim]]:
+    text = raw.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
+
+    start = text.find("[")
+    end = text.rfind("]")
+    if start == -1 or end == -1:
+        return {i: [] for i in range(num_items)}
+
+    try:
+        items_parsed = json.loads(text[start:end + 1])
+    except json.JSONDecodeError:
+        return {i: [] for i in range(num_items)}
+
+    result: dict[int, list[TypedClaim]] = {i: [] for i in range(num_items)}
+    assigned = 0
+    total = 0
+
+    for item in items_parsed:
+        if not isinstance(item, dict):
+            continue
+        claim_type = item.get("claim_type", "")
+        if claim_type not in valid_types:
+            continue
+        total += 1
+
+        finding_index = item.get("finding_index")
+        if finding_index is not None:
+            try:
+                finding_index = int(finding_index)
+            except (ValueError, TypeError):
+                finding_index = None
+
+        if finding_index is not None and 0 <= finding_index < num_items:
+            claim = TypedClaim(
+                claim_type=claim_type,
+                parameters=item.get("parameters", {}),
+                source_sentence=item.get("source_sentence", "")[:500],
+            )
+            result[finding_index].append(claim)
+            assigned += 1
+        elif fallback == "skip":
+            continue
+
+    if total > 0 and assigned < total * 0.5 and fallback == "partial":
+        return {i: [] for i in range(num_items)}
+
+    return result
