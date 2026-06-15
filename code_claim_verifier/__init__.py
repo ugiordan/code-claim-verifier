@@ -112,36 +112,102 @@ class CodeClaimVerifier:
     def verify_batch(self, items: list[dict], domain_context: str = "",
                      max_chars_per_batch: int = 6000,
                      batch_fallback: str = "partial") -> list[VerificationReport]:
-        """Verify multiple items in a batch.
+        """Verify multiple items with adaptive batching and shared caches.
+
+        Groups items by cumulative reasoning length. Multi-item batches use
+        a single LLM call via extract_claims_batch. Single-item batches use
+        extract_claims. Verification shares grep and verifier caches across
+        all items, but dependency graphs are per-finding.
 
         Args:
             items: List of dicts with keys: reasoning, evidence, finding_file.
             domain_context: Optional domain instructions for extraction.
-            max_chars_per_batch: Max characters per batch (currently unused).
-            batch_fallback: Fallback strategy (currently unused).
-
-        Returns:
-            List of VerificationReport, one per item.
+            max_chars_per_batch: Max characters of reasoning per extraction batch.
+            batch_fallback: "partial"|"strict"|"skip"|"raise" for batch failures.
         """
-        reports = []
+        from code_claim_verifier.extractor import extract_claims_batch
+        from code_claim_verifier import grep as grep_module
+
+        if not items:
+            return []
+
         valid_types = frozenset(self.engine.registry.keys())
-        for item in items:
-            reasoning = item.get("reasoning", "")
-            evidence = item.get("evidence", {})
-            finding_file = item.get("finding_file", "")
-            language = detect_language(finding_file) if finding_file else "unknown"
-            claims = extract_claims(
-                reasoning, evidence, self.llm_function,
-                domain_context=domain_context,
-                custom_hints=self._extraction_hints or None,
-                valid_types=valid_types,
-            )
-            if not claims:
-                reports.append(calibrate([]))
-                continue
-            verified = self.engine.verify_claims_with_chaining(claims, self.repo_path, language)
-            reports.append(calibrate(verified))
+        hints = self._extraction_hints or None
+
+        batches = self._group_into_batches(items, max_chars_per_batch)
+        all_claims: dict[int, list[TypedClaim]] = {}
+
+        for batch_items, batch_offset in batches:
+            if len(batch_items) == 1:
+                reasoning = batch_items[0].get("reasoning", "")
+                evidence = batch_items[0].get("evidence", {})
+                claims = extract_claims(
+                    reasoning, evidence, self.llm_function,
+                    domain_context=domain_context,
+                    custom_hints=hints,
+                    valid_types=valid_types,
+                )
+                all_claims[batch_offset] = claims
+            else:
+                batch_result = extract_claims_batch(
+                    batch_items, self.llm_function,
+                    domain_context=domain_context,
+                    custom_hints=hints,
+                    valid_types=valid_types,
+                    fallback=batch_fallback,
+                )
+                for local_idx, claims in batch_result.items():
+                    all_claims[batch_offset + local_idx] = claims
+
+        reports = []
+        token = grep_module.cache_context()
+        try:
+            for i, item in enumerate(items):
+                finding_file = item.get("finding_file", "")
+                language = detect_language(finding_file) if finding_file else "unknown"
+                claims = all_claims.get(i, [])
+                if not claims:
+                    reports.append(calibrate([]))
+                    continue
+                verified = self.engine.verify_claims_with_chaining(
+                    claims, self.repo_path, language,
+                )
+                reports.append(calibrate(verified))
+        finally:
+            grep_module.reset_cache(token)
+
         return reports
+
+    @staticmethod
+    def _group_into_batches(items: list[dict], max_chars: int) -> list[tuple[list[dict], int]]:
+        batches: list[tuple[list[dict], int]] = []
+        current_batch: list[dict] = []
+        current_len = 0
+        batch_start = 0
+
+        for i, item in enumerate(items):
+            reasoning_len = len(item.get("reasoning", ""))
+            if reasoning_len >= max_chars:
+                if current_batch:
+                    batches.append((current_batch, batch_start))
+                batches.append(([item], i))
+                current_batch = []
+                current_len = 0
+                batch_start = i + 1
+            elif current_len + reasoning_len > max_chars:
+                if current_batch:
+                    batches.append((current_batch, batch_start))
+                current_batch = [item]
+                current_len = reasoning_len
+                batch_start = i
+            else:
+                current_batch.append(item)
+                current_len += reasoning_len
+
+        if current_batch:
+            batches.append((current_batch, batch_start))
+
+        return batches
 
 
 __all__ = [

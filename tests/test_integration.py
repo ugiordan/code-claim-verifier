@@ -47,6 +47,49 @@ class TestCodeClaimVerifierIntegration:
         for r in reports:
             assert r.total_claims >= 0
 
+    def test_verify_batch_empty(self):
+        v = CodeClaimVerifier(llm_function=mock_llm, repo_path=FIXTURE)
+        reports = v.verify_batch(items=[])
+        assert reports == []
+
+    def test_verify_batch_uses_adaptive_batching(self):
+        call_count = [0]
+        def counting_llm(system, user):
+            call_count[0] += 1
+            if "<<<FINDING_" in user:
+                return '[{"finding_index": 0, "claim_type": "FILE_EXISTS", "parameters": {"path": "main.py"}, "source_sentence": "s"}]'
+            return '[{"claim_type": "FILE_EXISTS", "parameters": {"path": "main.py"}, "source_sentence": "s"}]'
+
+        v = CodeClaimVerifier(llm_function=counting_llm, repo_path=FIXTURE)
+        items = [
+            {"reasoning": "short1", "evidence": {}, "finding_file": "main.py"},
+            {"reasoning": "short2", "evidence": {}, "finding_file": "main.py"},
+        ]
+        v.verify_batch(items=items, max_chars_per_batch=10000)
+        assert call_count[0] == 1
+
+    def test_group_into_batches_splits_by_size(self):
+        items = [
+            {"reasoning": "a" * 100},
+            {"reasoning": "b" * 100},
+            {"reasoning": "c" * 100},
+        ]
+        batches = CodeClaimVerifier._group_into_batches(items, max_chars=250)
+        assert len(batches) == 2
+        assert len(batches[0][0]) == 2
+        assert batches[0][1] == 0
+        assert len(batches[1][0]) == 1
+        assert batches[1][1] == 2
+
+    def test_group_into_batches_oversized_item_alone(self):
+        items = [
+            {"reasoning": "a" * 50},
+            {"reasoning": "b" * 200},
+            {"reasoning": "c" * 50},
+        ]
+        batches = CodeClaimVerifier._group_into_batches(items, max_chars=100)
+        assert any(len(b[0]) == 1 and len(b[0][0]["reasoning"]) == 200 for b in batches)
+
     def test_verify_uses_chaining(self):
         def llm_with_line_content(system, user):
             return '[{"claim_type": "LINE_CONTENT", "parameters": {"path": "main.py", "line": 1, "expected": "import os"}, "source_sentence": "import os at line 1"}]'
