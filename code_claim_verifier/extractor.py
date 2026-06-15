@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 from typing import Any, Callable
@@ -43,6 +45,8 @@ def extract_claims(
     evidence: dict[str, Any],
     llm_function: LLMFunction,
     domain_context: str = "",
+    custom_hints: list[str] | None = None,
+    valid_types: frozenset[str] = CLAIM_TYPES,
 ) -> list[TypedClaim]:
     """Extract typed claims from LLM reasoning using an LLM.
 
@@ -53,11 +57,16 @@ def extract_claims(
         domain_context: Optional domain-specific instructions appended to the
                         extraction prompt (e.g., "Focus on security claims"
                         or "This is a code review context").
+        custom_hints: Optional list of custom claim type descriptions to include
+                      in the extraction prompt.
+        valid_types: Set of valid claim types. Defaults to CLAIM_TYPES.
     """
     if not reasoning and not evidence:
         return []
 
     system = _EXTRACTION_SYSTEM.format(domain_context=domain_context)
+    if custom_hints:
+        system += "\n\nCUSTOM CLAIM TYPES:\n" + "\n".join(f"- {h}" for h in custom_hints)
     evidence_str = json.dumps(evidence, indent=2, default=str)[:3000]
     user_prompt = _EXTRACTION_USER.format(
         reasoning=reasoning[:4000],
@@ -70,10 +79,10 @@ def extract_claims(
         logger.warning("Claim extraction LLM call failed: %s", e)
         return []
 
-    return _parse_extraction_output(raw)
+    return _parse_extraction_output(raw, valid_types=valid_types)
 
 
-def _parse_extraction_output(raw: str) -> list[TypedClaim]:
+def _parse_extraction_output(raw: str, valid_types: frozenset[str] = CLAIM_TYPES) -> list[TypedClaim]:
     """Parse LLM output into TypedClaim objects."""
     text = raw.strip()
     if text.startswith("```"):
@@ -97,7 +106,7 @@ def _parse_extraction_output(raw: str) -> list[TypedClaim]:
         if not isinstance(item, dict):
             continue
         claim_type = item.get("claim_type", "")
-        if claim_type not in CLAIM_TYPES:
+        if claim_type not in valid_types:
             continue
         claims.append(TypedClaim(
             claim_type=claim_type,
