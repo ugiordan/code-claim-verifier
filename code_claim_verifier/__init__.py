@@ -90,6 +90,25 @@ class CodeClaimVerifier:
         verified = self.engine.verify_claims_with_chaining(claims, self.repo_path, language)
         return calibrate(verified)
 
+    def as_tools(self) -> list[dict]:
+        """Return tool definitions including any custom-registered claim types.
+
+        Merges custom types (registered via .register()) into the standard
+        tool schemas, so LLM tool-use integrations can discover them.
+        """
+        from code_claim_verifier.tools import instance_tools
+        extra: dict[str, str] = {}
+        custom_types = [ct for ct in self.engine.registry if ct not in CLAIM_TYPES]
+        for ct, hint in zip(custom_types, self._extraction_hints):
+            extra[ct] = hint
+        return instance_tools(extra)
+
+    @classmethod
+    def default_tools(cls) -> list[dict]:
+        """Return tool definitions for all built-in claim types."""
+        from code_claim_verifier.tools import default_tools
+        return default_tools()
+
     def verify_batch(self, items: list[dict], domain_context: str = "",
                      max_chars_per_batch: int = 6000,
                      batch_fallback: str = "partial") -> list[VerificationReport]:
