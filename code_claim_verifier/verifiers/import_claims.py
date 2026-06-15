@@ -5,7 +5,7 @@ import re
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.language import get_import_patterns, detect_language
 from code_claim_verifier.security import safe_path
-from code_claim_verifier.verifiers.symbol_claims import _grep
+from code_claim_verifier.grep import grep as _grep
 
 
 def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:

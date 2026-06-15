@@ -1,27 +1,10 @@
 import os
 import re
-import subprocess
 
+from code_claim_verifier.grep import grep as _grep
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.language import get_function_pattern, detect_language
 from code_claim_verifier.security import safe_path
-
-
-def _grep(pattern: str, path: str, fixed: bool = False) -> list[str]:
-    """Run grep and return matching lines. Returns empty list on no match."""
-    cmd = ["grep", "-rn"]
-    if fixed:
-        cmd.append("-F")
-    else:
-        cmd.extend(["-E"])
-    cmd.extend([pattern, path])
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        if result.returncode == 0:
-            return result.stdout.strip().split("\n")
-        return []
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        return []
 
 
 def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
