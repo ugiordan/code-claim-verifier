@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from code_claim_verifier.types import TypedClaim, VerifiedClaim, VerificationReport, CLAIM_TYPES
 from code_claim_verifier.extractor import extract_claims, LLMFunction
 from code_claim_verifier.calibrator import calibrate

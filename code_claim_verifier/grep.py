@@ -1,4 +1,5 @@
 """Centralized grep with optional contextvars-based caching."""
+from __future__ import annotations
 
 import contextvars
 import subprocess
