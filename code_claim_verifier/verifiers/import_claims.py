@@ -74,7 +74,7 @@ def _parse_go_sum(path: str, package: str) -> str | None:
         with open(path) as f:
             for line in f:
                 parts = line.strip().split()
-                if len(parts) >= 2 and package in parts[0]:
+                if len(parts) >= 2 and (parts[0] == package or parts[0].endswith("/" + package)):
                     return parts[1].lstrip("v").split("/")[0]
     except Exception:
         pass
@@ -86,10 +86,11 @@ def _parse_go_mod(path: str, package: str) -> str | None:
         with open(path) as f:
             for line in f:
                 line = line.strip()
-                if package in line and not line.startswith("//"):
-                    parts = line.split()
-                    if len(parts) >= 2:
-                        return parts[-1].lstrip("v")
+                if line.startswith("//"):
+                    continue
+                parts = line.split()
+                if len(parts) >= 2 and (parts[0] == package or parts[0].endswith("/" + package)):
+                    return parts[-1].lstrip("v")
     except Exception:
         pass
     return None

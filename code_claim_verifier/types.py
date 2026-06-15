@@ -32,6 +32,8 @@ class VerifiedClaim:
     evidence: str
     method: str
     error: str | None = None
+    suspect_reason: str | None = None
+    synthesized: bool = False
 
 
 @dataclass
@@ -71,6 +73,8 @@ class VerificationReport:
                     "confidence": vc.method_confidence,
                     "evidence": vc.evidence[:500],
                     "method": vc.method,
+                    "suspect_reason": vc.suspect_reason,
+                    "synthesized": vc.synthesized,
                 }
                 for vc in self.per_claim
             ],
