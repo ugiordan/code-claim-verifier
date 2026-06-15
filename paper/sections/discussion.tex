@@ -1,0 +1,28 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Limitations}
+
+\textbf{Grep is not proof.} Function call and caller verification uses grep with language-aware patterns. This catches most cases but fails on aliased imports (\texttt{import torch.load as tl}), dynamic dispatch (\texttt{getattr(module, "load")}), and higher-order functions. We assign 0.60--0.65 confidence to these verifiers accordingly. Tree-sitter or full AST analysis would improve precision but add external dependencies and language-specific complexity.
+
+\textbf{Absence is scoped.} A \textsc{Verified} absence claim means ``grep found no matches in the specified scope.'' This does not prove true absence: the pattern could exist under a different name, in a dynamically loaded module, or in a different repository. We explicitly scope absence verification as \textsc{Grep\_Absent} in our confidence model.
+
+\textbf{Semantic claims are unverifiable.} CCV cannot verify ``the sanitizer is adequate'' or ``the error handling is correct.'' Such claims are typed as \textsc{Unverifiable} rather than silently skipped, ensuring that the verification rate reflects what was actually checkable.
+
+\textbf{Single language per finding.} CCV detects language from the finding's file extension. Cross-language calls (Python calling Go via CGo, TypeScript calling native modules) are not handled. Each claim is verified with the patterns of the detected language.
+
+\textbf{Same codebase required.} Verification must run against the same repository state the LLM analyzed. If the code changed between analysis and verification, legitimate claims may be falsely refuted.
+
+\textbf{Engineering-estimated confidence.} The per-type confidence values (0.60--0.99) are engineering estimates based on the verification method's precision. The evaluation framework provides empirical calibration, but initial deployments rely on these estimates.
+
+\subsection{Ethical Considerations}
+
+When CCV refutes ``dead code'' claims and confirms that vulnerable code is reachable, the verification evidence could constitute actionable exploit information. In our evaluation dataset, specific CVE-to-repository exploit confirmations are redacted. Repository names are anonymized for sensitive findings.
+
+\subsection{Threats to Validity}
+
+\textbf{Internal validity.} The extraction LLM could systematically miss certain claim types, biasing the verification rate upward (unchecked hallucinations). We mitigate this by measuring extraction recall against ground truth.
+
+\textbf{External validity.} Our evaluation covers Python, Go, and TypeScript repositories. Results may not generalize to languages with significantly different idioms (e.g., Haskell, Prolog) or to codebases with heavy metaprogramming.
+
+\textbf{Construct validity.} The action thresholds (0.8 for \textsc{Boost}, 0.5 for \textsc{Flag}) are engineering choices, not empirically derived. Different domains may require different thresholds.

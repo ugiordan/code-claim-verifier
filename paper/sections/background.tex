@@ -1,0 +1,28 @@
+\section{Background}
+\label{sec:background}
+
+\subsection{LLM Hallucination in Code Contexts}
+
+Hallucination in LLM-generated text is well-documented~\cite{ji2023hallucination, zhang2023siren}. In code contexts, hallucination manifests differently than in open-domain text. When an LLM generates code, hallucination produces code that doesn't compile, fails tests, or introduces vulnerabilities~\cite{chen2021codex, pearce2022security}. When an LLM \emph{reasons about} existing code, hallucination produces false assertions about what the code does: claiming a function exists when it doesn't, asserting a package is a specific version when it's not, or stating that a vulnerability has no callers when call sites exist.
+
+This second category is less studied but arguably more dangerous: generated code is tested before deployment, but reasoning about code often drives decisions (triage verdicts, review approvals, migration plans) without systematic verification.
+
+\subsection{Claim Extraction}
+
+Claimify~\cite{metropolitansky2025claimify} introduced a four-stage pipeline for extracting verifiable claims from LLM outputs: sentence splitting, selection (keeping only verifiable assertions), disambiguation (resolving pronouns and references), and decomposition (breaking compound claims into atomic ones). The system achieves 99\% entailment between extracted claims and source text.
+
+However, Claimify was designed for general text and explicitly filters out absence claims (``X does not exist''). In code reasoning, absence claims are among the most important: ``no callers,'' ``no sanitization,'' ``no error handling.'' CCV builds on Claimify's extraction principles but adapts them for code with a typed claim taxonomy that includes absence as a first-class type.
+
+\subsection{Factual Verification}
+
+FActScore~\cite{min2023factscore} decomposes LLM biographies into atomic facts and checks each against Wikipedia, achieving fine-grained factual precision measurement. VeriFact~\cite{wei2024verifact} extends this to clinical text, verifying claims against electronic health records.
+
+Both systems use LLMs or retrieval augmentation for the verification step. FActScore checks claims against retrieved Wikipedia passages. VeriFact uses a combination of rule-based and LLM-based verification, with LLMs handling approximately 40\% of checks. This creates a second hallucination surface: the verifier itself can hallucinate.
+
+CCV eliminates this by using zero LLM calls for verification. Every verification method is deterministic: \texttt{os.path.exists()}, \texttt{grep}, file reads, lockfile parsing. The tradeoff is coverage: CCV cannot verify semantic claims (``the sanitizer is adequate'') and returns \textsc{Unverifiable} for such claims rather than guessing.
+
+\subsection{LLM Tool Use and Verification}
+
+Recent work on tool-augmented LLMs~\cite{wang2024toolreceipts} proposes ``tool receipts'' that record execution traces for verifiability. CCV operates on a different axis: rather than verifying that the LLM used its tools correctly, CCV verifies that the LLM's \emph{conclusions} about code are factually accurate, regardless of how those conclusions were reached.
+
+SelfCheckGPT~\cite{jiang2023selfcheck} detects hallucination by checking consistency across multiple LLM samples. This approach requires multiple inference calls and cannot distinguish between consistently wrong assertions and genuine facts. CCV's deterministic verification provides ground truth rather than consistency estimates.

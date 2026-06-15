@@ -1,0 +1,44 @@
+\section{Problem Statement}
+\label{sec:problem}
+
+\subsection{Definitions}
+
+Let $R$ be natural language reasoning produced by an LLM about a codebase $C$. We define:
+
+\begin{definition}[Code Claim]
+A \emph{code claim} $c = (\tau, \pi, s)$ is a triple consisting of a claim type $\tau \in \mathcal{T}$, parameters $\pi \in \text{Dict}$, and source sentence $s$ from $R$. Each claim asserts a verifiable fact about $C$.
+\end{definition}
+
+\begin{definition}[Claim Taxonomy]
+The claim taxonomy $\mathcal{T} = \{$\textsc{File\_Exists}, \textsc{Line\_Content}, \textsc{Function\_Exists}, \textsc{Function\_Called}, \ldots$\}$ is a finite set of 14 claim types, each with a defined parameter schema and verification method.
+\end{definition}
+
+\begin{definition}[Verification Function]
+For each claim type $\tau \in \mathcal{T}$, there exists a verification function $v_\tau: (\tau, \pi, C) \rightarrow (\delta, \alpha, e)$ that returns a verdict $\delta \in \{\textsc{Verified}, \textsc{Refuted}, \textsc{Unverifiable}\}$, a method confidence $\alpha \in [0, 1]$, and evidence $e$.
+\end{definition}
+
+\begin{definition}[Deterministic Verification]
+A verification function $v_\tau$ is \emph{deterministic} if it produces the same output for the same inputs and uses no LLM inference. All CCV verification functions are deterministic.
+\end{definition}
+
+\subsection{Problem Formulation}
+
+Given LLM reasoning $R$ about codebase $C$, the code claim verification problem consists of two phases:
+
+\textbf{Phase 1 (Extraction):} Decompose $R$ into a set of typed claims $\{c_1, \ldots, c_n\}$ using a single LLM call. This is the only non-deterministic step.
+
+\textbf{Phase 2 (Verification):} For each claim $c_i = (\tau_i, \pi_i, s_i)$, apply $v_{\tau_i}$ to produce a verified claim with verdict, confidence, and evidence. Aggregate into a verification report with calibrated confidence.
+
+\subsection{Desiderata}
+
+An effective code claim verification system should satisfy:
+
+\begin{enumerate}
+    \item \textbf{Soundness}: If a claim is marked \textsc{Verified}, the assertion is true in $C$ with high probability (bounded by method confidence $\alpha$).
+    \item \textbf{Completeness}: If an LLM assertion is verifiable (belongs to a type in $\mathcal{T}$), the extraction phase captures it.
+    \item \textbf{Safety}: No claim is marked \textsc{Refuted} due to verifier error. Errors produce \textsc{Unverifiable}.
+    \item \textbf{Zero verification hallucination}: The verification phase introduces no new hallucination surface.
+    \item \textbf{Transparency}: Each verdict includes method, confidence, and evidence for human inspection.
+\end{enumerate}
+
+CCV satisfies properties 1, 3, 4, and 5 by construction. Property 2 (completeness) depends on extraction quality and is evaluated empirically.

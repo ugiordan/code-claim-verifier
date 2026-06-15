@@ -1,0 +1,121 @@
+\section{Evaluation}
+\label{sec:evaluation}
+
+We evaluate CCV along four research questions:
+
+\begin{itemize}
+    \item \textbf{RQ1}: How often do LLM agents hallucinate about code?
+    \item \textbf{RQ2}: Does deterministic verification catch hallucinations that LLM-as-judge misses?
+    \item \textbf{RQ3}: Does claim-calibrated confidence improve downstream decision quality?
+    \item \textbf{RQ4}: Which claim types are most commonly hallucinated?
+\end{itemize}
+
+\subsection{Dataset}
+
+% [PLACEHOLDER: Replace with actual dataset statistics after annotation]
+
+We construct a dataset from LLM agent reasoning over open-source repositories. Each sample consists of the agent's reasoning text, structured evidence, and a set of manually annotated ground-truth claims with expected verdicts.
+
+\textbf{Repositories.} We draw from 5+ open-source projects spanning Python, Go, and TypeScript.
+
+\textbf{Annotation.} Each sample's claims are annotated by two annotators with the expected verdict (\textsc{Verified}, \textsc{Refuted}, or \textsc{Unverifiable}). We report inter-annotator agreement using Krippendorff's $\alpha$~\cite{krippendorff2011alpha}.
+
+\textbf{Scale.} Target: 500+ manually annotated claims across 100+ reasoning samples.
+
+\subsection{Baselines}
+
+\begin{itemize}
+    \item \textbf{No verification}: Agent confidence as-is (current practice).
+    \item \textbf{CCV}: Typed extraction + deterministic verification (our system).
+    \item \textbf{Ablation A}: Typed extraction + LLM-judge verification. Isolates the value of deterministic verification over LLM-as-judge.
+    \item \textbf{Ablation B}: Claimify-style extraction + deterministic verification. Isolates the value of our typed taxonomy over generic claim extraction.
+    \item \textbf{Human expert}: Manual verification by a developer familiar with the codebase (upper bound).
+\end{itemize}
+
+\subsection{Metrics}
+
+\textbf{Extraction quality.} Precision and recall of extracted claims against ground truth, with matching defined as: same claim type and all ground-truth parameter keys present with equal values.
+
+\textbf{Verification accuracy.} Proportion of correct verdicts, broken down by claim type. We report false-\textsc{Refuted} rate (most dangerous: could override correct conclusions) and false-\textsc{Verified} rate separately.
+
+\textbf{Calibration.} Per-type accuracy table comparing hardcoded method confidence values against empirical correctness rates. Expected Calibration Error (ECE)~\cite{naeini2015calibration} as aggregate metric.
+
+\textbf{Downstream impact.} For RQ3, we measure the change in triage accuracy when CCV's action (\textsc{Boost}/\textsc{Flag}/\textsc{Override}) is applied to the agent's original verdict.
+
+\subsection{Results}
+
+% [PLACEHOLDER: All result tables below contain synthetic example data.
+%  Replace with actual results after running evaluation on real dataset.]
+
+\subsubsection{RQ1: Hallucination Frequency}
+
+\begin{table}[t]
+\centering
+\caption{[PLACEHOLDER] Claim verification results across all samples.}
+\label{tab:rq1}
+\small
+\begin{tabular}{lrrr}
+\toprule
+& \textbf{Verified} & \textbf{Refuted} & \textbf{Unverifiable} \\
+\midrule
+Count & --- & --- & --- \\
+Percentage & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{RQ2: Deterministic vs. LLM-Judge Verification}
+
+\begin{table}[t]
+\centering
+\caption{[PLACEHOLDER] Verification accuracy comparison.}
+\label{tab:rq2}
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Method} & \textbf{Accuracy} & \textbf{False Refuted} & \textbf{False Verified} \\
+\midrule
+CCV (deterministic) & --- & --- & --- \\
+Ablation A (LLM-judge) & --- & --- & --- \\
+Human expert & --- & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{RQ3: Downstream Impact}
+
+\begin{table}[t]
+\centering
+\caption{[PLACEHOLDER] Triage accuracy with and without CCV.}
+\label{tab:rq3}
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Configuration} & \textbf{Triage Accuracy} & \textbf{False Positive Rate} \\
+\midrule
+No verification & --- & --- \\
+CCV & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{RQ4: Per-Type Hallucination Analysis}
+
+\begin{table}[t]
+\centering
+\caption{[PLACEHOLDER] Hallucination rate and calibration by claim type.}
+\label{tab:rq4}
+\small
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Type} & \textbf{Count} & \textbf{Refuted\%} & \textbf{Conf.} & \textbf{Actual Acc.} \\
+\midrule
+\textsc{File\_Exists} & --- & --- & 0.99 & --- \\
+\textsc{Function\_Exists} & --- & --- & 0.85 & --- \\
+\textsc{Function\_Called} & --- & --- & 0.65 & --- \\
+\textsc{Absence} & --- & --- & 0.60 & --- \\
+\textsc{Package\_Version} & --- & --- & 0.90 & --- \\
+\textsc{Import\_Exists} & --- & --- & 0.80 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}

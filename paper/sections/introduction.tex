@@ -1,0 +1,42 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Large language models are increasingly used to reason about source code: triaging security vulnerabilities, reviewing pull requests, planning refactoring, and assessing architecture. In each case, the LLM produces natural language assertions about what the code does. ``Function \texttt{torch.load()} at \texttt{model.py:42} has no callers.'' ``Package \texttt{numpy} is version 1.24.0.'' ``The file is auto-generated.'' These factual claims about code drive downstream decisions. In security triage, a ``no callers'' claim determines whether a vulnerability is exploitable or dead code. In code review, a ``mitigation exists at line 15'' claim determines whether a fix is needed.
+
+The problem is that LLMs hallucinate. A growing body of work documents hallucination in code generation~\cite{chen2021codex, pearce2022security}, but hallucination in \emph{code reasoning} is less studied. When an LLM generates code, the output is executable and testable. When an LLM reasons \emph{about} code, the output is natural language, and verifying it requires checking each assertion against the actual codebase.
+
+Claimify~\cite{metropolitansky2025claimify} demonstrated that LLM outputs can be decomposed into atomic, verifiable claims with high fidelity (99\% entailment). FActScore~\cite{min2023factscore} showed that fine-grained factual evaluation outperforms holistic scoring. VeriFact~\cite{wei2024verifact} extended claim verification to clinical text. However, none of these systems target source code, and all rely on LLMs or knowledge bases for the verification step itself, introducing a second hallucination surface.
+
+We present \textbf{CodeClaimVerifier (CCV)}, a system that extracts typed claims from LLM reasoning about code and verifies each one deterministically against the actual codebase. The key insight is that most factual claims about code reduce to operations that \emph{can} be verified without an LLM: file existence (\texttt{os.path.exists}), function definitions (\texttt{grep} with language-aware patterns), package versions (lockfile parsing), and absence of patterns (scoped grep). By using a single LLM call for extraction and zero LLM calls for verification, CCV eliminates the hallucination-verifying-hallucination problem.
+
+\begin{figure}[t]
+\centering
+\small
+\begin{verbatim}
+LLM: "torch.load() at model.py:42 has no
+      callers. The vulnerability is dead code."
+
+CCV extracts:
+  [FILE_EXISTS path=model.py]        -> VERIFIED
+  [FUNCTION_CALLED name=torch.load]  -> VERIFIED
+  [HAS_CALLERS name=torch.load]      -> REFUTED
+    (grep found 2 call sites)
+
+Verdict: 67% verified, action=FLAG
+  "torch.load IS called. Re-triage."
+\end{verbatim}
+\caption{Motivating example. An LLM incorrectly claims \texttt{torch.load()} has no callers. CCV extracts this as a typed \textsc{Has\_Callers} claim, verifies via grep, finds call sites, and flags the triage for review.}
+\label{fig:motivating}
+\end{figure}
+
+CCV makes three contributions:
+
+\begin{enumerate}
+    \item A \textbf{taxonomy of 14 code claim types} organized into four categories (file/path, function/symbol, import/dependency, code/security), each with a deterministic verification method and documented confidence level.
+
+    \item A \textbf{claim chaining mechanism} that infers dependencies between claims (e.g., a \textsc{Line\_Content} claim depends on the file existing), synthesizes missing prerequisites, and propagates refutation through the dependency graph.
+
+    \item An \textbf{open-source implementation} as a standalone Python library with zero external dependencies, supporting custom claim types, batch verification with adaptive batching, a CLI, and an evaluation framework.
+\end{enumerate}
+
+The rest of this paper is organized as follows. Section~\ref{sec:background} covers related work on claim extraction and LLM hallucination. Section~\ref{sec:problem} formally defines code claim verification. Section~\ref{sec:design} presents the CCV architecture. Section~\ref{sec:evaluation} describes our evaluation methodology and results. Section~\ref{sec:discussion} discusses limitations. Section~\ref{sec:related} positions CCV relative to adjacent work. Section~\ref{sec:conclusion} concludes.

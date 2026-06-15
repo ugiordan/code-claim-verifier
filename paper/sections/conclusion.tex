@@ -1,0 +1,15 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We presented CodeClaimVerifier, a system that extracts typed claims from LLM reasoning about source code and verifies each one deterministically against the actual codebase. CCV uses a single LLM call for extraction and zero LLM calls for verification, eliminating the hallucination-verifying-hallucination problem inherent in LLM-as-judge approaches.
+
+Our 14-type claim taxonomy covers file existence, function definitions, call relationships, package versions, absence assertions, and more. The claim chaining mechanism infers dependencies between claims and propagates refutation through the dependency graph. The system is implemented as a standalone Python library with zero external dependencies, supporting custom claim types, batch verification, and an evaluation framework.
+
+% [PLACEHOLDER: Add key quantitative results here after evaluation]
+% Preliminary evaluation on N repositories with M annotated claims shows...
+
+CCV demonstrates that a significant fraction of LLM assertions about code can be verified without any LLM inference, using operations (grep, file read, lockfile parse) that are fast, deterministic, and transparent. We believe this approach generalizes beyond security triage to any domain where LLMs reason about structured artifacts.
+
+\textbf{Future work.} Tree-sitter integration for AST-level verification (improving confidence for function call claims from 0.65 to potentially 0.90+). Cross-language call graph support. Empirical calibration of confidence values. Integration with CI/CD pipelines for automated claim verification on pull request reviews.
+
+CCV is open-source under Apache 2.0 at \url{https://github.com/ugiordan/code-claim-verifier}.

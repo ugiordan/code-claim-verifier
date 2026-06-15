@@ -1,0 +1,154 @@
+\section{CodeClaimVerifier Design}
+\label{sec:design}
+
+\subsection{Architecture Overview}
+
+CCV operates in three stages (Figure~\ref{fig:architecture}):
+
+\begin{enumerate}
+    \item \textbf{Typed Claim Extraction} (1 LLM call): A structured-output LLM call decomposes reasoning into a list of typed claims, each with a claim type, parameters, and source sentence.
+    \item \textbf{Deterministic Verification} (0 LLM calls): Each claim dispatches to a type-specific verifier that checks the assertion against the codebase using grep, file reads, or lockfile parsing.
+    \item \textbf{Confidence Calibration}: Verification results are aggregated into a calibrated confidence score with an actionable verdict.
+\end{enumerate}
+
+\begin{figure}[t]
+\centering
+\small
+\begin{verbatim}
+Agent Reasoning (text) + Evidence (dict)
+    |
+    v
+[Phase 1: Typed Claim Extraction]  -- 1 LLM call
+    |
+    v
+List[TypedClaim]  -- type, params, source
+    |
+    v
+[Dependency Graph + Topological Sort]
+    |
+    v
+[Phase 2: Deterministic Verification]
+    |   grep, read, parse per claim type
+    |   language-aware patterns
+    |   path traversal prevention
+    v
+List[VerifiedClaim]  -- verdict, confidence
+    |
+    v
+[SUSPECT Propagation]
+    |
+    v
+[Confidence Calibration]  -- pure math
+    |
+    v
+VerificationReport  -- rate, action, per_claim
+\end{verbatim}
+\caption{CCV architecture. One LLM call for extraction, zero for verification.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Claim Taxonomy}
+
+CCV defines 14 claim types organized into four categories (Table~\ref{tab:taxonomy}). Each type has a defined parameter schema, verification method, and method confidence level.
+
+\begin{table*}[t]
+\centering
+\caption{CCV claim taxonomy. Confidence values are engineering estimates; empirical calibration is evaluated in Section~\ref{sec:evaluation}.}
+\label{tab:taxonomy}
+\small
+\begin{tabular}{llllr}
+\toprule
+\textbf{Category} & \textbf{Claim Type} & \textbf{Parameters} & \textbf{Verification Method} & \textbf{Conf.} \\
+\midrule
+\multirow{4}{*}{File/Path}
+& \textsc{File\_Exists} & path & \texttt{os.path.isfile()} & 0.99 \\
+& \textsc{Line\_Content} & path, line, expected & File read + string match & 0.95 \\
+& \textsc{File\_Classification} & path, category & Path pattern regex & 0.80 \\
+& \textsc{Generated\_Or\_Vendored} & path, expected & Header markers + vendor dirs & 0.85 \\
+\midrule
+\multirow{3}{*}{Function}
+& \textsc{Function\_Exists} & name, file (opt.) & Language-aware def grep & 0.85 \\
+& \textsc{Function\_Called} & name, expected & Call-site grep minus defs & 0.65 \\
+& \textsc{Has\_Callers} & name, expected & Call-site grep minus defs & 0.65 \\
+\midrule
+\multirow{4}{*}{Dependency}
+& \textsc{Import\_Exists} & module, file (opt.) & Language-aware import grep & 0.80 \\
+& \textsc{Package\_Version} & package, version & Lockfile parse & 0.90 \\
+& \textsc{Dependency\_Type} & package, type & Manifest parse & 0.85 \\
+& \textsc{Cve\_Affects\_Version} & cve, package, version & Advisory DB (unimpl.) & --- \\
+\midrule
+\multirow{3}{*}{Code}
+& \textsc{Absence} & pattern, scope & Scoped grep (negated) & 0.60 \\
+& \textsc{Mitigation\_Exists} & file, line & File read + non-empty check & 0.70 \\
+& \textsc{Entry\_Point} & type, location & Framework pattern grep & 0.65 \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\textbf{Language awareness.} Function definition and import patterns are language-specific. CCV supports Python, Go, TypeScript/JavaScript, Java, C/C++, and Rust. Language is detected from the file extension of the finding under analysis, not the repository's dominant language.
+
+\textbf{Absence claims.} Unlike Claimify, which filters out negation claims, CCV treats absence as a first-class claim type. The \textsc{Absence} verifier uses scoped grep: if the pattern is not found in the specified scope (file, directory, or repo), the claim is \textsc{Verified}. This captures assertions like ``no input sanitization exists'' or ``the function has no callers.'' The confidence is lower (0.60) because grep cannot detect aliases, dynamic dispatch, or language-level indirection.
+
+\subsection{Claim Chaining}
+
+LLM claims often have implicit dependencies. A \textsc{Line\_Content} claim that ``line 42 contains \texttt{torch.load()}'' implicitly depends on the file existing. If the file doesn't exist, the line content claim is meaningless regardless of whether the verifier would match the pattern.
+
+CCV infers these dependencies from shared parameters using seven built-in rules (Table~\ref{tab:chaining}). When a dependent claim exists but its prerequisite was not explicitly extracted, CCV synthesizes the prerequisite and verifies it.
+
+\begin{table}[t]
+\centering
+\caption{Dependency inference rules. Source and target parameters define how synthesized claims are constructed.}
+\label{tab:chaining}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Dependent} & \textbf{Prerequisite} & \textbf{Params} \\
+\midrule
+\textsc{Line\_Content} & \textsc{File\_Exists} & path$\to$path \\
+\textsc{Generated\_Or\_Vendored} & \textsc{File\_Exists} & path$\to$path \\
+\textsc{Function\_Exists} & \textsc{File\_Exists} & file$\to$path \\
+\textsc{Function\_Called} & \textsc{Function\_Exists} & name$\to$name \\
+\textsc{Has\_Callers} & \textsc{Function\_Exists} & name$\to$name \\
+\textsc{Import\_Exists} & \textsc{File\_Exists} & file$\to$path \\
+\textsc{Mitigation\_Exists} & \textsc{File\_Exists} & file$\to$path \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Resolution algorithm.} Claims are verified in topological order. If all prerequisites of a given type are \textsc{Refuted}, the dependent is marked \textsc{Suspect} with reduced confidence contribution. CCV uses ANY-match semantics: if at least one prerequisite of a type is \textsc{Verified}, the dependent is not flagged.
+
+\textbf{Synthesized claims} are marked as such and excluded from report metrics to prevent phantom claims from distorting confidence scores.
+
+\subsection{Confidence Calibration}
+
+CCV computes a weighted verification rate:
+
+\begin{equation}
+\text{rate} = \frac{\sum_{c \in V^+} w(c) \cdot \alpha_c}{\sum_{c \in V} \alpha_c}
+\label{eq:rate}
+\end{equation}
+
+where $V$ is the set of verifiable (non-\textsc{Unverifiable}) claims, $V^+$ is the set of \textsc{Verified} claims, $\alpha_c$ is the method confidence, and $w(c) = 0.5$ if $c$ is \textsc{Suspect}, $w(c) = 1.0$ otherwise. This asymmetric weighting ensures that \textsc{Suspect}-\textsc{Verified} claims lower the rate (they contribute full confidence to the denominator but half to the numerator).
+
+The rate maps to actions:
+
+\begin{itemize}
+    \item $\text{rate} \geq 0.8$: \textsc{Boost} -- increase confidence in the LLM's conclusion
+    \item $0.5 \leq \text{rate} < 0.8$: \textsc{Flag} -- flag for human review
+    \item $\text{rate} < 0.5$: \textsc{Override} -- override the LLM's conclusion
+\end{itemize}
+
+\subsection{Extensibility}
+
+CCV supports user-defined claim types via a registration API. Users provide a verifier function, extraction hint (injected into the LLM prompt), and optional dependency rules. Custom types receive the same caching, chaining, and calibration as built-in types.
+
+\subsection{Caching}
+
+For batch verification (multiple findings against the same codebase), CCV uses two cache layers:
+
+\begin{itemize}
+    \item \textbf{Grep cache}: Thread-safe via \texttt{contextvars}, keyed by (pattern, path, fixed). Returns defensive copies.
+    \item \textbf{Verifier cache}: Keyed by (type, frozen\_params, repo, language). Stores bare results (pre-chaining) and returns copies via \texttt{dataclasses.replace()} for independent SUSPECT marking.
+\end{itemize}
+
+Both caches are per-call (no staleness across invocations) and support concurrent use.
