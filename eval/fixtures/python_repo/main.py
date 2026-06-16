@@ -10,3 +10,9 @@ def process(data):
 
 def unused_endpoint():
     pass
+
+tl = torch.load
+indirect_call = tl
+
+class ModelLoader:
+    load = staticmethod(torch.load)
