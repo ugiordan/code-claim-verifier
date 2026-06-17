@@ -45,8 +45,7 @@ class CodeClaimVerifier:
         if len(extraction_hint) > 500:
             raise ValueError("extraction_hint must be <= 500 characters")
         self.engine.register(claim_type, verifier_fn, depends_on=depends_on)
-        if extraction_hint:
-            self._extraction_hints.append(extraction_hint)
+        self._extraction_hints.append(extraction_hint)
 
     def register_dependency(self, claim_type: str, depends_on: str,
                             source_param: str, target_param: str):
@@ -123,7 +122,7 @@ class CodeClaimVerifier:
             items: List of dicts with keys: reasoning, evidence, finding_file.
             domain_context: Optional domain instructions for extraction.
             max_chars_per_batch: Max characters of reasoning per extraction batch.
-            batch_fallback: "partial"|"strict"|"skip"|"raise" for batch failures.
+            batch_fallback: "partial"|"skip" for batch extraction failures.
         """
         from code_claim_verifier.extractor import extract_claims_batch
         from code_claim_verifier import grep as grep_module
@@ -160,8 +159,9 @@ class CodeClaimVerifier:
                     all_claims[batch_offset + local_idx] = claims
 
         reports = []
-        token = grep_module.cache_context()
+        token = None
         try:
+            token = grep_module.cache_context()
             for i, item in enumerate(items):
                 finding_file = item.get("finding_file", "")
                 language = detect_language(finding_file) if finding_file else "unknown"
@@ -174,7 +174,8 @@ class CodeClaimVerifier:
                 )
                 reports.append(calibrate(verified))
         finally:
-            grep_module.reset_cache(token)
+            if token is not None:
+                grep_module.reset_cache(token)
 
         return reports
 

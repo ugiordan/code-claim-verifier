@@ -39,6 +39,8 @@ def make_llm_function(model: str | None = None) -> Callable[[str, str], str]:
             system=system,
             messages=[{"role": "user", "content": user}],
         )
+        if not response.content:
+            raise RuntimeError("Anthropic API returned empty content")
         return response.content[0].text
 
     return llm_function

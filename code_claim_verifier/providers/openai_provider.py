@@ -41,6 +41,9 @@ def make_llm_function(model: str | None = None) -> Callable[[str, str], str]:
                 {"role": "user", "content": user},
             ],
         )
-        return response.choices[0].message.content
+        content = response.choices[0].message.content
+        if content is None:
+            raise RuntimeError("OpenAI API returned None content")
+        return content
 
     return llm_function

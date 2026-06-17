@@ -85,12 +85,22 @@ def run_evaluation(
             predicted_claims = []
             all_extraction_gt.extend(ground_truth_claims)
 
-        # Verification stage: verify each predicted claim
         if predicted_claims:
             verified = engine.verify_claims(predicted_claims, repo_path, language)
+            if len(ground_truth_claims) != len(verified):
+                raise ValueError(
+                    f"Entry {entry.get('id', '?')}: ground truth has "
+                    f"{len(ground_truth_claims)} claims but verification "
+                    f"produced {len(verified)} results"
+                )
             for gt, vc in zip(ground_truth_claims, verified):
+                if "expected_verdict" not in gt:
+                    raise ValueError(
+                        f"Entry {entry.get('id', '?')}: ground truth claim "
+                        f"missing expected_verdict"
+                    )
                 verification_results.append({
-                    "expected_verdict": gt.get("expected_verdict", "VERIFIED"),
+                    "expected_verdict": gt["expected_verdict"],
                     "actual_verdict": vc.verdict,
                     "claim_type": vc.claim.claim_type,
                     "confidence": vc.method_confidence,

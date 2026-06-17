@@ -283,9 +283,10 @@ def main(argv: list[str] | None = None) -> None:
     sub_eval.add_argument("--fixtures", required=True, help="Path to fixture repos directory")
     sub_eval.add_argument("--output", default=None, help="Optional path to write JSON report")
     sub_eval.add_argument(
-        "--mock-extraction", action="store_true", default=True,
-        help="Use ground truth claims instead of LLM extraction (default: true)",
+        "--no-mock-extraction", action="store_false", dest="mock_extraction",
+        help="Disable mock extraction and use LLM extraction instead",
     )
+    sub_eval.set_defaults(mock_extraction=True)
     sub_eval.set_defaults(func=_cmd_eval)
 
     args = parser.parse_args(argv)
