@@ -192,9 +192,7 @@ Three stages: extraction precision/recall, verification accuracy with confusion 
 
 Core: none (stdlib only). Optional: `anthropic` or `openai` for CLI providers.
 
-## Research
-
-This tool accompanies the paper: "CodeClaimVerifier: Deterministic Verification of LLM Claims About Source Code" (targeting ICSE 2027).
+## Background
 
 Inspired by [Claimify](https://arxiv.org/abs/2502.10855) (ACL 2025), extended to the code domain with deterministic verification. Key differences:
 - Claimify is extraction-only. CCV adds deterministic verification.
