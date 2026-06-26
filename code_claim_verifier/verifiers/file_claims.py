@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import re
 
@@ -10,19 +12,39 @@ _GENERATED_MARKERS = [
 ]
 
 
+def _find_file_in_repo(filename: str, repo_path: str) -> str | None:
+    """Search for a file by name anywhere in the repo tree.
+    Returns the first match or None."""
+    basename = os.path.basename(filename)
+    for root, _dirs, files in os.walk(repo_path):
+        if basename in files:
+            candidate = os.path.join(root, basename)
+            if filename in candidate:
+                return candidate
+    return None
+
+
 def verify_file_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     path = claim.parameters.get("path", "")
     resolved = safe_path(path, repo_path)
     if resolved is None:
         return VerifiedClaim(claim=claim, verdict="REFUTED", method_confidence=0.99,
                              evidence="Path traversal detected", method="path_check")
-    exists = os.path.isfile(resolved)
+    if os.path.isfile(resolved):
+        return VerifiedClaim(
+            claim=claim, verdict="VERIFIED", method_confidence=0.99,
+            evidence=f"exists: {path}", method="os.path.isfile",
+        )
+    found = _find_file_in_repo(path, repo_path)
+    if found:
+        return VerifiedClaim(
+            claim=claim, verdict="VERIFIED", method_confidence=0.90,
+            evidence=f"exists (fuzzy match): {os.path.relpath(found, repo_path)}",
+            method="os.walk_fuzzy",
+        )
     return VerifiedClaim(
-        claim=claim,
-        verdict="VERIFIED" if exists else "REFUTED",
-        method_confidence=0.99,
-        evidence=f"{'exists' if exists else 'not found'}: {path}",
-        method="os.path.isfile",
+        claim=claim, verdict="REFUTED", method_confidence=0.99,
+        evidence=f"not found: {path}", method="os.path.isfile",
     )
 
 
@@ -32,6 +54,10 @@ def verify_line_content(claim: TypedClaim, repo_path: str, language: str) -> Ver
     expected = claim.parameters.get("expected", "").strip()
 
     resolved = safe_path(path, repo_path)
+    if resolved is not None and not os.path.isfile(resolved):
+        found = _find_file_in_repo(path, repo_path)
+        if found:
+            resolved = found
     if resolved is None or not os.path.isfile(resolved):
         return VerifiedClaim(claim=claim, verdict="REFUTED", method_confidence=0.95,
                              evidence=f"File not found: {path}", method="file_read")
@@ -87,6 +113,10 @@ def verify_generated_or_vendored(claim: TypedClaim, repo_path: str, language: st
     expected = claim.parameters.get("expected", True)
 
     resolved = safe_path(path, repo_path)
+    if resolved is not None and not os.path.isfile(resolved):
+        found = _find_file_in_repo(path, repo_path)
+        if found:
+            resolved = found
     if resolved is None or not os.path.isfile(resolved):
         return VerifiedClaim(claim=claim, verdict="REFUTED", method_confidence=0.85,
                              evidence=f"File not found: {path}", method="header_check")
