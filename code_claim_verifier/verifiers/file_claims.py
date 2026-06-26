@@ -49,9 +49,9 @@ def verify_file_exists(claim: TypedClaim, repo_path: str, language: str) -> Veri
 
 
 def verify_line_content(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    path = claim.parameters.get("path", "")
+    path = claim.parameters.get("file", claim.parameters.get("path", ""))
     line_num = claim.parameters.get("line", 0)
-    expected = claim.parameters.get("expected", "").strip()
+    expected = claim.parameters.get("expected_content", claim.parameters.get("expected", "")).strip()
 
     resolved = safe_path(path, repo_path)
     if resolved is not None and not os.path.isfile(resolved):
@@ -81,7 +81,7 @@ def verify_line_content(claim: TypedClaim, repo_path: str, language: str) -> Ver
 
 
 def verify_file_classification(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    path = claim.parameters.get("path", "")
+    path = claim.parameters.get("file", claim.parameters.get("path", ""))
     expected_cat = claim.parameters.get("category", "").lower()
 
     test_patterns = [r"test[s_/]", r"_test\.", r"\.test\.", r"spec[s_/]", r"e2e/", r"integration/", r"fixtures?/"]
@@ -109,7 +109,7 @@ def verify_file_classification(claim: TypedClaim, repo_path: str, language: str)
 
 
 def verify_generated_or_vendored(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    path = claim.parameters.get("path", "")
+    path = claim.parameters.get("file", claim.parameters.get("path", ""))
     expected = claim.parameters.get("expected", True)
 
     resolved = safe_path(path, repo_path)
