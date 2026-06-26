@@ -23,9 +23,12 @@ def _read_file_safe(path: str) -> str:
 
 
 def _grep_fixed_string_in_tree(pattern: str, root: str) -> bool:
-    """Check if a fixed string exists anywhere in files under root."""
+    """Check if a fixed string exists anywhere in source files under root."""
     for dirpath, _dirs, files in os.walk(root):
         for fname in files:
+            ext = os.path.splitext(fname)[1].lower()
+            if ext not in _SOURCE_EXTENSIONS:
+                continue
             full = os.path.join(dirpath, fname)
             content = _read_file_safe(full)
             if pattern in content:
@@ -34,10 +37,13 @@ def _grep_fixed_string_in_tree(pattern: str, root: str) -> bool:
 
 
 def _grep_regex_in_tree(regex: str, root: str) -> bool:
-    """Check if a regex pattern matches anywhere in files under root."""
+    """Check if a regex pattern matches anywhere in source files under root."""
     compiled = re.compile(regex)
     for dirpath, _dirs, files in os.walk(root):
         for fname in files:
+            ext = os.path.splitext(fname)[1].lower()
+            if ext not in _SOURCE_EXTENSIONS:
+                continue
             full = os.path.join(dirpath, fname)
             content = _read_file_safe(full)
             if compiled.search(content):
@@ -145,7 +151,7 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
     for root, _dirs, files in os.walk(source_root):
         for f in files:
             ext = os.path.splitext(f)[1].lower()
-            if ext in _SKIP_EXTENSIONS:
+            if ext not in _SOURCE_EXTENSIONS or ext in _SKIP_EXTENSIONS:
                 continue
             full = os.path.join(root, f)
             rel = os.path.relpath(full, source_root)
