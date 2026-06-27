@@ -125,13 +125,14 @@ def generate_refuted_gt(real_files: list[str], real_functions: list[str],
             "gt_tier": "tier2",
         })
 
-    for pattern in _ABSENT_PATTERNS[:3]:
-        claims.append({
-            "claim_type": "ABSENCE",
-            "parameters": {"pattern": pattern + "_nonexistent_xyz", "scope": "repo"},
-            "expected_verdict": "VERIFIED",
-            "gt_tier": "tier1",
-        })
+    if real_functions:
+        for func in real_functions[:3]:
+            claims.append({
+                "claim_type": "ABSENCE",
+                "parameters": {"pattern": func, "scope": "repo"},
+                "expected_verdict": "REFUTED",
+                "gt_tier": "source",
+            })
 
     return claims
 

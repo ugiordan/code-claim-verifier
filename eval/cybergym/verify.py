@@ -99,8 +99,13 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             result = {
                 "vuln_id": vuln_id, "model": model_name, "condition": condition,
                 "reasoning_length": len(reasoning),
-                "ccv": {"total_claims": 0, "action": "NO_CHANGE"},
-                "gt_comparison": {"matched": 0},
+                "reasoning_truncated": len(reasoning) > 4000,
+                "ccv": {
+                    "total_claims": 0, "verified": 0, "refuted": 0,
+                    "unverifiable": 0, "verification_rate": 0.0,
+                    "action": "NO_CHANGE", "claims": [],
+                },
+                "gt_comparison": {"matched": 0, "results": []},
             }
             save_json(result, out_path)
             return result

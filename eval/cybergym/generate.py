@@ -26,13 +26,11 @@ def _read_source_context(source_root: str, max_chars: int = 32000) -> str:
                     content = fh.read(8000)
                 chunk = f"\n--- {rel} ---\n{content}"
                 if total + len(chunk) > max_chars:
-                    break
+                    return "".join(chunks)
                 chunks.append(chunk)
                 total += len(chunk)
             except OSError:
                 continue
-        if total >= max_chars:
-            break
     return "".join(chunks)
 
 
