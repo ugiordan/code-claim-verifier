@@ -5,11 +5,9 @@ import os
 
 from code_claim_verifier.language import detect_language
 from eval.cybergym.gt import generate_verified_gt, generate_refuted_gt, validate_negatives
-from eval.cybergym.utils import find_source_root, save_jsonl
+from eval.cybergym.utils import find_source_root, save_jsonl, SOURCE_EXTENSIONS
 
 logger = logging.getLogger(__name__)
-
-_SOURCE_EXTENSIONS = frozenset((".c", ".cpp", ".py", ".go", ".ts", ".js", ".java", ".rs", ".h"))
 
 
 def scan_repo(repo_path: str, vuln_id: str) -> dict | None:
@@ -23,7 +21,7 @@ def scan_repo(repo_path: str, vuln_id: str) -> dict | None:
     for root, _dirs, files in os.walk(source_root):
         for f in files:
             ext = os.path.splitext(f)[1].lower()
-            if ext in _SOURCE_EXTENSIONS:
+            if ext in SOURCE_EXTENSIONS:
                 rel = os.path.relpath(os.path.join(root, f), source_root)
                 src_files.append(rel)
 

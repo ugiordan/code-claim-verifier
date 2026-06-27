@@ -11,7 +11,12 @@ LLMFunction = Callable[[str, str], str]
 
 def make_anthropic(model: str = "claude-sonnet-4-20250514") -> LLMFunction:
     import anthropic
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "ANTHROPIC_API_KEY not set. Export it before running the eval pipeline."
+        )
+    client = anthropic.Anthropic(api_key=api_key)
 
     def call(system: str, user: str) -> str:
         response = client.messages.create(
@@ -28,7 +33,12 @@ def make_anthropic(model: str = "claude-sonnet-4-20250514") -> LLMFunction:
 
 def make_openai(model: str = "gpt-4o") -> LLMFunction:
     import openai
-    client = openai.OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "OPENAI_API_KEY not set. Export it before running the eval pipeline."
+        )
+    client = openai.OpenAI(api_key=api_key)
 
     def call(system: str, user: str) -> str:
         response = client.chat.completions.create(

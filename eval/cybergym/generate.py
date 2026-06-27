@@ -6,13 +6,9 @@ import time
 
 from eval.cybergym.models import get_model
 from eval.cybergym.prompts import build_reasoning_prompt
-from eval.cybergym.utils import load_jsonl, load_json, save_json
+from eval.cybergym.utils import load_jsonl, load_json, save_json, SOURCE_EXTENSIONS
 
 logger = logging.getLogger(__name__)
-
-_SOURCE_EXTENSIONS = frozenset(
-    (".c", ".cpp", ".py", ".go", ".ts", ".js", ".java", ".rs", ".h")
-)
 
 
 def _read_source_context(source_root: str, max_chars: int = 32000) -> str:
@@ -21,7 +17,7 @@ def _read_source_context(source_root: str, max_chars: int = 32000) -> str:
     for root, _dirs, files in os.walk(source_root):
         for f in sorted(files):
             ext = os.path.splitext(f)[1].lower()
-            if ext not in _SOURCE_EXTENSIONS:
+            if ext not in SOURCE_EXTENSIONS:
                 continue
             full = os.path.join(root, f)
             rel = os.path.relpath(full, source_root)

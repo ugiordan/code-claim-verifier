@@ -38,6 +38,9 @@ def match_claims_to_gt(verified: list[VerifiedClaim],
                     vc_value = vc.claim.parameters.get("path")
                 if vc_value is None and key == "path":
                     vc_value = vc.claim.parameters.get("file")
+                if key in ("file", "path") and isinstance(value, str) and isinstance(vc_value, str):
+                    value = normalize_claim_path(value)
+                    vc_value = normalize_claim_path(vc_value)
                 if vc_value != value:
                     all_match = False
                     break
@@ -66,77 +69,85 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                extraction_llm: str = "claude-sonnet-4",
                with_judge: bool = False,
                judge_model: str = "gpt-4o") -> dict | None:
-    vuln_id = entry["vuln_id"]
-    reasoning_data = load_json(reasoning_path)
-    if reasoning_data is None:
-        return None
+    try:
+        vuln_id = entry["vuln_id"]
+        reasoning_data = load_json(reasoning_path)
+        if reasoning_data is None:
+            return None
 
-    model_name = reasoning_data.get("model", "unknown")
-    condition = reasoning_data.get("condition", "informed")
-    out_path = os.path.join(output_dir, model_name, condition, f"{vuln_id}.json")
+        if "reasoning" not in reasoning_data:
+            logger.error("Missing 'reasoning' key in %s", reasoning_path)
+            return None
 
-    existing = load_json(out_path)
-    if existing is not None:
-        return existing
+        model_name = reasoning_data.get("model", "unknown")
+        condition = reasoning_data.get("condition", "informed")
+        out_path = os.path.join(output_dir, model_name, condition, f"{vuln_id}.json")
 
-    reasoning = reasoning_data["reasoning"]
-    source_root = entry["source_root"]
-    language = entry.get("language", "c")
+        existing = load_json(out_path)
+        if existing is not None:
+            return existing
 
-    extractor_llm = get_model(extraction_llm)
-    claims = extract_claims(reasoning, {}, extractor_llm)
-    claims = _normalize_claims(claims)
+        reasoning = reasoning_data["reasoning"]
+        source_root = entry["source_root"]
+        language = entry.get("language", "c")
 
-    if not claims:
-        result = {
-            "vuln_id": vuln_id, "model": model_name, "condition": condition,
-            "reasoning_length": len(reasoning),
-            "ccv": {"total_claims": 0, "action": "NO_CHANGE"},
-            "gt_comparison": {"matched": 0},
+        extractor_llm = get_model(extraction_llm)
+        claims = extract_claims(reasoning, {}, extractor_llm)
+        claims = _normalize_claims(claims)
+
+        if not claims:
+            result = {
+                "vuln_id": vuln_id, "model": model_name, "condition": condition,
+                "reasoning_length": len(reasoning),
+                "ccv": {"total_claims": 0, "action": "NO_CHANGE"},
+                "gt_comparison": {"matched": 0},
+            }
+            save_json(result, out_path)
+            return result
+
+        verified = run_ccv_verification(claims, source_root, language)
+        report = calibrate(verified)
+
+        gt_comparison = match_claims_to_gt(verified, entry.get("gt_claims", []))
+
+        ccv_result = {
+            "total_claims": report.total_claims,
+            "verified": report.verified,
+            "refuted": report.refuted,
+            "unverifiable": report.unverifiable,
+            "verification_rate": report.verification_rate,
+            "action": report.action,
+            "claims": [
+                {
+                    "claim_type": vc.claim.claim_type,
+                    "parameters": vc.claim.parameters,
+                    "verdict": vc.verdict,
+                    "confidence": vc.method_confidence,
+                    "evidence": vc.evidence[:200],
+                    "method": vc.method,
+                }
+                for vc in verified if not vc.synthesized
+            ],
         }
+
+        result = {
+            "vuln_id": vuln_id,
+            "model": model_name,
+            "condition": condition,
+            "reasoning_length": len(reasoning),
+            "reasoning_truncated": len(reasoning) > 4000,
+            "ccv": ccv_result,
+            "gt_comparison": {
+                "matched": len(gt_comparison),
+                "results": gt_comparison,
+            },
+        }
+
         save_json(result, out_path)
         return result
-
-    verified = run_ccv_verification(claims, source_root, language)
-    report = calibrate(verified)
-
-    gt_comparison = match_claims_to_gt(verified, entry.get("gt_claims", []))
-
-    ccv_result = {
-        "total_claims": report.total_claims,
-        "verified": report.verified,
-        "refuted": report.refuted,
-        "unverifiable": report.unverifiable,
-        "verification_rate": report.verification_rate,
-        "action": report.action,
-        "claims": [
-            {
-                "claim_type": vc.claim.claim_type,
-                "parameters": vc.claim.parameters,
-                "verdict": vc.verdict,
-                "confidence": vc.method_confidence,
-                "evidence": vc.evidence[:200],
-                "method": vc.method,
-            }
-            for vc in verified if not vc.synthesized
-        ],
-    }
-
-    result = {
-        "vuln_id": vuln_id,
-        "model": model_name,
-        "condition": condition,
-        "reasoning_length": len(reasoning),
-        "reasoning_truncated": len(reasoning) > 4000,
-        "ccv": ccv_result,
-        "gt_comparison": {
-            "matched": len(gt_comparison),
-            "results": gt_comparison,
-        },
-    }
-
-    save_json(result, out_path)
-    return result
+    except Exception:
+        logger.exception("verify_one failed for %s", reasoning_path)
+        return None
 
 
 def run_verify(manifest_path: str, reasoning_dir: str, output_dir: str,
@@ -161,6 +172,9 @@ def run_verify(manifest_path: str, reasoning_dir: str, output_dir: str,
                 if not entry:
                     continue
                 reasoning_path = os.path.join(cond_path, fname)
-                verify_one(entry, reasoning_path, output_dir,
-                           extraction_llm=extraction_llm,
-                           with_judge=with_judge)
+                try:
+                    verify_one(entry, reasoning_path, output_dir,
+                               extraction_llm=extraction_llm,
+                               with_judge=with_judge)
+                except Exception:
+                    logger.exception("Unexpected error processing %s", fname)
