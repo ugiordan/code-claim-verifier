@@ -88,6 +88,7 @@ def make_generic_openai(base_url: str, api_key: str,
 
 MODEL_REGISTRY: dict[str, dict] = {
     "claude-sonnet-4": {"factory": "anthropic", "model": "claude-sonnet-4@20250514"},
+    "claude-haiku-4.5": {"factory": "anthropic", "model": "claude-haiku-4-5@20251001"},
     "gpt-4o": {"factory": "openai", "model": "gpt-4o"},
 }
 
