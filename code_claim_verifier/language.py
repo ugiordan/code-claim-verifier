@@ -13,8 +13,8 @@ FUNCTION_DEF_PATTERNS: dict[str, str] = {
     "typescript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=)",
     "javascript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=)",
     "java": r"(?:public|private|protected|static|\s)+[\w<>\[\]]+\s+{name}\s*\(",
-    "c": r"[\w*]+\s+{name}\s*\(",
-    "cpp": r"[\w*:]+\s+{name}\s*\(",
+    "c": r"(?:[\w*]+\s+{name}\s*\(|^{name}\s*\()",
+    "cpp": r"(?:[\w*:]+\s+{name}\s*\(|^{name}\s*\()",
     "rust": r"fn\s+{name}\s*[<(]",
     "unknown": r"(?:def|func|function|fn)\s+{name}\s*\(|{name}\s*[=:]\s*(?:function|\()",
 }

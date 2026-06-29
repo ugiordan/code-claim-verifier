@@ -5,11 +5,11 @@
   "reasoning_length": 3403,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
-    "refuted": 6,
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.78,
     "action": "FLAG",
     "claims": [
       {
@@ -53,9 +53,20 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "inet_addr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (31 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/configure.ac:57:# Solaris has inet_addr() in -lnsl.",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "path": "example/direct_tcpip.c",
+          "file": "example/direct_tcpip.c",
           "line": 108,
           "content": "sin.sin_addr.s_addr = inet_addr(server_ip);"
         },
@@ -67,7 +78,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "path": "example/direct_tcpip.c",
+          "file": "example/direct_tcpip.c",
           "line": 201,
           "content": "sin.sin_addr.s_addr = inet_addr(local_listenip);"
         },
@@ -79,7 +90,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "path": "example/scp.c",
+          "file": "example/scp.c",
           "line": 67,
           "content": "hostaddr = inet_addr(argv[1]);"
         },
@@ -91,7 +102,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "path": "example/scp_nonblock.c",
+          "file": "example/scp_nonblock.c",
           "line": 134,
           "content": "hostaddr = inet_addr(argv[1]);"
         },
@@ -103,7 +114,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "path": "example/scp_write.c",
+          "file": "example/scp_write.c",
           "line": 78,
           "content": "hostaddr = inet_addr(argv[1]);"
         },
@@ -111,17 +122,6 @@
         "confidence": 0.95,
         "evidence": "Line 78: rc = libssh2_init(0);",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "inet_addr",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (31 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/configure.ac:57:# Solaris has inet_addr() in -lnsl.",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "ABSENCE",
@@ -137,77 +137,48 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "path": "example/direct_tcpip.c",
-          "import": "<arpa/inet.h>"
+          "file": "example/direct_tcpip.c",
+          "import": "<arpa/inet.h>",
+          "line": 23
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:19: #include <errno.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/direct_tcpip.c:6:#include \"libssh2_setup.h\"",
         "method": "grep_import"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "path": "example/direct_tcpip.c",
-          "line": 23,
-          "content": "#include <arpa/inet.h>"
+          "file": "example/direct_tcpip.c",
+          "lines": "109-112",
+          "type": "error_check"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 23: #endif",
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Line 0 out of range",
         "method": "file_read"
       },
       {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "type": "error_check",
-          "location": "example/direct_tcpip.c",
-          "lines": "109-112"
+          "file": "example/direct_tcpip.c",
+          "lines": "202-205",
+          "type": "error_check"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "error_check",
-          "location": "example/direct_tcpip.c",
-          "lines": "202-205"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range",
         "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "mitigation",
-          "location": "example/scp.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 82537 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:1:# Copyright (C) The libssh2 project and its contributors.",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "mitigation",
-          "location": "example/scp_nonblock.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 82537 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:1:# Copyright (C) The libssh2 project and its contributors.",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "mitigation",
-          "location": "example/scp_write.c"
+          "files": [
+            "example/scp.c",
+            "example/scp_nonblock.c",
+            "example/scp_write.c"
+          ]
         },
         "verdict": "REFUTED",
         "confidence": 0.6,
