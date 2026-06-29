@@ -2,20 +2,21 @@
   "vuln_id": "libxslt-arvo-57378",
   "model": "claude-haiku-4.5",
   "condition": "informed",
-  "reasoning_length": 3999,
-  "reasoning_truncated": false,
+  "reasoning_length": 4220,
+  "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 14,
-    "verified": 13,
-    "refuted": 1,
+    "total_claims": 17,
+    "verified": 17,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.92,
+    "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "libxslt/attributes.c"
+          "path": "libxslt/attributes.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -25,7 +26,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "libxslt/attributes.h"
+          "path": "libxslt/attributes.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -35,7 +37,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "libxslt/attrvt.c"
+          "path": "libxslt/attrvt.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -45,7 +48,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "libxslt/documents.c"
+          "path": "libxslt/documents.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -55,7 +59,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "libxslt/documents.h"
+          "path": "libxslt/documents.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -63,9 +68,65 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "libxslt/keys.c",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libxslt/keys.c",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "xsltSetAttrVTsegment"
+          "name": "xsltKeyFunction",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/functions.c:352:xsltKeyFunction(xmlXPathParserContextPtr ctxt, int nargs){",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xsltNewAttrElem",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:113:xsltNewAttrElem(xmlNodePtr attr) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xsltNewUseAttrSet",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:194:xsltNewUseAttrSet(const xmlChar *ncname, const xmlChar *ns) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xsltNewAttrVT",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:68:xsltNewAttrVT(xsltStylesheetPtr style) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xsltSetAttrVTsegment",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -73,95 +134,83 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libxslt/attrvt.c",
-          "line_number": 210,
-          "content": "attr->psvi = avt;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 396 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "xsltCompileAttr"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:180:xsltCompileAttr(xsltStylesheetPtr style, xmlAttrPtr attr) {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xsltCompileAttr",
+          "name": "xsltNewDocument",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/xslt.c:4799:\t\t\t    xsltCompileAttr(cctxt->style, attr);",
-        "method": "grep_call_site"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/documents.c:144:xsltNewDocument(xsltTransformContextPtr ctxt, xmlDocPtr doc) {",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "xsltCompileAttr",
+          "module": "libxml/xmlmemory.h",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/xslt.c:4799:\t\t\t    xsltCompileAttr(cctxt->style, attr);",
-        "method": "grep_call_site"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/namespaces.c:23:#include <libxml/xmlmemory.h>",
+        "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "xsltParseStylesheetAttributeSet"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:368:xsltParseStylesheetAttributeSet(xsltStylesheetPtr style, xmlNodePtr cur) {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xsltMergeAttrSets"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:316:xsltMergeAttrSets(xsltAttrSetPtr set, xsltAttrSetPtr other) {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xsltMergeAttrSets",
+          "module": "libxml/tree.h",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:573:                    xsltMergeAttrSets(set, other);",
-        "method": "grep_call_site"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/namespaces.c:24:#include <libxml/tree.h>",
+        "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "xsltResolveAttrSet"
+          "module": "libxml/hash.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:94:xsltResolveAttrSet(xsltAttrSetPtr set, xsltStylesheetPtr topStyle,",
-        "method": "grep_function_def"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/namespaces.c:25:#include <libxml/hash.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/xpath.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/keys.h:13:#include <libxml/xpath.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/xpathInternals.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/xslt.c:29:#include <libxml/xpathInternals.h>",
+        "method": "grep_import"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 5,
+    "matched": 6,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

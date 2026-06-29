@@ -2,93 +2,99 @@
   "vuln_id": "openssl-arvo-8241",
   "model": "claude-sonnet-4",
   "condition": "informed",
-  "reasoning_length": 4076,
-  "reasoning_truncated": true,
+  "reasoning_length": 2595,
+  "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 14,
-    "verified": 6,
-    "refuted": 8,
-    "unverifiable": 0,
-    "verification_rate": 0.46,
+    "total_claims": 10,
+    "verified": 1,
+    "refuted": 2,
+    "unverifiable": 7,
+    "verification_rate": 0.33,
     "action": "OVERRIDE",
     "claims": [
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "e_os.h"
+          "file": "e_os.h",
+          "classification": "header file with OS-specific definitions and macros"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: e_os.h",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "crypto/LPdir_nyi.c"
+          "file": "crypto/LPdir_nyi.c",
+          "classification": "Not Yet Implemented stub functions for directory operations"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_nyi.c",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "crypto/LPdir_unix.c"
+          "file": "crypto/LPdir_unix.c",
+          "classification": "Unix/POSIX directory listing implementation"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_unix.c",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "crypto/LPdir_vms.c"
+          "file": "crypto/LPdir_vms.c",
+          "classification": "VMS directory listing implementation"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_vms.c",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "crypto/LPdir_win.c"
+          "file": "crypto/LPdir_win.c",
+          "classification": "Windows directory listing implementation"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_win.c",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "crypto/LPdir_win32.c"
+          "file": "crypto/LPdir_win32.c",
+          "classification": "Windows 32-bit specific wrapper"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_win32.c",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "LP_find_file",
-          "file": "crypto/LPdir_unix.c"
+          "item": "variable named sess",
+          "scope": "all provided files"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LP_find_file",
-        "method": "grep_function_def"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "crypto/LPdir_unix.c",
-          "line_number": 130,
-          "content": "strncpy((*ctx)->entry_name, direntry->d_name, sizeof((*ctx)->entry_name) - 1);"
+          "line_range": "89-95",
+          "content": "free(*ctx); *ctx = NULL;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -98,118 +104,31 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "line_number": 131,
-          "content": "(*ctx)->entry_name[sizeof((*ctx)->entry_name) - 1] = '\\0';"
+          "file": "crypto/LPdir_vms.c",
+          "line": 169,
+          "content": "free(*ctx);"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 169 lines)",
+        "evidence": "Line 169: l = (*ctx)->result_dsc.dsc$w_length;",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "line_number": 119,
-          "content": "strncpy((*ctx)->previous_entry_name, (*ctx)->entry_name, sizeof((*ctx)->previous_entry_name));"
+          "file": "crypto/LPdir_win.c",
+          "line_range": "207-208",
+          "content": "free(*ctx); *ctx = NULL;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 169 lines)",
+        "evidence": "Line 0 out of range (file has 214 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "<dirent.h>",
-          "file": "crypto/LPdir_unix.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <dirent.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "<string.h>",
-          "file": "crypto/LPdir_unix.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <string.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "<stdlib.h>",
-          "file": "crypto/LPdir_unix.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <stdlib.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "\"LPdir.h\"",
-          "file": "crypto/LPdir_unix.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of \"LPdir.h\" found",
-        "method": "grep_import"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 6,
-    "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      }
-    ]
+    "matched": 0,
+    "results": []
   }
 }

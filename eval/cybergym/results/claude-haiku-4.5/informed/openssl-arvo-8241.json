@@ -2,71 +2,159 @@
   "vuln_id": "openssl-arvo-8241",
   "model": "claude-haiku-4.5",
   "condition": "informed",
-  "reasoning_length": 6199,
-  "reasoning_truncated": true,
+  "reasoning_length": 3328,
+  "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 23,
-    "verified": 20,
-    "refuted": 3,
-    "unverifiable": 0,
-    "verification_rate": 0.81,
-    "action": "BOOST",
+    "total_claims": 15,
+    "verified": 0,
+    "refuted": 14,
+    "unverifiable": 1,
+    "verification_rate": 0.0,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "crypto/LPdir_unix.c"
+          "filename": "e_os.h",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_unix.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "crypto/LPdir_vms.c"
+          "filename": "crypto/LPdir_nyi.c",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_vms.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "crypto/LPdir_win.c"
+          "filename": "crypto/LPdir_unix.c",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_win.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "crypto/LPdir_win32.c"
+          "filename": "crypto/LPdir_vms.c",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_win32.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "crypto/LPdir_nyi.c"
+          "filename": "crypto/LPdir_win.c",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: crypto/LPdir_nyi.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "crypto/LPdir_win32.c",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "crypto/LPdir_unix.c",
+          "line_number": 95,
+          "expected_content": "free(*ctx);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "crypto/LPdir_unix.c",
+          "line_number": 96,
+          "expected_content": "*ctx = NULL;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "crypto/LPdir_unix.c",
+          "line_number": 155,
+          "expected_content": "free(*ctx);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "crypto/LPdir_vms.c",
+          "line_number": 155,
+          "expected_content": "free(*ctx);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "crypto/LPdir_win.c",
+          "line_number": 130,
+          "expected_content": "free(*ctx);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "crypto/LPdir_win.c",
+          "line_number": 195,
+          "expected_content": "free(*ctx);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LP_find_file",
-          "file": "crypto/LPdir_unix.c"
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -74,33 +162,10 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "line_range": "95-145",
-          "content": "LP_find_file function"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 169 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "line": 108,
-          "content": "strncpy((*ctx)->previous_entry_name, (*ctx)->entry_name, sizeof((*ctx)->previous_entry_name));"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 108: (*ctx)->expect_file_generations = 1;",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "LP_find_file_end"
+          "name": "LP_find_file_end",
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -108,199 +173,20 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "stddef.h"
+          "description": "sess variable",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "stdlib.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "limits.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "string.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "sys/types.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "dirent.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "errno.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "LPdir.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "crypto/LPdir_unix.c",
-          "import": "ctype.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:39:#include <stddef.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "readdir",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:129:    direntry = readdir((*ctx)->dir);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strncpy",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (155 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:123:    strncpy((*ctx)->previous_entry_name, (*ctx)->entry_name,",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strcasecmp",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (111 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:145:        if (strcasecmp((*ctx)->entry_name, (*ctx)->previous_en",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "opendir",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:112:        (*ctx)->dir = opendir(directory);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "closedir",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (15 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openssl-arvo-8241/src-vul/openssl/crypto/LPdir_unix.c:155:        int ret = closedir((*ctx)->dir);",
-        "method": "grep_call_site"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 5,
-    "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      }
-    ]
+    "matched": 0,
+    "results": []
   }
 }

@@ -2,20 +2,21 @@
   "vuln_id": "libssh2-arvo-65212",
   "model": "claude-sonnet-4",
   "condition": "informed",
-  "reasoning_length": 3403,
+  "reasoning_length": 2634,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 12,
-    "refuted": 4,
+    "total_claims": 18,
+    "verified": 17,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.78,
-    "action": "FLAG",
+    "verification_rate": 0.96,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "example/direct_tcpip.c"
+          "path": "example/direct_tcpip.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -25,7 +26,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "example/scp.c"
+          "path": "example/scp.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -35,7 +37,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "example/scp_nonblock.c"
+          "path": "example/scp_nonblock.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -45,7 +48,8 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "example/scp_write.c"
+          "path": "example/scp_write.c",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -53,81 +57,10 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "inet_addr",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (31 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/configure.ac:57:# Solaris has inet_addr() in -lnsl.",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "example/direct_tcpip.c",
-          "line": 108,
-          "content": "sin.sin_addr.s_addr = inet_addr(server_ip);"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 108: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "example/direct_tcpip.c",
-          "line": 201,
-          "content": "sin.sin_addr.s_addr = inet_addr(local_listenip);"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 201: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "example/scp.c",
-          "line": 67,
-          "content": "hostaddr = inet_addr(argv[1]);"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 67: }",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "example/scp_nonblock.c",
-          "line": 134,
-          "content": "hostaddr = inet_addr(argv[1]);"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 134: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "example/scp_write.c",
-          "line": 78,
-          "content": "hostaddr = inet_addr(argv[1]);"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 78: rc = libssh2_init(0);",
-        "method": "file_read"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "function_definition",
-          "name": "inet_addr"
+          "name": "_libssh2_kex_agree_instr",
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.6,
@@ -135,11 +68,70 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "libssh2_session_handshake",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/ssh2_exec.c:147:    while((rc = libssh2_session_handshake(session, sock)) ==",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example/direct_tcpip.c",
+          "line": 130,
+          "content": "libssh2_session_handshake"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 130: if(!session) {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example/scp.c",
+          "line": 105,
+          "content": "libssh2_session_handshake"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 105: /* ... start it up. This will trade welcome banners, exchange keys,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example/scp_nonblock.c",
+          "line": 165,
+          "content": "libssh2_session_handshake"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 165: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example/scp_write.c",
+          "line": 135,
+          "content": "libssh2_session_handshake"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 135: fprintf(stderr, \"\\n\");",
+        "method": "file_read"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "example/direct_tcpip.c",
-          "import": "arpa/inet.h",
-          "line": 23
+          "import": "libssh2.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -147,59 +139,88 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "example/direct_tcpip.c",
-          "type": "error_check",
-          "lines": "109-112"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Line 0 out of range",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "file": "example/direct_tcpip.c",
-          "type": "error_check",
-          "lines": "202-205"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Line 0 out of range",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "mitigation",
-          "files": [
-            "example/scp.c",
-            "example/scp_nonblock.c",
-            "example/scp_write.c"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 82537 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:1:# Copyright (C) The libssh2 project and its contributors.",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "type": "command_line_args",
-          "files": [
-            "example/direct_tcpip.c",
-            "example/scp.c",
-            "example/scp_nonblock.c",
-            "example/scp_write.c"
-          ]
+          "file": "example/scp.c",
+          "import": "libssh2.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/os400/libssh2rpg/libssh2.rpgle.in:648:     d libssh2_session_flag...",
-        "method": "grep_entry_point"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/scp.c:8:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "example/scp_nonblock.c",
+          "import": "libssh2.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/scp_nonblock.c:13:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "example/scp_write.c",
+          "import": "libssh2.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/scp_write.c:8:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "example/direct_tcpip.c",
+          "import": "libssh2_setup.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/direct_tcpip.c:6:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "example/scp.c",
+          "import": "libssh2_setup.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/scp.c:8:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "example/scp_nonblock.c",
+          "import": "libssh2_setup.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/scp_nonblock.c:13:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "example/scp_write.c",
+          "import": "libssh2_setup.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/scp_write.c:8:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
       }
     ]
   },

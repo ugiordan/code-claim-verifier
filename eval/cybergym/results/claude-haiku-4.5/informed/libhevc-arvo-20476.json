@@ -2,14 +2,14 @@
   "vuln_id": "libhevc-arvo-20476",
   "model": "claude-haiku-4.5",
   "condition": "informed",
-  "reasoning_length": 5601,
+  "reasoning_length": 4452,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
-    "refuted": 6,
+    "total_claims": 14,
+    "verified": 10,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.69,
+    "verification_rate": 0.63,
     "action": "FLAG",
     "claims": [
       {
@@ -53,28 +53,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "path": "test/encoder/app.h",
-          "line": 247,
-          "content": "codec_exit()"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 247 out of range (file has 229 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "codec_exit"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for codec_exit",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput"
@@ -82,6 +60,16 @@
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "No definition found for LLVMFuzzerTestOneInput",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Codec::decodeHeader"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for Codec::decodeHeader",
         "method": "grep_function_def"
       },
       {
@@ -95,74 +83,26 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "ihevcd_cxa_api_function"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ihevcd_cxa_api_function",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "sdl_disp_init"
+          "name": "ivd_api_function",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:131:void* sdl_disp_init(UWORD32, UWORD32, WORD32, WORD32, WORD32, WORD32, WORD32, WORD32 *, WORD3",
-        "method": "grep_function_def"
+        "confidence": 0.65,
+        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:127:  ret = ivd_api_function(NULL, (void *)&create_ip, (void",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "gdl_disp_init"
+          "name": "Codec::decodeHeader",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:142:void* gdl_disp_init(UWORD32, UWORD32, WORD32, WORD32, WORD32, WORD32, WORD32, WORD32 *, WORD3",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "fbd_disp_init"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:153:void* fbd_disp_init(UWORD32, UWORD32, WORD32, WORD32, WORD32, WORD32, WORD32, WORD32 *, WORD3",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ios_disp_init"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:164:void* ios_disp_init(UWORD32, UWORD32, WORD32, WORD32, WORD32, WORD32, WORD32, WORD32 *, WORD3",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "posix_memalign"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for posix_memalign",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "ihevce_api.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:54:#include \"ihevce_api.h\"",
-        "method": "grep_import"
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:256:void Codec::decodeHeader(const uint8_t *data, size_t siz",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -195,14 +135,25 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "module": "ihevc_typedefs.h"
+          "name": "setParams"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for setParams",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "setParams",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:52:#include \"ihevc_typedefs.h\"",
-        "method": "grep_import"
+        "confidence": 0.65,
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:88:  void setParams(IVD_VIDEO_DECODE_MODE_T mode);",
+        "method": "grep_call_site"
       }
     ]
   },

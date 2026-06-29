@@ -2,82 +2,110 @@
   "vuln_id": "wireshark-arvo-12745",
   "model": "claude-haiku-4.5",
   "condition": "informed",
-  "reasoning_length": 5100,
-  "reasoning_truncated": true,
+  "reasoning_length": 3517,
+  "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 14,
-    "refuted": 2,
-    "unverifiable": 0,
-    "verification_rate": 0.87,
-    "action": "BOOST",
+    "total_claims": 15,
+    "verified": 4,
+    "refuted": 3,
+    "unverifiable": 8,
+    "verification_rate": 0.55,
+    "action": "FLAG",
     "claims": [
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "capinfos.c",
-          "line": 169,
-          "content": "static void\ndisable_all_infos(void)\n{"
+          "classification": "Capture file information reporting tool"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 169: * stamp is known to be in order.",
-        "method": "file_read"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "file": "capinfos.c",
-          "line": 177,
-          "content": "cap_file_more_i"
+          "file": "capture_info.c",
+          "classification": "Capture info functions for packet counting"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 177: } order_t;",
-        "method": "file_read"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "capture_info.h",
+          "classification": "Capture info functions for packet counting"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "capture_opts.c",
+          "classification": "Capture options configuration"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "capture_opts.h",
-          "line": 234,
-          "content": "int               timestamp_type_id;"
+          "classification": "Capture options configuration"
         },
-        "verdict": "VERIFIED",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "srvloc-related code",
+          "scope": "provided files"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "capinfos.c",
+          "line_range": "~150-160",
+          "content": "Hash buffer operations"
+        },
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 234: gchar            *auth_password;",
+        "evidence": "Line 0 out of range (file has 1739 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "disable_all_infos",
-          "file": "capinfos.c",
-          "line": 169
+          "name": "capture_info_packet",
+          "file": "capture_info.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:248:disable_all_infos(void)",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "enable_all_infos",
-          "file": "capinfos.c",
-          "line": 145
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:220:enable_all_infos(void)",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capture_info.c:25:capture_info_packet(info_data_t* cap_info, gint wtap_linktype, const guchar *pd, guint32 caplen",
         "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "capture_info_new_packets",
-          "file": "capture_info.c",
-          "line": 32
+          "file": "capture_info.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -85,129 +113,75 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "capture_info.c",
-          "line": 50,
-          "content": "while (to_read > 0) {"
+          "name": "wtap_read",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 50: ",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "Found call sites (31 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/ui/file_dialog.c:46:    while ((wtap_read(wth, err, err_info, &data_offset))) {",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "capinfos.c",
-          "import": "<wiretap/wtap.h>"
+          "name": "wtap_get_buf_ptr",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:45:#include <config.h>",
-        "method": "grep_import"
+        "confidence": 0.65,
+        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capture_info.c:60:                buf = wtap_get_buf_ptr(cap_info->wtap);",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "capinfos.c",
-          "import": "<glib.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:45:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "capinfos.c",
-          "import": "<stdio.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:45:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "capinfos.c",
-          "import": "<stdlib.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:45:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "capinfos.c",
-          "import": "<string.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capinfos.c:45:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "capture_info.c",
-          "import": "<epan/packet.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capture_info.c:11:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "capture_info.c",
-          "import": "<wiretap/wtap.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capture_info.c:11:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "capture_info.c",
-          "import": "<epan/capture_dissectors.h>"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capture_info.c:11:#include <config.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "capinfos.c",
-          "line_range": "100-140",
-          "content": "Boolean flags control which information is reported"
+          "name": "g_array_*",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1739 lines)",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "capture_opts_cleanup"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/capture_opts.h:330:capture_opts_cleanup(capture_options *capture_opts);",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "glib",
+          "type": "external library"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No manifest found",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "wiretap",
+          "type": "external library"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No manifest found",
+        "method": "manifest_parse"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 2,
+    "matched": 1,
     "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
