@@ -9,14 +9,23 @@ logger = logging.getLogger(__name__)
 LLMFunction = Callable[[str, str], str]
 
 
-def make_anthropic(model: str = "claude-sonnet-4-20250514") -> LLMFunction:
+def make_anthropic(model: str = "claude-sonnet-4@20250514") -> LLMFunction:
     import anthropic
-    api_key = os.environ.get("ANTHROPIC_API_KEY")
-    if not api_key:
-        raise RuntimeError(
-            "ANTHROPIC_API_KEY not set. Export it before running the eval pipeline."
-        )
-    client = anthropic.Anthropic(api_key=api_key)
+
+    use_vertex = os.environ.get("CLAUDE_CODE_USE_VERTEX") == "1"
+    if use_vertex:
+        project_id = os.environ.get("ANTHROPIC_VERTEX_PROJECT_ID", "")
+        region = os.environ.get("CLOUD_ML_REGION", "us-east5")
+        if region == "global":
+            region = "us-east5"
+        client = anthropic.AnthropicVertex(project_id=project_id, region=region)
+    else:
+        api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY not set. Export it or set CLAUDE_CODE_USE_VERTEX=1 for Vertex AI."
+            )
+        client = anthropic.Anthropic(api_key=api_key)
 
     def call(system: str, user: str) -> str:
         response = client.messages.create(
@@ -78,7 +87,7 @@ def make_generic_openai(base_url: str, api_key: str,
 
 
 MODEL_REGISTRY: dict[str, dict] = {
-    "claude-sonnet-4": {"factory": "anthropic", "model": "claude-sonnet-4-20250514"},
+    "claude-sonnet-4": {"factory": "anthropic", "model": "claude-sonnet-4@20250514"},
     "gpt-4o": {"factory": "openai", "model": "gpt-4o"},
 }
 
