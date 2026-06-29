@@ -5,11 +5,11 @@
   "reasoning_length": 4342,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 14,
-    "verified": 14,
+    "total_claims": 17,
+    "verified": 17,
     "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.97,
+    "verification_rate": 0.93,
     "action": "BOOST",
     "claims": [
       {
@@ -66,7 +66,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "xsltSetAttrVTsegment",
-          "file": "libxslt/attrvt.c"
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -77,7 +77,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "xsltLoadDocument",
-          "file": "libxslt/documents.c"
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -88,7 +88,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "xsltCompileAttr",
-          "file": "libxslt/attrvt.c"
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -96,15 +96,26 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xsltNewAttrVT",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:68:xsltNewAttrVT(xsltStylesheetPtr style) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "xsltFreeAttrVT",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:136:\txsltFreeAttrVT(cur);",
-        "method": "grep_call_site"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:101:xsltFreeAttrVT(xsltAttrVTPtr avt) {",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -115,6 +126,17 @@
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Found call sites (17 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/xslt.c:172:            (xmlChar * *)xmlRealloc(style->exclPrefixTab,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltFreeAttrVT",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:136:\txsltFreeAttrVT(cur);",
         "method": "grep_call_site"
       },
       {
@@ -140,24 +162,37 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltNewAttrVT"
+          "name": "xmlMalloc",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:68:xsltNewAttrVT(xsltStylesheetPtr style) {",
-        "method": "grep_function_def"
+        "confidence": 0.65,
+        "evidence": "Found call sites (74 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/namespaces.c:49:    ret = (xsltNsAliasPtr) xmlMalloc(sizeof(xsltNsAlias));",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltFreeAttrVT"
+          "name": "xmlFree",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:101:xsltFreeAttrVT(xsltAttrVTPtr avt) {",
-        "method": "grep_function_def"
+        "confidence": 0.65,
+        "evidence": "Found call sites (427 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/namespaces.c:291:\txmlFree(stylePrefix);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltXPathCompile",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (16 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/xsltutils.h:245:\t\txsltXPathCompile\t\t(xsltStylesheetPtr style,",
+        "method": "grep_call_site"
       }
     ]
   },

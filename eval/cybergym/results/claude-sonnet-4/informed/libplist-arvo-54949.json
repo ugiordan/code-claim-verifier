@@ -5,11 +5,11 @@
   "reasoning_length": 3951,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 15,
+    "total_claims": 19,
     "verified": 8,
-    "refuted": 6,
-    "unverifiable": 1,
-    "verification_rate": 0.4,
+    "refuted": 7,
+    "unverifiable": 4,
+    "verification_rate": 0.37,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -85,7 +85,19 @@
         "parameters": {
           "file": "tools/plistutil.c",
           "line_range": "175-220",
-          "contains": "read_capacity += 4096"
+          "contains": "malloc(sizeof(char) * read_capacity)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 335 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tools/plistutil.c",
+          "line_range": "175-220",
+          "contains": "realloc(plist_entire, sizeof(char) * read_capacity)"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -128,8 +140,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "unistd.h",
-          "expected": true
+          "module": "unistd.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -139,8 +150,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "stdlib.h",
-          "expected": true
+          "module": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -148,14 +158,15 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "test/plist_*.c"
+          "pattern": "test/plist_*.c",
+          "classification": "test files"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: test/plist_*.c",
-        "method": "os.path.isfile"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -171,12 +182,46 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "maximum input size limit in stdin reading loop"
+          "type": "input_size_limit",
+          "location": "tools/plistutil.c"
         },
         "verdict": "UNVERIFIABLE",
         "confidence": 0.0,
         "evidence": "",
         "method": "error"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "timeout",
+          "location": "stdin reading"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "rate_limiting",
+          "location": "stdin reading"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "memory_allocation_failure_checking",
+          "location": "tools/plistutil.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

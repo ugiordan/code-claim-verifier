@@ -47,7 +47,7 @@
         "parameters": {
           "path": "win32/customactions.cpp",
           "line_number": 89,
-          "expected_content": "{TEXT(\"Gnuk v1.0.x (OpenPGP v2.0)\"), {0x3b,0xda,0x11,0xff,0x81,0xb1,0xfe,0x55,0x1f,0x03,0x00,0x31,0x84,0x"
+          "content": "{TEXT(\"Gnuk v1.0.x (OpenPGP v2.0)\"), {0x3b,0xda,0x11,0xff,0x81,0xb1,0xfe,0x55,0x1f,0x03,0x00,0x31,0x84,0x"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -83,6 +83,50 @@
         "confidence": 0.85,
         "evidence": "No definition found for wchar_from_char_str",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strlcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (116 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64522/src-vul/opensc/src/ui/notify.c:163:\t\tstrlcpy(nid.szTip, path, ARRAYSIZE(nid.szTip));",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "path": "src/ui/notify.c",
+          "line_number": 185,
+          "content": "strlcpy"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 552 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LocalAlloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64522/src-vul/opensc/src/ui/wchar_from_char_str.h:33:\tout = LocalAlloc(0, (sizeof *out) * out_len);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "src/ui/notify.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/ui/notify.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -133,50 +177,6 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64522/src-vul/opensc/win32/customactions.cpp:42:#include <wcautil.h>",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strlcpy",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (116 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64522/src-vul/opensc/src/ui/notify.c:163:\t\tstrlcpy(nid.szTip, path, ARRAYSIZE(nid.szTip));",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "path": "src/ui/notify.c",
-          "line_number": 185,
-          "expected_content": "strlcpy"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 552 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "LocalAlloc",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64522/src-vul/opensc/src/ui/wchar_from_char_str.h:33:\tout = LocalAlloc(0, (sizeof *out) * out_len);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "src/ui/notify.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: src/ui/notify.c",
-        "method": "os.path.isfile"
       }
     ]
   },

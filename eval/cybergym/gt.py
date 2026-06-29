@@ -14,10 +14,47 @@ _ABSENT_PATTERNS = ["flask", "express", "django", "spring", "rails", "graphql", 
 _FUNC_PREFIXES = ["validate_", "check_", "init_", "cleanup_", "destroy_", "reset_", "serialize_"]
 
 _SKIP_EXTENSIONS = frozenset((".h", ".hpp"))
-_KEYWORD_EXCLUSIONS = frozenset((
-    "if", "for", "while", "switch", "return", "sizeof", "typeof",
-    "define", "include", "ifdef", "ifndef", "endif", "else", "elif",
+_COMMON_EXCLUSIONS = frozenset((
+    "if", "for", "while", "return", "else",
 ))
+
+_LANG_EXCLUSIONS: dict[str, frozenset[str]] = {
+    "c": frozenset((
+        "if", "for", "while", "switch", "return", "sizeof", "typeof",
+        "define", "include", "ifdef", "ifndef", "endif", "else", "elif",
+        "__attribute__", "__declspec", "__asm__", "__inline__", "__extension__",
+        "static_assert", "_Static_assert", "offsetof", "alignof", "_Alignof",
+        "_Pragma", "va_start", "va_end", "va_arg", "va_copy",
+        "assert", "NULL", "EOF", "TRUE", "FALSE",
+        "int", "char", "void", "long", "short", "unsigned", "signed",
+        "float", "double", "bool", "size_t", "ssize_t", "uint8_t",
+        "struct", "union", "enum", "typedef", "extern", "static", "const",
+        "volatile", "register", "inline", "restrict", "auto",
+        "goto", "break", "continue", "case", "default", "do",
+    )),
+    "cpp": frozenset((
+        "if", "for", "while", "switch", "return", "sizeof", "typeof",
+        "define", "include", "ifdef", "ifndef", "endif", "else", "elif",
+        "__attribute__", "__declspec", "static_assert", "offsetof",
+        "int", "char", "void", "long", "short", "unsigned", "signed",
+        "float", "double", "bool", "size_t", "string", "vector",
+        "struct", "class", "union", "enum", "typedef", "extern", "static",
+        "const", "volatile", "inline", "auto", "namespace", "template",
+        "goto", "break", "continue", "case", "default", "do",
+        "new", "delete", "throw", "catch", "try",
+    )),
+    "python": _COMMON_EXCLUSIONS,
+    "go": _COMMON_EXCLUSIONS,
+    "java": frozenset((
+        "if", "for", "while", "switch", "return", "else",
+        "int", "void", "long", "short", "float", "double", "boolean",
+        "String", "Object", "class", "interface", "enum",
+        "new", "throw", "catch", "try", "finally",
+    )),
+    "typescript": _COMMON_EXCLUSIONS,
+    "javascript": _COMMON_EXCLUSIONS,
+    "rust": frozenset(("if", "for", "while", "return", "else", "let", "mut", "match")),
+}
 
 _MAX_FILE_SIZE = 1024 * 1024  # 1 MB cap for file reads
 
@@ -211,6 +248,12 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                 if line_text.startswith("#"):
                     continue
                 name = match.group(1)
-                if name not in _KEYWORD_EXCLUSIONS:
-                    functions.append((name, rel))
+                exclusions = _LANG_EXCLUSIONS.get(language, _COMMON_EXCLUSIONS)
+                if not name or name in exclusions or len(name) < 3:
+                    continue
+                if name[0].isdigit() or name.startswith("0x"):
+                    continue
+                if language in ("c", "cpp") and name[0].isupper() and "_" not in name and len(name) < 5:
+                    continue
+                functions.append((name, rel))
     return functions
