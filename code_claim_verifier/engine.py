@@ -45,6 +45,8 @@ BUILTIN_RULES: list[tuple[str, str, str, str]] = [
     ("HAS_CALLERS", "FUNCTION_EXISTS", "name", "name"),
     ("IMPORT_EXISTS", "FILE_EXISTS", "file", "path"),
     ("MITIGATION_EXISTS", "FILE_EXISTS", "file", "path"),
+    ("DEFAULT_VALUE", "FILE_EXISTS", "file", "path"),
+    ("CONFIG_FLAG", "FILE_EXISTS", "file", "path"),
 ]
 
 

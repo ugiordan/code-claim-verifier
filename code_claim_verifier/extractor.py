@@ -18,12 +18,21 @@ FILE CLAIMS: FILE_EXISTS, LINE_CONTENT, FILE_CLASSIFICATION, GENERATED_OR_VENDOR
 FUNCTION CLAIMS: FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS
 DEPENDENCY CLAIMS: IMPORT_EXISTS, PACKAGE_VERSION, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION
 CODE CLAIMS: ABSENCE, MITIGATION_EXISTS, ENTRY_POINT
+AUTH/CONFIG CLAIMS: CALL_CHAIN, DEFAULT_VALUE, CONFIG_FLAG
 
 Output a JSON array of claims:
 [{{"claim_type": "FUNCTION_CALLED", "parameters": {{"name": "torch.load", "expected": true}}, "source_sentence": "torch.load() is called at model.py:42"}}]
 
+Examples of AUTH/CONFIG claims:
+[{{"claim_type": "CALL_CHAIN", "parameters": {{"chain": ["getAuthenticatedSession", "k8sTokenSession", "validateToken"]}}, "source_sentence": "getAuthenticatedSession calls k8sTokenSession which calls validateToken"}}]
+[{{"claim_type": "DEFAULT_VALUE", "parameters": {{"variable": "audiences", "file": "tokenreview.go", "default_behavior": "allow"}}, "source_sentence": "empty audiences defaults to accepting any token"}}]
+[{{"claim_type": "CONFIG_FLAG", "parameters": {{"flag": "enable-k8s-token-validation", "value": "true"}}, "source_sentence": "k8s token validation is enabled by default"}}]
+
 Rules:
 - Extract ABSENCE claims when the LLM says something does NOT exist
+- Extract CALL_CHAIN when the LLM traces a multi-file function call path (authentication chains, request handling pipelines)
+- Extract DEFAULT_VALUE when the LLM claims a config/variable defaults to permissive or restrictive behavior when empty/nil
+- Extract CONFIG_FLAG when the LLM claims a specific flag is set to a specific value
 - Do NOT extract opinions, recommendations, or quality judgments
 - Do NOT extract claims about what SHOULD be done
 - Each claim must be independently verifiable against the codebase

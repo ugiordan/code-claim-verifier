@@ -3,6 +3,7 @@ from code_claim_verifier.verifiers.file_claims import verify_file_exists, verify
 from code_claim_verifier.verifiers.symbol_claims import verify_function_exists, verify_function_called, verify_has_callers
 from code_claim_verifier.verifiers.import_claims import verify_import_exists, verify_package_version, verify_dependency_type, verify_cve_affects
 from code_claim_verifier.verifiers.security_claims import verify_absence, verify_mitigation_exists, verify_entry_point
+from code_claim_verifier.verifiers.auth_claims import verify_call_chain, verify_default_value, verify_config_flag
 
 VERIFIER_REGISTRY: dict[str, callable] = {
     "FILE_EXISTS": verify_file_exists,
@@ -19,6 +20,9 @@ VERIFIER_REGISTRY: dict[str, callable] = {
     "ABSENCE": verify_absence,
     "MITIGATION_EXISTS": verify_mitigation_exists,
     "ENTRY_POINT": verify_entry_point,
+    "CALL_CHAIN": verify_call_chain,
+    "DEFAULT_VALUE": verify_default_value,
+    "CONFIG_FLAG": verify_config_flag,
 }
 
 
