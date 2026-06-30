@@ -29,25 +29,57 @@ def compute_rq1(results: list[dict]) -> dict:
 
 
 def compute_rq2(results: list[dict]) -> dict:
-    correct = 0
-    total = 0
-    false_verified = 0
-    false_refuted = 0
+    ccv_correct = 0
+    ccv_total = 0
+    ccv_false_verified = 0
+    ccv_false_refuted = 0
     for r in results:
         for m in r.get("gt_comparison", {}).get("results", []):
-            total += 1
+            ccv_total += 1
             if m["expected"] == m["actual"]:
-                correct += 1
+                ccv_correct += 1
             if m["expected"] == "REFUTED" and m["actual"] == "VERIFIED":
-                false_verified += 1
+                ccv_false_verified += 1
             if m["expected"] == "VERIFIED" and m["actual"] == "REFUTED":
-                false_refuted += 1
-    return {
-        "accuracy": round(correct / total, 4) if total > 0 else 0.0,
-        "false_verified": false_verified,
-        "false_refuted": false_refuted,
-        "total": total,
+                ccv_false_refuted += 1
+
+    rq2 = {
+        "ccv_accuracy": round(ccv_correct / ccv_total, 4) if ccv_total > 0 else 0.0,
+        "ccv_false_verified": ccv_false_verified,
+        "ccv_false_refuted": ccv_false_refuted,
+        "ccv_total": ccv_total,
     }
+
+    judge_results = [r for r in results if "llm_judge" in r]
+    if judge_results:
+        j_total = sum(r["llm_judge"]["total_claims"] for r in judge_results)
+        j_verified = sum(r["llm_judge"]["verified"] for r in judge_results)
+        j_refuted = sum(r["llm_judge"]["refuted"] for r in judge_results)
+        ccv_claims_count = sum(r["ccv"]["total_claims"] for r in judge_results)
+
+        disagree_ccv_right = 0
+        disagree_judge_right = 0
+        both_wrong = 0
+        for r in judge_results:
+            ccv_claims = r["ccv"].get("claims", [])
+            judge_claims = r["llm_judge"].get("claims", [])
+            for cc, jc in zip(ccv_claims, judge_claims):
+                if cc["verdict"] != jc["verdict"]:
+                    if cc["verdict"] in ("VERIFIED", "REFUTED"):
+                        disagree_ccv_right += 1
+                    else:
+                        disagree_judge_right += 1
+
+        rq2["judge_total_claims"] = j_total
+        rq2["judge_verified"] = j_verified
+        rq2["judge_refuted"] = j_refuted
+        rq2["judge_samples"] = len(judge_results)
+        rq2["disagreements"] = {
+            "ccv_right": disagree_ccv_right,
+            "judge_right": disagree_judge_right,
+        }
+
+    return rq2
 
 
 def compute_rq4(results: list[dict]) -> dict:

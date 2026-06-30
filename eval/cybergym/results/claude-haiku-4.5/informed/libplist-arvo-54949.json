@@ -5,11 +5,11 @@
   "reasoning_length": 4421,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 37,
+    "total_claims": 40,
     "verified": 18,
-    "refuted": 19,
+    "refuted": 22,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.31,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -62,7 +62,7 @@
         "parameters": {
           "file": "test/plist_otest.c",
           "line_number": 97,
-          "expected_content": "FILE *oplist = NULL;"
+          "expected_content": "{"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -74,7 +74,7 @@
         "parameters": {
           "file": "test/plist_otest.c",
           "line_number": 98,
-          "expected_content": "oplist = fopen(file_out, \"wb\");"
+          "expected_content": "    FILE *oplist = NULL;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -86,7 +86,7 @@
         "parameters": {
           "file": "test/plist_otest.c",
           "line_number": 99,
-          "expected_content": "fwrite(plist_ostep2, size_out2, sizeof(char), oplist);"
+          "expected_content": "    oplist = fopen(file_out, \"wb\");"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -98,7 +98,31 @@
         "parameters": {
           "file": "test/plist_otest.c",
           "line_number": 100,
-          "expected_content": "fclose(oplist);"
+          "expected_content": "    fwrite(plist_ostep2, size_out2, sizeof(char), oplist);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 101,
+          "expected_content": "    fclose(oplist);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 102,
+          "expected_content": "}"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -255,7 +279,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import_statement": "#include \"plist/plist.h\""
+          "import_statement": "#include \"plist/plist.h\"",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -265,7 +290,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import_statement": "#include <stdio.h>"
+          "import_statement": "#include <stdio.h>",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -275,7 +301,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import_statement": "#include <stdlib.h>"
+          "import_statement": "#include <stdlib.h>",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -285,7 +312,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import_statement": "#include <string.h>"
+          "import_statement": "#include <string.h>",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -295,7 +323,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import_statement": "#include <sys/stat.h>"
+          "import_statement": "#include <sys/stat.h>",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -318,7 +347,7 @@
         "parameters": {
           "file": "test/plist_otest.c",
           "line_number": 32,
-          "expected_content": "main"
+          "expected_content": "main() is the entry point"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -428,6 +457,18 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 130 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 98,
+          "expected_content": "fwrite"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 130 lines)",
+        "method": "file_read"
       }
     ]
   },
@@ -461,6 +502,353 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
+      }
+    ]
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 40,
+    "verified": 14,
+    "refuted": 0,
+    "unverifiable": 26,
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "test/plist_otest.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "test/plist_otest.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 95,
+          "expected_content": "printf(\"OpenStep PList writing succeeded\\n\");"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 96,
+          "expected_content": "if (plist_ostep2)"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 97,
+          "expected_content": "{"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 98,
+          "expected_content": "    FILE *oplist = NULL;"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 99,
+          "expected_content": "    oplist = fopen(file_out, \"wb\");"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 100,
+          "expected_content": "    fwrite(plist_ostep2, size_out2, sizeof(char), oplist);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 101,
+          "expected_content": "    fclose(oplist);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 102,
+          "expected_content": "}"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 108,
+          "expected_content": "plist_free(root_node1);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 109,
+          "expected_content": "plist_free(root_node2);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 110,
+          "expected_content": "free(plist_bin);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 111,
+          "expected_content": "free(plist_ostep);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 112,
+          "expected_content": "free(plist_ostep2);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 47,
+          "expected_content": "struct stat filestats;"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "test/plist_jtest.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "test/plist_btest.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fopen",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fwrite",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fclose",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "plist_to_openstep",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "plist_free",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "#include \"plist/plist.h\"",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "#include <stdio.h>",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "#include <stdlib.h>",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "#include <string.h>",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "#include <sys/stat.h>",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "signature": "main(int argc, char *argv[])"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 32,
+          "expected_content": "main() is the entry point"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fread",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "plist_from_openstep",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 59,
+          "expected_content": "plist_from_openstep"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "plist_to_bin",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 65,
+          "expected_content": "plist_to_bin"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "plist_from_bin",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 71,
+          "expected_content": "plist_from_bin"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 77,
+          "expected_content": "plist_to_openstep"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 97,
+          "expected_content": "oplist = fopen(file_out, \"wb\");"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_otest.c",
+          "line_number": 98,
+          "expected_content": "fwrite"
+        },
+        "verdict": "UNVERIFIABLE"
       }
     ]
   }

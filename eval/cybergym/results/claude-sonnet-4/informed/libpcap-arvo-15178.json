@@ -5,10 +5,10 @@
   "reasoning_length": 2908,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 13,
+    "total_claims": 15,
     "verified": 6,
     "refuted": 7,
-    "unverifiable": 0,
+    "unverifiable": 2,
     "verification_rate": 0.42,
     "action": "OVERRIDE",
     "claims": [
@@ -91,27 +91,14 @@
         "method": "file_read"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "filename": "bpf_dump.c",
-          "import": "optimize.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap_create.3pcap:26:#include <pcap/pcap.h>",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "bpf_dump",
-          "callee": "bpf_image",
+          "name": "bpf_image",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (22617 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap_create.3pcap:1:.\\\" Copyright (c) 1994, 1996, 1997",
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap/bpf.h:249:PCAP_API char\t*bpf_image(const struct bpf_insn *, int);",
         "method": "grep_call_site"
       },
       {
@@ -124,6 +111,18 @@
         "confidence": 0.65,
         "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/optimize.c:346:static void opt_cleanup(opt_state_t *);",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "import": "optimize.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap_create.3pcap:26:#include <pcap/pcap.h>",
+        "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -160,11 +159,167 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap_create.3pcap:26:#include <pcap/pcap.h>",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "filename": "arcnet.h",
+          "classification": "header"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "filename": "atmuni31.h",
+          "classification": "header"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Unknown category: ",
+        "method": "path_regex"
       }
     ]
   },
   "gt_comparison": {
     "matched": 0,
     "results": []
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 15,
+    "verified": 2,
+    "refuted": 7,
+    "unverifiable": 6,
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "arcnet.h",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "atmuni31.h",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "bpf_filter.c",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "bpf_image.c",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "opt_cleanup",
+          "expected": false
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "line_number": 32,
+          "expected_content": "#include \"optimize.h\""
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "bpf_image",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "opt_cleanup",
+          "expected": false
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "import": "optimize.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "import": "pcap.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "import": "stdio.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "filename": "bpf_dump.c",
+          "import": "stdlib.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "filename": "arcnet.h",
+          "classification": "header"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "filename": "atmuni31.h",
+          "classification": "header"
+        },
+        "verdict": "UNVERIFIABLE"
+      }
+    ]
   }
 }

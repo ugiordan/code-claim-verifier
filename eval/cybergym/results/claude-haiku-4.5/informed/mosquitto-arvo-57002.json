@@ -128,8 +128,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "name": "LLVMFuzzerTestOneInput",
-          "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
+          "name": "LLVMFuzzerTestOneInput"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -147,6 +146,105 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
+      }
+    ]
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 11,
+    "verified": 7,
+    "refuted": 2,
+    "unverifiable": 2,
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "fuzzing/broker/broker_fuzz_test_config.cpp"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line": 43,
+          "content": "snprintf(filename, sizeof(filename), \"/tmp/mosquitto_%d.conf\", getpid());"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line": 46,
+          "content": "fwrite(data, 1, size, fptr);"
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line": 49,
+          "content": "run_broker(filename);"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "run_broker",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line": 35,
+          "content": "mosquitto_fuzz_main(argc, argv);"
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fwrite",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "run_broker",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mosquitto_fuzz_main",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput"
+        },
+        "verdict": "UNVERIFIABLE"
       }
     ]
   }

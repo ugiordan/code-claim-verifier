@@ -6,8 +6,8 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 14,
-    "verified": 10,
-    "refuted": 4,
+    "verified": 9,
+    "refuted": 5,
     "unverifiable": 0,
     "verification_rate": 0.63,
     "action": "FLAG",
@@ -73,16 +73,6 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ivd_api_function"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ivd_api_function",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "ivd_api_function",
@@ -91,17 +81,6 @@
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:127:  ret = ivd_api_function(NULL, (void *)&create_ip, (void",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "Codec::decodeHeader",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:256:void Codec::decodeHeader(const uint8_t *data, size_t siz",
         "method": "grep_call_site"
       },
       {
@@ -135,16 +114,6 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "setParams"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for setParams",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "setParams",
@@ -154,6 +123,36 @@
         "confidence": 0.65,
         "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:88:  void setParams(IVD_VIDEO_DECODE_MODE_T mode);",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input validation checks for maximum value of num_long_term_pics"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds checking before array allocations"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "overflow detection in size calculations"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "method": "grep_absent"
       }
     ]
   },
@@ -187,6 +186,115 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
+      }
+    ]
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 14,
+    "verified": 8,
+    "refuted": 0,
+    "unverifiable": 6,
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "test/encoder/app.h"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "test/encoder/main.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "test/decoder/main.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "fuzzer/hevc_dec_fuzzer.cpp"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Codec::decodeHeader"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ivd_api_function",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "ihevcd_cxa.h"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "iv.h"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "ivd.h"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "setParams",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input validation checks for maximum value of num_long_term_pics"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds checking before array allocations"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "overflow detection in size calculations"
+        },
+        "verdict": "UNVERIFIABLE"
       }
     ]
   }

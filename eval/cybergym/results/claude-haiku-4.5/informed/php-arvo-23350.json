@@ -5,11 +5,11 @@
   "reasoning_length": 6678,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
-    "verified": 12,
+    "total_claims": 15,
+    "verified": 11,
     "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.72,
+    "verification_rate": 0.73,
     "action": "FLAG",
     "claims": [
       {
@@ -135,22 +135,11 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "zend_ini_parse_bool",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_ini.h:89:ZEND_API zend_bool zend_ini_parse_bool(zend_string *str);",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "Zend/zend.c",
-          "line_range": "90-100",
-          "content": "static ZEND_INI_MH(OnUpdateGCEnabled)"
+          "line_number": 90,
+          "content": "static ZEND_INI_MH(OnUpdateGCEnabled) /* {{{ */"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -211,6 +200,126 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
+      }
+    ]
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 15,
+    "verified": 13,
+    "refuted": 1,
+    "unverifiable": 1,
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "Zend/zend_gc.h"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "Zend/zend_gc.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "Zend/zend.h"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "Zend/zend.c"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "Zend/zend.h",
+          "import": "zend_gc.h"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "gc_remove_nested_data"
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "gc_scan"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "gc_collect_cycles"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "zend_gc_collect_cycles"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "OnUpdateGCEnabled"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "gc_enable"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "gc_enable",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Zend/zend.c",
+          "line_number": 90,
+          "content": "static ZEND_INI_MH(OnUpdateGCEnabled) /* {{{ */"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "Zend/zend.h",
+          "import": "zend_variables.h"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "Zend/zend.h",
+          "import": "zend_alloc.h"
+        },
+        "verdict": "VERIFIED"
       }
     ]
   }

@@ -24,8 +24,8 @@ class TestRQ2:
             ]}},
         ]
         rq2 = compute_rq2(results)
-        assert rq2["accuracy"] == round(2 / 3, 4)
-        assert rq2["false_verified"] == 1
+        assert rq2["ccv_accuracy"] == round(2 / 3, 4)
+        assert rq2["ccv_false_verified"] == 1
 
 
 class TestRQ4:

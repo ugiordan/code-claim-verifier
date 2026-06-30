@@ -5,12 +5,12 @@
   "reasoning_length": 3211,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 15,
-    "verified": 6,
-    "refuted": 9,
+    "total_claims": 17,
+    "verified": 11,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.3,
-    "action": "OVERRIDE",
+    "verification_rate": 0.54,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -47,8 +47,20 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
-          "line_start": 45,
-          "line_end": 60
+          "line_number": 45,
+          "expected_content": "LLVMFuzzerTestOneInput"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 67 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line_number": 60,
+          "expected_content": "LLVMFuzzerTestOneInput"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -70,8 +82,20 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
-          "line_start": 28,
-          "line_end": 42
+          "line_number": 28,
+          "expected_content": "run_broker"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 67 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line_number": 42,
+          "expected_content": "run_broker"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -114,62 +138,67 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "cstdio",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstdio",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of cstdio found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz_test_config.cpp:19:#include <cstdio>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "cstdint",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstdint",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of cstdint found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz_test_config.cpp:19:#include <cstdio>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "cstdlib",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstdlib",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of cstdlib found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz_test_config.cpp:19:#include <cstdio>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "cstring",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstring",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of cstring found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz_test_config.cpp:19:#include <cstdio>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "unistd.h",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "unistd.h",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of unistd.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz_test_config.cpp:19:#include <cstdio>",
         "method": "grep_import"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "name": "LLVMFuzzerTestOneInput",
+          "function": "LLVMFuzzerTestOneInput",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -195,6 +224,158 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
+      }
+    ]
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 17,
+    "verified": 12,
+    "refuted": 0,
+    "unverifiable": 5,
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "fuzzing/broker/broker_fuzz_test_config.cpp"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "config.h"
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line_number": 45,
+          "expected_content": "LLVMFuzzerTestOneInput"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line_number": 60,
+          "expected_content": "LLVMFuzzerTestOneInput"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "run_broker",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line_number": 28,
+          "expected_content": "run_broker"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "line_number": 42,
+          "expected_content": "run_broker"
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mosquitto_fuzz_main",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "run_broker",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mosquitto_fuzz_main",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstdio",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstdint",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstdlib",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "cstring",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
+          "import": "unistd.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "LLVMFuzzerTestOneInput",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
       }
     ]
   }

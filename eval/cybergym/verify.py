@@ -57,6 +57,117 @@ def match_claims_to_gt(verified: list[VerifiedClaim],
     return matched
 
 
+def _build_judge_context(claim: TypedClaim, source_root: str) -> str:
+    """Build the context a judge sees for a claim, equivalent to what CCV uses."""
+    claim_type = claim.claim_type
+    params = claim.parameters
+
+    if claim_type == "FILE_EXISTS":
+        path = params.get("path", params.get("file", ""))
+        full = os.path.join(source_root, path)
+        exists = os.path.isfile(full)
+        return f"File lookup result: os.path.isfile('{path}') = {exists}"
+
+    if claim_type in ("FUNCTION_EXISTS", "FUNCTION_CALLED", "HAS_CALLERS"):
+        file_param = params.get("file", params.get("path", ""))
+        name = params.get("name", "")
+        if file_param:
+            full = os.path.join(source_root, file_param)
+            if os.path.isfile(full):
+                try:
+                    with open(full, "r", encoding="utf-8", errors="replace") as f:
+                        content = f.read(8000)
+                    return f"File content of {file_param}:\n{content}"
+                except OSError:
+                    pass
+        import subprocess
+        try:
+            result = subprocess.run(
+                ["grep", "-rn", "--binary-files=without-match", name, source_root],
+                capture_output=True, text=True, timeout=10, errors="replace",
+            )
+            matches = result.stdout.strip().split("\n") if result.stdout.strip() else []
+            if matches:
+                return f"grep results for '{name}' ({len(matches)} matches):\n" + "\n".join(matches[:10])
+            return f"grep results for '{name}': 0 matches"
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return f"grep for '{name}': timed out or failed"
+
+    if claim_type == "ABSENCE":
+        pattern = params.get("pattern", "")
+        import subprocess
+        try:
+            result = subprocess.run(
+                ["grep", "-rnF", "--binary-files=without-match", pattern, source_root],
+                capture_output=True, text=True, timeout=10, errors="replace",
+            )
+            matches = result.stdout.strip().split("\n") if result.stdout.strip() else []
+            count = len(matches) if matches[0] else 0
+            if count > 0:
+                return f"grep -F results for '{pattern}': {count} matches\n" + "\n".join(matches[:5])
+            return f"grep -F results for '{pattern}': 0 matches"
+        except (subprocess.TimeoutExpired, FileNotFoundError):
+            return f"grep for '{pattern}': timed out or failed"
+
+    if claim_type == "LINE_CONTENT":
+        path = params.get("file", params.get("path", ""))
+        line_num = params.get("line", 0)
+        full = os.path.join(source_root, path)
+        if os.path.isfile(full):
+            try:
+                with open(full, "r", encoding="utf-8", errors="replace") as f:
+                    lines = f.readlines()
+                if 0 < line_num <= len(lines):
+                    return f"Line {line_num} of {path}: {lines[line_num - 1].rstrip()}"
+                return f"File {path} has {len(lines)} lines, line {line_num} out of range"
+            except OSError:
+                pass
+        return f"File not found: {path}"
+
+    if claim_type in ("IMPORT_EXISTS", "PACKAGE_VERSION"):
+        file_param = params.get("file", "")
+        if file_param:
+            full = os.path.join(source_root, file_param)
+            if os.path.isfile(full):
+                try:
+                    with open(full, "r", encoding="utf-8", errors="replace") as f:
+                        return f"File content of {file_param}:\n{f.read(8000)}"
+                except OSError:
+                    pass
+        return "No specific file context available for this claim."
+
+    return "No specific context available for this claim type."
+
+
+def judge_claims(claims: list[TypedClaim], source_root: str,
+                 judge_llm_fn) -> list[dict]:
+    """Run LLM-as-judge verification on a list of claims."""
+    results = []
+    for claim in claims:
+        context = _build_judge_context(claim, source_root)
+        prompt = build_judge_prompt(claim.claim_type, claim.parameters, context)
+        try:
+            response = judge_llm_fn("You are a code verification judge.", prompt)
+            verdict = _parse_judge_verdict(response)
+        except Exception as e:
+            logger.warning("Judge failed for %s: %s", claim.claim_type, e)
+            verdict = "UNVERIFIABLE"
+        results.append({
+            "claim_type": claim.claim_type,
+            "parameters": claim.parameters,
+            "verdict": verdict,
+        })
+    return results
+
+
+def _parse_judge_verdict(response: str) -> str:
+    first_line = response.strip().split("\n")[0].strip().upper()
+    for v in ("VERIFIED", "REFUTED", "UNVERIFIABLE"):
+        if v in first_line:
+            return v
+    return "UNVERIFIABLE"
+
+
 def _normalize_claims(claims: list[TypedClaim]) -> list[TypedClaim]:
     for claim in claims:
         for key in ("path", "file"):
@@ -147,6 +258,21 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                 "results": gt_comparison,
             },
         }
+
+        if with_judge:
+            try:
+                judge_llm = get_model(judge_model)
+                judge_results = judge_claims(claims, source_root, judge_llm)
+                result["llm_judge"] = {
+                    "judge_model": judge_model,
+                    "total_claims": len(judge_results),
+                    "verified": sum(1 for r in judge_results if r["verdict"] == "VERIFIED"),
+                    "refuted": sum(1 for r in judge_results if r["verdict"] == "REFUTED"),
+                    "unverifiable": sum(1 for r in judge_results if r["verdict"] == "UNVERIFIABLE"),
+                    "claims": judge_results,
+                }
+            except Exception:
+                logger.exception("LLM judge failed for %s", vuln_id)
 
         save_json(result, out_path)
         return result

@@ -5,10 +5,10 @@
   "reasoning_length": 5486,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 14,
-    "refuted": 3,
-    "unverifiable": 3,
+    "total_claims": 24,
+    "verified": 20,
+    "refuted": 4,
+    "unverifiable": 0,
     "verification_rate": 0.8,
     "action": "FLAG",
     "claims": [
@@ -59,6 +59,28 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "xmlCtxtErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/parserInternals.c:132:xmlCtxtErrMemory(xmlParserCtxtPtr ctxt)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlCtxtErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (29 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/HTMLparser.c:63:    xmlCtxtErrMemory(ctxt);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
           "name": "xmlParserShrink",
           "expected": true
         },
@@ -66,6 +88,17 @@
         "confidence": 0.85,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/include/private/parser.h:65:xmlParserShrink(xmlParserCtxtPtr ctxt);",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlParserShrink",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/HTMLparser.c:262:\txmlParserShrink(ctxt);",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -167,39 +200,6 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "static void htmlErrMemory(xmlParserCtxtPtr ctxt)",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "xmlCtxtErrMemory(ctxt);",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "if ((ctx == NULL) || (ctxt->input == NULL)) return(0);",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "filename": "SAX2.c",
@@ -231,11 +231,256 @@
         "confidence": 0.99,
         "evidence": "Path traversal detected",
         "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "parser.c",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "xmlReaderForFile",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "xmlSAX2StartElement",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "htmlParseFile",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
+        "method": "grep_entry_point"
       }
     ]
   },
   "gt_comparison": {
     "matched": 0,
     "results": []
+  },
+  "llm_judge": {
+    "judge_model": "claude-haiku-4.5",
+    "total_claims": 24,
+    "verified": 9,
+    "refuted": 5,
+    "unverifiable": 10,
+    "claims": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlAddIDSafe",
+          "expected": false
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlAddIDSafe",
+          "expected": false
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlSAX2StartElement",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "htmlErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlCtxtErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlCtxtErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlParserShrink",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlParserShrink",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReaderForFile",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReaderForMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "htmlParseFile",
+          "expected": true
+        },
+        "verdict": "VERIFIED"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/SAX2.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/tree.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/parser.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/parserInternals.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/valid.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "libxml/entities.h",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "SAX2.c",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "HTMLparser.c",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "HTMLtree.c",
+          "expected": true
+        },
+        "verdict": "REFUTED"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "parser.c",
+          "expected": false
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "xmlReaderForFile",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "xmlSAX2StartElement",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "htmlParseFile",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE"
+      }
+    ]
   }
 }
