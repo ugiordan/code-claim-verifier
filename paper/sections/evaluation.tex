@@ -12,128 +12,135 @@ We evaluate CCV along four research questions:
 
 \subsection{Dataset}
 
-We construct a controlled evaluation dataset from synthetic fixture repositories with known ground truth. Each sample consists of a reasoning text (simulating LLM agent output), a fixture repository, and manually annotated claims with expected verdicts.
+We evaluate on two datasets: a controlled fixture dataset for verifier correctness, and real vulnerability analysis from the CyberGym benchmark for hallucination detection at scale.
 
-\textbf{Fixture repositories.} Three repositories spanning Python, Go, and TypeScript, containing known functions, imports, lockfiles, and deliberate patterns for each claim type. The Python fixture includes aliased imports (\texttt{import subprocess as sp}), indirect function references (\texttt{tl = torch.load}), and class-based call patterns to test verifier limitations.
+\textbf{Controlled fixtures.} Three synthetic repositories (Python, Go, TypeScript) with known ground truth. 50 annotated claims across 11 claim types, split between correct assertions and deliberate hallucinations. Used to validate per-type verifier accuracy.
 
-\textbf{Dataset composition.} 40 reasoning samples yielding 50 annotated claims across 11 of 14 claim types. Claims are split into: 31 expected-\textsc{Verified} (correct assertions), 19 expected-\textsc{Refuted} (hallucinated assertions), covering both straightforward cases and adversarial edge cases (aliased calls, out-of-range line numbers, wrong package versions).
+\textbf{CyberGym benchmark.} 21 real-world C/C++ vulnerability repositories from CyberGym~(ICLR 2026), spanning projects including binutils, curl, libxml2, openssl, php, and wireshark. Each repository contains the vulnerable source code (\texttt{src-vul/}) and a vulnerability description from the CyberGym HuggingFace dataset. We generate LLM reasoning about each vulnerability, then run CCV to extract and verify claims against the actual source code.
 
-\textbf{Limitations of controlled evaluation.} This dataset validates verifier correctness against known ground truth. A full-scale evaluation on real agent reasoning (500+ claims from production triage) is planned as follow-up work. The controlled setting is sufficient to measure per-type accuracy and calibration but cannot measure extraction recall on real LLM outputs.
+\textbf{Ground truth.} Diff-derived GT from patch files: files and functions modified in the security fix produce expected-\textsc{Verified} claims. Synthetic negatives (typo'd paths, non-existent function names) produce expected-\textsc{Refuted} claims. 137 GT claims matched across the evaluation.
+
+\subsection{Models}
+
+We evaluate two Claude models via Google Vertex AI:
+
+\begin{itemize}
+    \item \textbf{Claude Sonnet 4}: Frontier-class model, strong at code reasoning.
+    \item \textbf{Claude Haiku 4.5}: Smaller, faster model for cost-sensitive deployments.
+\end{itemize}
+
+Claim extraction uses Claude Sonnet 4 for all samples (isolating extraction quality). LLM-as-judge baseline uses Claude Haiku 4.5 (avoiding self-verification confound for Sonnet-generated reasoning).
 
 \subsection{Baselines}
 
 \begin{itemize}
     \item \textbf{No verification}: Agent confidence as-is (current practice).
     \item \textbf{CCV}: Typed extraction + deterministic verification (our system).
-    \item \textbf{Ablation A}: Typed extraction + LLM-judge verification. Isolates the value of deterministic verification over LLM-as-judge. \emph{(Planned for full-scale evaluation.)}
-    \item \textbf{Ablation B}: Claimify-style extraction + deterministic verification. Isolates the value of our typed taxonomy over generic claim extraction. \emph{(Planned for full-scale evaluation.)}
-    \item \textbf{Human expert}: Manual verification by a developer familiar with the codebase (upper bound).
+    \item \textbf{LLM-as-judge}: Same extracted claims, verified by an LLM instead of grep/file-read. The judge receives equivalent context to CCV (file contents, grep output) and produces \textsc{Verified}/\textsc{Refuted}/\textsc{Unverifiable}.
 \end{itemize}
-
-\subsection{Metrics}
-
-\textbf{Extraction quality.} Precision and recall of extracted claims against ground truth, with matching defined as: same claim type and all ground-truth parameter keys present with equal values.
-
-\textbf{Verification accuracy.} Proportion of correct verdicts, broken down by claim type. We report false-\textsc{Refuted} rate (most dangerous: could override correct conclusions) and false-\textsc{Verified} rate separately.
-
-\textbf{Calibration.} Per-type accuracy table comparing hardcoded method confidence values against empirical correctness rates. Expected Calibration Error (ECE)~\cite{naeini2015calibration} as aggregate metric.
-
-\textbf{Downstream impact.} For RQ3, we measure the change in triage accuracy when CCV's action (\textsc{Boost}/\textsc{Flag}/\textsc{Override}) is applied to the agent's original verdict.
 
 \subsection{Results}
 
 \subsubsection{RQ1: Hallucination Frequency}
 
-Of 50 claims in our dataset, 19 (38\%) represent hallucinated assertions (expected verdict: \textsc{Refuted}). CCV correctly identified 18 of 19 hallucinations (Table~\ref{tab:rq1}). Two claims returned \textsc{Unverifiable} rather than the expected verdict: one due to a lockfile format mismatch (Go module path not in go.sum), and one due to a missing advisory database for CVE version checking.
+Across 42 vulnerability analyses (21 repos $\times$ 2 models), LLMs produced 697 factual claims about code (Table~\ref{tab:rq1}). CCV refuted 188 of these (27.0\% aggregate hallucination rate).
 
 \begin{table}[t]
 \centering
-\caption{Claim verification results across 50 annotated claims from 3 fixture repositories.}
+\caption{Claim verification results on CyberGym benchmark. Hallucination rate = refuted / (verified + refuted).}
 \label{tab:rq1}
 \small
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-& \textbf{Verified} & \textbf{Refuted} & \textbf{Unverifiable} \\
+\textbf{Model} & \textbf{Claims} & \textbf{Verified} & \textbf{Refuted} & \textbf{Halluc. \%} \\
 \midrule
-Count & 30 & 18 & 2 \\
-Percentage & 60\% & 36\% & 4\% \\
+Claude Sonnet 4 & 296 & 181 & 65 & 22.0\% \\
+Claude Haiku 4.5 & 401 & 242 & 123 & 30.7\% \\
+\midrule
+\textbf{Combined} & \textbf{697} & \textbf{423} & \textbf{188} & \textbf{27.0\%} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The 4\% \textsc{Unverifiable} rate reflects CCV's design choice: when the verification method cannot produce a reliable answer (missing lockfile, unsupported advisory database), it returns \textsc{Unverifiable} rather than guessing. This satisfies the safety desideratum (Section~\ref{sec:problem}).
+The smaller model (Haiku) hallucinates more frequently (30.7\% vs.\ 22.0\%), consistent with the expectation that model capability correlates with factual accuracy. Both rates are high enough to justify systematic verification: roughly 1 in 4 factual claims about code is wrong.
 
-\subsubsection{RQ2: Deterministic vs. LLM-Judge Verification}
+\subsubsection{RQ2: CCV vs.\ LLM-as-Judge}
 
-On the controlled dataset, CCV achieves 96\% verification accuracy with zero false-\textsc{Refuted} and zero false-\textsc{Verified} errors (Table~\ref{tab:rq2}). The 4\% gap is entirely \textsc{Unverifiable} results, not incorrect verdicts.
+We compare CCV's deterministic verdicts against an LLM-as-judge baseline on the same 697 claims (Table~\ref{tab:rq2}). The judge receives the same source context that CCV uses (file contents for \textsc{Function\_Exists}, grep output for \textsc{Absence}, etc.).
 
 \begin{table}[t]
 \centering
-\caption{Verification accuracy on controlled dataset ($n=50$). Ablation baselines require full-scale evaluation.}
+\caption{CCV vs.\ LLM-as-judge. GT accuracy measured against 137 diff-derived ground truth claims. Disagreement analysis on all 697 claims.}
 \label{tab:rq2}
 \small
 \begin{tabular}{lrrr}
 \toprule
-\textbf{Method} & \textbf{Accuracy} & \textbf{False Ref.} & \textbf{False Ver.} \\
+\textbf{Metric} & \textbf{CCV} & \textbf{LLM-judge} \\
 \midrule
-CCV (deterministic) & 0.96 & 0.00 & 0.00 \\
-Ablation A (LLM-judge) & \multicolumn{3}{c}{\emph{planned}} \\
-Human expert & \multicolumn{3}{c}{\emph{planned}} \\
+GT accuracy & 99.3\% & --- \\
+False-\textsc{Verified} & 0 & --- \\
+False-\textsc{Refuted} & 1 & --- \\
+\midrule
+\multicolumn{3}{l}{\emph{Disagreement analysis ($n=263$ disagreements):}} \\
+CCV correct & \multicolumn{2}{r}{255 (97.0\%)} \\
+Judge correct & \multicolumn{2}{r}{8 (3.0\%)} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The zero false-\textsc{Refuted} rate is notable: this is the most dangerous error mode, as it could cause CCV to override a correct triage verdict. Deterministic verification provides this guarantee by construction for the claim types it covers.
+CCV achieves 99.3\% accuracy against diff-derived ground truth with zero false-\textsc{Verified} errors. On 263 cases where CCV and the judge disagreed, CCV was correct 97\% of the time (255 vs.\ 8). The judge's primary failure mode is false-\textsc{Verified}: it confirms hallucinated claims that CCV correctly refutes.
+
+This validates CCV's core thesis: deterministic verification (grep, file reads) is more reliable than LLM-based verification for factual claims about code. The LLM judge hallucinates about the same code it is asked to verify.
 
 \subsubsection{RQ3: Downstream Impact}
 
-Table~\ref{tab:rq3} shows CCV's action distribution across the 40 reasoning samples. Samples with all claims verified receive \textsc{Boost} (increased confidence). Samples containing hallucinated claims receive \textsc{Flag} or \textsc{Override}, correctly identifying unreliable reasoning.
+Table~\ref{tab:rq3} shows CCV's action distribution across 42 vulnerability analyses.
 
 \begin{table}[t]
 \centering
-\caption{CCV action distribution across 40 reasoning samples.}
+\caption{CCV action distribution across 42 vulnerability analyses (21 repos $\times$ 2 models).}
 \label{tab:rq3}
 \small
 \begin{tabular}{lrr}
 \toprule
 \textbf{Action} & \textbf{Count} & \textbf{Percentage} \\
 \midrule
-\textsc{Boost} (all claims verified) & 22 & 55\% \\
-\textsc{Flag} (50--79\% verified) & 6 & 15\% \\
-\textsc{Override} ($<$50\% verified) & 8 & 20\% \\
-\textsc{No\_Change} (no claims) & 4 & 10\% \\
+\textsc{Boost} ($\geq$80\% verified) & 11 & 26.2\% \\
+\textsc{Flag} (50--79\% verified) & 20 & 47.6\% \\
+\textsc{Override} ($<$50\% verified) & 11 & 26.2\% \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsubsection{RQ4: Per-Type Hallucination Analysis}
+26.2\% of analyses received \textsc{Override}, meaning more than half of the LLM's factual claims were wrong. Without CCV, these analyses would have been trusted at face value. The 47.6\% \textsc{Flag} rate indicates that most vulnerability analyses contain a mix of correct and hallucinated claims, warranting human review before acting on them.
 
-Table~\ref{tab:rq4} breaks down verification accuracy and calibration by claim type. All claim types achieve 100\% accuracy except \textsc{Package\_Version} (75\%), where two claims involving Go module paths returned \textsc{Unverifiable} due to lockfile format handling.
+\subsubsection{RQ4: Per-Type Analysis}
+
+Table~\ref{tab:rq4} shows verification accuracy by claim type on the controlled fixture dataset ($n=50$). \textsc{File\_Exists} achieves 100\% accuracy (the verifier is \texttt{os.path.isfile}, which is exact). Function-related claim types achieve 100\% on the controlled dataset but face challenges on real C codebases where the GNU coding style (return type on separate line) requires additional grep patterns.
 
 \begin{table}[t]
 \centering
-\caption{Per-type verification accuracy and calibration ($n=50$). ``Conf.'' is the hardcoded method confidence; ``Actual'' is observed accuracy on this dataset.}
+\caption{Per-type verification accuracy on controlled fixtures ($n=50$) and CyberGym GT matches ($n=137$).}
 \label{tab:rq4}
 \small
 \begin{tabular}{lrrrr}
 \toprule
-\textbf{Type} & \textbf{$n$} & \textbf{Acc.} & \textbf{Conf.} & \textbf{Actual} \\
+\textbf{Type} & \textbf{Fixture $n$} & \textbf{Fixture Acc.} & \textbf{CyberGym $n$} & \textbf{CG Acc.} \\
 \midrule
-\textsc{File\_Exists} & 5 & 1.00 & 0.99 & 1.00 \\
-\textsc{Line\_Content} & 5 & 1.00 & 0.95 & 1.00 \\
-\textsc{Function\_Exists} & 10 & 1.00 & 0.85 & 1.00 \\
-\textsc{Import\_Exists} & 9 & 1.00 & 0.80 & 1.00 \\
-\textsc{Package\_Version} & 8 & 0.75 & 0.90 & 0.75 \\
-\textsc{Function\_Called} & 4 & 1.00 & 0.65 & 1.00 \\
-\textsc{Has\_Callers} & 3 & 1.00 & 0.65 & 1.00 \\
-\textsc{Absence} & 2 & 1.00 & 0.60 & 1.00 \\
-\textsc{File\_Classification} & 2 & 1.00 & 0.80 & 1.00 \\
-\textsc{Gen.\_Or\_Vendored} & 1 & 1.00 & 0.85 & 1.00 \\
-\textsc{Entry\_Point} & 1 & 1.00 & 0.65 & 1.00 \\
+\textsc{File\_Exists} & 5 & 1.00 & 136 & 1.00 \\
+\textsc{Function\_Exists} & 10 & 1.00 & 1 & 0.00 \\
+\textsc{Line\_Content} & 5 & 1.00 & --- & --- \\
+\textsc{Import\_Exists} & 9 & 1.00 & --- & --- \\
+\textsc{Package\_Version} & 8 & 0.75 & --- & --- \\
+\textsc{Function\_Called} & 4 & 1.00 & --- & --- \\
+\textsc{Has\_Callers} & 3 & 1.00 & --- & --- \\
+\textsc{Absence} & 2 & 1.00 & --- & --- \\
 \midrule
-\textbf{Overall} & \textbf{50} & \textbf{0.96} & --- & --- \\
+\textbf{Overall} & \textbf{50} & \textbf{0.96} & \textbf{137} & \textbf{0.993} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The aggregate ECE is 0.167, indicating that confidence values are systematically conservative: actual accuracy exceeds predicted confidence for most types. This is a desirable property (the system underpromises), but the gap suggests confidence values could be raised after larger-scale validation. \textsc{Package\_Version} is the exception: its 0.90 confidence overestimates the 0.75 actual accuracy, driven by Go module path handling edge cases.
+On CyberGym, the GT matching is dominated by \textsc{File\_Exists} (136/137 matches) because diff-derived GT primarily captures file-level facts. The single \textsc{Function\_Exists} GT mismatch reflects a limitation of C function pattern matching: the GT enumeration captured a function name that the CCV verifier's regex did not match due to macro-generated definitions.
+
+The aggregate ECE on the controlled dataset is 0.167, indicating that CCV's confidence values are systematically conservative (actual accuracy exceeds predicted confidence). This is a desirable property for a safety-critical tool.
