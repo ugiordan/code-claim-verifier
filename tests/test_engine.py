@@ -59,6 +59,7 @@ class TestEngineRegistry:
             "HAS_CALLERS", "IMPORT_EXISTS", "PACKAGE_VERSION",
             "DEPENDENCY_TYPE", "CVE_AFFECTS_VERSION", "ABSENCE",
             "MITIGATION_EXISTS", "ENTRY_POINT",
+            "CALL_CHAIN", "DEFAULT_VALUE", "CONFIG_FLAG",
         }
         assert expected.issubset(set(engine.registry.keys()))
 

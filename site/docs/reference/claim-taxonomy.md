@@ -1,6 +1,6 @@
 # Claim Taxonomy
 
-Complete parameter schemas for all 14 built-in claim types. These describe what the extraction prompt produces and what the verifier functions consume.
+Complete parameter schemas for all 17 built-in claim types. These describe what the extraction prompt produces and what the verifier functions consume.
 
 ## File Claims
 
@@ -227,3 +227,49 @@ Complete parameter schemas for all 14 built-in claim types. These describe what 
 | http/rest/api | `HandleFunc`, `.GET(`, `.POST(`, `.PUT(`, `.DELETE(`, `@app.route`, `@router.`, `.HandleFunc(`, `http.Handle` |
 | grpc/rpc | `Register.*Server`, `pb\..*Server` |
 | cli/command | `cobra.Command`, `argparse.`, `click.command`, `flag.` |
+
+---
+
+## Auth Chain Claims
+
+### CALL_CHAIN
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `chain` | list[string] | conditional | Ordered list of function names, e.g. `["A", "B", "C"]` meaning A->B->C |
+| `caller` | string | conditional | Single-hop shorthand: the calling function (used when `chain` is omitted) |
+| `callee` | string | conditional | Single-hop shorthand: the called function (used when `chain` is omitted) |
+
+Provide either `chain` OR both `caller`/`callee`. At least 2 functions are required.
+
+**Extraction produces:** `{"chain": ["Authenticate", "Authorize", "CheckRBAC"]}`
+
+**Verifier checks:** for each consecutive pair (src, dst), greps for `func src` to find the source function's definition file, then greps for `dst\s*\(` within that file. Falls back to repo-wide grep if definition-scoped search misses.
+
+---
+
+### DEFAULT_VALUE
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `variable` | string | yes | Variable or config field name |
+| `file` | string | no | File to search in (narrows scope) |
+| `default_behavior` | string | no | Claimed default behavior: `allow` or `deny` |
+
+**Extraction produces:** `{"variable": "AllowedNamespaces", "default_behavior": "deny"}`
+
+**Verifier checks:** greps for the variable name. Also searches for `len(variable) == 0`, `variable == nil`, and similar nil/empty check patterns. VERIFIED if the variable is found, REFUTED if it does not appear in the searched scope.
+
+---
+
+### CONFIG_FLAG
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `flag` | string | yes | Flag name (e.g., `enable-k8s-token-validation`) |
+| `value` | string | no | Expected value (e.g., `true`) |
+| `scope` | string | no (default: `all`) | Search scope: `code`, `manifests`, or `all` |
+
+**Extraction produces:** `{"flag": "enableK8sTokenValidation", "value": "true"}`
+
+**Verifier checks:** `grep -F` for the flag name across the repo. If `value` is provided, checks that at least one match line contains that value. REFUTED if the flag is not found, or if found with a different value than expected.

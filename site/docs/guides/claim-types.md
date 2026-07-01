@@ -1,6 +1,6 @@
 # Claim Types
 
-CCV ships with 14 built-in claim types organized into four categories. Each type has a dedicated verifier that uses deterministic tools to check the claim against the actual codebase.
+CCV ships with 17 built-in claim types organized into five categories. Each type has a dedicated verifier that uses deterministic tools to check the claim against the actual codebase.
 
 ## File Claims
 
@@ -209,6 +209,49 @@ If no type is specified, searches for all pattern categories.
 
 ---
 
+## Auth Chain Claims
+
+### CALL_CHAIN
+
+Checks whether a chain of function calls exists: A calls B, B calls C, etc.
+
+| Field | Value |
+|-------|-------|
+| **Parameters** | `chain` (list[str], optional): ordered list of function names, e.g. `["A", "B", "C"]`. OR `caller` (string, optional) + `callee` (string, optional) for single-hop shorthand. |
+| **Verification method** | Multi-hop grep: for each consecutive pair, grep for the callee's call pattern inside the caller's function body |
+| **Confidence** | 0.70 |
+| **Triggers on reasoning like** | "Authenticate calls Authorize which calls CheckRBAC" or "the auth chain goes through three functions" |
+
+Uses Go-style `func` definition grep to locate the caller's body, then searches for `callee\s*\(` within that file. Falls back to repo-wide grep if the definition-scoped search misses. Requires at least 2 functions in the chain.
+
+### DEFAULT_VALUE
+
+Checks what a variable or config field defaults to when empty or nil.
+
+| Field | Value |
+|-------|-------|
+| **Parameters** | `variable` (string, required): variable or config field name. `file` (string, optional): file to search in. `default_behavior` (string, optional): claimed behavior, `"allow"` or `"deny"`. |
+| **Verification method** | Grep for variable name + length/nil check patterns |
+| **Confidence** | 0.55 |
+| **Triggers on reasoning like** | "AllowedNamespaces defaults to deny-all when empty" or "the token field is nil by default" |
+
+Searches for the variable name in the specified file (or entire repo). Also greps for `len(variable) == 0`, `variable == nil`, and similar patterns to find default-handling code. Lower confidence because grep can find the variable but cannot semantically determine the default behavior.
+
+### CONFIG_FLAG
+
+Checks whether a config flag is set in code or deployment manifests.
+
+| Field | Value |
+|-------|-------|
+| **Parameters** | `flag` (string, required): flag name. `value` (string, optional): expected value. `scope` (string, optional): `"code"`, `"manifests"`, or `"all"` (default). |
+| **Verification method** | Fixed-string grep for the flag name, then value match |
+| **Confidence** | 0.80 (with value match), 0.85 (flag existence only) |
+| **Triggers on reasoning like** | "enableK8sTokenValidation is set to true" or "the audit logging flag is enabled" |
+
+Performs `grep -F` for the flag name across the repo. If an expected value is provided, checks that at least one match line contains that value. If the flag is found but with a different value, the claim is REFUTED.
+
+---
+
 ## Confidence levels summary
 
 | Confidence | Claim Types |
@@ -216,11 +259,12 @@ If no type is specified, searches for all pattern categories.
 | 0.99 | FILE_EXISTS |
 | 0.95 | LINE_CONTENT |
 | 0.90 | PACKAGE_VERSION |
-| 0.85 | FUNCTION_EXISTS, DEPENDENCY_TYPE, GENERATED_OR_VENDORED |
-| 0.80 | FILE_CLASSIFICATION, IMPORT_EXISTS |
-| 0.70 | MITIGATION_EXISTS |
+| 0.85 | FUNCTION_EXISTS, DEPENDENCY_TYPE, GENERATED_OR_VENDORED, CONFIG_FLAG (flag not found) |
+| 0.80 | FILE_CLASSIFICATION, IMPORT_EXISTS, CONFIG_FLAG (with value match) |
+| 0.70 | MITIGATION_EXISTS, CALL_CHAIN |
 | 0.65 | FUNCTION_CALLED, HAS_CALLERS, ENTRY_POINT |
 | 0.60 | ABSENCE |
+| 0.55 | DEFAULT_VALUE |
 | 0.00 | CVE_AFFECTS_VERSION (always UNVERIFIABLE) |
 
 These confidence values are used as weights during calibration. Higher confidence means the verifier's result has more influence on the final score.

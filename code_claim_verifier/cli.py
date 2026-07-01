@@ -6,7 +6,7 @@ import sys
 
 from code_claim_verifier import CodeClaimVerifier
 
-# Parameter schemas for each of the 14 built-in claim types.
+# Parameter schemas for each of the 17 built-in claim types.
 # These describe what the extraction prompt produces and what verifiers consume.
 CLAIM_SCHEMAS: dict[str, dict] = {
     "FILE_EXISTS": {
@@ -120,6 +120,33 @@ CLAIM_SCHEMAS: dict[str, dict] = {
             "type": {"type": "string", "description": "Entry point type (http, grpc, cli, etc.)"},
         },
         "required": ["name"],
+    },
+    "CALL_CHAIN": {
+        "description": "Assert a multi-hop call chain exists (A calls B, B calls C, etc.)",
+        "parameters": {
+            "chain": {"type": "list[str]", "description": "Ordered list of function names"},
+            "caller": {"type": "str (optional)", "description": "Single-hop shorthand: calling function"},
+            "callee": {"type": "str (optional)", "description": "Single-hop shorthand: called function"},
+        },
+        "required": [],
+    },
+    "DEFAULT_VALUE": {
+        "description": "Assert what a variable/config defaults to when empty or nil",
+        "parameters": {
+            "variable": {"type": "str", "description": "Variable or config field name"},
+            "file": {"type": "str (optional)", "description": "File to search in"},
+            "default_behavior": {"type": "allow|deny", "description": "Claimed default behavior"},
+        },
+        "required": ["variable"],
+    },
+    "CONFIG_FLAG": {
+        "description": "Assert a config flag is set in code or deployment manifests",
+        "parameters": {
+            "flag": {"type": "str", "description": "Flag name"},
+            "value": {"type": "str (optional)", "description": "Expected value"},
+            "scope": {"type": "code|manifests|all", "description": "Search scope (default: all)"},
+        },
+        "required": ["flag"],
     },
 }
 

@@ -56,4 +56,4 @@ class TestToolSchemas:
         claim_type_prop = verify_tool["input_schema"]["properties"]["claim_type"]
         assert "enum" in claim_type_prop
         assert "FILE_EXISTS" in claim_type_prop["enum"]
-        assert len(claim_type_prop["enum"]) == 14
+        assert len(claim_type_prop["enum"]) == 17

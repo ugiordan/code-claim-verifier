@@ -107,7 +107,7 @@ for claim in report.per_claim:
     print(f"  {claim.claim.claim_type}: {claim.verdict} ({claim.evidence[:80]})")
 ```
 
-## 14 Claim Types
+## 17 Claim Types
 
 | Category | Types | How It Verifies |
 |---|---|---|
@@ -115,6 +115,7 @@ for claim in report.per_claim:
 | **Function** | FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS | Language-aware grep for definitions and call sites |
 | **Dependency** | IMPORT_EXISTS, PACKAGE_VERSION, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION | Import grep, lockfile parse (requirements.txt, go.sum, package-lock.json) |
 | **Code** | ABSENCE, MITIGATION_EXISTS, ENTRY_POINT | Scoped grep (negated), file read, framework pattern grep |
+| **Auth Chain** | CALL_CHAIN, DEFAULT_VALUE, CONFIG_FLAG | Multi-hop call path grep, default value/nil checks, config flag grep |
 
 Each type has a documented confidence level (0.60 for absence claims up to 0.99 for file existence) reflecting the verification method's precision.
 
@@ -125,6 +126,7 @@ LLM claims have implicit dependencies. "Line 42 contains `torch.load()`" is mean
 CCV infers these dependencies automatically:
 - LINE_CONTENT depends on FILE_EXISTS (same path)
 - FUNCTION_CALLED depends on FUNCTION_EXISTS (same name)
+- CALL_CHAIN depends on FUNCTION_EXISTS (each function in the chain)
 - IMPORT_EXISTS depends on FILE_EXISTS (same file)
 
 If the file doesn't exist, all claims about its contents are marked SUSPECT with reduced confidence. If the function doesn't exist, claims about it being called are flagged.

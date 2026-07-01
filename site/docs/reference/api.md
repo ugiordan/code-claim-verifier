@@ -88,7 +88,7 @@ Register a custom claim type with its verifier function.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `claim_type` | `str` | (required) | Unique identifier. Must not collide with the 14 built-in types. |
+| `claim_type` | `str` | (required) | Unique identifier. Must not collide with the 17 built-in types. |
 | `verifier_fn` | `Callable` | (required) | Function `(claim, repo_path, language) -> VerifiedClaim` |
 | `extraction_hint` | `str` | (required) | Description for the extraction prompt. Max 500 characters. |
 | `depends_on` | `list[tuple] \| None` | `None` | List of `(prereq_type, source_param, target_param)` dependency rules |
@@ -254,4 +254,4 @@ Compute the verification report from a list of verified claims. Excludes synthes
 CLAIM_TYPES: frozenset[str]
 ```
 
-The set of 14 built-in claim type identifiers.
+The set of 17 built-in claim type identifiers.
