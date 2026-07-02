@@ -259,6 +259,15 @@ pip install -e ".[test]"
 - **Zero dependencies.** Core library is stdlib only. Optional providers for CLI.
 - **Domain-agnostic.** Security triage, code review, refactoring, migration, documentation, architecture assessment.
 
+## Documentation
+
+Full documentation: [ugiordan.github.io/code-claim-verifier](https://ugiordan.github.io/code-claim-verifier/)
+
+- [Getting Started](https://ugiordan.github.io/code-claim-verifier/getting-started/installation/)
+- [17 Claim Types](https://ugiordan.github.io/code-claim-verifier/guides/claim-types/)
+- [API Reference](https://ugiordan.github.io/code-claim-verifier/reference/api/)
+- [Architecture](https://ugiordan.github.io/code-claim-verifier/architecture/overview/)
+
 ## Background
 
 Inspired by [Claimify](https://arxiv.org/abs/2502.10855) (ACL 2025), extended to the code domain with deterministic verification:
