@@ -174,8 +174,65 @@ def verify_dependency_type(claim: TypedClaim, repo_path: str, language: str) -> 
 
 
 def verify_cve_affects(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    return VerifiedClaim(
-        claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-        evidence="CVE version range checking requires external advisory database",
-        method="cve_db",
-    )
+    cve = claim.parameters.get("cve", "")
+    package = claim.parameters.get("package", "")
+    version = claim.parameters.get("version", "")
+
+    if not package or not version:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence="Missing package or version parameter", method="osv_api",
+        )
+
+    try:
+        import urllib.request
+        import json as _json
+
+        payload = _json.dumps({"package": {"name": package}, "version": version}).encode()
+        req = urllib.request.Request(
+            "https://api.osv.dev/v1/query",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            data = _json.loads(resp.read())
+
+        vulns = data.get("vulns", [])
+        if not vulns:
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.75,
+                evidence=f"OSV: no known vulnerabilities for {package}@{version}",
+                method="osv_api",
+            )
+
+        if cve:
+            cve_ids = set()
+            for v in vulns:
+                cve_ids.add(v.get("id", ""))
+                for alias in v.get("aliases", []):
+                    cve_ids.add(alias)
+            if cve in cve_ids:
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.85,
+                    evidence=f"OSV confirms {cve} affects {package}@{version}",
+                    method="osv_api",
+                )
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.75,
+                evidence=f"OSV: {len(vulns)} vulns for {package}@{version} but {cve} not among them",
+                method="osv_api",
+            )
+
+        return VerifiedClaim(
+            claim=claim, verdict="VERIFIED", method_confidence=0.80,
+            evidence=f"OSV: {len(vulns)} known vulnerabilities for {package}@{version}",
+            method="osv_api",
+        )
+
+    except Exception as e:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"OSV API error: {str(e)[:200]}", method="osv_api",
+            error=str(e)[:200],
+        )

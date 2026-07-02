@@ -75,6 +75,53 @@ print(report.hallucination_rate)    # 0.25
       "torch.load IS called. Re-triage."
     ```
 
+## Demo
+
+Here's what happens when an LLM analyzes a vulnerability in `libxml2` and CCV verifies its reasoning:
+
+??? example "LLM reasoning (input)"
+    ```
+    The vulnerability is in libxml2's HTML parser. The function htmlnamePush()
+    in HTMLparser.c handles pushing element names onto the parser stack.
+    A buffer overflow occurs when the input contains deeply nested HTML elements.
+    The function htmlSetMetaEncoding() is also affected as it processes
+    encoding declarations. The file config.py contains the build configuration.
+    Package numpy version 2.0.0 is installed.
+    ```
+
+??? success "CCV verification (output)"
+    ```
+    Extracted 6 claims:
+
+    FILE_EXISTS(path=HTMLparser.c)              -> VERIFIED  ✓
+      exists: HTMLparser.c
+
+    FUNCTION_EXISTS(name=htmlnamePush)           -> VERIFIED  ✓
+      HTMLparser.c:117: htmlnamePush(htmlParserCtxtPtr ctxt, ...)
+
+    FUNCTION_EXISTS(name=htmlSetMetaEncoding)    -> VERIFIED  ✓
+      HTMLparser.c:268: htmlSetMetaEncoding(htmlDocPtr doc, ...)
+
+    FILE_EXISTS(path=config.py)                 -> REFUTED   ✗
+      not found: config.py (hallucination)
+
+    PACKAGE_VERSION(package=numpy, version=2.0.0) -> REFUTED ✗
+      requirements.txt: numpy==1.24.0, not 2.0.0
+
+    FUNCTION_CALLED(name=htmlnamePush)          -> VERIFIED  ✓
+      HTMLparser.c:1569: htmlnamePush(ctxt, BAD_CAST"html")
+
+    ─────────────────────────────────────────────
+    Verification rate: 67% (4/6 verified)
+    Action: FLAG
+    Reason: "2 claims refuted. config.py doesn't exist and
+            numpy is 1.24.0 not 2.0.0. Review before acting."
+    ```
+
+This is from a real CyberGym evaluation run. The LLM correctly identified the vulnerable functions but hallucinated a file (`config.py`) and a package version (`numpy 2.0.0`). CCV caught both.
+
+See [full evaluation results](experiments.md) from 21 CyberGym repos across 2 models.
+
 ## Verification Actions
 
 | Rate | Action | Meaning |
