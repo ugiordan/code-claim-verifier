@@ -2,63 +2,113 @@
 
 **Deterministic verification of LLM claims about source code.**
 
-When an LLM analyzes a codebase, it makes factual assertions: "this file exists," "that function is called," "this dependency is version 2.3.1." Some of those assertions are correct. Some are hallucinated. CCV tells you which is which.
+LLMs reason about code and make factual assertions: "function X has no callers," "package version is 2.4.1," "this file is auto-generated." These assertions drive real decisions. But LLMs hallucinate, and nobody checks whether their claims about the code are actually true.
 
-## The key insight
-
-Use the LLM for what it's good at (understanding natural language, extracting structured claims) and use deterministic tools for what they're good at (checking if a file actually exists, grepping for a function call, parsing a lockfile). Grep doesn't hallucinate.
-
-## How it works
+CCV extracts typed claims from LLM reasoning and verifies each one against the actual codebase. One LLM call for extraction. Zero LLM calls for verification. Grep doesn't hallucinate.
 
 ```mermaid
 graph LR
-    A[LLM Reasoning] --> B[Claim Extraction<br/>LLM call]
-    B --> C[Typed Claims]
-    C --> D[Dependency Graph<br/>Synthesis + Topo Sort]
-    D --> E[Verification<br/>grep, file read, lockfile parse]
-    E --> F[SUSPECT Propagation]
-    F --> G[Calibration]
-    G --> H[VerificationReport<br/>BOOST / FLAG / OVERRIDE]
+    A["LLM Reasoning<br/>(natural language)"] --> B["Claim Extraction<br/>(1 LLM call)"]
+    B --> C["17 Typed Claims"]
+    C --> D["Dependency Graph<br/>+ Topological Sort"]
+    D --> E["Deterministic Verification<br/>grep | file read | lockfile parse"]
+    E --> F["SUSPECT Propagation"]
+    F --> G["Confidence Calibration"]
+    G --> H["BOOST | FLAG | OVERRIDE"]
+
+    style A fill:#f9d0c4
+    style B fill:#fef3c7
+    style E fill:#d1fae5
+    style H fill:#dbeafe
 ```
 
-The pipeline has exactly **one** LLM call (extraction). Everything after that is deterministic:
+## Key Capabilities
 
-1. **Extract** structured claims from the LLM's natural language reasoning
-2. **Build** a dependency graph, synthesizing missing prerequisites
-3. **Verify** each claim using grep, file reads, and lockfile parsing
-4. **Propagate** SUSPECT flags when prerequisites are refuted
-5. **Calibrate** results into a confidence score and recommended action
+- **17 claim types** across 5 categories: file/path, function/symbol, dependency, code patterns, and auth chain
+- **Claim chaining** infers dependencies between claims, synthesizes missing prerequisites, and propagates refutation through the dependency graph
+- **Language-aware** grep patterns for Python, Go, TypeScript, Java, C/C++, Rust
+- **Batch verification** with adaptive batching and shared caches (thread-safe via contextvars)
+- **Custom claim types** via registration API with extraction hints
+- **CLI** with verify, verify-batch, list-types, and eval subcommands
 
-## What it works with
+!!! info "Evaluation results (CyberGym benchmark)"
+    On 21 real-world C/C++ vulnerability repos with 2 models: **22-31% of LLM claims about code are hallucinated**. CCV achieves 99.3% verification accuracy with zero false-verified errors. On disagreements with an LLM-as-judge baseline, CCV was correct 97% of the time.
 
-CCV is domain-agnostic. It works with any LLM output that makes assertions about source code:
+## What It Checks
 
-- Security triage ("this function is never called from an HTTP handler")
-- Code review ("the file uses torch.load without safety checks")
-- Refactoring analysis ("this import is unused")
-- Migration verification ("all calls to the deprecated API have been updated")
-- Documentation accuracy ("the function accepts three parameters")
-- Architecture assessment ("there are no direct dependencies on the database layer")
+| Category | Claim Types | Verification Method |
+|---|---|---|
+| **File/Path** | FILE_EXISTS, LINE_CONTENT, FILE_CLASSIFICATION, GENERATED_OR_VENDORED | `os.path.isfile()`, file read, path regex, header markers |
+| **Function** | FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS | Language-aware grep for definitions and call sites |
+| **Dependency** | IMPORT_EXISTS, PACKAGE_VERSION, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION | Import grep, lockfile parse |
+| **Code** | ABSENCE, MITIGATION_EXISTS, ENTRY_POINT | Scoped grep (negated), file read, framework pattern grep |
+| **Auth Chain** | CALL_CHAIN, DEFAULT_VALUE, CONFIG_FLAG | Multi-hop call path grep, default/nil checks, config flag grep |
 
-## Quick example
+## Quick Start
+
+```bash
+pip install code-claim-verifier
+```
 
 ```python
 from code_claim_verifier import CodeClaimVerifier
 
 verifier = CodeClaimVerifier(llm_function=my_llm, repo_path="/path/to/repo")
 report = verifier.verify(
-    reasoning="The file utils/auth.py contains a call to hashlib.md5() on line 42.",
-    domain_context="security triage",
+    reasoning="torch.load() at model.py:42 has no callers in the codebase...",
+    finding_file="model.py",
 )
 
 print(report.action)               # BOOST, FLAG, or OVERRIDE
-print(report.verification_rate)     # 0.0 to 1.0
-print(report.hallucination_rate)    # 0.0 to 1.0
+print(report.verification_rate)     # 0.75
+print(report.hallucination_rate)    # 0.25
 ```
 
-## Next steps
+??? example "Sample output"
+    ```
+    CCV extracts 3 claims:
+      FILE_EXISTS(path=model.py)           -> VERIFIED  (file exists)
+      FUNCTION_CALLED(name=torch.load)     -> VERIFIED  (call sites found)
+      HAS_CALLERS(name=torch.load, false)  -> REFUTED   (grep found 2 callers)
 
-- [Installation](getting-started/installation.md): pip install and optional extras
-- [Quick Start](getting-started/quickstart.md): verify your first LLM output in 5 minutes
-- [Claim Types](guides/claim-types.md): all 14 built-in claim types
-- [Architecture](architecture/overview.md): how the pipeline works under the hood
+    Result: 67% verified, action=FLAG
+      "torch.load IS called. Re-triage."
+    ```
+
+## Verification Actions
+
+| Rate | Action | Meaning |
+|---|---|---|
+| 80-100% | **BOOST** | Claims check out. Trust the LLM's conclusion. |
+| 50-79% | **FLAG** | Some claims failed. Human should review. |
+| <50% | **OVERRIDE** | Majority wrong. Don't trust this output. |
+
+## Quick Links
+
+<div class="grid cards" markdown>
+
+-   :material-rocket-launch: **Getting Started**
+
+    ---
+
+    [Installation](getting-started/installation.md) and [Quick Start](getting-started/quickstart.md)
+
+-   :material-format-list-checks: **Guides**
+
+    ---
+
+    [17 Claim Types](guides/claim-types.md), [Custom Types](guides/custom-types.md), [Batch Verification](guides/batch-verify.md), [CLI](guides/cli.md)
+
+-   :material-book-open-variant: **Reference**
+
+    ---
+
+    [API](reference/api.md), [Claim Taxonomy](reference/claim-taxonomy.md), [Evaluation Framework](reference/eval.md)
+
+-   :material-sitemap: **Architecture**
+
+    ---
+
+    [Pipeline Overview](architecture/overview.md) and [Claim Chaining](architecture/chaining.md)
+
+</div>
