@@ -153,6 +153,31 @@ class CpgBackend:
     def all_function_names(self) -> set[str]:
         return {n["name"] for n in self._by_kind.get("Function", [])}
 
+    def file_is_test(self, file_path: str) -> bool | None:
+        """Check if a file contains only test functions. Returns None if no data."""
+        funcs = [n for n in self._by_kind.get("Function", [])
+                 if n.get("file", "").endswith(file_path)]
+        if not funcs:
+            return None
+        return all(n.get("is_test", False) or
+                   n.get("annotations", {}).get("test:is_test_func", False)
+                   for n in funcs)
+
+    def module_is_used(self, module: str) -> list[dict]:
+        """Find CallSite nodes that reference a module (by call_target prefix)."""
+        results = []
+        for node in self._by_kind.get("CallSite", []):
+            target = node.get("call_target", "") or node.get("name", "")
+            if module in target:
+                results.append(node)
+        if not results:
+            modules = self._arch.get("dependencies", {}).get("go_modules", [])
+            for m in modules:
+                if module in m.get("module", ""):
+                    return [{"id": "arch", "kind": "dependency", "name": m["module"],
+                             "file": "go.mod", "line": 0}]
+        return results
+
     # ------------------------------------------------------------------
     # Data flow queries (new)
     # ------------------------------------------------------------------

@@ -530,6 +530,55 @@ class VerificationEngine:
                 )
             return None
 
+        if ct == "FILE_CLASSIFICATION":
+            path = params.get("file", params.get("path", ""))
+            category = params.get("category", "").lower()
+            if category in ("test", "production") and path:
+                is_test = cpg.file_is_test(path)
+                if is_test is not None:
+                    if category == "test":
+                        return VerifiedClaim(
+                            claim=claim,
+                            verdict="VERIFIED" if is_test else "REFUTED",
+                            method_confidence=0.90,
+                            evidence=f"CPG: file {'is' if is_test else 'is not'} a test file (function annotations)",
+                            method="cpg_classification",
+                        )
+                    else:
+                        return VerifiedClaim(
+                            claim=claim,
+                            verdict="VERIFIED" if not is_test else "REFUTED",
+                            method_confidence=0.90,
+                            evidence=f"CPG: file {'is not' if not is_test else 'is'} a test file",
+                            method="cpg_classification",
+                        )
+            return None
+
+        if ct == "IMPORT_EXISTS":
+            module = params.get("module", "")
+            if module:
+                refs = cpg.module_is_used(module)
+                if refs:
+                    ref = refs[0]
+                    return VerifiedClaim(
+                        claim=claim, verdict="VERIFIED", method_confidence=0.88,
+                        evidence=f"CPG: module '{module}' referenced via {ref.get('name', '')} at {ref.get('file', '')}:{ref.get('line', '')}",
+                        method="cpg_import",
+                    )
+            return None
+
+        if ct == "MITIGATION_EXISTS":
+            pattern = params.get("pattern", "")
+            if pattern and cpg.function_exists(pattern):
+                node = cpg.function_exists(pattern)
+                callers = cpg.function_callers(pattern)
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.75,
+                    evidence=f"CPG: mitigation function '{pattern}' exists at {node['file']}:{node['line']}, {len(callers)} callers",
+                    method="cpg_mitigation",
+                )
+            return None
+
         if ct == "CONFIG_FLAG":
             flag = params.get("flag", "")
             value = params.get("value", "")

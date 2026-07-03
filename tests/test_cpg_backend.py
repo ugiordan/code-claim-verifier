@@ -153,6 +153,15 @@ class TestLoadCpg:
         assert cpg is None
 
 
+NODES_WITH_TESTS = SAMPLE_NODES + [
+    {"id": "fn_test1", "kind": "Function", "name": "TestAuth", "file": "auth_test.go", "line": 5,
+     "language": "go", "is_test": True, "annotations": {"test:is_test_func": True}},
+    {"id": "fn_test2", "kind": "Function", "name": "TestLogin", "file": "auth_test.go", "line": 20,
+     "language": "go", "is_test": True, "annotations": {"test:is_test_func": True}},
+    {"id": "cs_mux", "kind": "CallSite", "name": "mux.NewRouter", "file": "handler.go", "line": 10,
+     "call_target": "mux.NewRouter"},
+]
+
 EXTENDED_NODES = SAMPLE_NODES + [
     {"id": "var_1", "kind": "Variable", "name": "allowedGroups", "file": "provider.go", "line": 20, "language": "go"},
     {"id": "struct_1", "kind": "StructLiteral", "name": "Config", "file": "config.go", "line": 10,
@@ -171,6 +180,73 @@ SAMPLE_ARCH = {
     "runtime_dependencies": [{"name": "Redis", "type": "cache"}],
     "rbac": {"kubebuilder_markers": [{"verb": "get", "resource": "pods"}]},
 }
+
+
+class TestCpgFileClassification:
+    def test_test_file_verified(self):
+        cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(claim_type="FILE_CLASSIFICATION",
+                           parameters={"path": "auth_test.go", "category": "test"},
+                           source_sentence="")
+        results = engine.verify_claims([claim], "/tmp", "go")
+        assert results[0].verdict == "VERIFIED"
+        assert results[0].method == "cpg_classification"
+
+    def test_production_file_verified(self):
+        cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(claim_type="FILE_CLASSIFICATION",
+                           parameters={"path": "auth.go", "category": "production"},
+                           source_sentence="")
+        results = engine.verify_claims([claim], "/tmp", "go")
+        assert results[0].verdict == "VERIFIED"
+        assert results[0].method == "cpg_classification"
+
+    def test_wrong_classification_refuted(self):
+        cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(claim_type="FILE_CLASSIFICATION",
+                           parameters={"path": "auth_test.go", "category": "production"},
+                           source_sentence="")
+        results = engine.verify_claims([claim], "/tmp", "go")
+        assert results[0].verdict == "REFUTED"
+
+
+class TestCpgImportExists:
+    def test_import_found_via_callsite(self):
+        cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(claim_type="IMPORT_EXISTS",
+                           parameters={"module": "mux"},
+                           source_sentence="")
+        results = engine.verify_claims([claim], "/tmp", "go")
+        assert results[0].verdict == "VERIFIED"
+        assert results[0].method == "cpg_import"
+
+    def test_import_found_via_arch_deps(self):
+        path, arch_path = _make_cpg(SAMPLE_NODES, SAMPLE_EDGES, SAMPLE_ARCH)
+        cpg = CpgBackend(path, arch_path)
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(claim_type="IMPORT_EXISTS",
+                           parameters={"module": "gorilla/mux"},
+                           source_sentence="")
+        results = engine.verify_claims([claim], "/tmp", "go")
+        assert results[0].verdict == "VERIFIED"
+        assert results[0].method == "cpg_import"
+
+
+class TestCpgMitigation:
+    def test_mitigation_function_exists(self):
+        cpg = CpgBackend(_make_cpg(SAMPLE_NODES, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(claim_type="MITIGATION_EXISTS",
+                           parameters={"description": "auth check", "pattern": "authenticate",
+                                       "file": "auth.go", "line": 10},
+                           source_sentence="")
+        results = engine.verify_claims([claim], "/tmp", "go")
+        assert results[0].verdict == "VERIFIED"
+        assert results[0].method == "cpg_mitigation"
 
 
 class TestCpgAbsence:
