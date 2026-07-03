@@ -136,11 +136,11 @@ CodeClaimVerifier.verify()
 
 ## Dual backend: grep + CPG
 
-CCV has two verification backends for function-related claims (FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS, CALL_CHAIN, ENTRY_POINT):
+CCV has two verification backends:
 
-1. **Grep backend** (default): language-aware regex patterns. Always available, no setup required. Confidence ~0.65 for call-site claims because grep can't distinguish definitions from references or resolve indirect calls.
+1. **Grep backend** (default): language-aware regex patterns, file reads, lockfile parsing. Always available, no setup. Works for all 17 claim types.
 
-2. **CPG backend** (optional): uses a code property graph produced by [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer). AST-level node and edge queries. Confidence ~0.95 because it operates on parsed call graphs, not text patterns.
+2. **CPG backend** (optional): uses the code property graph and architecture JSON from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer). AST-level queries, call graph traversal, dependency data. Covers 14 of 17 claim types with higher confidence.
 
 ### Decision flow
 
@@ -175,11 +175,23 @@ verifier.load_cpg("/path/to/output/code-graph.json")
 
 When loaded, the engine tries CPG queries first for supported claim types. If the CPG query returns no result (e.g., function not in the graph), it falls back to grep. This means the CPG backend is purely additive: it can only improve results, never degrade them.
 
-### CPG-supported claim types
+### CPG coverage (14 of 17 claim types)
 
-| Claim Type | CPG Method | Fallback |
-|---|---|---|
-| FUNCTION_EXISTS | Node lookup by name/file | grep for definition pattern |
-| FUNCTION_CALLED / HAS_CALLERS | Incoming call-edge traversal | grep for call sites |
-| CALL_CHAIN | Multi-hop path query | Per-pair grep in function bodies |
-| ENTRY_POINT | HTTPEndpoint node kind | Framework pattern grep |
+| Claim Type | CPG Method | CPG Conf. | Grep Conf. |
+|---|---|---|---|
+| FUNCTION_EXISTS | Node lookup by name/file | 0.95 | 0.85 |
+| FUNCTION_CALLED | Call edge traversal | 0.80-0.95 | 0.65 |
+| HAS_CALLERS | Incoming call edges | 0.80-0.95 | 0.65 |
+| CALL_CHAIN | Multi-hop path query | 0.85 | 0.70 |
+| ENTRY_POINT | HTTPEndpoint nodes | 0.90 | 0.65 |
+| ABSENCE | Symbol index lookup | 0.90 | 0.60 |
+| PACKAGE_VERSION | Architecture JSON go_modules | 0.92 | 0.90 |
+| DEFAULT_VALUE | Variable node lookup | 0.70 | 0.55 |
+| CONFIG_FLAG | StructLiteral field matching | 0.85 | 0.80 |
+| FILE_CLASSIFICATION | Function test annotations | 0.90 | 0.80 |
+| IMPORT_EXISTS | CallSite targets + arch deps | 0.88 | 0.80 |
+| MITIGATION_EXISTS | Function existence + callers | 0.75 | 0.70 |
+| DEPENDENCY_TYPE | Architecture JSON go_modules | 0.92 | 0.85 |
+| CVE_AFFECTS_VERSION | (falls back to OSV API) | --- | 0.75-0.85 |
+
+**Not CPG-enhanced** (3 types): FILE_EXISTS (`os.path.isfile` is already exact), LINE_CONTENT (CPG doesn't store line text), GENERATED_OR_VENDORED (CPG doesn't track file metadata).
