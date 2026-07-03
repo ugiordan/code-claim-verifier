@@ -140,7 +140,7 @@ CCV has two verification backends for function-related claims (FUNCTION_EXISTS, 
 
 1. **Grep backend** (default): language-aware regex patterns. Always available, no setup required. Confidence ~0.65 for call-site claims because grep can't distinguish definitions from references or resolve indirect calls.
 
-2. **CPG backend** (optional): uses a code property graph from [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer). AST-level node and edge queries. Confidence ~0.95 because it operates on parsed call graphs, not text patterns.
+2. **CPG backend** (optional): uses a code property graph produced by [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer). AST-level node and edge queries. Confidence ~0.95 because it operates on parsed call graphs, not text patterns.
 
 ### Decision flow
 
@@ -160,13 +160,20 @@ graph TD
     style C fill:#ff9,stroke:#333
 ```
 
-The CPG is loaded at `VerificationEngine` construction time. `load_cpg(repo_path)` checks three locations:
+The CPG is not auto-detected. You produce it by running [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) on the target repo:
 
-- `<repo>/code-graph.json`
-- `<repo>/output/code-graph.json`
-- `<repo>/.arch-analyzer/code-graph.json`
+```bash
+arch-analyzer scan --repo /path/to/repo --output /path/to/output/
+```
 
-If found, the engine tries CPG queries first for supported claim types. If the CPG query returns no result (e.g., function not in the graph), it falls back to grep. This means the CPG backend is purely additive: it can only improve results, never degrade them.
+Then load it explicitly:
+
+```python
+verifier = CodeClaimVerifier(llm_function=my_llm, repo_path="/path/to/repo")
+verifier.load_cpg("/path/to/output/code-graph.json")
+```
+
+When loaded, the engine tries CPG queries first for supported claim types. If the CPG query returns no result (e.g., function not in the graph), it falls back to grep. This means the CPG backend is purely additive: it can only improve results, never degrade them.
 
 ### CPG-supported claim types
 

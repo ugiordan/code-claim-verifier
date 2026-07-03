@@ -22,7 +22,7 @@ CodeClaimVerifier(
 | `llm_function` | `Callable[[str, str], str]` | Function that takes `(system_prompt, user_prompt)` and returns the LLM's response string. Called once per `verify()` for claim extraction. |
 | `repo_path` | `str` | Absolute or relative path to the repository root. All file paths in claims are resolved relative to this. |
 
-The constructor automatically calls `load_cpg(repo_path)` to check for a code property graph. If a `code-graph.json` is found, the internal `VerificationEngine` is initialized with a `CpgBackend` instance and uses AST-level queries for function claims. No configuration needed.
+To use AST-level verification for function claims, call `verifier.load_cpg("/path/to/code-graph.json")` after construction. The `code-graph.json` is produced by running [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) on the target repo. Without a CPG, all verification uses grep (the default).
 
 ### verify()
 
@@ -266,15 +266,9 @@ from code_claim_verifier.cpg_backend import load_cpg
 def load_cpg(repo_path: str) -> CpgBackend | None
 ```
 
-Try to load a code property graph from common locations relative to `repo_path`. Checks, in order:
+Low-level helper that searches for a `code-graph.json` in common locations relative to a path. Prefer using `verifier.load_cpg(path)` directly with the explicit path to the file.
 
-1. `<repo_path>/code-graph.json`
-2. `<repo_path>/output/code-graph.json`
-3. `<repo_path>/.arch-analyzer/code-graph.json`
-
-Returns a `CpgBackend` instance if a valid `code-graph.json` is found, `None` otherwise. Logs a warning if the file exists but fails to parse.
-
-Called automatically by `CodeClaimVerifier.__init__()`. You only need to call this directly if you're constructing a `VerificationEngine` manually.
+Returns a `CpgBackend` instance if found, `None` otherwise.
 
 ---
 
@@ -300,7 +294,7 @@ VerificationEngine(cpg: CpgBackend | None = None)
 
 ## CpgBackend
 
-Query interface over an [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer) code property graph.
+Query interface over an [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) code property graph.
 
 ```python
 from code_claim_verifier.cpg_backend import CpgBackend

@@ -26,7 +26,7 @@ graph LR
 
 - **17 claim types** across 5 categories: file/path, function/symbol, dependency, code patterns, and auth chain
 - **Claim chaining** infers dependencies between claims, synthesizes missing prerequisites, and propagates refutation through the dependency graph
-- **CPG integration**: when [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer) has produced a `code-graph.json`, CCV auto-loads it and uses AST-level queries for function claims (~95% accuracy vs ~65% with grep). Zero config, graceful fallback.
+- **CPG integration**: load a `code-graph.json` from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) to use AST-level queries for function claims (~95% accuracy vs ~65% with grep). Optional, graceful fallback to grep.
 - **CVE verification via OSV**: CVE_AFFECTS_VERSION queries the [OSV API](https://osv.dev/) to check if a CVE affects a specific package version. No API key needed.
 - **Language-aware** grep patterns for Python, Go, TypeScript, Java, C/C++, Rust
 - **Batch verification** with adaptive batching and shared caches (thread-safe via contextvars)

@@ -135,20 +135,24 @@ This catches cascading hallucinations: the LLM invents a file, then makes detail
 
 ## CPG Integration
 
-When [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer) has been run on the repo and a `code-graph.json` exists, CCV automatically loads it and uses AST-level queries instead of grep for function-related claims:
+For higher accuracy on function claims, CCV can use the code property graph from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer). This replaces grep with exact AST-level queries for:
 
 - **FUNCTION_EXISTS**: exact node lookup instead of regex matching
 - **FUNCTION_CALLED / HAS_CALLERS**: call-edge traversal instead of grep heuristics
-- **CALL_CHAIN**: multi-hop path queries through the call graph
+- **CALL_CHAIN**: multi-hop path queries through the actual call graph
 - **ENTRY_POINT**: HTTP endpoint nodes from the CPG
 
-This is optional and requires zero configuration. CCV checks for `code-graph.json` in the repo root, `output/`, and `.arch-analyzer/` directories at construction time. If found, function claims use CPG queries (confidence ~0.95). If not found, everything falls back to grep (confidence ~0.65).
+First, run architecture-analyzer on your repo to produce the CPG:
 
-In practice, the CPG backend improves function claim accuracy from ~65% (grep, which can't distinguish definitions from references or handle indirect calls) to ~95% (AST-level, which knows the actual call graph).
+```bash
+arch-analyzer scan --repo /path/to/repo --output /path/to/output/
+```
+
+Then load it into CCV:
 
 ```python
-# No code changes needed. Just have code-graph.json in the repo:
-verifier = CodeClaimVerifier(llm_function=my_llm, repo_path="/repo/with/code-graph")
+verifier = CodeClaimVerifier(llm_function=my_llm, repo_path="/path/to/repo")
+verifier.load_cpg("/path/to/output/code-graph.json")
 # CPG loaded automatically. Function claims use AST queries.
 ```
 

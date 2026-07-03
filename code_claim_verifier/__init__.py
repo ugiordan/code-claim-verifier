@@ -26,9 +26,19 @@ class CodeClaimVerifier:
     ):
         self.llm_function = llm_function
         self.repo_path = repo_path
-        cpg = load_cpg(repo_path)
-        self.engine = VerificationEngine(cpg=cpg)
+        self.engine = VerificationEngine()
         self._extraction_hints: list[str] = []
+
+    def load_cpg(self, cpg_path: str) -> None:
+        """Load a code property graph from architecture-analyzer output.
+
+        Run architecture-analyzer on your repo first:
+            arch-analyzer scan --repo /path/to/repo --output /path/to/output/
+        Then pass the code-graph.json path here:
+            verifier.load_cpg("/path/to/output/code-graph.json")
+        """
+        from code_claim_verifier.cpg_backend import CpgBackend
+        self.engine.cpg = CpgBackend(cpg_path)
 
     def register(self, claim_type: str, verifier_fn: VerifierFunction,
                  extraction_hint: str,
