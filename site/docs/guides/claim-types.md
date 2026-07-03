@@ -144,17 +144,25 @@ Checks manifest files (`go.mod`, `requirements.txt`, `package.json`, `Pipfile`, 
 
 ### CVE_AFFECTS_VERSION
 
-Checks whether a CVE affects the installed version of a package.
+Checks whether a CVE affects the installed version of a package by querying the [OSV API](https://osv.dev/).
 
 | Field | Value |
 |-------|-------|
-| **Parameters** | `cve` (string, optional), `package` (string, required), `version` (string, optional) |
-| **Verification method** | Currently returns UNVERIFIABLE |
-| **Confidence** | 0.0 |
+| **Parameters** | `cve` (string, optional), `package` (string, required), `version` (string, required) |
+| **Verification method** | OSV API query (`api.osv.dev/v1/query`) |
+| **Confidence** | 0.85 (VERIFIED with specific CVE match), 0.80 (VERIFIED without CVE), 0.75 (REFUTED) |
 | **Triggers on reasoning like** | "CVE-2024-1234 affects PyYAML < 6.0" |
 
+Queries the OSV (Open Source Vulnerabilities) database with the package name and version. No authentication required.
+
+**Behavior:**
+
+- If `cve` is provided: checks whether that specific CVE ID appears in the vulnerability list (including aliases) for `package@version`. Returns VERIFIED if found, REFUTED if the package has vulns but not that CVE.
+- If `cve` is omitted: checks whether any known vulnerabilities affect `package@version`. Returns VERIFIED if vulns exist, REFUTED if none found.
+- On network errors or missing parameters: falls back to UNVERIFIABLE with the error details.
+
 !!! note
-    This claim type always returns UNVERIFIABLE because CVE version range checking requires an external advisory database. It exists as a typed slot so the extraction prompt captures CVE-related claims rather than dropping them.
+    The OSV API is free, requires no API key, and covers data from multiple sources (NVD, GitHub Security Advisories, PyPI, Go, npm, and more). The 10-second timeout prevents slow network conditions from blocking the verification pipeline.
 
 ---
 
@@ -265,6 +273,6 @@ Performs `grep -F` for the flag name across the repo. If an expected value is pr
 | 0.65 | FUNCTION_CALLED, HAS_CALLERS, ENTRY_POINT |
 | 0.60 | ABSENCE |
 | 0.55 | DEFAULT_VALUE |
-| 0.00 | CVE_AFFECTS_VERSION (always UNVERIFIABLE) |
+| 0.75-0.85 | CVE_AFFECTS_VERSION (via OSV API) |
 
 These confidence values are used as weights during calibration. Higher confidence means the verifier's result has more influence on the final score.

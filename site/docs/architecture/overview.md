@@ -133,3 +133,46 @@ CodeClaimVerifier.verify()
        -> grep.reset_cache()                # deactivate cache
   -> calibrator.calibrate()                 # compute report
 ```
+
+## Dual backend: grep + CPG
+
+CCV has two verification backends for function-related claims (FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS, CALL_CHAIN, ENTRY_POINT):
+
+1. **Grep backend** (default): language-aware regex patterns. Always available, no setup required. Confidence ~0.65 for call-site claims because grep can't distinguish definitions from references or resolve indirect calls.
+
+2. **CPG backend** (optional): uses a code property graph from [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer). AST-level node and edge queries. Confidence ~0.95 because it operates on parsed call graphs, not text patterns.
+
+### Decision flow
+
+```mermaid
+graph TD
+    A[VerificationEngine receives claim] --> B{CPG loaded?}
+    B -->|No| C[Grep backend]
+    B -->|Yes| D{Claim type in CPG set?}
+    D -->|No| C
+    D -->|Yes| E[CPG query]
+    E --> F{Result found?}
+    F -->|Yes| G[Return CPG result]
+    F -->|No| C
+    C --> H[Return grep result]
+
+    style E fill:#9f9,stroke:#333
+    style C fill:#ff9,stroke:#333
+```
+
+The CPG is loaded at `VerificationEngine` construction time. `load_cpg(repo_path)` checks three locations:
+
+- `<repo>/code-graph.json`
+- `<repo>/output/code-graph.json`
+- `<repo>/.arch-analyzer/code-graph.json`
+
+If found, the engine tries CPG queries first for supported claim types. If the CPG query returns no result (e.g., function not in the graph), it falls back to grep. This means the CPG backend is purely additive: it can only improve results, never degrade them.
+
+### CPG-supported claim types
+
+| Claim Type | CPG Method | Fallback |
+|---|---|---|
+| FUNCTION_EXISTS | Node lookup by name/file | grep for definition pattern |
+| FUNCTION_CALLED / HAS_CALLERS | Incoming call-edge traversal | grep for call sites |
+| CALL_CHAIN | Multi-hop path query | Per-pair grep in function bodies |
+| ENTRY_POINT | HTTPEndpoint node kind | Framework pattern grep |

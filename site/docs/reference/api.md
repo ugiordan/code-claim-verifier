@@ -22,6 +22,8 @@ CodeClaimVerifier(
 | `llm_function` | `Callable[[str, str], str]` | Function that takes `(system_prompt, user_prompt)` and returns the LLM's response string. Called once per `verify()` for claim extraction. |
 | `repo_path` | `str` | Absolute or relative path to the repository root. All file paths in claims are resolved relative to this. |
 
+The constructor automatically calls `load_cpg(repo_path)` to check for a code property graph. If a `code-graph.json` is found, the internal `VerificationEngine` is initialized with a `CpgBackend` instance and uses AST-level queries for function claims. No configuration needed.
+
 ### verify()
 
 ```python
@@ -255,3 +257,70 @@ CLAIM_TYPES: frozenset[str]
 ```
 
 The set of 17 built-in claim type identifiers.
+
+### load_cpg()
+
+```python
+from code_claim_verifier.cpg_backend import load_cpg
+
+def load_cpg(repo_path: str) -> CpgBackend | None
+```
+
+Try to load a code property graph from common locations relative to `repo_path`. Checks, in order:
+
+1. `<repo_path>/code-graph.json`
+2. `<repo_path>/output/code-graph.json`
+3. `<repo_path>/.arch-analyzer/code-graph.json`
+
+Returns a `CpgBackend` instance if a valid `code-graph.json` is found, `None` otherwise. Logs a warning if the file exists but fails to parse.
+
+Called automatically by `CodeClaimVerifier.__init__()`. You only need to call this directly if you're constructing a `VerificationEngine` manually.
+
+---
+
+## VerificationEngine
+
+The core verification component. Owns the verifier registry, result caching, and dependency graph. Usually created internally by `CodeClaimVerifier`, but can be used directly for lower-level control.
+
+```python
+from code_claim_verifier.engine import VerificationEngine
+```
+
+### Constructor
+
+```python
+VerificationEngine(cpg: CpgBackend | None = None)
+```
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `cpg` | `CpgBackend \| None` | `None` | Optional CPG backend. When provided, the engine tries AST-level queries before falling back to grep for FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS, CALL_CHAIN, and ENTRY_POINT claims. |
+
+---
+
+## CpgBackend
+
+Query interface over an [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer) code property graph.
+
+```python
+from code_claim_verifier.cpg_backend import CpgBackend
+```
+
+### Constructor
+
+```python
+CpgBackend(cpg_path: str)
+```
+
+Loads and indexes a `code-graph.json` file. Builds internal indexes for nodes (by ID, kind, and name) and edges (by source and target).
+
+### Methods
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `function_exists` | `(name: str, file: str \| None = None) -> dict \| None` | Look up a Function node by name, optionally scoped to a file. Returns the node dict or `None`. |
+| `function_callers` | `(name: str) -> list[dict]` | Find all CALLS edges targeting the named function. |
+| `function_callees` | `(name: str) -> list[dict]` | Find all functions called by the named function (via CONTAINS + CALLS edges). |
+| `call_chain_exists` | `(chain: list[str]) -> tuple[bool, list[str]]` | Check if a multi-hop call chain A->B->C exists. Returns `(success, evidence_list)`. |
+| `http_endpoints` | `() -> list[dict]` | List all HTTPEndpoint nodes in the graph. |
+| `get_confidence_for_edge` | `(edge: dict) -> float` | Map a CPG edge's confidence label to a numeric value: CERTAIN=0.95, INFERRED=0.80, UNCERTAIN=0.65. |

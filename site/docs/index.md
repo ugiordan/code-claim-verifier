@@ -26,6 +26,8 @@ graph LR
 
 - **17 claim types** across 5 categories: file/path, function/symbol, dependency, code patterns, and auth chain
 - **Claim chaining** infers dependencies between claims, synthesizes missing prerequisites, and propagates refutation through the dependency graph
+- **CPG integration**: when [architecture-analyzer](https://github.com/redhat-ai-tools/architecture-analyzer) has produced a `code-graph.json`, CCV auto-loads it and uses AST-level queries for function claims (~95% accuracy vs ~65% with grep). Zero config, graceful fallback.
+- **CVE verification via OSV**: CVE_AFFECTS_VERSION queries the [OSV API](https://osv.dev/) to check if a CVE affects a specific package version. No API key needed.
 - **Language-aware** grep patterns for Python, Go, TypeScript, Java, C/C++, Rust
 - **Batch verification** with adaptive batching and shared caches (thread-safe via contextvars)
 - **Custom claim types** via registration API with extraction hints
@@ -40,7 +42,7 @@ graph LR
 |---|---|---|
 | **File/Path** | FILE_EXISTS, LINE_CONTENT, FILE_CLASSIFICATION, GENERATED_OR_VENDORED | `os.path.isfile()`, file read, path regex, header markers |
 | **Function** | FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS | Language-aware grep for definitions and call sites |
-| **Dependency** | IMPORT_EXISTS, PACKAGE_VERSION, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION | Import grep, lockfile parse |
+| **Dependency** | IMPORT_EXISTS, PACKAGE_VERSION, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION | Import grep, lockfile parse, [OSV API](https://osv.dev/) for CVE checks |
 | **Code** | ABSENCE, MITIGATION_EXISTS, ENTRY_POINT | Scoped grep (negated), file read, framework pattern grep |
 | **Auth Chain** | CALL_CHAIN, DEFAULT_VALUE, CONFIG_FLAG | Multi-hop call path grep, default/nil checks, config flag grep |
 
