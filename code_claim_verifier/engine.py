@@ -478,7 +478,6 @@ class VerificationEngine:
         if ct == "ENTRY_POINT":
             endpoints = cpg.http_endpoints()
             location = params.get("location", "")
-            ep_type = params.get("type", "")
             for ep in endpoints:
                 if location and location in ep.get("file", ""):
                     return VerifiedClaim(
@@ -486,6 +485,72 @@ class VerificationEngine:
                         evidence=f"CPG: endpoint {ep['name']} at {ep['file']}:{ep['line']}",
                         method="cpg_endpoint",
                     )
+            return None
+
+        if ct == "ABSENCE":
+            pattern = params.get("pattern", "")
+            if pattern and not cpg.symbol_exists(pattern):
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.90,
+                    evidence=f"CPG: no symbol '{pattern}' in graph",
+                    method="cpg_absence",
+                )
+            if pattern and cpg.symbol_exists(pattern):
+                return VerifiedClaim(
+                    claim=claim, verdict="REFUTED", method_confidence=0.90,
+                    evidence=f"CPG: symbol '{pattern}' found in graph",
+                    method="cpg_absence",
+                )
+            return None
+
+        if ct == "PACKAGE_VERSION":
+            package = params.get("package", "")
+            expected = params.get("version", "")
+            actual = cpg.get_dependency_version(package)
+            if actual is not None:
+                match = actual == expected or expected in actual
+                return VerifiedClaim(
+                    claim=claim,
+                    verdict="VERIFIED" if match else "REFUTED",
+                    method_confidence=0.92,
+                    evidence=f"CPG arch: {package}=={actual} (expected {expected})",
+                    method="cpg_dependency",
+                )
+            return None
+
+        if ct == "DEFAULT_VALUE":
+            variable = params.get("variable", "")
+            file_param = params.get("file", "")
+            node = cpg.variable_exists(variable, file_param or None)
+            if node:
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.70,
+                    evidence=f"CPG: variable '{variable}' at {node['file']}:{node['line']}",
+                    method="cpg_variable",
+                )
+            return None
+
+        if ct == "CONFIG_FLAG":
+            flag = params.get("flag", "")
+            value = params.get("value", "")
+            matches = cpg.struct_literal_with_field(field_name=flag, field_value=value or None)
+            if matches:
+                m = matches[0]
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.85,
+                    evidence=f"CPG: flag '{flag}' in {m['struct_type']} at {m['file']}:{m['line']}",
+                    method="cpg_config",
+                )
+            if not value:
+                return None
+            no_value = cpg.struct_literal_with_field(field_name=flag)
+            if no_value:
+                m = no_value[0]
+                return VerifiedClaim(
+                    claim=claim, verdict="REFUTED", method_confidence=0.80,
+                    evidence=f"CPG: flag '{flag}' found but not with value '{value}' at {m['file']}:{m['line']}",
+                    method="cpg_config",
+                )
             return None
 
         return None
