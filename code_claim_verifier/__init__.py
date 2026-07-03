@@ -4,6 +4,7 @@ from code_claim_verifier.types import TypedClaim, VerifiedClaim, VerificationRep
 from code_claim_verifier.extractor import extract_claims, LLMFunction
 from code_claim_verifier.calibrator import calibrate
 from code_claim_verifier.engine import VerificationEngine, VerifierFunction
+from code_claim_verifier.cpg_backend import load_cpg
 from code_claim_verifier.language import detect_language
 
 
@@ -25,7 +26,8 @@ class CodeClaimVerifier:
     ):
         self.llm_function = llm_function
         self.repo_path = repo_path
-        self.engine = VerificationEngine()
+        cpg = load_cpg(repo_path)
+        self.engine = VerificationEngine(cpg=cpg)
         self._extraction_hints: list[str] = []
 
     def register(self, claim_type: str, verifier_fn: VerifierFunction,

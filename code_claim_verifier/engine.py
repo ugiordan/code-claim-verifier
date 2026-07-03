@@ -7,6 +7,7 @@ from typing import Callable
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.verifiers import VERIFIER_REGISTRY
 from code_claim_verifier import grep as grep_module
+from code_claim_verifier.cpg_backend import CpgBackend, load_cpg
 
 VerifierFunction = Callable[[TypedClaim, str, str], VerifiedClaim]
 
@@ -58,9 +59,10 @@ class VerificationEngine:
     * verify_claims_with_chaining - full dependency synthesis + SUSPECT propagation
     """
 
-    def __init__(self) -> None:
+    def __init__(self, cpg: CpgBackend | None = None) -> None:
         self.registry: dict[str, VerifierFunction] = dict(VERIFIER_REGISTRY)
         self.dependency_rules: list[tuple[str, str, str, str]] = list(BUILTIN_RULES)
+        self.cpg = cpg
 
     # ------------------------------------------------------------------
     # Registry management
@@ -390,7 +392,12 @@ class VerificationEngine:
     def _verify_one(
         self, claim: TypedClaim, repo_path: str, language: str
     ) -> VerifiedClaim:
-        """Dispatch to the registry with error handling."""
+        """Dispatch to CPG backend if available, else registry with error handling."""
+        if self.cpg:
+            cpg_result = self._try_cpg_verify(claim)
+            if cpg_result:
+                return cpg_result
+
         verifier = self.registry.get(claim.claim_type)
         if not verifier:
             return VerifiedClaim(
@@ -412,6 +419,76 @@ class VerificationEngine:
                 method="error",
                 error=f"{type(e).__name__}: {str(e)[:200]}",
             )
+
+    def _try_cpg_verify(self, claim: TypedClaim) -> VerifiedClaim | None:
+        """Try to verify a claim using the CPG. Returns None to fall back to grep."""
+        cpg = self.cpg
+        ct = claim.claim_type
+        params = claim.parameters
+
+        if ct == "FUNCTION_EXISTS":
+            name = params.get("name", "")
+            file = params.get("file", params.get("path", ""))
+            node = cpg.function_exists(name, file or None)
+            if node:
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.95,
+                    evidence=f"CPG: {node['name']} at {node['file']}:{node['line']}",
+                    method="cpg_function",
+                )
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.95,
+                evidence=f"CPG: no function '{name}' found",
+                method="cpg_function",
+            )
+
+        if ct in ("FUNCTION_CALLED", "HAS_CALLERS"):
+            name = params.get("name", "")
+            expected = params.get("expected", True)
+            callers = cpg.function_callers(name)
+            has_callers = len(callers) > 0
+            match = has_callers == expected
+            conf = max((cpg.get_confidence_for_edge(c) for c in callers), default=0.65) if callers else 0.80
+            evidence = f"CPG: {len(callers)} callers" if callers else f"CPG: no callers found"
+            return VerifiedClaim(
+                claim=claim,
+                verdict="VERIFIED" if match else "REFUTED",
+                method_confidence=conf,
+                evidence=evidence,
+                method="cpg_callers",
+            )
+
+        if ct == "CALL_CHAIN":
+            chain = params.get("chain", [])
+            caller = params.get("caller", "")
+            callee = params.get("callee", "")
+            if not chain and caller and callee:
+                chain = [caller, callee]
+            if len(chain) < 2:
+                return None
+            success, evidence = cpg.call_chain_exists(chain)
+            return VerifiedClaim(
+                claim=claim,
+                verdict="VERIFIED" if success else "REFUTED",
+                method_confidence=0.85,
+                evidence=f"CPG chain: {'; '.join(evidence)}",
+                method="cpg_call_chain",
+            )
+
+        if ct == "ENTRY_POINT":
+            endpoints = cpg.http_endpoints()
+            location = params.get("location", "")
+            ep_type = params.get("type", "")
+            for ep in endpoints:
+                if location and location in ep.get("file", ""):
+                    return VerifiedClaim(
+                        claim=claim, verdict="VERIFIED", method_confidence=0.90,
+                        evidence=f"CPG: endpoint {ep['name']} at {ep['file']}:{ep['line']}",
+                        method="cpg_endpoint",
+                    )
+            return None
+
+        return None
 
     @staticmethod
     def _cache_key(
