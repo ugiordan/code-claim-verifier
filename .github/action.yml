@@ -1,0 +1,67 @@
+name: 'Verify LLM Claims in PR Reviews'
+description: 'Run CodeClaimVerifier on AI-generated PR review comments to catch hallucinated claims about code'
+author: 'ugiordan'
+
+inputs:
+  llm-provider:
+    description: 'LLM provider for claim extraction (anthropic or openai)'
+    required: false
+    default: 'anthropic'
+  model:
+    description: 'Model override (uses provider default if empty)'
+    required: false
+    default: ''
+  domain-context:
+    description: 'Domain hint for claim extraction (e.g., "security triage")'
+    required: false
+    default: ''
+  comment-tag:
+    description: 'HTML comment tag to identify CCV comments (avoids re-verifying)'
+    required: false
+    default: 'ccv-verification'
+  min-claims:
+    description: 'Minimum claims to post a verification comment'
+    required: false
+    default: '2'
+
+outputs:
+  verification-rate:
+    description: 'Overall verification rate (0.0 to 1.0)'
+    value: ${{ steps.verify.outputs.verification-rate }}
+  action:
+    description: 'Recommended action (BOOST, FLAG, OVERRIDE, NO_CHANGE)'
+    value: ${{ steps.verify.outputs.action }}
+  total-claims:
+    description: 'Total number of claims extracted'
+    value: ${{ steps.verify.outputs.total-claims }}
+  hallucination-rate:
+    description: 'Hallucination rate (1 - verification_rate)'
+    value: ${{ steps.verify.outputs.hallucination-rate }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install CCV
+      shell: bash
+      run: |
+        pip install code-claim-verifier[${{ inputs.llm-provider }}]
+
+    - name: Verify PR review claims
+      id: verify
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        CCV_LLM_PROVIDER: ${{ inputs.llm-provider }}
+        CCV_MODEL: ${{ inputs.model }}
+        CCV_DOMAIN_CONTEXT: ${{ inputs.domain-context }}
+        CCV_COMMENT_TAG: ${{ inputs.comment-tag }}
+        CCV_MIN_CLAIMS: ${{ inputs.min-claims }}
+        CCV_REPO_PATH: ${{ github.workspace }}
+        CCV_PR_NUMBER: ${{ github.event.pull_request.number }}
+        CCV_REPO_FULL_NAME: ${{ github.repository }}
+      run: python ${{ github.action_path }}/scripts/verify-pr-reviews.py
