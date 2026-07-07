@@ -4,7 +4,12 @@ author: 'ugiordan'
 
 inputs:
   llm-provider:
-    description: 'LLM provider for claim extraction (anthropic or openai)'
+    description: |
+      LLM provider for claim extraction:
+        anthropic     - Anthropic API (needs ANTHROPIC_API_KEY)
+        anthropic-vertex - Claude via Google Vertex AI (needs GCP auth + ANTHROPIC_VERTEX_PROJECT_ID)
+        openai        - OpenAI API (needs OPENAI_API_KEY)
+        openai-compatible - Any OpenAI-compatible endpoint (needs CCV_BASE_URL + CCV_API_KEY)
     required: false
     default: 'anthropic'
   model:
@@ -49,7 +54,12 @@ runs:
     - name: Install CCV
       shell: bash
       run: |
-        pip install code-claim-verifier[${{ inputs.llm-provider }}]
+        pip install code-claim-verifier
+        # Install provider SDK based on llm-provider
+        case "${{ inputs.llm-provider }}" in
+          anthropic|anthropic-vertex) pip install anthropic ;;
+          openai|openai-compatible) pip install openai ;;
+        esac
 
     - name: Verify PR review claims
       id: verify

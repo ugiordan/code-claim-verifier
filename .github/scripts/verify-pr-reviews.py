@@ -53,19 +53,68 @@ def filter_comments(comments: list[dict], tag: str) -> list[dict]:
     return filtered
 
 
+def make_llm_function(provider: str, model: str):
+    """Create an LLM function for the given provider."""
+    if provider == "anthropic":
+        from code_claim_verifier.providers.anthropic_provider import make_llm_function as make_fn
+        return make_fn(model or None)
+
+    if provider == "anthropic-vertex":
+        import anthropic
+        project_id = os.environ.get("ANTHROPIC_VERTEX_PROJECT_ID", "")
+        region = os.environ.get("CLOUD_ML_REGION", "us-east5")
+        if region == "global":
+            region = "us-east5"
+        client = anthropic.AnthropicVertex(project_id=project_id, region=region)
+        resolved_model = model or "claude-sonnet-4@20250514"
+
+        def call(system: str, user: str) -> str:
+            response = client.messages.create(
+                model=resolved_model, max_tokens=4096, temperature=0,
+                system=system, messages=[{"role": "user", "content": user}],
+            )
+            if not response.content:
+                raise RuntimeError("Empty response from Vertex AI")
+            return response.content[0].text
+        return call
+
+    if provider == "openai":
+        from code_claim_verifier.providers.openai_provider import make_llm_function as make_fn
+        return make_fn(model or None)
+
+    if provider == "openai-compatible":
+        import openai
+        base_url = os.environ.get("CCV_BASE_URL", "")
+        api_key = os.environ.get("CCV_API_KEY", "")
+        if not base_url:
+            print("CCV_BASE_URL required for openai-compatible provider", file=sys.stderr)
+            sys.exit(1)
+        client = openai.OpenAI(base_url=base_url, api_key=api_key or "unused")
+        resolved_model = model or "default"
+
+        def call(system: str, user: str) -> str:
+            response = client.chat.completions.create(
+                model=resolved_model, max_tokens=4096, temperature=0,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+            )
+            content = response.choices[0].message.content
+            if content is None:
+                raise RuntimeError("None content from API")
+            return content
+        return call
+
+    print(f"Unknown provider: {provider}", file=sys.stderr)
+    sys.exit(1)
+
+
 def verify_comment(comment_body: str, repo_path: str, provider: str,
                    model: str, domain_context: str) -> dict | None:
     from code_claim_verifier import CodeClaimVerifier
 
-    if provider == "anthropic":
-        from code_claim_verifier.providers.anthropic_provider import make_llm_function
-    elif provider == "openai":
-        from code_claim_verifier.providers.openai_provider import make_llm_function
-    else:
-        print(f"Unknown provider: {provider}", file=sys.stderr)
-        return None
-
-    llm_fn = make_llm_function(model or None)
+    llm_fn = make_llm_function(provider, model)
     verifier = CodeClaimVerifier(llm_function=llm_fn, repo_path=repo_path)
     report = verifier.verify(
         reasoning=comment_body[:4000],
