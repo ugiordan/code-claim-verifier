@@ -82,24 +82,41 @@ def verify_line_content(claim: TypedClaim, repo_path: str, language: str) -> Ver
 
 def verify_file_classification(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     path = claim.parameters.get("file", claim.parameters.get("path", ""))
-    expected_cat = claim.parameters.get("category", "").lower()
+    expected_cat = (claim.parameters.get("category", "")
+                    or claim.parameters.get("classification", "")).lower()
 
     test_patterns = [r"test[s_/]", r"_test\.", r"\.test\.", r"spec[s_/]", r"e2e/", r"integration/", r"fixtures?/"]
     vendor_patterns = [r"vendor/", r"third_party/", r"node_modules/"]
+    header_patterns = [r"\.h$", r"\.hpp$", r"\.hh$"]
 
     path_lower = path.lower()
     is_test = any(re.search(p, path_lower) for p in test_patterns)
     is_vendor = any(re.search(p, path_lower) for p in vendor_patterns)
+    is_header = any(re.search(p, path_lower) for p in header_patterns)
 
-    if expected_cat == "test":
+    _CATEGORY_MAP = {
+        "test": "test", "testing": "test", "unit_test": "test", "test_file": "test",
+        "production": "production", "source": "production", "implementation": "production",
+        "code": "production", "main": "production",
+        "vendored": "vendored", "vendor": "vendored", "third_party": "vendored",
+        "header": "header", "include": "header",
+        "config": "config", "configuration": "config", "build": "config",
+    }
+    normalized = _CATEGORY_MAP.get(expected_cat, expected_cat)
+
+    if normalized == "test":
         match = is_test
-    elif expected_cat in ("vendored", "vendor"):
+    elif normalized == "vendored":
         match = is_vendor
-    elif expected_cat == "production":
+    elif normalized == "production":
         match = not is_test and not is_vendor
+    elif normalized == "header":
+        match = is_header
+    elif normalized == "config":
+        config_patterns = [r"config", r"\.cfg$", r"\.ini$", r"\.yaml$", r"\.yml$", r"makefile", r"cmake"]
+        match = any(re.search(p, path_lower) for p in config_patterns)
     else:
-        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-                             evidence=f"Unknown category: {expected_cat}", method="path_regex")
+        match = not is_test and not is_vendor
 
     return VerifiedClaim(
         claim=claim, verdict="VERIFIED" if match else "REFUTED",

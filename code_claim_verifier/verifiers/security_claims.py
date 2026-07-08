@@ -6,7 +6,16 @@ from code_claim_verifier.grep import grep as _grep
 
 
 def verify_absence(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    pattern = claim.parameters.get("pattern", "")
+    pattern = (claim.parameters.get("pattern", "")
+               or claim.parameters.get("item", "")
+               or claim.parameters.get("description", "")
+               or claim.parameters.get("name", ""))
+    if not pattern:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence="No pattern to search for in claim parameters",
+            method="grep_absent",
+        )
     scope = claim.parameters.get("scope", "repo")
 
     if scope == "file":
