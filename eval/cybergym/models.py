@@ -66,22 +66,48 @@ def make_openai(model: str = "gpt-4o") -> LLMFunction:
     return call
 
 
-def make_models_corp(model_id: str) -> LLMFunction:
+def _load_models_corp_config() -> dict:
+    """Load models-corp endpoint config from ~/.config/ccv/models-corp.json.
+
+    The file maps model registry names to their endpoint URLs:
+    {
+        "granite-3.3-8b": "https://granite-3-3-8b-instruct--apicast-staging.example.com:443",
+        "llama-3.3-70b": "https://llama-3-3-70b--apicast-staging.example.com:443",
+        ...
+    }
+    """
+    import json
+    config_path = os.path.expanduser("~/.config/ccv/models-corp.json")
+    if os.path.isfile(config_path):
+        try:
+            with open(config_path) as f:
+                return json.load(f)
+        except Exception as e:
+            logger.warning("Failed to load %s: %s", config_path, e)
+    return {}
+
+
+def make_models_corp(model_id: str, registry_name: str = "") -> LLMFunction:
     """Create an LLM function for a models-corp hosted model.
 
-    Requires two environment variables:
-        MODEL_API: the base URL for the model endpoint
-        USER_KEY: your models-corp API key
+    Endpoint URL resolution (in order):
+        1. ~/.config/ccv/models-corp.json (recommended, maps all models)
+        2. MODEL_API env var (single model fallback)
 
-    Get both from developer.models.corp.redhat.com > Applications & credentials.
+    API key from USER_KEY env var.
     """
     import openai
 
-    base_url = os.environ.get("MODEL_API", "")
+    config = _load_models_corp_config()
+    base_url = config.get(registry_name, "") or os.environ.get("MODEL_API", "")
+
     api_key = os.environ.get("USER_KEY", "")
     if not base_url:
         raise RuntimeError(
-            "MODEL_API not set. Get the endpoint URL from developer.models.corp.redhat.com"
+            f"No endpoint for '{registry_name}'. Either:\n"
+            f"  1. Create ~/.config/ccv/models-corp.json with endpoint URLs\n"
+            f"  2. Set MODEL_API env var\n"
+            f"Get URLs from developer.models.corp.redhat.com"
         )
     if not api_key:
         raise RuntimeError(
@@ -169,6 +195,6 @@ def get_model(name: str) -> LLMFunction:
     elif config["factory"] == "openai":
         return make_openai(config["model"])
     elif config["factory"] == "models-corp":
-        return make_models_corp(config["model"])
+        return make_models_corp(config["model"], registry_name=name)
     else:
         raise ValueError(f"Unknown factory: {config['factory']}")
