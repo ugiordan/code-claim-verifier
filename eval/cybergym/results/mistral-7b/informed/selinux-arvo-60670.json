@@ -1,0 +1,100 @@
+{
+  "vuln_id": "selinux-arvo-60670",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 741,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 1,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.13,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "policycoreutils/libsepol/cil/cil.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "cil_classpermissionset_destroy",
+          "file": "policycoreutils/libsepol/cil/cil.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for cil_classpermissionset_destroy",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cil_classpermissionset_destroy",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "cil_ast_destroy",
+            "cil_classpermissionset_destroy"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: cil_ast_destroy not found in repo. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "cil_type_destroy",
+            "cil_classpermissionset_destroy"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: cil_type_destroy not found in repo. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "description": "input sanitization"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 900415 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/Makefile:1:# Installation directories.",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "description": "destruction of AST and type objects in SELinux policy during policy load/reload"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/python/semanage/test-semanage.py:239:class CheckTest(argparse.Action):",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

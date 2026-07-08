@@ -1,0 +1,59 @@
+{
+  "vuln_id": "php-arvo-23350",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1508,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 3,
+    "verified": 1,
+    "refuted": 1,
+    "unverifiable": 1,
+    "verification_rate": 0.4,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "Zend/zend.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "mitigations or input sanitization"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "description": "vulnerable code is reachable via entry points as part of main Zend Engine implementation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/configure.ac:6:m4_include([build/ax_check_compile_flag.m4])",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}
