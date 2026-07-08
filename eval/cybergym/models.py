@@ -206,6 +206,10 @@ MODEL_REGISTRY: dict[str, dict] = {
         "factory": "models-corp",
         "model": "mistralai/Mistral-7B-Instruct-v0.3",
     },
+    "gpt-oss-20b": {
+        "factory": "models-corp",
+        "model": "openai/gpt-oss-20b",
+    },
 }
 
 
