@@ -5,79 +5,62 @@
   "reasoning_length": 3733,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
-    "refuted": 4,
-    "unverifiable": 2,
-    "verification_rate": 0.66,
+    "total_claims": 20,
+    "verified": 11,
+    "refuted": 9,
+    "unverifiable": 0,
+    "verification_rate": 0.51,
     "action": "FLAG",
     "claims": [
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "test/encoder/app.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/encoder/app.h",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "test/encoder/main.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/encoder/main.c",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "test/decoder/main.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/decoder/main.c",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "fuzzer/hevc_dec_fuzzer.cpp"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: fuzzer/hevc_dec_fuzzer.cpp",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "test/encoder/app.h",
-          "classification": "header"
+          "file": "test/encoder/app.h",
+          "classification": "Encoder application header"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "Unknown category: ",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=test/encoder/app.h, is_test=True, is_vendor=False",
         "method": "path_regex"
       },
       {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "path": "fuzzer/hevc_dec_fuzzer.cpp",
-          "classification": "fuzzer"
+          "file": "test/encoder/main.c",
+          "classification": "Encoder application main (truncated)"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "Unknown category: ",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=test/encoder/main.c, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "test/decoder/main.c",
+          "classification": "Decoder application main (truncated)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=test/decoder/main.c, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
+          "classification": "Fuzzer for decoder"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=fuzzer/hevc_dec_fuzzer.cpp, is_test=False, is_vendor=False",
         "method": "path_regex"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "LLVMFuzzerTestOneInput"
+          "name": "LLVMFuzzerTestOneInput",
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -85,136 +68,183 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "Codec::decodeFrame",
+          "name": "main",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:300:IV_API_CALL_STATUS_T Codec::decodeFrame(const uint8_t *d",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for main",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "ivd_api_function",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:127:  ret = ivd_api_function(NULL, (void *)&create_ip, (void",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ivd_api_function",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "ivd_api_function",
+          "name": "ihevcd_cxa_api_function",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ihevcd_cxa_api_function",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "iv_aligned_malloc",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for iv_aligned_malloc",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
+          "import": "ihevc_typedefs.h",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:127:  ret = ivd_api_function(NULL, (void *)&create_ip, (void",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "ihevc_typedefs.h"
-        },
-        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:52:#include \"ihevc_typedefs.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:21:#include <stddef.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "ihevcd_cxa.h"
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
+          "import": "ihevcd_cxa.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:53:#include \"ihevcd_cxa.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:21:#include <stddef.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "iv.h"
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
+          "import": "iv.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:51:#include \"iv.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:21:#include <stddef.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "ivd.h"
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
+          "import": "ivd.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:52:#include \"ivd.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:21:#include <stddef.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "content": "const static int kMaxNumDecodeCalls = 100;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range (file has 379 lines)",
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "iv_aligned_malloc",
-          "expected": true
+          "chain": [
+            "LLVMFuzzerTestOneInput",
+            "Codec::decodeFrame",
+            "ivd_api_function"
+          ]
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:60:void *iv_aligned_malloc(void *ctxt, WORD32 alignment, WOR",
-        "method": "grep_call_site"
+        "confidence": 0.7,
+        "evidence": "Chain verified: LLVMFuzzerTestOneInput->Codec::decodeFrame: found Codec::decodeFrame() call but not in LLVMFuzzerTestOneInput's body; Codec::decodeFrame->ivd_api_function: found ivd_api_function() cal",
+        "method": "call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "ihevcd_cxa_api_function",
-          "expected": true
+          "chain": [
+            "main",
+            "ivd_api_function"
+          ]
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/decoder/ihevcd_cxa.h:67:IV_API_CALL_STATUS_T ihevcd_cxa_api_function(iv_obj_t *ps_handl",
-        "method": "grep_call_site"
+        "confidence": 0.7,
+        "evidence": "Chain verified: main->ivd_api_function: found ivd_api_function() call but not in main's body",
+        "method": "call_chain"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "function",
-          "name": "parse_short_term_ref_pic_set"
+          "item": "decoder parsing logic",
+          "scope": "provided files"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "function",
-          "name": "parse_long_term_ref_pics"
+          "item": "parse_short_term_ref_pic_set function",
+          "scope": "provided codebase"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "parse_long_term_ref_pics function",
+          "scope": "provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "specific input validation for num_long_term_pics",
+          "scope": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 4,
+    "matched": 1,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -222,178 +252,6 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      }
-    ]
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 19,
-    "verified": 10,
-    "refuted": 0,
-    "unverifiable": 9,
-    "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "test/encoder/app.h"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "test/encoder/main.c"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "test/decoder/main.c"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "fuzzer/hevc_dec_fuzzer.cpp"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "path": "test/encoder/app.h",
-          "classification": "header"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "path": "fuzzer/hevc_dec_fuzzer.cpp",
-          "classification": "fuzzer"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "LLVMFuzzerTestOneInput"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "Codec::decodeFrame",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ivd_api_function",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ivd_api_function",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "ihevc_typedefs.h"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "ihevcd_cxa.h"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "iv.h"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "ivd.h"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "const static int kMaxNumDecodeCalls = 100;"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "iv_aligned_malloc",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ihevcd_cxa_api_function",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "function",
-          "name": "parse_short_term_ref_pic_set"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "function",
-          "name": "parse_long_term_ref_pics"
-        },
-        "verdict": "UNVERIFIABLE"
       }
     ]
   }

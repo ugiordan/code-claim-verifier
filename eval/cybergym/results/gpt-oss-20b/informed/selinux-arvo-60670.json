@@ -5,11 +5,11 @@
   "reasoning_length": 6261,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 2,
-    "refuted": 11,
+    "total_claims": 17,
+    "verified": 7,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.06,
+    "verification_rate": 0.36,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -97,57 +97,96 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "cil_classpermission_resolve",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "cil_classpermissionset_destroy",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "sepol_module_package_free",
+          "name": "sepol_ppfile_to_module_package",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/hll/pp/pp.c:161:\tsepol_module_package_free(mod_pkg);",
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/hll/pp/pp.c:123:\trc = sepol_ppfile_to_module_package(in, &mod_pkg);",
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "sepol_module_package_to_cil",
-          "expected": true
+          "import": "sepol/module.h"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/hll/pp/pp.c:149:\trc = sepol_module_package_to_cil(out, mod_pkg);",
-        "method": "grep_call_site"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/setsebool.c:1:#include <unistd.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "sepol/module_to_cil.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/setsebool.c:1:#include <unistd.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "sepol/policydb/module.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/setsebool.c:1:#include <unistd.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "sepol/cil/cil.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/setsebool.c:1:#include <unistd.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "sepol/cil/cil_class.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/setsebool.c:1:#include <unistd.h>",
+        "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "description": "explicit check for anonymous classpermission names in cil_classpermission_resolve"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 900415 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-60670/src-vul/selinux/policycoreutils/setsebool/Makefile:1:# Installation directories.",
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]

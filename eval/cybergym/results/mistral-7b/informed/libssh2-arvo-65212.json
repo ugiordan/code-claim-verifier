@@ -5,12 +5,12 @@
   "reasoning_length": 1387,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 3,
-    "refuted": 3,
-    "unverifiable": 1,
-    "verification_rate": 0.48,
-    "action": "OVERRIDE",
+    "total_claims": 6,
+    "verified": 4,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.63,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -30,44 +30,30 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 82537 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:1:# Copyright (C) The libssh2 project and its contributors.",
+        "evidence": "grep_absent: 15 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/src/kex.c:3313:/* _libssh2_kex_agree_instr",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "libssh2_session_handshake",
-            "_libssh2_kex_agree_instr"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->libssh2_session_handshake: found libssh2_session_handshake() call but not in main's body; libssh2_session_handshake->_libssh2_kex_agree_instr: found _libssh2_kex_agree_instr() ca",
-        "method": "call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "libssh2_session_handshake",
+          "name": "_libssh2_kex_agree_instr",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/ssh2_exec.c:147:    while((rc = libssh2_session_handshake(session, sock)) ==",
+        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/src/kex.c:3404:            if(_libssh2_kex_agree_instr(hostkey, hostkey_len, s, method",
         "method": "grep_call_site"
       },
       {
-        "claim_type": "DEPENDENCY_TYPE",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "libssh2",
-          "type": "library"
+          "import": "libssh2",
+          "file": "example/direct_tcpip.c"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No manifest found",
-        "method": "manifest_parse"
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/direct_tcpip.c:6:#include \"libssh2_setup.h\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
@@ -75,9 +61,9 @@
           "item": "mitigation",
           "type": "input sanitization"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 82537 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:1:# Copyright (C) The libssh2 project and its contributors.",
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {

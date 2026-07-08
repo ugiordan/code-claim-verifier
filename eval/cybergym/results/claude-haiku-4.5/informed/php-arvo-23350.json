@@ -5,52 +5,52 @@
   "reasoning_length": 6678,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 11,
-    "refuted": 4,
+    "total_claims": 17,
+    "verified": 8,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.73,
-    "action": "FLAG",
+    "verification_rate": 0.44,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend_gc.h"
+          "file": "Zend/zend_gc.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend_gc.h",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend_gc.c"
+          "file": "Zend/zend_gc.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend_gc.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend.h"
+          "file": "Zend/zend.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend.h",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend.c"
+          "file": "Zend/zend.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -124,6 +124,34 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "zend_gc_collect_cycles",
+            "gc_collect_cycles",
+            "gc_scan",
+            "gc_remove_nested_data"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: gc_scan does not call gc_remove_nested_data. Verified: zend_gc_collect_cycles->gc_collect_cycles: found gc_collect_cycles() call but not in zend_gc_collect_cycles's body; gc_collect_cycl",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "OnUpdateGCEnabled",
+            "gc_enable"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: OnUpdateGCEnabled->gc_enable: found gc_enable() call but not in OnUpdateGCEnabled's body",
+        "method": "call_chain"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "gc_enable",
@@ -139,7 +167,7 @@
         "parameters": {
           "file": "Zend/zend.c",
           "line_number": 90,
-          "content": "static ZEND_INI_MH(OnUpdateGCEnabled) /* {{{ */"
+          "content": "static ZEND_INI_MH(OnUpdateGCEnabled)"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -176,150 +204,30 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
-      }
-    ]
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 15,
-    "verified": 13,
-    "refuted": 1,
-    "unverifiable": 1,
-    "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend_gc.h"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend_gc.c"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend.h"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend.c"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "Zend/zend.h",
-          "import": "zend_gc.h"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "gc_remove_nested_data"
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "gc_scan"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "gc_collect_cycles"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "zend_gc_collect_cycles"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "OnUpdateGCEnabled"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "gc_enable"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "gc_enable",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "Zend/zend.c",
-          "line_number": 90,
-          "content": "static ZEND_INI_MH(OnUpdateGCEnabled) /* {{{ */"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "Zend/zend.h",
-          "import": "zend_variables.h"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "Zend/zend.h",
-          "import": "zend_alloc.h"
-        },
-        "verdict": "VERIFIED"
       }
     ]
   }

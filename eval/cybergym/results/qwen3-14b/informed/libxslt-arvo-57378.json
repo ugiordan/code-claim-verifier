@@ -6,21 +6,21 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 16,
-    "verified": 10,
-    "refuted": 1,
-    "unverifiable": 5,
-    "verification_rate": 0.92,
-    "action": "BOOST",
+    "verified": 9,
+    "refuted": 3,
+    "unverifiable": 4,
+    "verification_rate": 0.77,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "name": "xsltKeyFunction"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 28 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/libxslt.syms:74:  xsltKeyFunction;",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -191,23 +191,25 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "xsltParseStylesheetAttributeSet"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/xslt.c:4926:\t\t*   the use of the style->nopreproc flag.",
-        "method": "grep_entry_point"
-      },
-      {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "explicit null checks on memory allocation return values"
+          "type": "null_check",
+          "description": "caller functions explicitly check return value of allocation functions"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
         "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "attrvt.c",
+          "content": "avt = xsltNewAttrVT(style);\nif (avt == NULL)\n    return;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 396 lines)",
         "method": "file_read"
       }
     ]

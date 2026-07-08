@@ -5,52 +5,64 @@
   "reasoning_length": 3051,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 9,
+    "total_claims": 11,
     "verified": 6,
-    "refuted": 2,
-    "unverifiable": 1,
-    "verification_rate": 0.75,
-    "action": "FLAG",
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.47,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend.c"
+          "file": "Zend/zend.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend.h"
+          "file": "Zend/zend.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend.h",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "Zend/zend_API.c"
+          "file": "Zend/zend_API.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: Zend/zend_API.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "path": "Zend/zend_gc.c"
+          "item": "vulnerable functions mentioned in the description",
+          "scope": "provided code snippets"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable code",
+          "scope": "provided files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -67,7 +79,7 @@
         "parameters": {
           "file": "Zend/zend.c",
           "line_range": "96-108",
-          "content": "OnUpdateGCEnabled()"
+          "content": "OnUpdateGCEnabled() function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -86,6 +98,17 @@
         "method": "grep_call_site"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "Zend/zend.h",
+          "import": "zend_gc.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:27:#include \"zend_types.h\"",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "Zend/zend.h",
@@ -98,15 +121,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "file": "Zend/zend.h",
-          "import": "zend_gc.h"
+          "item": "actual vulnerable code",
+          "scope": "provided source files"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:27:#include \"zend_types.h\"",
-        "method": "grep_import"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },
@@ -116,101 +139,23 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "VERIFIED",
+        "actual": "REFUTED",
         "confidence": 0.99,
         "gt_tier": "source"
-      }
-    ]
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 9,
-    "verified": 6,
-    "refuted": 1,
-    "unverifiable": 2,
-    "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend.c"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend.h"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "Zend/zend_API.c"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "path": "Zend/zend_gc.c"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "OnUpdateGCEnabled"
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "Zend/zend.c",
-          "line_range": "96-108",
-          "content": "OnUpdateGCEnabled()"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "gc_enable",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "Zend/zend.h",
-          "line": 48,
-          "content": "#include \"zend_gc.h\""
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "Zend/zend.h",
-          "import": "zend_gc.h"
-        },
-        "verdict": "VERIFIED"
       }
     ]
   }

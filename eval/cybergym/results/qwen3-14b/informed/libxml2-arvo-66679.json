@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 13,
-    "verified": 10,
-    "refuted": 3,
+    "verified": 9,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.77,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -68,6 +68,17 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "HTMLparser.c",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "xmlParseElement",
@@ -101,6 +112,28 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "parserInternals.c",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlFreeNode",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/tree.c:3728:xmlFreeNode(xmlNodePtr cur) {",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "xmlStrEqual",
@@ -121,43 +154,6 @@
         "confidence": 0.85,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/xmlstring.c:285:xmlStrcasecmp(const xmlChar *str1, const xmlChar *str2) {",
         "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlFreeNode",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/tree.c:3728:xmlFreeNode(xmlNodePtr cur) {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "htmlParseElement",
-            "xmlAddIDSafe"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: htmlParseElement->xmlAddIDSafe: found xmlAddIDSafe() call but not in htmlParseElement's body",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "xmlParseAttList",
-            "xmlAddIDSafe"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: xmlParseAttList not found in repo. Verified: ",
-        "method": "call_chain"
       }
     ]
   },

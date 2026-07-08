@@ -5,11 +5,11 @@
   "reasoning_length": 3503,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
+    "total_claims": 15,
     "verified": 12,
-    "refuted": 2,
-    "unverifiable": 2,
-    "verification_rate": 0.69,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.56,
     "action": "FLAG",
     "claims": [
       {
@@ -18,10 +18,10 @@
           "name": "decNumberToString",
           "type": "function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 11 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:622:  decNumberToString(&dec_double.number, literal);",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -120,10 +120,10 @@
           "name": "bounds-checking",
           "type": "mitigation"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -137,48 +137,37 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tests/jq_fuzz_compile.c",
-          "function": "jq_compile"
+          "name": "jq_compile",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_compile.c:17:    jq_compile(jq, null_terminated);",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tests/jq_fuzz_load_file.c",
-          "function": "jv_load_file"
+          "name": "jv_load_file",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/ChangeLog:1214:\tFix leaks in jv_load_file()",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tests/jq_fuzz_parse.c",
-          "function": "jv_parse"
+          "name": "jv_parse",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "file": "tests/jq_fuzz_parse_stream.c",
-          "function": "jv_parse"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse.c:14:  jv res = jv_parse(null_terminated);",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",

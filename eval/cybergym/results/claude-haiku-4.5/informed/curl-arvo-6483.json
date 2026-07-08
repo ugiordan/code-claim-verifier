@@ -6,22 +6,22 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 10,
-    "verified": 0,
+    "verified": 2,
     "refuted": 8,
-    "unverifiable": 2,
-    "verification_rate": 0.0,
+    "unverifiable": 0,
+    "verification_rate": 0.16,
     "action": "OVERRIDE",
     "claims": [
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "filename": "hostip.c",
-          "expected": false
+          "item": "hostip.c",
+          "type": "file"
         },
         "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "confidence": 0.6,
+        "evidence": "grep_absent: 9 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-6483/src-vul/curl/docs/INTERNALS.md:37: - [hostip.c explained](#hostip)",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -82,19 +82,19 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "item": "hostip-related code",
-          "scope": "provided files"
+          "type": "code"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "filename": "CMake/CurlTests.c",
           "line_range": "95-160",
-          "content_description": "tests for gethostbyaddr_r and gethostbyname_r functions"
+          "content": "tests for `gethostbyaddr_r` and `gethostbyname_r` functions"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -105,8 +105,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "filename": "CMake/CurlTests.c",
-          "line_number": 120,
-          "content_description": "struct hostent *hp; declaration"
+          "line_number": "~120",
+          "content": "struct hostent *hp;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -119,9 +119,9 @@
           "filename": "CMake/CurlTests.c",
           "classification": "test code"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "Unknown category: ",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=, is_test=False, is_vendor=False",
         "method": "path_regex"
       }
     ]
@@ -129,96 +129,5 @@
   "gt_comparison": {
     "matched": 0,
     "results": []
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 10,
-    "verified": 0,
-    "refuted": 5,
-    "unverifiable": 5,
-    "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "hostip.c",
-          "expected": false
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "CMake/CurlTests.c",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "include/curl/curl.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "include/curl/curlver.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "include/curl/easy.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "include/curl/mprintf.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "hostip-related code",
-          "scope": "provided files"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "filename": "CMake/CurlTests.c",
-          "line_range": "95-160",
-          "content_description": "tests for gethostbyaddr_r and gethostbyname_r functions"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "filename": "CMake/CurlTests.c",
-          "line_number": 120,
-          "content_description": "struct hostent *hp; declaration"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "filename": "CMake/CurlTests.c",
-          "classification": "test code"
-        },
-        "verdict": "UNVERIFIABLE"
-      }
-    ]
   }
 }

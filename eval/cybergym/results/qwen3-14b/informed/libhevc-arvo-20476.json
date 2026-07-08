@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 19,
-    "verified": 4,
-    "refuted": 15,
+    "verified": 7,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.14,
+    "verification_rate": 0.3,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -161,44 +161,51 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "ivd_api_function",
           "caller": "decodeHeader",
+          "callee": "ivd_api_function",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:127:  ret = ivd_api_function(NULL, (void *)&create_ip, (void",
+        "evidence": "Found call sites (80368 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
         "method": "grep_call_site"
       },
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "ivd_api_function",
+          "function": "ivd_api_function",
+          "callers": [
+            "decodeHeader",
+            "decodeFrame"
+          ],
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "callers=yes (9 call sites)",
+        "evidence": "callers=yes (80368 call sites)",
         "method": "grep_callers"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "description": "input sanitization for num_long_term_ref_pics"
+          "chain": [
+            "decodeHeader",
+            "ivd_api_function"
+          ]
         },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
-        "method": "grep_absent"
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: decodeHeader->ivd_api_function: found ivd_api_function() call but not in decodeHeader's body",
+        "method": "call_chain"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "validation of input data in decodeHeader"
+          "description": "input validation for num_long_term_ref_pics in decodeHeader"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -206,9 +213,9 @@
         "parameters": {
           "description": "bounds checking for num_long_term_ref_pics in ivd_api_function"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 417750 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]

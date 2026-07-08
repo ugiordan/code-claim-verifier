@@ -5,11 +5,11 @@
   "reasoning_length": 2419,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 11,
-    "refuted": 4,
-    "unverifiable": 1,
-    "verification_rate": 0.74,
+    "total_claims": 17,
+    "verified": 12,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
     "action": "FLAG",
     "claims": [
       {
@@ -18,10 +18,10 @@
           "name": "lt_update_state",
           "type": "function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 5 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/lt_predict.h:55:void lt_update_state(int16_t *lt_pred_stat,",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -103,34 +103,37 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "faad.h",
+          "file": "aacDECdrop",
+          "import": "faad.h",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/audio.c:35:#include <faad.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/hcr.c:44: * sorts it by the importance of the data. The importance is firstly",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "neaacdec.h",
+          "file": "aacDECdrop",
+          "import": "neaacdec.h",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/decode.c:34:#include <neaacdec.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/hcr.c:44: * sorts it by the importance of the data. The importance is firstly",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "mp4ff.h",
+          "file": "aacDECdrop",
+          "import": "mp4ff.h",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/decode.c:35:#include <mp4ff.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/hcr.c:44: * sorts it by the importance of the data. The importance is firstly",
         "method": "grep_import"
       },
       {
@@ -182,13 +185,26 @@
         "parameters": {
           "file": "main.c",
           "line_range": "350-375",
-          "content_type": "function_location",
-          "function": "HandleDrag"
+          "content_description": "HandleDrag function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 678 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "decode_thread",
+            "aac_decode",
+            "NeAACDecDecode"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: decode_thread->aac_decode: found aac_decode() call but not in decode_thread's body; aac_decode->NeAACDecDecode: found NeAACDecDecode() call but not in aac_decode's body",
+        "method": "call_chain"
       }
     ]
   },
@@ -243,145 +259,6 @@
         "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
-      }
-    ]
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 16,
-    "verified": 11,
-    "refuted": 1,
-    "unverifiable": 4,
-    "claims": [
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "name": "lt_update_state",
-          "type": "function"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/audio.c",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/audio.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/decode.c",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/decode.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/decthread.c",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/decthread.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "aacDECdrop/main.c",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "faad.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "neaacdec.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "mp4ff.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "decode_thread",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "aac_decode",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "NeAACDecDecode",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "HandleDrag",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "main.c",
-          "line_range": "350-375",
-          "content_type": "function_location",
-          "function": "HandleDrag"
-        },
-        "verdict": "REFUTED"
       }
     ]
   }

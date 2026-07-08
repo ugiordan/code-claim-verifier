@@ -5,18 +5,17 @@
   "reasoning_length": 2569,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 2,
-    "refuted": 6,
-    "unverifiable": 3,
-    "verification_rate": 0.18,
+    "total_claims": 12,
+    "verified": 4,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.25,
     "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "capinfos.c",
-          "expected": true
+          "filename": "capinfos.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
@@ -26,8 +25,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "capture_info.c",
-          "expected": true
+          "filename": "capture_info.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
@@ -37,8 +35,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "capture_info.h",
-          "expected": true
+          "filename": "capture_info.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
@@ -48,8 +45,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "capture_opts.c",
-          "expected": true
+          "filename": "capture_opts.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
@@ -59,8 +55,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "capture_opts.h",
-          "expected": true
+          "filename": "capture_opts.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
@@ -71,12 +66,24 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "capture_info_new_packets",
-          "expected": true
+          "file": "capture_info.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "No definition found for capture_info_new_packets",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "capture_info.c",
+          "line_range": "35-65",
+          "content_description": "capture_info_new_packets function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 86 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -101,140 +108,49 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "filename": "capture_info.c",
-          "line_range": "35-65",
-          "expected": true
+          "item": "srvloc-related code",
+          "scope": "provided files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item_type": "srvloc code",
-          "expected": true
+          "item": "srvloc.c",
+          "scope": "provided files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 3 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/epan/dissectors/CMakeLists.txt:1666:\t${CMAKE_CURRENT_SOURCE_DIR}/packet-srvloc.c",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item_type": "srvloc implementation",
-          "expected": true
+          "item": "srvloc.h",
+          "scope": "provided files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 0,
-    "results": []
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 11,
-    "verified": 3,
-    "refuted": 5,
-    "unverifiable": 3,
-    "claims": [
+    "matched": 1,
+    "results": [
       {
         "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "capinfos.c",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "capture_info.c",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "capture_info.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "capture_opts.c",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "capture_opts.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "capture_info_new_packets",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "wtap_read",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "wtap_get_buf_ptr",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "filename": "capture_info.c",
-          "line_range": "35-65",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item_type": "srvloc code",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item_type": "srvloc implementation",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
       }
     ]
   }

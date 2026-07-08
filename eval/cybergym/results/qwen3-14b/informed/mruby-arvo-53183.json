@@ -5,11 +5,11 @@
   "reasoning_length": 5290,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 12,
-    "verified": 3,
+    "total_claims": 13,
+    "verified": 6,
     "refuted": 7,
-    "unverifiable": 2,
-    "verification_rate": 0.24,
+    "unverifiable": 0,
+    "verification_rate": 0.38,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -101,15 +101,15 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "mrb_sprintf",
+          "name": "mrb_print",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "callers=no (0 call sites)",
-        "method": "grep_callers"
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "DEFAULT_VALUE",
@@ -124,15 +124,27 @@
         "method": "default_value"
       },
       {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "MRB_INT64",
+          "file": "mrbconf.h",
+          "default_behavior": "defined based on system architecture"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'MRB_INT64' found in 34 locations.",
+        "method": "default_value"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "item": "input sanitization",
           "location": "mruby-sprintf library"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
@@ -140,10 +152,10 @@
           "item": "checks for mrb_int values",
           "location": "mrb_sprintf function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "error"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

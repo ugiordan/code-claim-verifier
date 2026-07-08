@@ -6,33 +6,77 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 15,
-    "verified": 11,
-    "refuted": 1,
+    "verified": 6,
+    "refuted": 6,
     "unverifiable": 3,
-    "verification_rate": 0.75,
-    "action": "FLAG",
+    "verification_rate": 0.31,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "mruby-sprintf/sprintf.c",
+          "file": "mruby-sprintf/sprintf.c",
           "expected": false
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "not found: mruby-sprintf/sprintf.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "path": "mruby/array.h",
+          "file": "mruby/array.h",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mruby/array.h",
-        "method": "os.walk_fuzzy"
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "mruby.h",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "mrbconf.h",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "boxing_nan.h",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "boxing_no.h",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -58,17 +102,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "mruby.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mruby.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "stdint.h",
@@ -113,17 +146,6 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "mrbconf.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mrbconf.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "mrbconf.h",
@@ -158,166 +180,11 @@
         "confidence": 0.0,
         "evidence": "",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "boxing_nan.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mruby/boxing_nan.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "boxing_no.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mruby/boxing_no.h",
-        "method": "os.walk_fuzzy"
       }
     ]
   },
   "gt_comparison": {
     "matched": 0,
     "results": []
-  },
-  "llm_judge": {
-    "judge_model": "claude-haiku-4.5",
-    "total_claims": 15,
-    "verified": 2,
-    "refuted": 5,
-    "unverifiable": 8,
-    "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "mruby-sprintf/sprintf.c",
-          "expected": false
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "mruby/array.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "mrb_ary_join",
-          "expected": true
-        },
-        "verdict": "VERIFIED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "mruby/array.h",
-          "line": 142,
-          "content": "mrb_ary_join"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "mruby.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "stdint.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "stddef.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "limits.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "stdarg.h",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "mrbconf.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "mrbconf.h",
-          "line": null,
-          "content": "#define MRB_STR_LENGTH_MAX 1048576"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "mrbconf.h",
-          "line": null,
-          "content": "#define MRB_ARY_LENGTH_MAX 131072"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "mruby.h",
-          "line": null,
-          "content": "#define mrb_assert_int_fit(t1,n,t2,max) assert((n)>=0 && ((sizeof(n)<=sizeof(t2))||(n<=(t1)(max))))"
-        },
-        "verdict": "UNVERIFIABLE"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "boxing_nan.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "boxing_no.h",
-          "expected": true
-        },
-        "verdict": "REFUTED"
-      }
-    ]
   }
 }
