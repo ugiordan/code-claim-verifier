@@ -67,13 +67,24 @@ def make_openai(model: str = "gpt-4o") -> LLMFunction:
 
 
 def _load_models_corp_config() -> dict:
-    """Load models-corp endpoint config from ~/.config/ccv/models-corp.json.
+    """Load models-corp config from ~/.config/ccv/models-corp.json.
 
-    The file maps model registry names to their endpoint URLs:
+    Maps model registry names to their endpoint URL and API key:
     {
-        "granite-3.3-8b": "https://granite-3-3-8b-instruct--apicast-staging.example.com:443",
-        "llama-3.3-70b": "https://llama-3-3-70b--apicast-staging.example.com:443",
-        ...
+        "granite-3.3-8b": {
+            "endpoint": "https://...",
+            "user_key": "your-key"
+        },
+        "llama-3.3-70b": {
+            "endpoint": "https://...",
+            "user_key": "your-key"
+        }
+    }
+
+    Shorthand (same key for all): use a string value instead of object:
+    {
+        "granite-3.3-8b": "https://...",
+        "user_key": "shared-key-for-all"
     }
     """
     import json
@@ -90,28 +101,40 @@ def _load_models_corp_config() -> dict:
 def make_models_corp(model_id: str, registry_name: str = "") -> LLMFunction:
     """Create an LLM function for a models-corp hosted model.
 
-    Endpoint URL resolution (in order):
-        1. ~/.config/ccv/models-corp.json (recommended, maps all models)
-        2. MODEL_API env var (single model fallback)
+    Config resolution:
+        1. ~/.config/ccv/models-corp.json (recommended)
+        2. MODEL_API + USER_KEY env vars (single model fallback)
 
-    API key from USER_KEY env var.
+    Each model can have its own endpoint and key.
     """
     import openai
 
     config = _load_models_corp_config()
-    base_url = config.get(registry_name, "") or os.environ.get("MODEL_API", "")
+    model_config = config.get(registry_name, {})
 
-    api_key = os.environ.get("USER_KEY", "")
+    if isinstance(model_config, str):
+        base_url = model_config
+        api_key = config.get("user_key", "") or os.environ.get("USER_KEY", "")
+    elif isinstance(model_config, dict):
+        base_url = model_config.get("endpoint", "")
+        api_key = model_config.get("user_key", "") or config.get("user_key", "") or os.environ.get("USER_KEY", "")
+    else:
+        base_url = os.environ.get("MODEL_API", "")
+        api_key = os.environ.get("USER_KEY", "")
+
+    if not base_url:
+        base_url = os.environ.get("MODEL_API", "")
+
     if not base_url:
         raise RuntimeError(
             f"No endpoint for '{registry_name}'. Either:\n"
-            f"  1. Create ~/.config/ccv/models-corp.json with endpoint URLs\n"
+            f"  1. Create ~/.config/ccv/models-corp.json with endpoint URLs and keys\n"
             f"  2. Set MODEL_API env var\n"
-            f"Get URLs from developer.models.corp.redhat.com"
+            f"Get URLs and keys from developer.models.corp.redhat.com"
         )
     if not api_key:
         raise RuntimeError(
-            "USER_KEY not set. Get it from developer.models.corp.redhat.com > Applications & credentials"
+            "No API key for '{registry_name}'. Set user_key in config file or USER_KEY env var."
         )
 
     if not base_url.endswith("/v1"):
