@@ -40,6 +40,20 @@ Rules:
 
 {domain_context}"""
 
+_CLAIMIFY_SYSTEM = """You are a claim extractor that identifies verifiable factual assertions about source code.
+
+Given an LLM's reasoning about a codebase, extract every factual assertion that could be checked against the actual code. For each assertion, output:
+- "assertion": the factual claim as a clear statement
+- "source_sentence": the original sentence it came from
+
+Do NOT extract opinions, recommendations, or quality judgments.
+Only extract claims that are objectively verifiable by reading the code.
+
+Output a JSON array:
+[{{"assertion": "The file main.py exists in the repository", "source_sentence": "The vulnerability is in main.py..."}}]
+
+{domain_context}"""
+
 _EXTRACTION_USER = """LLM reasoning:
 {reasoning}
 
@@ -89,6 +103,71 @@ def extract_claims(
         return []
 
     return _parse_extraction_output(raw, valid_types=valid_types)
+
+
+def extract_claims_claimify(
+    reasoning: str,
+    evidence: dict[str, Any],
+    llm_function: LLMFunction,
+    domain_context: str = "",
+) -> list[TypedClaim]:
+    """Extract claims using Claimify-style generic extraction (no typed taxonomy).
+
+    Returns TypedClaim objects with claim_type="GENERIC" and the assertion
+    text in parameters["assertion"]. These cannot be verified by CCV's
+    typed verifiers, which is the point of the ablation.
+    """
+    if not reasoning and not evidence:
+        return []
+
+    system = _CLAIMIFY_SYSTEM.format(domain_context=domain_context)
+    evidence_str = json.dumps(evidence, indent=2, default=str)[:3000]
+    user_prompt = _EXTRACTION_USER.format(
+        reasoning=reasoning[:4000],
+        evidence=evidence_str,
+    )
+
+    try:
+        raw = llm_function(system, user_prompt)
+    except Exception as e:
+        logger.warning("Claimify extraction failed: %s", e)
+        return []
+
+    return _parse_claimify_output(raw)
+
+
+def _parse_claimify_output(raw: str) -> list[TypedClaim]:
+    """Parse Claimify-style output into TypedClaim objects with type GENERIC."""
+    text = raw.strip()
+    if text.startswith("```"):
+        text = text.split("\n", 1)[1] if "\n" in text else text[3:]
+        if text.endswith("```"):
+            text = text[:-3]
+        text = text.strip()
+
+    start = text.find("[")
+    end = text.rfind("]")
+    if start == -1 or end == -1:
+        return []
+
+    try:
+        items = json.loads(text[start:end + 1])
+    except json.JSONDecodeError:
+        return []
+
+    claims = []
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        assertion = item.get("assertion", "")
+        source = item.get("source_sentence", "")
+        if assertion:
+            claims.append(TypedClaim(
+                claim_type="GENERIC",
+                parameters={"assertion": assertion},
+                source_sentence=source[:500],
+            ))
+    return claims
 
 
 def _parse_extraction_output(raw: str, valid_types: frozenset[str] = CLAIM_TYPES) -> list[TypedClaim]:
