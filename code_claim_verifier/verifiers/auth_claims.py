@@ -127,11 +127,42 @@ def verify_default_value(claim: TypedClaim, repo_path: str, language: str) -> Ve
             method="default_value",
         )
 
-    allow_patterns = _grep(f"return true", search_path, fixed=True) if found_checks else []
+    allow_hits = _grep("return true", search_path, fixed=True) if found_checks else []
+    deny_hits = _grep("return false", search_path, fixed=True) if found_checks else []
 
     evidence = f"Variable '{variable}' found in {len(var_matches)} locations."
     if found_checks:
         evidence += f" Length/nil checks: {found_checks[0][:150]}"
+
+    # When claimed_behavior is provided and we have length/nil checks,
+    # verify the behavior actually matches the code patterns.
+    if claimed_behavior and found_checks:
+        if claimed_behavior == "allow":
+            if allow_hits:
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.65,
+                    evidence=evidence + f" allow pattern: {allow_hits[0][:100]}",
+                    method="default_value",
+                )
+            if deny_hits:
+                return VerifiedClaim(
+                    claim=claim, verdict="REFUTED", method_confidence=0.65,
+                    evidence=evidence + f" code returns false (deny), not allow",
+                    method="default_value",
+                )
+        elif claimed_behavior == "deny":
+            if deny_hits:
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.65,
+                    evidence=evidence + f" deny pattern: {deny_hits[0][:100]}",
+                    method="default_value",
+                )
+            if allow_hits:
+                return VerifiedClaim(
+                    claim=claim, verdict="REFUTED", method_confidence=0.65,
+                    evidence=evidence + f" code returns true (allow), not deny",
+                    method="default_value",
+                )
 
     return VerifiedClaim(
         claim=claim, verdict="VERIFIED" if var_matches else "REFUTED",

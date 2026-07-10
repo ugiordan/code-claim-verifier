@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
@@ -48,6 +50,15 @@ def verify_mitigation_exists(claim: TypedClaim, repo_path: str, language: str) -
     if resolved is None or not os.path.isfile(resolved):
         return VerifiedClaim(claim=claim, verdict="REFUTED", method_confidence=0.70,
                              evidence=f"File not found: {file_param}", method="file_read")
+
+    # Try pattern/mitigation grep if a pattern parameter is provided
+    pattern = claim.parameters.get("pattern", claim.parameters.get("mitigation", ""))
+    if pattern and resolved and os.path.isfile(resolved):
+        matches = _grep(pattern, resolved, fixed=True)
+        if matches:
+            return VerifiedClaim(claim=claim, verdict="VERIFIED", method_confidence=0.75,
+                                 evidence=f"Pattern found: {matches[0][:200]}", method="grep_mitigation")
+
     try:
         with open(resolved, "r", encoding="utf-8", errors="replace") as f:
             lines = f.readlines()
@@ -68,7 +79,7 @@ def verify_mitigation_exists(claim: TypedClaim, repo_path: str, language: str) -
 
 
 def verify_entry_point(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    location = claim.parameters.get("location", "")
+    location = claim.parameters.get("location", claim.parameters.get("name", ""))
     ep_type = claim.parameters.get("type", "").lower()
 
     http_patterns = [r"Handle\w*Func", r"\.GET\(", r"\.POST\(", r"\.PUT\(", r"\.DELETE\(",

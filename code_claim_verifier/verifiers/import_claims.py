@@ -12,6 +12,9 @@ from code_claim_verifier.grep import grep as _grep
 
 def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     module = claim.parameters.get("module", "")
+    if not module:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No module specified", method="grep_import")
     file_param = claim.parameters.get("file", "")
 
     lang = detect_language(file_param) if file_param else language
@@ -147,7 +150,10 @@ def _parse_package_lock(path: str, package: str) -> str | None:
 
 def verify_dependency_type(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     package = claim.parameters.get("package", "")
-    expected_type = claim.parameters.get("type", "direct")
+    if not package:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No package specified", method="manifest_parse")
+    expected_type = claim.parameters.get("type", claim.parameters.get("dep_type", "direct"))
 
     manifests = ["go.mod", "requirements.txt", "package.json", "Pipfile", "pyproject.toml"]
     for manifest in manifests:

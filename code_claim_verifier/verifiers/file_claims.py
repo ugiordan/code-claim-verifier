@@ -51,7 +51,7 @@ def verify_file_exists(claim: TypedClaim, repo_path: str, language: str) -> Veri
 def verify_line_content(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     path = claim.parameters.get("file", claim.parameters.get("path", ""))
     line_num = claim.parameters.get("line", 0)
-    expected = claim.parameters.get("expected_content", claim.parameters.get("expected", "")).strip()
+    expected = claim.parameters.get("content", claim.parameters.get("expected_content", claim.parameters.get("expected", ""))).strip()
 
     resolved = safe_path(path, repo_path)
     if resolved is not None and not os.path.isfile(resolved):

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import re
 
@@ -9,6 +11,9 @@ from code_claim_verifier.security import safe_path
 
 def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
+    if not name:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No function name specified", method="grep_function_def")
     file_param = claim.parameters.get("file", "")
 
     if file_param:
@@ -33,6 +38,9 @@ def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> 
 
 def verify_function_called(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
+    if not name:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No function name specified", method="grep_call")
     expected = claim.parameters.get("expected", True)
 
     call_pattern = re.escape(name) + r"\s*\("
@@ -56,6 +64,9 @@ def verify_function_called(claim: TypedClaim, repo_path: str, language: str) -> 
 
 def verify_has_callers(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
+    if not name:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No function name specified", method="grep_callers")
     expected = claim.parameters.get("expected", True)
 
     call_pattern = re.escape(name) + r"\s*\("
