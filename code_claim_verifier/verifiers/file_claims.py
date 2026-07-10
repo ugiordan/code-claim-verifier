@@ -25,7 +25,7 @@ def _find_file_in_repo(filename: str, repo_path: str) -> str | None:
 
 
 def verify_file_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    path = claim.parameters.get("path", "")
+    path = claim.parameters.get("file", claim.parameters.get("path", ""))
     resolved = safe_path(path, repo_path)
     if resolved is None:
         return VerifiedClaim(claim=claim, verdict="REFUTED", method_confidence=0.99,
