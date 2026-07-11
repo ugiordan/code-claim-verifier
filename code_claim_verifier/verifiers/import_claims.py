@@ -11,7 +11,9 @@ from code_claim_verifier.grep import grep as _grep
 
 
 def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    module = claim.parameters.get("module", "")
+    module = (claim.parameters.get("module", "")
+              or claim.parameters.get("import", "")
+              or claim.parameters.get("name", ""))
     if not module:
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
                              evidence="No module specified", method="grep_import")

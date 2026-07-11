@@ -37,7 +37,9 @@ def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> 
 
 
 def verify_function_called(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    name = claim.parameters.get("name", "")
+    name = (claim.parameters.get("name", "")
+            or claim.parameters.get("callee", "")
+            or claim.parameters.get("function", ""))
     if not name:
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
                              evidence="No function name specified", method="grep_call")
