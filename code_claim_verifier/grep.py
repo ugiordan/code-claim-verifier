@@ -9,17 +9,37 @@ _grep_cache: contextvars.ContextVar[dict | None] = contextvars.ContextVar(
 )
 
 
+_SOURCE_EXTENSIONS = [
+    "*.c", "*.cpp", "*.cc", "*.cxx", "*.h", "*.hpp", "*.hh",
+    "*.py", "*.go", "*.rs", "*.java", "*.js", "*.ts", "*.tsx",
+    "*.rb", "*.sh", "*.yaml", "*.yml", "*.json", "*.toml",
+    "*.mod", "*.sum", "*.txt", "*.cfg", "*.ini", "*.xml",
+    "Makefile", "Dockerfile", "CMakeLists.txt",
+]
+
+
 def _run_grep(pattern: str, path: str, fixed: bool = False) -> list[str]:
-    """Run grep subprocess and return matching lines. Returns empty list on no match."""
-    cmd = ["grep", "-rn"]
+    """Run grep subprocess and return matching lines. Returns empty list on no match.
+
+    Filters to source file extensions to avoid scanning binaries and test data.
+    Uses 120s timeout for large repos.
+    """
+    import os
+    cmd = ["grep", "-rn", "--binary-files=without-match"]
     if fixed:
         cmd.append("-F")
     else:
         cmd.append("-E")
+    if os.path.isdir(path):
+        for ext in _SOURCE_EXTENSIONS:
+            cmd.extend(["--include", ext])
     cmd.extend([pattern, path])
     try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
-        if result.returncode == 0:
+        result = subprocess.run(
+            cmd, capture_output=True, text=True,
+            timeout=120, errors="replace",
+        )
+        if result.returncode == 0 and result.stdout.strip():
             return result.stdout.strip().split("\n")
         return []
     except (subprocess.TimeoutExpired, FileNotFoundError):
