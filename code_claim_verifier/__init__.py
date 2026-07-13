@@ -29,6 +29,17 @@ class CodeClaimVerifier:
         self.engine = VerificationEngine()
         self._extraction_hints: list[str] = []
 
+    def load_cymbal(self, repo_path: str | None = None) -> None:
+        """Index the repo with cymbal (tree-sitter) for AST-level verification.
+
+        Requires cymbal on PATH (github.com/1broseidon/cymbal).
+        Falls back to grep if cymbal is not available.
+        """
+        from code_claim_verifier.cymbal_backend import load_cymbal
+        cymbal = load_cymbal(repo_path or self.repo_path)
+        if cymbal:
+            self.engine.cymbal = cymbal
+
     def load_cpg(self, cpg_path: str) -> None:
         """Load a code property graph from architecture-analyzer output.
 

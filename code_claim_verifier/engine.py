@@ -8,6 +8,7 @@ from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.verifiers import VERIFIER_REGISTRY
 from code_claim_verifier import grep as grep_module
 from code_claim_verifier.cpg_backend import CpgBackend, load_cpg
+from code_claim_verifier.cymbal_backend import CymbalBackend
 
 VerifierFunction = Callable[[TypedClaim, str, str], VerifiedClaim]
 
@@ -59,10 +60,12 @@ class VerificationEngine:
     * verify_claims_with_chaining - full dependency synthesis + SUSPECT propagation
     """
 
-    def __init__(self, cpg: CpgBackend | None = None) -> None:
+    def __init__(self, cpg: CpgBackend | None = None,
+                 cymbal: CymbalBackend | None = None) -> None:
         self.registry: dict[str, VerifierFunction] = dict(VERIFIER_REGISTRY)
         self.dependency_rules: list[tuple[str, str, str, str]] = list(BUILTIN_RULES)
         self.cpg = cpg
+        self.cymbal = cymbal
 
     # ------------------------------------------------------------------
     # Registry management
@@ -398,6 +401,11 @@ class VerificationEngine:
             if cpg_result:
                 return cpg_result
 
+        if self.cymbal:
+            cymbal_result = self._try_cymbal_verify(claim)
+            if cymbal_result:
+                return cymbal_result
+
         verifier = self.registry.get(claim.claim_type)
         if not verifier:
             return VerifiedClaim(
@@ -601,6 +609,83 @@ class VerificationEngine:
                     method="cpg_config",
                 )
             return None
+
+        return None
+
+    def _try_cymbal_verify(self, claim: TypedClaim) -> VerifiedClaim | None:
+        """Try to verify using cymbal tree-sitter backend. Returns None to fall back."""
+        cymbal = self.cymbal
+        ct = claim.claim_type
+        params = claim.parameters
+
+        if ct == "FUNCTION_EXISTS":
+            name = params.get("name", "")
+            file = params.get("file", params.get("path", ""))
+            if not name:
+                return None
+            node = cymbal.function_exists(name, file or None)
+            if node:
+                return VerifiedClaim(
+                    claim=claim, verdict="VERIFIED", method_confidence=0.95,
+                    evidence=f"cymbal: {node['name']} at {node.get('rel_path', '')}:{node.get('start_line', '')}",
+                    method="cymbal_function",
+                )
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.90,
+                evidence=f"cymbal: no function '{name}' found",
+                method="cymbal_function",
+            )
+
+        if ct in ("FUNCTION_CALLED", "HAS_CALLERS"):
+            name = (params.get("name", "") or params.get("callee", "")
+                    or params.get("function", ""))
+            expected = params.get("expected", True)
+            if not name:
+                return None
+            callers = cymbal.function_callers(name)
+            has_callers = len(callers) > 0
+            match = has_callers == expected
+            if callers:
+                caller_names = ", ".join(c.get("caller", "?") for c in callers[:3])
+                evidence = f"cymbal: {len(callers)} callers ({caller_names})"
+            else:
+                evidence = "cymbal: no callers found"
+            return VerifiedClaim(
+                claim=claim,
+                verdict="VERIFIED" if match else "REFUTED",
+                method_confidence=0.90,
+                evidence=evidence,
+                method="cymbal_callers",
+            )
+
+        if ct == "CALL_CHAIN":
+            chain = params.get("chain", [])
+            caller = params.get("caller", "")
+            callee = params.get("callee", "")
+            if not chain and caller and callee:
+                chain = [caller, callee]
+            if len(chain) < 2:
+                return None
+            evidence_parts = []
+            for i in range(len(chain) - 1):
+                src, dst = chain[i], chain[i + 1]
+                callees = cymbal.function_callees(src)
+                found = any(c.get("name", c.get("symbol", "")) == dst
+                            for c in callees)
+                if found:
+                    evidence_parts.append(f"{src}->{dst}: found")
+                else:
+                    evidence_parts.append(f"{src}->{dst}: NOT FOUND")
+                    return VerifiedClaim(
+                        claim=claim, verdict="REFUTED", method_confidence=0.85,
+                        evidence=f"cymbal chain broken: {'; '.join(evidence_parts)}",
+                        method="cymbal_call_chain",
+                    )
+            return VerifiedClaim(
+                claim=claim, verdict="VERIFIED", method_confidence=0.85,
+                evidence=f"cymbal chain: {'; '.join(evidence_parts)}",
+                method="cymbal_call_chain",
+            )
 
         return None
 
