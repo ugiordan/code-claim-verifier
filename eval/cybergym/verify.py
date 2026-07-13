@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 
 
 def run_ccv_verification(claims: list[TypedClaim], source_root: str,
-                         language: str) -> list[VerifiedClaim]:
-    engine = VerificationEngine()
+                         language: str, cymbal_backend=None) -> list[VerifiedClaim]:
+    engine = VerificationEngine(cymbal=cymbal_backend)
     return engine.verify_claims_with_chaining(claims, source_root, language)
 
 
@@ -221,7 +221,10 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             save_json(result, out_path)
             return result
 
-        verified = run_ccv_verification(claims, source_root, language)
+        from code_claim_verifier.cymbal_backend import load_cymbal
+        cymbal = load_cymbal(source_root)
+        verified = run_ccv_verification(claims, source_root, language,
+                                        cymbal_backend=cymbal)
         report = calibrate(verified)
 
         gt_comparison = match_claims_to_gt(verified, entry.get("gt_claims", []))
