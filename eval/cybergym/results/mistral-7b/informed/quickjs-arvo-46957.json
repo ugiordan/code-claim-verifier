@@ -1,0 +1,64 @@
+{
+  "vuln_id": "quickjs-arvo-46957",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1541,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 4,
+    "verified": 3,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.67,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "cutils.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "filename": "cutils.c",
+          "classification": "utility library"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "external dependencies",
+          "scope": "codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "input sanitization",
+          "scope": "cutils.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

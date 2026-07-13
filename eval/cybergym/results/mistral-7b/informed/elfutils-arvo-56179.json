@@ -1,0 +1,143 @@
+{
+  "vuln_id": "elfutils-arvo-56179",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1398,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 8,
+    "refuted": 1,
+    "unverifiable": 1,
+    "verification_rate": 0.89,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libdw/cfi.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libdw/cfi.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libdw/cfi.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "execute_cfi",
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:102:execute_cfi (Dwarf_CFI *cache,",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "execute_cfi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:484:      result = execute_cfi (cache, &abi_cie, &cie_fs,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "duplicate_frame_state",
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:46:duplicate_frame_state (const Dwarf_Frame *original,",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "enough_registers",
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:60:enough_registers (Dwarf_Word reg, Dwarf_Frame **pfs, int *result)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "require_cfa_offset",
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:93:require_cfa_offset (Dwarf_Frame *fs)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "read_encoded_value",
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for read_encoded_value",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "execute_cfi",
+          "reachable": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/ChangeLog:1453:\t* dwarf_begin_elf.c (check_section): Add compressed flag. Always",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

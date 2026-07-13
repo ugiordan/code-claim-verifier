@@ -5,9 +5,9 @@
   "reasoning_length": 3021,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 22,
+    "total_claims": 18,
     "verified": 1,
-    "refuted": 21,
+    "refuted": 17,
     "unverifiable": 0,
     "verification_rate": 0.04,
     "action": "OVERRIDE",
@@ -19,8 +19,8 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: src/pkcs15/pkcs15.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -29,8 +29,8 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: src/pkcs15/pkcs15.h",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -67,17 +67,6 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sc_pkcs15_parse_des_iv",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "sc_pkcs15_parse_object",
@@ -87,17 +76,6 @@
         "confidence": 0.85,
         "evidence": "No definition found for sc_pkcs15_parse_object",
         "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sc_pkcs15_parse_attribute",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -111,17 +89,6 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sc_pkcs15_parse_object",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "sc_pkcs15_read_objects",
@@ -131,17 +98,6 @@
         "confidence": 0.85,
         "evidence": "No definition found for sc_pkcs15_read_objects",
         "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sc_pkcs15_read_object",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -157,6 +113,50 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "sc_pkcs15_parse_des_iv",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sc_pkcs15_parse_attribute",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sc_pkcs15_parse_object",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sc_pkcs15_read_object",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "sc_pkcs15_read_objects",
           "expected": true
         },
@@ -166,25 +166,21 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "sc_card_read",
-          "file": "src/card.c"
+          "chain": [
+            "sc_pkcs15_read_card",
+            "sc_pkcs15_read_objects",
+            "sc_pkcs15_read_object",
+            "sc_pkcs15_parse_object",
+            "sc_pkcs15_parse_attribute",
+            "sc_pkcs15_parse_des_iv"
+          ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for sc_card_read",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "src/card.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "confidence": 0.7,
+        "evidence": "Chain broken: sc_pkcs15_read_card not found in repo. Verified: ",
+        "method": "call_chain"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -197,69 +193,25 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "chain": [
-            "sc_pkcs15_parse_attribute",
-            "sc_pkcs15_parse_des_iv"
-          ]
+          "file": "src/card.c"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: sc_pkcs15_parse_attribute not found in repo. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.99,
+        "evidence": "not found: src/card.c",
+        "method": "os.path.isfile"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "sc_pkcs15_parse_object",
-            "sc_pkcs15_parse_attribute"
-          ]
+          "name": "sc_card_read",
+          "file": "src/card.c"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: sc_pkcs15_parse_object not found in repo. Verified: ",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "sc_pkcs15_read_object",
-            "sc_pkcs15_parse_object"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: sc_pkcs15_read_object not found in repo. Verified: ",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "sc_pkcs15_read_objects",
-            "sc_pkcs15_read_object"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: sc_pkcs15_read_objects not found in repo. Verified: ",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "sc_pkcs15_read_card",
-            "sc_pkcs15_read_objects"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: sc_pkcs15_read_card not found in repo. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "No definition found for sc_card_read",
+        "method": "grep_function_def"
       }
     ]
   },

@@ -1,0 +1,113 @@
+{
+  "vuln_id": "libplist-arvo-54949",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 1481,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 5,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.42,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libcnary/node.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libcnary/node.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "node_destroy",
+          "file": "libcnary/node.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for node_destroy",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libcnary/node.c",
+          "line_range": "10-23",
+          "content": "void node_destroy(node_t* node)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 215 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "node_list_remove",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/node_list.c:123:int node_list_remove(node_list_t* list, node_t* node) {",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "node_destroy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/include/node.h:46:void node_destroy(struct node_t* node);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "node_list_destroy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/node_list.c:31:void node_list_destroy(node_list_t* list) {",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (217 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:88:                free(options);",
+        "method": "grep_call_site"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 19,
-    "verified": 7,
-    "refuted": 12,
-    "unverifiable": 0,
-    "verification_rate": 0.3,
-    "action": "OVERRIDE",
+    "verified": 8,
+    "refuted": 7,
+    "unverifiable": 4,
+    "verification_rate": 0.51,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -19,58 +19,58 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: ihevcd_cxa.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "ihevcd_cxa.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): decoder/ihevcd_cxa.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "ivd.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): common/ivd.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "hevc_dec_fuzzer.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): fuzzer/hevc_dec_fuzzer.cpp",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "ihevc_typedefs.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): common/ihevc_typedefs.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "iv.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): common/iv.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -78,9 +78,9 @@
           "file": "hevc_dec_fuzzer.cpp",
           "import": "ihevcd_cxa.h"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:42:#include <assert.h>",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
         "method": "grep_import"
       },
       {
@@ -89,9 +89,9 @@
           "file": "hevc_dec_fuzzer.cpp",
           "import": "ivd.h"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:42:#include <assert.h>",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
         "method": "grep_import"
       },
       {
@@ -165,10 +165,10 @@
           "callee": "ivd_api_function",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (80368 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/CMakeLists.txt:1:cmake_minimum_required(VERSION 3.5)",
-        "method": "grep_call_site"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No function name specified",
+        "method": "grep_call"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -180,28 +180,25 @@
           ],
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (80368 call sites)",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No function name specified",
         "method": "grep_callers"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "decodeHeader",
-            "ivd_api_function"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: decodeHeader->ivd_api_function: found ivd_api_function() call but not in decodeHeader's body",
-        "method": "call_chain"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input validation for num_long_term_ref_pics in decodeHeader"
+          "description": "input sanitization for num_long_term_ref_pics"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "validation of input data in decodeHeader method"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

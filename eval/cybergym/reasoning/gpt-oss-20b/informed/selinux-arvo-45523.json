@@ -1,0 +1,8 @@
+{
+  "vuln_id": "selinux-arvo-45523",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning": "**1. Which files contain the vulnerable code?**  \nThe only file that contains code that can be abused by an attacker is **`policycoreutils/setsebool/setsebool.c`**.  \nAll other files in the snippet are either helper utilities (`open_init_pty.c`, `run_init.c`, `pp.c`, `load_policy.c`) or contain only standard library calls and do not expose any obvious security holes.\n\n**2. Which function(s) are vulnerable and are they defined in the codebase?**  \nThe vulnerable function is **`setbool()`** (defined in `setsebool.c`).  \nIt is called only from `main()` in the same file.  \nThe function is fully defined in the source tree \u2013 there is no external implementation.\n\n**3. Is the vulnerable function called elsewhere, and by what callers?**  \n`setbool()` is invoked only once, from `main()` after the command\u2011line arguments have been parsed.  \nNo other part of the policycoreutils tree calls `setbool()`.\n\n**4. Imports / dependencies involved**  \n`setsebool.c` pulls in a fairly large set of headers:\n\n```\n#include <unistd.h>\n#include <stdlib.h>\n#include <stdio.h>\n#include <string.h>\n#include <sys/stat.h>\n#include <fcntl.h>\n#include <errno.h>\n#include <syslog.h>\n#include <getopt.h>\n#include <pwd.h>\n#include <selinux/selinux.h>\n#include <semanage/handle.h>\n#include <semanage/debug.h>\n#include <semanage/booleans_policy.h>\n#include <semanage/booleans_local.h>\n#include <semanage/booleans_active.h>\n#include <semanage/boolean_record.h>\n```\n\nThe function uses `malloc()`, `snprintf()`, `strchr()`, `strdup()`, `getpwuid()`, `security_set_boolean_list()`, `semanage_*",
+  "reasoning_length": 1564,
+  "duration_s": 29.05
+}

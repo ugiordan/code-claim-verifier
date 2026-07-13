@@ -1,0 +1,62 @@
+{
+  "vuln_id": "wpantund-arvo-10864",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 606,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 3,
+    "verified": 1,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.35,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "third_party/openthread/src/ncp/spinel.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: third_party/openthread/src/ncp/spinel.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spinel_packed_uint_decode",
+          "file": "third_party/openthread/src/ncp/spinel.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spinel_packed_uint_decode",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "third_party/openthread/src/ncp/spinel.c",
+          "line_range": "100-130",
+          "content_description": "spinel_packed_uint_decode function implementation"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 2765 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

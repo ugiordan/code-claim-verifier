@@ -5,22 +5,22 @@
   "reasoning_length": 5437,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 9,
-    "verified": 5,
-    "refuted": 4,
+    "total_claims": 11,
+    "verified": 10,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.44,
-    "action": "OVERRIDE",
+    "verification_rate": 0.87,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "Zend/zend.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -49,10 +49,10 @@
         "parameters": {
           "file": "Zend/zend.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend.h",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -62,7 +62,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:27:#include \"zend_types.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:35:#include \"zend_gc.h\"",
         "method": "grep_import"
       },
       {
@@ -70,22 +70,46 @@
         "parameters": {
           "file": "Zend/zend_API.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend_API.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "gc_enable",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_builtin_functions.c:110:/* {{{ proto void gc_enable(void)",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
-            "OnUpdateGCEnabled",
-            "gc_enable"
+            "gc_enable",
+            "gc_collect_cycles"
           ]
         },
         "verdict": "VERIFIED",
         "confidence": 0.7,
-        "evidence": "Chain verified: OnUpdateGCEnabled->gc_enable: found gc_enable() call but not in OnUpdateGCEnabled's body",
+        "evidence": "Chain verified: gc_enable->gc_collect_cycles: found gc_collect_cycles() call but not in gc_enable's body",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "gc_scan",
+            "get_gc"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: gc_scan->get_gc: found get_gc() call but not in gc_scan's body",
         "method": "call_chain"
       },
       {
@@ -96,7 +120,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.c:20:#include \"zend.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.c:32:#include \"zend_smart_str.h\"",
         "method": "grep_import"
       },
       {
@@ -118,21 +142,21 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       }

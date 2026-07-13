@@ -5,32 +5,32 @@
   "reasoning_length": 3989,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 6,
-    "refuted": 4,
+    "total_claims": 10,
+    "verified": 4,
+    "refuted": 5,
     "unverifiable": 1,
-    "verification_rate": 0.5,
-    "action": "FLAG",
+    "verification_rate": 0.4,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: fuzzing/broker/broker_fuzz_test_config.cpp",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "config.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: config.h",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -66,26 +66,13 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "LLVMFuzzerTestOneInput",
-            "mosquitto_fuzz_main"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: LLVMFuzzerTestOneInput->mosquitto_fuzz_main: found mosquitto_fuzz_main() call but not in LLVMFuzzerTestOneInput's body",
-        "method": "call_chain"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "import": "stdio.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/man/html.xsl:3:\t<xsl:import href=\"http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl\"/>",
+        "evidence": "No import of stdio.h found",
         "method": "grep_import"
       },
       {
@@ -93,9 +80,9 @@
         "parameters": {
           "import": "string.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/man/html.xsl:3:\t<xsl:import href=\"http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl\"/>",
+        "evidence": "No import of string.h found",
         "method": "grep_import"
       },
       {
@@ -103,9 +90,9 @@
         "parameters": {
           "import": "mosquitto_fuzz.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/man/html.xsl:3:\t<xsl:import href=\"http://docbook.sourceforge.net/release/xsl/current/html/docbook.xsl\"/>",
+        "evidence": "No import of mosquitto_fuzz.h found",
         "method": "grep_import"
       },
       {
@@ -136,14 +123,14 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       }

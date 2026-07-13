@@ -1,0 +1,245 @@
+{
+  "vuln_id": "curl-arvo-3956",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 5045,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 19,
+    "verified": 5,
+    "refuted": 9,
+    "unverifiable": 5,
+    "verification_rate": 0.32,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "CMake/CurlTests.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: CMake/CurlTests.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "line_range": "~300\u2011320",
+          "content": "#ifdef HAVE_IOCTLSOCKET block"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 551 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "content": "unsigned long flags = ioctlsocket(socket, FIONBIO, &flags);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 551 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "content": "int socket;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 551 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "content": "unsigned long flags;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 551 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ioctlsocket",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/CMake/CurlTests.c:322: unsigned long flags = ioctlsocket(socket, FIONBIO, &flags);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "ioctlsocket",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (10 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "import": "<windows.h>"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "import": "<winsock2.h>"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "import": "<winsock.h>"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "import": "<sys/types.h>"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "libcurl headers",
+          "file": "CMake/CurlTests.c"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "sanitisation",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "error checking",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "defensive programming",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "HAVE_IOCTLSOCKET",
+          "value": "defined"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "Flag 'HAVE_IOCTLSOCKET' set to 'defined': /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/tests/server/tftpd.c:632:#if defined(HAVE_IOCTLSOCKET)",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "CMake/CurlTests.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/CMake/CurlTests.c:30:main ()",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "classification": "test executable"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=CMake/CurlTests.c, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "reachable": false,
+          "reason": "not linked into library"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/tests/negtelnetserver.py:270:    parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -1,0 +1,199 @@
+{
+  "vuln_id": "libspng-arvo-14935",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 3780,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 5,
+    "refuted": 9,
+    "unverifiable": 0,
+    "verification_rate": 0.33,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_decode_image",
+          "file": "spng.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spng_decode_image",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "getimage_libspng",
+          "callee": "spng_decode_image",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libspng-arvo-14935/src-vul/libspng/tests/spng_read_fuzzer.cc:29:    if(spng_decode_image(ctx, out, out_size, SPNG_FMT_RGBA",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getimage_libspng",
+          "file": "tests/test_spng.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getimage_libspng",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_set_png_stream"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spng_set_png_stream",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_set_image_limits"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spng_set_image_limits",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_set_chunk_limits"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spng_set_chunk_limits",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_get_ihdr"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spng_get_ihdr",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_decoded_image_size"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for spng_decoded_image_size",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "decode_and_compare"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for decode_and_compare",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "decode_and_compare",
+          "callee": "getimage_libspng",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libspng-arvo-14935/src-vul/libspng/tests/testsuite.c:210:    img_spng = getimage_libspng(pngbuf, siz_pngbuf, &img_spng_siz",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "spng.c",
+          "import": "zlib.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libspng-arvo-14935/src-vul/libspng/spng.c:7:#include <zlib.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getimage_libpng"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getimage_libpng",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "tests/testsuite.c",
+          "callee": "decode_and_compare",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libspng-arvo-14935/src-vul/libspng/tests/testsuite.c:204:int decode_and_compare(unsigned char *pngbuf, size_t siz_pngbuf, ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/testsuite.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/testsuite.c",
+        "method": "os.path.isfile"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 4,
+    "results": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

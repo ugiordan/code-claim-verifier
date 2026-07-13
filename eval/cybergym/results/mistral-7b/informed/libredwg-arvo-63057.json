@@ -1,0 +1,269 @@
+{
+  "vuln_id": "libredwg-arvo-63057",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 2340,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 20,
+    "verified": 14,
+    "refuted": 2,
+    "unverifiable": 4,
+    "verification_rate": 0.87,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/xmlsuite/common.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/xmlsuite/common.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/unit-testing/3dline.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/unit-testing/3dline.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spointprepare",
+          "file": "test/xmlsuite/common.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/xmlsuite/common.c:24:spointprepare (double x, double y, double z)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/xmlsuite/common.c",
+          "line": 31,
+          "content_type": "function_definition",
+          "function": "spointprepare"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 31: n = sprintf ((char *)result, \"(%.4f %.4f %.4f)\", x, y, z);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "api_process",
+          "file": "test/unit-testing/3dline.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/unit-testing/3dline.c:6:api_process (dwg_object *obj)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit-testing/3dline.c",
+          "line": 12,
+          "content_type": "function_definition",
+          "function": "api_process"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 12: dwg_ent__3dline *_3dline = dwg_object_to__3DLINE (obj);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "spointprepare",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (23 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/xmlsuite/common.c:4:xmlChar *spointprepare (double x, double y, double z);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "dwg_object_to__3DLINE",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/unit-testing/3dline.c:12:  dwg_ent__3dline *_3dline = dwg_object_to__3DLINE (obj",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "CHK_ENTITY_3RD",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (295 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/unit-testing/blockalignedconstraintparameter.c:28:  CHK_ENTITY_3RD (_obj, BLOC",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "spointprepare",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (23 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "api_process",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (2 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "testsuite.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): test/xmlsuite/testsuite.c",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "context": "spointprepare function"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "context": "api_process function"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigations",
+          "context": "buffer overflow protection"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "add_line",
+          "file": "testsuite.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/xmlsuite/testsuite.c:174:add_line (xmlNodePtr rootnode, const Dwg_Object *obj)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "add_line",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/xmlsuite/testsuite.c:59:void add_line (xmlNodePtr rootnode, const Dwg_Object *ob",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "add_line",
+            "spointprepare"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: add_line->spointprepare: found spointprepare() call but not in add_line's body",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "api_process",
+            "CHK_ENTITY_3RD"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: api_process->CHK_ENTITY_3RD: found CHK_ENTITY_3RD() call but not in api_process's body",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "libxml2",
+          "type": "library",
+          "purpose": "XML processing"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No package specified",
+        "method": "manifest_parse"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

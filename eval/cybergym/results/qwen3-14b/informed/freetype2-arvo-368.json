@@ -1,0 +1,140 @@
+{
+  "vuln_id": "freetype2-arvo-368",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 3970,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 4,
+    "refuted": 3,
+    "unverifiable": 2,
+    "verification_rate": 0.61,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "include/freetype/ftadvanc.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: include/freetype/ftadvanc.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "FT_Get_Advance",
+          "file": "include/freetype/ftadvanc.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for FT_Get_Advance",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "include/freetype/ftadvanc.h",
+          "line": 100,
+          "content": "FT_Get_Advance"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 100: /* <Output>                                                              */",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "FT_Get_Advance",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (4 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "include/freetype/freetype.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: include/freetype/freetype.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "include/freetype/fttypes.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: include/freetype/fttypes.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "ft2build.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): devel/ft2build.h",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "function": "FT_Get_Advance",
+          "parameter": "gindex"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_checking",
+          "function": "FT_Get_Advance"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

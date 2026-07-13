@@ -1,0 +1,143 @@
+{
+  "vuln_id": "zlib-arvo-49903",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 5213,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 5,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.42,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "adler32.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: adler32.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "adler32_z",
+          "file": "adler32.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for adler32_z",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "adler32",
+          "file": "adler32.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for adler32",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "adler32.c",
+          "line": 78,
+          "content": "adler += buf[0];"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 78: if (adler >= BASE)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "adler32.c",
+          "line": 95,
+          "content": "*buf++"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "adler32.c",
+          "line": 102,
+          "content": "if (buf == Z_NULL)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 102: /* do length NMAX blocks -- requires just one modulo operation */",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "adler32_z",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/ChangeLog:47:- Add crc32_z() and adler32_z() functions with size_t lengths",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "adler32",
+            "adler32_z"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: adler32->adler32_z: found adler32_z() call but not in adler32's body",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "adler32.c",
+          "import": "zutil.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/adler32.c:8:#include \"zutil.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "adler32",
+          "exported": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/deflate.c:1644: * Flush the current block, with given end-of-file flag.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

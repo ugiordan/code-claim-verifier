@@ -1,0 +1,201 @@
+{
+  "vuln_id": "opensc-arvo-60672",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1418,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 6,
+    "refuted": 8,
+    "unverifiable": 1,
+    "verification_rate": 0.48,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "win32/customactions.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: win32/customactions.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MsiProcessMessage"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for MsiProcessMessage",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "MsiDoAction",
+          "callee": "MsiProcessMessage",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "MsiRunCustomActionEx",
+          "callee": "MsiDoAction",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "MsiRunCustomAction",
+          "callee": "MsiDoAction",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "windows.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/win32/customactions.cpp:35:#include <windows.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "tchar.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/win32/customactions.cpp:36:#include <tchar.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "strsafe.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/win32/customactions.cpp:37:#include <strsafe.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "msiquery.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/win32/customactions.cpp:39:#include <msiquery.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "wcautil.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/win32/customactions.cpp:42:#include <wcautil.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "function": "MsiProcessMessage"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "MsiRunCustomActionEx",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "MsiRunCustomAction",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "MsiRunCustomActionEx",
+            "MsiDoAction",
+            "MsiProcessMessage"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: MsiRunCustomActionEx not found in repo. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "MsiRunCustomAction",
+            "MsiDoAction",
+            "MsiProcessMessage"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: MsiRunCustomAction not found in repo. Verified: ",
+        "method": "call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

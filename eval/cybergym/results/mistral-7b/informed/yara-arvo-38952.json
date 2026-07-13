@@ -1,0 +1,159 @@
+{
+  "vuln_id": "yara-arvo-38952",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1389,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 9,
+    "refuted": 0,
+    "unverifiable": 1,
+    "verification_rate": 0.91,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/blob.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/blob.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/mapper.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/mapper.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/test-alignment.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/test-alignment.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/test-api.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/test-api.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "functions",
+          "file": "blob.h"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "map_file",
+          "file": "mapper.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-38952/src-vul/yara/tests/mapper.c:43:char* map_file(char* path)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "open",
+          "caller": "map_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (29 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-38952/src-vul/yara/tests/util.c:618:  if ((fd = open(filename, O_RDONLY | O_BINARY)) < 0)",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mmap",
+          "caller": "map_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-38952/src-vul/yara/tests/test-exception.c:57:void setup_mmap()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "map_file",
+          "caller": "main",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-38952/src-vul/yara/tests/mapper.c:75:    buf = map_file(argv[2]);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "mapper.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-38952/src-vul/yara/libyara/modules/pe/pe_utils.c:1124:      sprintf(name, \"DllRegisterServer\");",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 4,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

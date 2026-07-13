@@ -1,0 +1,155 @@
+{
+  "vuln_id": "librawspeed-arvo-3530",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 3445,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 1,
+    "verification_rate": 0.41,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/librawspeed/test/ExceptionsTest.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MetaHelper",
+          "file": "test/librawspeed/test/ExceptionsTest.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3530/src-vul/librawspeed/test/librawspeed/test/ExceptionsTest.cpp:55:template <typename T> static void* MetaHelper(const char* str) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp",
+          "content": "template <> void* MetaHelper<RawspeedException>(const char* str) {\n  ThrowRSE(FMT, str);\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 209 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MetaHelper",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "content": "ASSERT_ANY_THROW(MetaHelper<TypeParam>(msg.c_str()));"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp",
+          "import": "gtest/gtest.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3530/src-vul/librawspeed/test/librawspeed/test/ExceptionsTest.cpp:32:#include <gtest/gtest.h>                      // for Message, Test",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp",
+          "import": "gmock/gmock.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3530/src-vul/librawspeed/test/librawspeed/test/ExceptionsTest.cpp:31:#include <gmock/gmock.h>                      // for MakePredicate",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp",
+          "import": "<string>"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <string> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp",
+          "import": "<stdexcept>"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <stdexcept> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/librawspeed/test/ExceptionsTest.cpp",
+          "import": "<memory>"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <memory> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "MetaHelper functions"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

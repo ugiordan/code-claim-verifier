@@ -1,0 +1,166 @@
+{
+  "vuln_id": "libredwg-arvo-54625",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 2009,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 3,
+    "verification_rate": 0.81,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/xmlsuite/common.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/xmlsuite/common.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/unit-testing/3dline.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/unit-testing/3dline.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spointprepare",
+          "file": "test/xmlsuite/common.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/common.c:24:spointprepare (double x, double y, double z)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/xmlsuite/common.c",
+          "line": 31,
+          "content_type": "function_definition",
+          "function": "spointprepare"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 31: n = sprintf ((char *)result, \"(%.4f %.4f %.4f)\", x, y, z);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "api_process",
+          "file": "test/unit-testing/3dline.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/unit-testing/3dline.c:6:api_process (dwg_object *obj)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit-testing/3dline.c",
+          "line": 11,
+          "content_type": "function_definition",
+          "function": "api_process"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 11: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "spointprepare",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (23 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "api_process",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (2 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "location": "spointprepare function"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "location": "api_process function"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigations",
+          "scope": "provided code"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

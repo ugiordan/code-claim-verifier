@@ -1,0 +1,237 @@
+{
+  "vuln_id": "opensc-arvo-63104",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4399,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 17,
+    "verified": 8,
+    "refuted": 9,
+    "unverifiable": 0,
+    "verification_rate": 0.3,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/ui/strings.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/ui/strings.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "get_inserted_text",
+          "file": "src/ui/strings.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for get_inserted_text",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/ui/strings.c",
+          "line_range": "43-60",
+          "content": "get_inserted_text function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 322 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ui_get_str",
+          "file": "src/ui/strings.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ui_get_str",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/strings.c:32:static const char *get_inserted_text(struct sc_pkcs15_card *p15card, ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sc_notify_id",
+          "file": "src/ui/notify.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for sc_notify_id",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ui_get_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/strings.c:97:const char *ui_get_str(struct sc_context *ctx, struct sc_atr *atr,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sc_notify",
+          "file": "src/ui/notify.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for sc_notify",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "sc_bin_to_hex",
+          "source": "libopensc/internal.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of sc_bin_to_hex found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "strlcpy",
+          "source": "common/compat_strlcpy.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/notify.c:69:#include \"common/compat_strlcpy.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "scconf_block",
+          "source": "libopensc/internal.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of scconf_block found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "scconf_get_str",
+          "source": "libopensc/internal.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of scconf_get_str found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strlcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (115 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/notify.c:163:\t\tstrlcpy(nid.szTip, path, ARRAYSIZE(nid.szTip));",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/ui/strings.c",
+          "content": "static char text[3*SC_MAX_ATR_SIZE]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 322 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sc_bin_to_hex",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (39 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/strings.c:49:\tsc_bin_to_hex(atr->value, atr->len, text + (sizeof prefix) - 1,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "sc_notify_id",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (16 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (3 call sites)",
+        "method": "grep_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 4,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

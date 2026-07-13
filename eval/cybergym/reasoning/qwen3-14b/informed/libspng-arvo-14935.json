@@ -1,0 +1,8 @@
+{
+  "vuln_id": "libspng-arvo-14935",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning": "\n\n### Vulnerability Analysis of `spng.c`\n\n#### 1. **Files Containing Vulnerable Code**\nThe vulnerable code is located in the **`spng.c`** file. This file contains the core logic for parsing and decoding PNG files, including handling of IHDR chunks, chunk validation, and memory allocation for decoded image data.\n\n---\n\n#### 2. **Vulnerable Functions and Definitions**\nThe primary vulnerability lies in the **`spng_decoded_image_size`** function (not explicitly shown in the provided code but referenced in `testsuite.c`). This function calculates the size of the decoded image buffer based on the `width` and `height` from the IHDR chunk and the requested format (`SPNG_FMT_RGBA8` or `SPNG_FMT_RGBA16`). \n\n**Critical Code Path:**\n```c\nsize_t rowbytes = png_get_rowbytes(png_ptr, info_ptr);\nsize_t image_size = height * rowbytes;\n```\nThis calculation is vulnerable to **integer overflow** when `width` and `height` are large (e.g., `2^32 - 1`), leading to an incorrect buffer size.\n\n**Other Vulnerable Functions:**\n- **`read_chunk_bytes`**: If this function does not validate chunk lengths against `max_chunk_size` (set via `spng_set_chunk_limits`), it could allow reading oversized chunks.\n- **`spng_set_chunk_limits`**: If the code does not enforce the `max_chunk_size` limit during chunk parsing, it could lead to buffer overflows.\n\n---\n\n#### 3. **Callers of Vulnerable Functions**\n- **`spng_decoded_image_size`",
+  "reasoning_length": 1413,
+  "duration_s": 176.91
+}

@@ -5,12 +5,12 @@
   "reasoning_length": 6096,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
-    "refuted": 6,
+    "total_claims": 18,
+    "verified": 6,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.65,
-    "action": "FLAG",
+    "verification_rate": 0.26,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -30,7 +30,7 @@
           "line": 2000,
           "content": "xmlAddIDSafe"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 2000: ",
         "method": "file_read"
@@ -86,7 +86,7 @@
           "line": 2000,
           "content": "around line **2000**"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 2000: ",
         "method": "file_read"
@@ -120,7 +120,7 @@
           "line": 2100,
           "content": "around line **2100**"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 2100: return(-1);",
         "method": "file_read"
@@ -135,57 +135,6 @@
         "confidence": 0.65,
         "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/valid.c:2625:    res = xmlAddIDSafe(doc, value, attr, xmlIsStreaming(ctxt), &id);",
         "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlReaderForFile"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/xmlreader.c:5049:xmlReaderForFile(const char *filename, const char *encoding, int options)",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlReaderForMemory"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/xmlreader.c:5074:xmlReaderForMemory(const char *buffer, int size, const char *URL,",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlReadFile"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/parser.c:13590:xmlReadFile(const char *filename, const char *encoding, int options)",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlReadMemory"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/parser.c:13631:xmlReadMemory(const char *buffer, int size, const char *url,",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlReaderParse",
-          "file": "reader.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for xmlReaderParse",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -204,26 +153,83 @@
         "method": "call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "xmlGetID",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/xpath.c:7530:        attr = xmlGetID(doc, ID);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlGetIDAttr",
-          "expected": true
+          "chain": [
+            "xmlReaderForMemory",
+            "xmlReaderParse",
+            "xmlParseElement",
+            "xmlAddIDAttr",
+            "xmlAddIDSafe"
+          ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "confidence": 0.7,
+        "evidence": "Chain broken: xmlReaderForMemory does not call xmlReaderParse. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "xmlReadFile",
+            "xmlReaderParse",
+            "xmlParseElement",
+            "xmlAddIDAttr",
+            "xmlAddIDSafe"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: xmlReadFile does not call xmlReaderParse. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "xmlReadMemory",
+            "xmlReaderParse",
+            "xmlParseElement",
+            "xmlAddIDAttr",
+            "xmlAddIDSafe"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: xmlReadMemory does not call xmlReaderParse. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReaderParse",
+          "file": "reader.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for xmlReaderParse",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlGetID"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/valid.c:2764:xmlGetID(xmlDocPtr doc, const xmlChar *ID) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlGetIDAttr"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for xmlGetIDAttr",
+        "method": "grep_function_def"
       }
     ]
   },

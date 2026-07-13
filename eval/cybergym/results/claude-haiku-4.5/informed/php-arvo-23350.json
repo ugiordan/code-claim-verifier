@@ -6,51 +6,51 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 17,
-    "verified": 8,
-    "refuted": 9,
+    "verified": 12,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.44,
-    "action": "OVERRIDE",
+    "verification_rate": 0.71,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "Zend/zend_gc.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend_gc.h",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "Zend/zend_gc.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend_gc.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "Zend/zend.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend.h",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "Zend/zend.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: Zend/zend.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -60,7 +60,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:27:#include \"zend_types.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:35:#include \"zend_gc.h\"",
         "method": "grep_import"
       },
       {
@@ -124,6 +124,17 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "gc_enable",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_builtin_functions.c:110:/* {{{ proto void gc_enable(void)",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -152,22 +163,11 @@
         "method": "call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "gc_enable",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_builtin_functions.c:110:/* {{{ proto void gc_enable(void)",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "Zend/zend.c",
-          "line_number": 90,
-          "content": "static ZEND_INI_MH(OnUpdateGCEnabled)"
+          "line_range": "~90-100",
+          "content": "gc_enable(val);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -182,7 +182,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:27:#include \"zend_types.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:36:#include \"zend_variables.h\"",
         "method": "grep_import"
       },
       {
@@ -193,7 +193,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:27:#include \"zend_types.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend.h:30:#include \"zend_alloc.h\"",
         "method": "grep_import"
       }
     ]
@@ -204,28 +204,28 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       }

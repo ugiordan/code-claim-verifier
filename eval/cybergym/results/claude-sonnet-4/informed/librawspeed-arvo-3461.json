@@ -1,0 +1,183 @@
+{
+  "vuln_id": "librawspeed-arvo-3461",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3877,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 3,
+    "refuted": 9,
+    "unverifiable": 0,
+    "verification_rate": 0.19,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/utilities/identify/rawspeed-identify.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "find_cameras_xml",
+          "file": "src/utilities/identify/rawspeed-identify.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for find_cameras_xml",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "line": 102,
+          "content": "return nullptr;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 102: if (stat(found_camfile.c_str(), &statbuf)) {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "line": 115,
+          "content": "return nullptr;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 115: } // namespace rawspeed",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "line": 44,
+          "content": "std::string find_cameras_xml(const char* argv0);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 44: namespace rawspeed {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "find_cameras_xml",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3461/src-vul/librawspeed/src/utilities/identify/rawspeed-identify.cpp:48:std::string find_cameras_xml(con",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "line": 135,
+          "content": "const std::string camfile = find_cameras_xml(argv[0]);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 135: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "import": "<string>",
+          "line": 35
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <string> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "import": "<sys/stat.h>",
+          "line": 37
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <sys/stat.h> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "src/utilities/identify/rawspeed-identify.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "line": 125,
+          "content": "main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 125: using rawspeed::TYPE_FLOAT32;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "find_cameras_xml"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: main->find_cameras_xml: found find_cameras_xml() call but not in main's body",
+        "method": "call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "vuln_id": "selinux-arvo-45523",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning": "\n\n### Vulnerability Analysis of `setsebool.c` in `policycoreutils`\n\n---\n\n#### **1. Files Containing Vulnerable Code**\n- **File**: `policycoreutils/setsebool/setsebool.c`\n- **Reason**: The vulnerable code is located in the `setbool` function, which processes user-provided command-line arguments to set SELinux booleans.\n\n---\n\n#### **2. Vulnerable Function(s)**\n- **Function**: `int setbool(char **list, size_t start, size_t end)`\n- **Location**: Defined in `setsebool.c` (lines 140\u2013240)\n- **Vulnerability**: **Format String Vulnerability**\n  - The function uses `fprintf(stderr, ...)` to log errors, passing user-controlled strings (`name` and `value_ptr`) as format specifiers without proper formatting.\n  - Example:\n    ```c\n    fprintf(stderr, \"setsebool: illegal value %s for boolean %s\\n\", value_ptr, name);\n    ```\n  - If `name` or `value_ptr` contains format specifiers like `%n`, `%s`, or `%x`, this can lead to arbitrary memory writes, information leaks, or denial-of-service (DoS) attacks.\n\n---\n\n#### **3. Callers of the Vulnerable Function**\n- **Caller**: `main()` in `setsebool",
+  "reasoning_length": 1089,
+  "duration_s": 180.24
+}

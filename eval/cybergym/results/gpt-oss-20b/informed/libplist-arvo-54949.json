@@ -5,12 +5,12 @@
   "reasoning_length": 5863,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 30,
-    "verified": 16,
-    "refuted": 14,
+    "total_claims": 24,
+    "verified": 19,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.42,
-    "action": "OVERRIDE",
+    "verification_rate": 0.64,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -19,18 +19,18 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: libplist/plist.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "libcnary/node.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: libcnary/node.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -58,32 +58,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "libplist/plist.c",
-          "line_range": "120-140",
-          "content": "plist_free function definition"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: libplist/plist.c",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libcnary/node.c",
-          "line_range": "20-40",
-          "content": "node_destroy function definition"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 215 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libplist/plist.c",
           "line": 123,
-          "content": "plist_free function starts"
+          "content": "plist_free() starts"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -95,9 +71,9 @@
         "parameters": {
           "file": "libcnary/node.c",
           "line": 22,
-          "content": "node_destroy function starts"
+          "content": "node_destroy() starts"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 22: */",
         "method": "file_read"
@@ -105,12 +81,12 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "node_destroy",
+          "name": "plist_free",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/include/node.h:46:void node_destroy(struct node_t* node);",
+        "evidence": "Found call sites (74 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:281:    plist_free(root_node);",
         "method": "grep_call_site"
       },
       {
@@ -125,16 +101,15 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tools/plistutil.c",
-          "line": 350,
-          "content": "plist_free call"
+          "name": "plist_free",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 350 out of range (file has 335 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (74 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:281:    plist_free(root_node);",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -148,64 +123,39 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "test/plist_btest.c",
-          "line": 70,
-          "content": "plist_free calls"
+          "name": "plist_free",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 70: fclose(iplist);",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "Found call sites (74 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:281:    plist_free(root_node);",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "test/plist_cmp.c",
-          "line": 90,
-          "content": "plist_free calls"
+          "name": "plist_free",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 90: struct stat *filestats1 = (struct stat *) malloc(sizeof(struct stat));",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "Found call sites (74 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:281:    plist_free(root_node);",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "file": "test/plist_jtest.c",
-          "line": 70,
-          "content": "plist_free calls"
+          "chain": [
+            "plist_free",
+            "node_destroy"
+          ]
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 70: fclose(iplist);",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/plist_otest.c",
-          "line": 70,
-          "content": "plist_free calls"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 70: fclose(iplist);",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/plist_test.c",
-          "line": 70,
-          "content": "plist_free calls"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 70: fclose(iplist);",
-        "method": "file_read"
+        "confidence": 0.7,
+        "evidence": "Chain verified: plist_free->node_destroy: found node_destroy() call but not in plist_free's body",
+        "method": "call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -215,7 +165,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/configure.ac:103:      #include <time.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:28:#include \"plist/plist.h\"",
         "method": "grep_import"
       },
       {
@@ -226,7 +176,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/configure.ac:103:      #include <time.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/test/plist_cmp.c:30:#include <node.h>",
         "method": "grep_import"
       },
       {
@@ -237,7 +187,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/node.c:23:#include <stdio.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/node.c:27:#include \"node.h\"",
         "method": "grep_import"
       },
       {
@@ -248,7 +198,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/node.c:23:#include <stdio.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/libcnary/node.c:28:#include \"node_list.h\"",
         "method": "grep_import"
       },
       {
@@ -259,7 +209,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:25:#include <config.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:28:#include \"plist/plist.h\"",
         "method": "grep_import"
       },
       {
@@ -267,80 +217,60 @@
         "parameters": {
           "file": "tools/plistutil.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: tools/plistutil.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/plist_btest.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/plist_btest.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/plist_cmp.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/plist_cmp.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/plist_jtest.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/plist_jtest.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/plist_otest.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/plist_otest.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/plist_test.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "pointer nullification after free"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "pointer nullification after free"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "evidence": "exists: test/plist_test.c",
+        "method": "os.path.isfile"
       }
     ]
   },
@@ -350,7 +280,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
@@ -364,42 +294,42 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       }

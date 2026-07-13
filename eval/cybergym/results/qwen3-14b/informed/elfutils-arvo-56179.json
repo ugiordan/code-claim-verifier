@@ -1,0 +1,237 @@
+{
+  "vuln_id": "elfutils-arvo-56179",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4709,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 18,
+    "verified": 8,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.44,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libdw/cfi.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libdw/cie.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libdw/cie.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libdw/cfi.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libdw/cfi.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "execute_cfi",
+          "file": "libdw/cfi.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:102:execute_cfi (Dwarf_CFI *cache,",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "line_range": "100-400",
+          "content": "execute_cfi function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "__libdw_frame_at_address",
+          "file": "libdw/cfi.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for __libdw_frame_at_address",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "enough_registers"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:60:enough_registers (Dwarf_Word reg, Dwarf_Frame **pfs, int *result)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "line_range": "50-80",
+          "content": "enough_registers function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "register_rule"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for register_rule",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "line_range": "120-130",
+          "content": "register_rule function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "__libdw_frame_at_address",
+            "execute_cfi"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: __libdw_frame_at_address->execute_cfi: found execute_cfi() call but not in __libdw_frame_at_address's body",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "execute_cfi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:484:      result = execute_cfi (cache, &abi_cie, &cie_fs,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "dwarf_frame_at_address"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for dwarf_frame_at_address",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "dwarf_frame_at_address",
+            "__libdw_frame_at_address"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: dwarf_frame_at_address not found in repo. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "line_range": "55-65",
+          "content": "reg >= INT32_MAX / sizeof(regs[0]) check"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "get_uleb128"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for get_uleb128",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "get_sleb128"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for get_sleb128",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "duplicate_frame_state"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/cfi.c:46:duplicate_frame_state (const Dwarf_Frame *original,",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

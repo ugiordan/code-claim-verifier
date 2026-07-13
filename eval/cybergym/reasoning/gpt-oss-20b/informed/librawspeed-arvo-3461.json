@@ -1,0 +1,8 @@
+{
+  "vuln_id": "librawspeed-arvo-3461",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning": "**High\u2011level overview**\n\nThe only code that is actually *executable* in the repository (outside of the\nfuzz harnesses) is the small \u201cidentify\u201d helper and the various fuzz\u2011driver\n`main()` functions.  The real library code lives in the `src/\u2026` tree, but the\nonly functions that are called from the entry points that we can see are:\n\n* `rawspeed::RawParser::getDecoder()` \u2013 used in the two fuzz drivers\n  (`fuzz/librawspeed/parsers/main.cpp` and `fuzz/rawspeed/main.cpp`).\n* `rawspeed::RawParser::getDecoder()` is **not** checked for a `nullptr`\n  before it is dereferenced.\n\nBecause the library is a decoder for RAW image files, the fuzz drivers feed\narbitrary data into the parser.  When the parser cannot find a suitable\ndecoder for the input, `getDecoder()` returns a *null* `std::unique_ptr`.  The\ndriver then immediately dereferences that pointer:\n\n```cpp\nauto decoder = parser.getDecoder();   // may be nullptr\ndecoder->applyCrop = false;          // <-- UB if decoder == nullptr\n```\n\nThis is a classic *null\u2011pointer dereference* that can lead to a crash or, in\nthe worst case, an exploitable memory\u2011corruption bug if the surrounding\nenvironment is crafted to trigger a use\u2011after\u2011free or similar.  The code\ndoes **not** perform any input sanitisation or bounds checking before the\ndereference, and there is no defensive guard in the library itself.\n\nBelow is a line\u2011by\u2011line walk\u2011through of the vulnerable code,",
+  "reasoning_length": 1414,
+  "duration_s": 30.01
+}

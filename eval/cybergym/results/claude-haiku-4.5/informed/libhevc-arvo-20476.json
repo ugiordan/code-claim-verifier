@@ -5,63 +5,52 @@
   "reasoning_length": 4452,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
+    "total_claims": 15,
     "verified": 10,
-    "refuted": 6,
-    "unverifiable": 0,
-    "verification_rate": 0.39,
-    "action": "OVERRIDE",
+    "refuted": 2,
+    "unverifiable": 3,
+    "verification_rate": 0.77,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/encoder/app.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/encoder/app.h",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/encoder/main.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/encoder/main.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/decoder/main.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: test/decoder/main.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "fuzzer/hevc_dec_fuzzer.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "num_long_term_pics parsing code",
-          "scope": "provided files"
-        },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.99,
+        "evidence": "exists: fuzzer/hevc_dec_fuzzer.cpp",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -97,68 +86,49 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "provided code",
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "import": "ihevcd_cxa.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/encoder/ihevce_frame_process.c:4399:                                /* need to access the importance of this sad in R",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:31:#include \"ihevcd_cxa.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "provided code",
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "import": "iv.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/encoder/ihevce_frame_process.c:4399:                                /* need to access the importance of this sad in R",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:32:#include \"iv.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "provided code",
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "import": "ivd.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/encoder/ihevce_frame_process.c:4399:                                /* need to access the importance of this sad in R",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:33:#include \"ivd.h\"",
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "item": "input validation checks for num_long_term_pics",
-          "scope": "provided code"
+          "chain": [
+            "LLVMFuzzerTestOneInput",
+            "Codec::decodeHeader",
+            "ivd_api_function"
+          ]
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "bounds checking before array allocations",
-          "scope": "provided code"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "overflow detection in size calculations",
-          "scope": "provided code"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.7,
+        "evidence": "Chain verified: LLVMFuzzerTestOneInput->Codec::decodeHeader: found Codec::decodeHeader() call but not in LLVMFuzzerTestOneInput's body; Codec::decodeHeader->ivd_api_function: found ivd_api_function() ",
+        "method": "call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -174,12 +144,34 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "validation of num_long_term_pics value",
-          "scope": "fuzzer code"
+          "type": "input_validation",
+          "context": "num_long_term_pics"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_checking",
+          "context": "array_allocations"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "overflow_detection",
+          "context": "size_calculations"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
         "method": "grep_absent"
       }
     ]
@@ -190,28 +182,28 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       }

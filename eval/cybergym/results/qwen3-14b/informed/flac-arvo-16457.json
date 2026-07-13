@@ -1,0 +1,211 @@
+{
+  "vuln_id": "flac-arvo-16457",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 5334,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 17,
+    "verified": 9,
+    "refuted": 6,
+    "unverifiable": 2,
+    "verification_rate": 0.54,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "all.h",
+          "classification": "header"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=all.h, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "assert.h",
+          "classification": "header"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=assert.h, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "callback.h",
+          "classification": "header"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=callback.h, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "export.h",
+          "classification": "header"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=export.h, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "format.h",
+          "classification": "header"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=format.h, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable code",
+          "scope": "provided files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable functions",
+          "scope": "provided headers"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "export.h",
+          "content": "FLAC_API_SUPPORTS_OGG_FLAC"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 97 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "format.h",
+          "content": "FLAC__MAX_BLOCK_SIZE"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1025 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "FLAC__MAX_BLOCK_SIZE",
+          "file": "format.h",
+          "default_behavior": "65535"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'FLAC__MAX_BLOCK_SIZE' found in 24 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "format.h",
+          "content": "FLAC__MAX_CHANNELS"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1025 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "FLAC__IOCallback_Read",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for FLAC__IOCallback_Read",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "FLAC__IOCallback_Write",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for FLAC__IOCallback_Write",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "callback.h",
+          "content": "FLAC__IOCallbacks"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 185 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "headers",
+          "import": "<stdlib.h>",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "headers",
+          "import": "<assert.h>",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "input sanitization",
+          "scope": "headers"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -9,7 +9,7 @@
     "verified": 8,
     "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.23,
+    "verification_rate": 0.34,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -19,8 +19,8 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: libssh2/kex.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -29,8 +29,8 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: libssh2/session.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -39,48 +39,48 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "not found: libssh2/ssh.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "direct_tcpip.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): example/direct_tcpip.c",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "scp.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): example/scp.c",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "scp_nonblock.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): example/scp_nonblock.c",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "scp_write.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): example/scp_write.c",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -116,6 +116,56 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libssh2/kex.c",
+          "line_range": "200-240",
+          "content": "definition of `_libssh2_kex_agree_instr()`"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: libssh2/kex.c",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libssh2/session.c",
+          "line_range": "480-520",
+          "content": "call to `libssh2_kex_agree()` inside `libssh2_session_handshake()`"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: libssh2/session.c",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libssh2/ssh.c",
+          "line_range": "300-350",
+          "content": "call to `libssh2_session_handshake()` from the public API"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: libssh2/ssh.c",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "libssh2_session_handshake",
+            "libssh2_kex_agree",
+            "_libssh2_kex_agree_instr"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: libssh2_session_handshake does not call libssh2_kex_agree. Verified: ",
+        "method": "call_chain"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "libssh2_kex_agree",
@@ -124,17 +174,6 @@
         "verdict": "REFUTED",
         "confidence": 0.65,
         "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "libssh2_session_handshake",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/ssh2_exec.c:147:    while((rc = libssh2_session_handshake(session, sock)) ==",
         "method": "grep_call_site"
       },
       {
@@ -160,28 +199,14 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "libssh2_session_handshake",
-            "libssh2_kex_agree",
-            "_libssh2_kex_agree_instr"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: libssh2_session_handshake does not call libssh2_kex_agree. Verified: ",
-        "method": "call_chain"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "libssh2/kex.c",
           "import": "<string.h>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:19: #include <errno.h>",
+        "evidence": "No import of <string.h> found",
         "method": "grep_import"
       },
       {
@@ -190,9 +215,9 @@
           "file": "libssh2/kex.c",
           "import": "<stdlib.h>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:19: #include <errno.h>",
+        "evidence": "No import of <stdlib.h> found",
         "method": "grep_import"
       },
       {
@@ -201,34 +226,10 @@
           "file": "libssh2/kex.c",
           "import": "\"libssh2.h\""
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/acinclude.m4:19: #include <errno.h>",
+        "evidence": "No import of \"libssh2.h\" found",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libssh2/kex.c",
-          "line_number": 210,
-          "content": "_libssh2_kex_agree_instr"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: libssh2/kex.c",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libssh2/kex.c",
-          "line_number": 260,
-          "content": "libssh2_kex_agree"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: libssh2/kex.c",
-        "method": "file_read"
       }
     ]
   },

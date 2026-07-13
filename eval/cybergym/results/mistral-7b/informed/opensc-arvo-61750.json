@@ -1,0 +1,163 @@
+{
+  "vuln_id": "opensc-arvo-61750",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1086,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 3,
+    "refuted": 8,
+    "unverifiable": 1,
+    "verification_rate": 0.28,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "win32/customactions.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: win32/customactions.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MdRegisterCard",
+          "file": "win32/customactions.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for MdRegisterCard",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MdRegisterMinidriver",
+          "file": "win32/customactions.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for MdRegisterMinidriver",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MdRegisterCard",
+          "caller": "MdRegisterMinidriver",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "win32/customactions.cpp",
+          "import": "wcautil.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61750/src-vul/opensc/win32/customactions.cpp:42:#include <wcautil.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "win32/customactions.cpp",
+          "import": "msiquery.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61750/src-vul/opensc/win32/customactions.cpp:39:#include <msiquery.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "function": "MdRegisterCard"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "win32/actions.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: win32/actions.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MdInstall",
+          "file": "win32/actions.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for MdInstall",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MdRegisterMinidriver",
+          "caller": "MdInstall",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "win32/OpenSC.wxs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: win32/OpenSC.wxs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "MdInstall",
+            "MdRegisterMinidriver",
+            "MdRegisterCard"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: MdInstall not found in repo. Verified: ",
+        "method": "call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -1,0 +1,247 @@
+{
+  "vuln_id": "jq-arvo-61235",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4953,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 19,
+    "verified": 7,
+    "refuted": 12,
+    "unverifiable": 0,
+    "verification_rate": 0.22,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/jq_fuzz_compile.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/jq_fuzz_load_file.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/jq_fuzz_parse.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "modules/oniguruma/test/test_back.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test_options.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "jq_compile"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for jq_compile",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "jv_load_file"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for jv_load_file",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "jv_parse"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for jv_parse",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "jq_compile",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/tests/jq_fuzz_compile.c:17:    jq_compile(jq, null_terminated);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "jv_load_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/ChangeLog:1214:\tFix leaks in jv_load_file()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "jv_parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/tests/jq_fuzz_parse.c:14:  jv res = jv_parse(null_terminated);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/jq_fuzz_compile.c",
+          "content": "jq_compile(jq, null_terminated);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 25 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/jq_fuzz_load_file.c",
+          "content": "jv data1 = jv_load_file(filename, 1);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 27 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/jq_fuzz_load_file.c",
+          "content": "jv data2 = jv_load_file(filename, 0);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 27 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/jq_fuzz_parse.c",
+          "content": "jv res = jv_parse(null_terminated);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 21 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit input sanitization in fuzzer tests"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "jq_compile"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "jv_load_file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "jv_parse"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 4,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

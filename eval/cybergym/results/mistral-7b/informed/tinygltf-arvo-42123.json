@@ -1,0 +1,178 @@
+{
+  "vuln_id": "tinygltf-arvo-42123",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1752,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 5,
+    "verification_rate": 0.62,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "stb_image.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: stb_image.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "stb_image_write.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: stb_image_write.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "stbi_load"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for stbi_load",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "stbi_write_png"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for stbi_write_png",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "stbi_load",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (7 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "stbi_write_png",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (10 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "stb_image",
+          "type": "external"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No package specified",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "stb_image_write",
+          "type": "external"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No package specified",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "jsonhpp",
+          "type": "external"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No package specified",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "base64",
+          "type": "external"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No package specified",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "stb_image_resize",
+          "type": "external"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No package specified",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "input sanitization",
+          "scope": "codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "reachable": true,
+          "functions": [
+            "stbi_load",
+            "stbi_write_png"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/examples/common/imgui/imgui.h:750:    ImGuiNavFlags_EnableKeyboard    = 1 << 0,   // Mas",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}
