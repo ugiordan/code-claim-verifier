@@ -47,7 +47,7 @@ class CymbalBackend:
     def _index(self) -> None:
         result = subprocess.run(
             ["cymbal", "index", "."],
-            cwd=self.repo_path, capture_output=True, text=True, timeout=120,
+            cwd=self.repo_path, capture_output=True, text=True, timeout=300,
         )
         if result.returncode != 0:
             logger.warning("cymbal index failed: %s", result.stderr[:200])
