@@ -29,6 +29,14 @@ def _extract_fix_commit(entry: dict) -> str | None:
             for event in rng.get("events", []):
                 if "fixed" in event:
                     return event["fixed"]
+
+    for ref in entry.get("references", []):
+        url = ref.get("url", "")
+        if "github.com" in url and "/commit/" in url:
+            parts = url.rstrip("/").split("/commit/")
+            if len(parts) == 2 and len(parts[1]) >= 7:
+                return parts[1].split("#")[0].split("?")[0]
+
     return None
 
 
@@ -40,6 +48,14 @@ def _extract_repo_url(entry: dict) -> str | None:
             repo = rng.get("repo", "")
             if "github.com" in repo:
                 return repo.rstrip("/").removesuffix(".git")
+
+    for ref in entry.get("references", []):
+        url = ref.get("url", "")
+        if "github.com" in url and "/commit/" in url:
+            parts = url.split("/commit/")[0]
+            if "github.com" in parts:
+                return parts.rstrip("/").removesuffix(".git")
+
     return None
 
 
