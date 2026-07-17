@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import io
+import json
 import logging
+import os
+import tempfile
 import time
+import zipfile
 
 import requests
 
@@ -10,8 +15,7 @@ from eval.multilang.constants import ECOSYSTEMS, CandidateStatus
 
 logger = logging.getLogger(__name__)
 
-OSV_QUERY_URL = "https://api.osv.dev/v1/query"
-OSV_BATCH_URL = "https://api.osv.dev/v1/querybatch"
+OSV_GCS_URL = "https://storage.googleapis.com/osv-vulnerabilities/{ecosystem}/all.zip"
 _MIN_DESC_LEN = 50
 _MIN_YEAR = 2020
 _MEDIUM_PLUS = {"MEDIUM", "HIGH", "CRITICAL"}
@@ -169,51 +173,74 @@ def _get_star_count(repo_url: str) -> int | None:
     return None
 
 
-def query_ecosystem(ecosystem: str, min_stars: int = 100) -> list[dict]:
-    logger.info("Querying OSV for ecosystem: %s", ecosystem)
+def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> list[dict]:
+    url = OSV_GCS_URL.format(ecosystem=ecosystem)
+    logger.info("Downloading OSV bulk data for %s from %s", ecosystem, url)
+
+    if cache_dir:
+        cached = os.path.join(cache_dir, f"{ecosystem.replace('/', '_')}.zip")
+        if os.path.isfile(cached):
+            logger.info("Using cached zip: %s", cached)
+            with zipfile.ZipFile(cached) as zf:
+                return _parse_zip(zf)
+
+    try:
+        resp = requests.get(url, timeout=120, stream=True)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        logger.error("Failed to download %s: %s", url, e)
+        return []
+
+    content = resp.content
+    if cache_dir:
+        os.makedirs(cache_dir, exist_ok=True)
+        with open(cached, "wb") as f:
+            f.write(content)
+
+    with zipfile.ZipFile(io.BytesIO(content)) as zf:
+        return _parse_zip(zf)
+
+
+def _parse_zip(zf: zipfile.ZipFile) -> list[dict]:
+    entries = []
+    for name in zf.namelist():
+        if not name.endswith(".json"):
+            continue
+        try:
+            data = json.loads(zf.read(name))
+            entries.append(data)
+        except (json.JSONDecodeError, KeyError):
+            continue
+    return entries
+
+
+def query_ecosystem(ecosystem: str, min_stars: int = 100,
+                    cache_dir: str | None = None) -> list[dict]:
+    logger.info("Processing ecosystem: %s", ecosystem)
+
+    raw_entries = _download_ecosystem_zip(ecosystem, cache_dir=cache_dir)
+    logger.info("Downloaded %d entries for %s", len(raw_entries), ecosystem)
+
     candidates: list[dict] = []
-    page_token = ""
     seen_ids: set[str] = set()
 
-    while True:
-        payload: dict = {"package": {"ecosystem": ecosystem}}
-        if page_token:
-            payload["page_token"] = page_token
+    for entry in raw_entries:
+        osv_id = entry.get("id", "")
+        if osv_id in seen_ids:
+            continue
+        seen_ids.add(osv_id)
 
-        try:
-            resp = requests.post(OSV_QUERY_URL, json=payload, timeout=30)
-            resp.raise_for_status()
-        except requests.RequestException as e:
-            logger.error("OSV query failed for %s: %s", ecosystem, e)
-            break
+        parsed = _parse_osv_entry(entry)
+        if parsed is None:
+            continue
 
-        data = resp.json()
-        vulns = data.get("vulns", [])
-        if not vulns:
-            break
+        severity = parsed.get("severity", "UNKNOWN")
+        if severity not in _MEDIUM_PLUS:
+            continue
 
-        for entry in vulns:
-            osv_id = entry.get("id", "")
-            if osv_id in seen_ids:
-                continue
-            seen_ids.add(osv_id)
+        candidates.append(parsed)
 
-            parsed = _parse_osv_entry(entry)
-            if parsed is None:
-                continue
-
-            severity = parsed.get("severity", "UNKNOWN")
-            if severity not in _MEDIUM_PLUS:
-                continue
-
-            candidates.append(parsed)
-
-        page_token = data.get("next_page_token", "")
-        if not page_token:
-            break
-        time.sleep(1)
-
-    logger.info("Found %d raw candidates for %s", len(candidates), ecosystem)
+    logger.info("After filtering: %d candidates for %s", len(candidates), ecosystem)
 
     if min_stars > 0:
         filtered = []
@@ -234,13 +261,16 @@ def query_ecosystem(ecosystem: str, min_stars: int = 100) -> list[dict]:
 
 
 def run_query(output_path: str, ecosystems: list[str] | None = None,
-              min_stars: int = 100) -> None:
+              min_stars: int = 100, cache_dir: str | None = None) -> None:
     if ecosystems is None:
         ecosystems = list(ECOSYSTEMS.values())
 
+    if cache_dir is None:
+        cache_dir = os.path.join(os.path.dirname(output_path), ".osv_cache")
+
     all_candidates: list[dict] = []
     for eco in ecosystems:
-        candidates = query_ecosystem(eco, min_stars=min_stars)
+        candidates = query_ecosystem(eco, min_stars=min_stars, cache_dir=cache_dir)
         all_candidates.extend(candidates)
         logger.info("Total so far: %d", len(all_candidates))
 
