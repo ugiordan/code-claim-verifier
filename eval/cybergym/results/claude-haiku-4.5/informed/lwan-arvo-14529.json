@@ -35,17 +35,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "parse_args",
-          "file": "src/bin/lwan/main.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14529/src-vul/lwan/src/bin/lwan/main.c:96:parse_args(int argc, char *argv[], struct lwan_config *config, char *root,",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/bin/lwan/main.c",
@@ -70,27 +59,39 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parse_args",
+          "file": "src/bin/lwan/main.c",
+          "start_line": 79,
+          "end_line": 140
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: parse_args at src/bin/lwan/main.c:95",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "parse_args",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14529/src-vul/lwan/src/bin/lwan/main.c:186:    switch (parse_args(argc, argv, &c, root, &sj)) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "src/bin/lwan/main.c",
-          "line": 143,
-          "content": "switch (parse_args(argc, argv, &c, root, &sj)) {"
+          "name": "getopt_long",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 143: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (parse_args, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -101,10 +102,10 @@
             "getopt_long"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->parse_args: found parse_args() call but not in main's body; parse_args->getopt_long: found getopt_long() call but not in parse_args's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->parse_args: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -192,7 +193,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

@@ -5,11 +5,11 @@
   "reasoning_length": 3762,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 9,
-    "verified": 2,
+    "total_claims": 10,
+    "verified": 3,
     "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.14,
+    "verification_rate": 0.28,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -26,55 +26,69 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "make_crc_table",
-          "filename": "crc32.c"
+          "file": "crc32.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for make_crc_table",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: make_crc_table at crc32.c:121",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "filename": "crc32.c",
-          "line_number": 150,
-          "content": "static volatile int first = 1;"
+          "file": "crc32.c",
+          "line_range": "150-250",
+          "content_description": "make_crc_table function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range (file has 529 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "crc32.c",
+          "line_range": "150-185",
+          "content_description": "thread safety check code"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 529 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "crc32.c",
+          "content_description": "static volatile int first = 1"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 529 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "make_crc_table",
+          "caller": "get_crc_table",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/crc32.c:121:local void make_crc_table()",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "get_crc_table"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for get_crc_table",
-        "method": "grep_function_def"
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, get_crc_table(), crc32_z)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "crc32.c",
+          "file": "crc32.c",
           "import": "zutil.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/inflate.c:83:#include \"zutil.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/crc32.c:33:#include \"zutil.h\"      /* for STDC and FAR definitions */",
         "method": "grep_import"
       },
       {
@@ -110,7 +124,15 @@
     ]
   },
   "gt_comparison": {
-    "matched": 0,
-    "results": []
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
   }
 }

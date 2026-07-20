@@ -5,11 +5,11 @@
   "reasoning_length": 9096,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
+    "total_claims": 16,
     "verified": 2,
     "refuted": 13,
-    "unverifiable": 0,
-    "verification_rate": 0.07,
+    "unverifiable": 1,
+    "verification_rate": 0.1,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -109,10 +109,10 @@
         "parameters": {
           "name": "ihevcd_cxa_api_function"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ihevcd_cxa_api_function",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ihevcd_cxa_api_function at decoder/ihevcd_api.c:3556",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -131,9 +131,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:60:void *iv_aligned_malloc(void *ctxt, WORD32 alignment, WOR",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -149,9 +149,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: ihevcd_cxa_api_function does not call ihevcd_decode_frame. Verified: Codec::decodeHeader->setParams: found setParams() call but not in Codec::decodeHeader's body; setParams->ivd_api_func",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: Codec::decodeHeader->setParams: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -167,18 +167,31 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: ihevcd_cxa_api_function does not call ihevcd_decode_frame. Verified: Codec::decodeHeader->setParams: found setParams() call but not in Codec::decodeHeader's body; setParams->ivd_api_func",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: Codec::decodeHeader->setParams: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/decoder/ihevcd_sps.c",
+          "line_range": "1120-1150",
+          "content": "size_t sz = num_long_term_pics * sizeof(IHEVCD_LONG_TERM_PIC);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: src/decoder/ihevcd_sps.c",
+        "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds check on num_long_term_pics"
+          "what": "bounds check on num_long_term_pics",
+          "file": "src/decoder/ihevcd_sps.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
         "method": "grep_absent"
       }
     ]

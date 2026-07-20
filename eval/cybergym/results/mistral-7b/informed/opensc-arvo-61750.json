@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 12,
-    "verified": 3,
-    "refuted": 8,
-    "unverifiable": 1,
-    "verification_rate": 0.28,
+    "verified": 5,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.4,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -34,6 +34,18 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "MdRegisterMinidriver",
+          "callee": "MdRegisterCard",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "MdRegisterMinidriver",
@@ -45,22 +57,11 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "MdRegisterCard",
-          "caller": "MdRegisterMinidriver",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "win32/customactions.cpp",
-          "import": "wcautil.h"
+          "import": "wcautil.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -71,7 +72,8 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "win32/customactions.cpp",
-          "import": "msiquery.h"
+          "import": "msiquery.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -81,12 +83,11 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_sanitization",
-          "function": "MdRegisterCard"
+          "description": "input sanitization in MdRegisterCard function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -113,8 +114,8 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "MdRegisterMinidriver",
           "caller": "MdInstall",
+          "callee": "MdRegisterMinidriver",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -133,18 +134,14 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "chain": [
-            "MdInstall",
-            "MdRegisterMinidriver",
-            "MdRegisterCard"
-          ]
+          "function": "MdRegisterMinidriver"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: MdInstall not found in repo. Verified: ",
-        "method": "call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61750/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
+        "method": "grep_entry_point"
       }
     ]
   },

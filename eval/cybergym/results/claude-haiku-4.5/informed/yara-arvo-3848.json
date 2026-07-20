@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 23,
-    "verified": 14,
-    "refuted": 9,
+    "verified": 16,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.3,
+    "verification_rate": 0.41,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -169,7 +169,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3848/src-vul/yara/configure.ac:165:          [#include <windows.h>])",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3848/src-vul/yara/threading.h:35:#include <windows.h>",
         "method": "grep_import"
       },
       {
@@ -203,9 +203,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3848/src-vul/yara/args.c:192:        const char* equal = strchr(arg, '=');",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -214,9 +214,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3848/src-vul/yara/args.c:73:          strstr(arg, options->long_name) == arg)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), test_disabled_rules, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -225,16 +225,16 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (526 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3848/src-vul/yara/args.c:266:    int len = sprintf(buffer, \"  \");",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (args_print_usage, digest_to_ascii, dotnet_parse_guid)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "args.c",
           "line_range": "237-250",
-          "content": "sprintf usage in args_print_usage"
+          "contains": "sprintf"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -248,9 +248,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (28 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3848/src-vul/yara/tests/test-exception.c:59:  char* filename = strdup(\"yara-testblob.XXXXXX\");",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (yr_strdup(const char *str), setup_mmap, file_queue_put)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -258,10 +258,10 @@
           "name": "args_parse",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:172",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -269,10 +269,10 @@
           "name": "compile_files",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for compile_files",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: compile_files at common.h:37",
+        "method": "cymbal_function"
       }
     ]
   },

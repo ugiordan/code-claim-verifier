@@ -5,12 +5,12 @@
   "reasoning_length": 5287,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 22,
+    "total_claims": 19,
     "verified": 13,
-    "refuted": 9,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.42,
-    "action": "OVERRIDE",
+    "verification_rate": 0.54,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,17 +28,17 @@
           "name": "output_append",
           "file": "src/bin/tools/mimegen.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for output_append",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: output_append at src/bin/tools/mimegen.c:41",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
           "line": 30,
-          "content": "output_append()"
+          "content": "output_append() function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -51,10 +51,10 @@
           "name": "main",
           "file": "src/bin/tools/mimegen.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/bin/tools/mimegen.c:137",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -63,16 +63,16 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:41:static int output_append(struct output *output, const char *str)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
           "line": 70,
-          "content": "output_append()"
+          "content": "main() calls output_append()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -105,33 +105,11 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
-          "import": "<zlib.h>"
+          "import": "\"../../lib/hash.h\""
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "No import of <zlib.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "src/bin/tools/mimegen.c",
-          "import": "<zopfli/zopfli.h>"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <zopfli/zopfli.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "src/bin/tools/mimegen.c",
-          "import": "../../lib/hash.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:34:#include \"../../lib/hash.h\"",
+        "evidence": "No import of \"../../lib/hash.h\" found",
         "method": "grep_import"
       },
       {
@@ -141,9 +119,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (50 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/testrunner/main.c:85:    struct lwan_key_value *headers = coro_malloc(request->conn-",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (realm_password_file_t, base64_encode(const unsigned char *src, size_t len, size_t *out_len), base64_decode(const unsigned char *src, size_t len, size_t *out_len))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -152,9 +130,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:52:        tmp = realloc(output->ptr, output->capacity);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (output_append, grow_buffer_if_needed, realpathat2(int dirfd, char *dirfdpath, const char *name, char *resolved,\n        struct stat *st))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -163,9 +141,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (215 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:109:        free(compressed);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (lwan_array_reset, coro_lwan_array_free, fourty_two_and_free)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -174,9 +152,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (42 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:43:    size_t str_len = strlen(str) + 1;",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (parse_args, output_append, hash_str_crc32)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -185,9 +163,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (42 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:59:    memcpy(output->ptr + output->used, str, str_len);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (parse_args, output_append, coro_resume)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -196,9 +174,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/tools/mimegen.c:70:    return strcmp(*exta, *extb);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 24 callers (compare_ext, compare_mime_entry, streq)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -225,8 +203,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "capacity_update",
-          "description": "capacity field update after realloc"
+          "type": "check",
+          "description": "realloc result check beyond NULL case"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -236,24 +214,13 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "size_checks",
-          "description": "size checks on input MIME-type file"
+          "type": "update",
+          "description": "capacity field update after realloc"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "file": "src/bin/tools/mimegen.c",
-          "classification": "build-time helper"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=src/bin/tools/mimegen.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
       }
     ]
   },
@@ -270,15 +237,15 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

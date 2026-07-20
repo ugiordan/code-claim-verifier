@@ -5,12 +5,12 @@
   "reasoning_length": 3362,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
-    "verified": 12,
-    "refuted": 0,
+    "total_claims": 15,
+    "verified": 9,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 1.0,
-    "action": "BOOST",
+    "verification_rate": 0.55,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "ABSENCE",
@@ -46,37 +46,60 @@
         "method": "path_regex"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "arcnet.h",
+          "content_type": "protocol type definitions",
+          "pattern": "ARCTYPE_*"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 50 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "atmuni31.h",
+          "content_type": "ATM protocol constants and message format definitions"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 85 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "bpf_dump.c",
-          "classification": "utility functions"
+          "content_type": "BPF program dumping functionality"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=bpf_dump.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 62 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "bpf_filter.c",
-          "classification": "utility functions"
+          "content_type": "BPF packet filtering logic"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=bpf_filter.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 537 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "bpf_image.c",
-          "classification": "utility functions"
+          "content_type": "BPF instruction formatting/display"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=bpf_image.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 332 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
@@ -113,29 +136,43 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "bpf_dump"
+          "name": "opt_cleanup",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_dump.c:32:bpf_dump(const struct bpf_program *p, int option)",
-        "method": "grep_function_def"
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (bpf_optimize, pcap_compile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "pcap_filter_with_aux_data"
+          "name": "bpf_dump",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:88:pcap_filter_with_aux_data(const struct bpf_insn *pc, const u_char *p,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: bpf_dump at bpf_dump.c:31",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "bpf_image"
+          "name": "pcap_filter_with_aux_data",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: pcap_filter_with_aux_data at bpf_filter.c:91",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "bpf_image",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,

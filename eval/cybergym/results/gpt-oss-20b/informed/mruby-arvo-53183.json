@@ -5,12 +5,12 @@
   "reasoning_length": 3472,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 6,
-    "refuted": 5,
-    "unverifiable": 5,
-    "verification_rate": 0.47,
-    "action": "OVERRIDE",
+    "total_claims": 17,
+    "verified": 10,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.55,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -81,9 +81,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (53 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mruby-arvo-53183/src-vul/mruby/include/mruby.h:1202:MRB_API mrb_value mrb_str_new(mrb_state *mrb, const char *p, mrb_int ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (mrb_bint_to_s, mrb_file_s_readlink, mrb_io_sysread_common)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -94,9 +94,20 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: mrb_sprintf not found in repo. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: mrb_sprintf->mrb_sprintf_format: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mrb_sprintf_format",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -114,9 +125,9 @@
         "parameters": {
           "file": "mruby.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mruby-arvo-53183/src-vul/mruby/include/mruby/dump.h:10:#include <mruby.h>",
         "method": "grep_import"
       },
       {
@@ -124,9 +135,9 @@
         "parameters": {
           "file": "mruby/string.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mruby-arvo-53183/src-vul/mruby/mrbgems/mruby-test/vformat.c:5:#include <mruby/string.h>",
         "method": "grep_import"
       },
       {
@@ -134,9 +145,9 @@
         "parameters": {
           "file": "mruby/variable.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mruby-arvo-53183/src-vul/mruby/mrbgems/mruby-test/driver.c:18:#include <mruby/variable.h>",
         "method": "grep_import"
       },
       {
@@ -144,9 +155,9 @@
         "parameters": {
           "file": "mruby/array.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mruby-arvo-53183/src-vul/mruby/mrbgems/mruby-hash-ext/src/hash-ext.c:8:#include <mruby/array.h>",
         "method": "grep_import"
       },
       {
@@ -154,15 +165,15 @@
         "parameters": {
           "file": "mruby/float.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of mruby/float.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds check for cast from size_t to int"
+          "description": "bounds check for cast to signed integer"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

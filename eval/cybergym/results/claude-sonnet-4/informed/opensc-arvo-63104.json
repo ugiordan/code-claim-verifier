@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 19,
-    "verified": 12,
+    "verified": 11,
     "refuted": 7,
-    "unverifiable": 0,
-    "verification_rate": 0.49,
-    "action": "OVERRIDE",
+    "unverifiable": 1,
+    "verification_rate": 0.52,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -106,7 +106,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "char_str_from_wchar",
-          "expected": true
+          "file": "src/ui/char_str_from_wchar.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -117,7 +117,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "wchar_from_char_str",
-          "expected": true
+          "file": "src/ui/wchar_from_char_str.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -131,9 +131,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/char_str_from_wchar.h:31:\tout_len = WideCharToMultiByte(CP_UTF8, 0, in, -1, NULL, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (char_str_from_wchar(const WCHAR *in))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -142,9 +142,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/wchar_from_char_str.h:33:\tout = LocalAlloc(0, (sizeof *out) * out_len);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), CardDeriveHashOrHMAC)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -153,16 +153,15 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/wchar_from_char_str.h:29:\tout_len = MultiByteToWideChar(CP_UTF8, 0, in, -1, NULL, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (wchar_from_char_str(const char *in))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "win32/customactions.cpp",
-          "import": "windows.h",
-          "expected": true
+          "import": "windows.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -173,8 +172,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "win32/customactions.cpp",
-          "import": "wcautil.h",
-          "expected": true
+          "import": "wcautil.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -185,8 +183,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "win32/customactions.cpp",
-          "import": "msiquery.h",
-          "expected": true
+          "import": "msiquery.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -196,8 +193,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "strsafe.h",
-          "expected": true
+          "import": "strsafe.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -207,24 +203,24 @@
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "char_str_from_wchar",
+          "function": "char_str_from_wchar",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (1 call sites)",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No function name specified",
         "method": "grep_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "wchar_from_char_str",
+          "function": "wchar_from_char_str",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (10 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (md_dialog_perform_pin_operation, CardAuthenticateEx, CardChangeAuthenticatorEx)",
+        "method": "cymbal_callers"
       }
     ]
   },

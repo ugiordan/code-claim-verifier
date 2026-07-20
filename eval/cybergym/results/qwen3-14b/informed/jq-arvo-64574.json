@@ -5,12 +5,12 @@
   "reasoning_length": 3503,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 13,
-    "refuted": 3,
+    "total_claims": 15,
+    "verified": 14,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.67,
-    "action": "FLAG",
+    "verification_rate": 0.95,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "ABSENCE",
@@ -29,10 +29,10 @@
           "file": "tests/jq_fuzz_parse.c",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: tests/jq_fuzz_parse.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -40,10 +40,10 @@
           "file": "modules/oniguruma/test/test_back.c",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: modules/oniguruma/test/test_back.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -52,9 +52,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse.c:14:  jv res = jv_parse(null_terminated);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (f_tonumber, run_jq_tests, jv_test)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -63,9 +63,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/ChangeLog:1214:\tFix leaks in jv_load_file()",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (LLVMFuzzerTestOneInput, load_library, load_module_meta)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -74,9 +74,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_compile.c:17:    jq_compile(jq, null_terminated);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (run_jq_tests, test_pthread_run(void *ptr), LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -87,7 +87,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse.c:1:#include <stdint.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse.c:5:#include \"jv.h\"",
         "method": "grep_import"
       },
       {
@@ -99,7 +99,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_load_file.c:1:#include <stdint.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_load_file.c:4:#include \"jv.h\"",
         "method": "grep_import"
       },
       {
@@ -111,7 +111,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_compile.c:1:#include <stdint.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_compile.c:5:#include \"jq.h\"",
         "method": "grep_import"
       },
       {
@@ -132,53 +132,42 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/modules/oniguruma/harnesses/regset.c:256:LLVMFuzzerTestOneInput(const uint8_t * Data, size_t Size)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at tests/jq_fuzz_compile.c:7",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tests/jq_fuzz_compile.c",
-          "function": "jq_compile"
+          "name": "jq_compile",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (run_jq_tests, test_pthread_run(void *ptr), LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tests/jq_fuzz_load_file.c",
-          "function": "jv_load_file"
+          "name": "jv_load_file",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (LLVMFuzzerTestOneInput, load_library, load_module_meta)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "tests/jq_fuzz_parse.c",
-          "function": "jv_parse"
+          "name": "jv_parse",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "file": "tests/jq_fuzz_parse_stream.c",
-          "function": "jv_parse"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (f_tonumber, run_jq_tests, jv_test)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -187,9 +176,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse_stream.c:14:  jv res = jv_parse_custom_flags(null_terminated, JV_PARSE_STREAM",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, main)",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -199,14 +188,14 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },

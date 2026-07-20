@@ -5,11 +5,11 @@
   "reasoning_length": 4129,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 22,
-    "verified": 15,
+    "total_claims": 25,
+    "verified": 18,
     "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.55,
+    "verification_rate": 0.6,
     "action": "FLAG",
     "claims": [
       {
@@ -84,9 +84,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:267:def detect_from_fobj(fobj):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: detect_from_fobj at python/magic.py:267",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -96,9 +96,9 @@
           "expected": false
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:278:def detect_from_content(byte_content):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: detect_from_content at python/magic.py:278",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -108,9 +108,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:257:def detect_from_filename(filename):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: detect_from_filename at python/magic.py:257",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -236,6 +236,17 @@
         "method": "default_value"
       },
       {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "python/tests.py",
+          "description": "Unit test suite"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -245,23 +256,42 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: setup.py does not call tests.py::MagicTestCase.test_detect_from_fobj. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: setup.py->tests.py::MagicTestCase.test_detect_from_fobj: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "chain": [
-            "setup.py",
-            "tests.py::MagicTestCase.test_detect_from_content",
-            "magic.detect_from_content"
-          ]
+          "type": "input_validation",
+          "file": "python/magic.py"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: setup.py does not call tests.py::MagicTestCase.test_detect_from_content. Verified: ",
-        "method": "call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "error_handling",
+          "file": "python/magic.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "try_except_blocks",
+          "file": "python/magic.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },
@@ -293,21 +323,21 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

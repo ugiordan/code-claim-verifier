@@ -5,11 +5,11 @@
   "reasoning_length": 4197,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 14,
-    "refuted": 6,
+    "total_claims": 23,
+    "verified": 13,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.6,
+    "verification_rate": 0.61,
     "action": "FLAG",
     "claims": [
       {
@@ -107,30 +107,30 @@
         "parameters": {
           "name": "main"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at fuzz/libFuzzer_dummy_main.cpp:51",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/rawspeed/main.cpp:36",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "find_cameras_xml"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for find_cameras_xml",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: find_cameras_xml at src/utilities/identify/rawspeed-identify.cpp:50",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -139,9 +139,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/src/utilities/identify/rawspeed-identify.cpp:48:std::string find_cameras_xml(con",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -178,48 +178,81 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "stat",
-          "expected": true
+          "file": "fuzz/librawspeed/parsers/main.cpp",
+          "content": "auto decoder ="
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/src/utilities/identify/rawspeed-identify.cpp:55:  if (stat(set_camfile, &statbuf",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 105 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "malloc",
-          "expected": true
+          "file": "src/utilities/rstest/MD5Benchmark.cpp",
+          "content": "rawspeed::md5::md5_hash((uint8_t*)buf.get(), bufsize, &hash);"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/cmake/Modules/memory-align-alloc.cmake:8:  message(SEND_ERROR \"Can't even find ",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 53 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "free",
-          "expected": true
+          "type": "exception_handling",
+          "description": "try-catch blocks wrapping parsing/decoding operations"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/cmake/Modules/memory-align-alloc.cmake:8:  message(SEND_ERROR \"Can't even find p",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "rawspeed::md5::md5_hash",
-          "expected": true
+          "type": "buffer_management",
+          "description": "wrapper classes for buffer management"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/src/utilities/rstest/MD5Test.cpp:79:    rawspeed::md5::md5_hash(message, strlen(",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "assertions",
+          "description": "validates fuzzer input and state"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "file_validation",
+          "description": "validates file existence before use"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "memory_management",
+          "description": "RAII pattern with unique_ptr"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

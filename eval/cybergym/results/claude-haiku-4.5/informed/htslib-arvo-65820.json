@@ -5,11 +5,11 @@
   "reasoning_length": 5305,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 33,
-    "verified": 22,
-    "refuted": 11,
+    "total_claims": 37,
+    "verified": 32,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.67,
+    "verification_rate": 0.78,
     "action": "FLAG",
     "claims": [
       {
@@ -55,10 +55,10 @@
           "name": "cols_append",
           "file": "annot-tsv.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for cols_append",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: cols_append at annot-tsv.c:214",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -104,10 +104,10 @@
           "name": "nbp_add",
           "file": "annot-tsv.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for nbp_add",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: nbp_add at annot-tsv.c:145",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -153,10 +153,10 @@
           "name": "bgzf_idx_push",
           "file": "bgzf.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for bgzf_idx_push",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: bgzf_idx_push at bgzf.c:194",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -214,10 +214,10 @@
           "name": "bgzf_idx_flush",
           "file": "bgzf.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for bgzf_idx_flush",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: bgzf_idx_flush at bgzf.c:233",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -253,6 +253,18 @@
           "content_type": "array_access"
         },
         "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 289: memmove(&e[0], &e[i], (mt->idx_cache.nentries - i) * sizeof(*e));",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bgzf.c",
+          "line": 289,
+          "content": "assert(mt->idx_cache.nentries == 0 || mt->block_written <= e[0].block_number)"
+        },
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 289: memmove(&e[0], &e[i], (mt->idx_cache.nentries - i) * sizeof(*e));",
         "method": "file_read"
@@ -324,83 +336,111 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "type": "error_checking",
-          "description": "Error checking on malloc()/calloc() with error() calls"
+          "name": "strdup",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, grp_create_key(sr_sort_t *srt), bcf_sr_sort_set)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "type": "safe_allocation",
-          "description": "Use of hts_expand() macro",
+          "name": "strlen",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, string_dup(string_alloc_t *a_str, const char *instr), tokenise_search_path(const char *searchpath))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "realloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (cram_stats_encoding, mfload(FILE *fp, const char *fn, size_t *size, int binary), mfwrite)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "malloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, mfload(FILE *fp, const char *fn, size_t *size, int binary), mfcreate(char *data, int size))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "calloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (cram_stats_create(void), cram_update_cid2ds_map(cram_block_compression_hdr *hdr,\n                                      cram_cid2ds_t *cid2ds), cram_expand_method(uint8_t *data, int",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "error",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, HTS_FORMAT, nbp_add)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "hts_expand",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 46 callers (merge_vsets, bcf_sr_sort_set_active, bcf_sr_sort_add_active)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "annot-tsv.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: annot-tsv.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
           "file": "bcf_sr_sort.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Line 0 out of range",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: bcf_sr_sort.c",
+        "method": "os.path.isfile"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "type": "mutex_protection",
-          "description": "Mutex protection in multi-threaded code",
           "file": "bgzf.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Line 0 out of range",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "integer_overflow_checks",
-          "description": "Integer overflow checks before multiplication in size calculations"
-        },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "maximum_size_limits",
-          "description": "Maximum size limits on dynamic arrays"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_validation",
-          "description": "Input validation on string lengths"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "bounds_checking",
-          "description": "Bounds checking on pointer arithmetic"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.99,
+        "evidence": "exists: bgzf.c",
+        "method": "os.path.isfile"
       }
     ]
   },

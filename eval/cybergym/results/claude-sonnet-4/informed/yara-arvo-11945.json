@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 17,
-    "verified": 8,
-    "refuted": 9,
+    "verified": 10,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -33,25 +33,15 @@
         "method": "path_check"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "yara.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "args_print_usage",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_print_usage",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_print_usage at args.c:260",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -90,6 +80,68 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (args_print_usage, digest_to_ascii, dotnet_parse_guid)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "printf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (args_print_usage, _yr_ac_print_automaton_state, yr_ac_print_automaton)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "stdio.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/tests/test-alignment.c:31:#include <stdio.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "string.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:31:#include <string.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "args.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:36:#include \"args.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "yara.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "yara.c",
@@ -100,61 +152,6 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 1342 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "args.c",
-          "import": "stdio.h"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of stdio.h found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "args.c",
-          "import": "string.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:31:#include <string.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "args.c",
-          "import": "args.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:36:#include \"args.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sprintf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (527 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:268:    int len = sprintf(buffer, \"  \");",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "printf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (798 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:154:      fprintf(stderr, \"unknown option `%s`\\n\", option);",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "ABSENCE",
@@ -204,8 +201,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

@@ -5,11 +5,11 @@
   "reasoning_length": 4463,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 5,
+    "total_claims": 16,
+    "verified": 6,
     "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.25,
+    "verification_rate": 0.31,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "main",
           "file": "src/bin/tools/mimegen.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/bin/tools/mimegen.c:137",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -132,9 +132,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14297/src-vul/lwan/src/bin/tools/mimegen.c:103:    if (compress2((Bytef *)compressed, outlen, (const Bytef *)out",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (compress_output(const struct output *output, size_t *outlen))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -143,9 +143,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14297/src-vul/lwan/src/bin/tools/mimegen.c:93:    ZopfliCompress(&opts, ZOPFLI_FORMAT_ZLIB,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (compress_output(const struct output *output, size_t *outlen))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -154,22 +154,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (132 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14297/src-vul/lwan/src/bin/testrunner/main.c:57:    lwan_strbuf_printf(response->buffer, \"Testing chunked enco",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "compress_output"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->compress_output: found compress_output() call but not in main's body",
-        "method": "call_chain"
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (bin2hex, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -181,6 +168,30 @@
         "confidence": 0.65,
         "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "compress_output"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->compress_output: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_checking",
+          "location": "src/bin/tools/mimegen.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },
@@ -197,8 +208,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

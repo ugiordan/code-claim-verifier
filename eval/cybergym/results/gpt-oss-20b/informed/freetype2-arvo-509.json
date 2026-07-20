@@ -5,12 +5,12 @@
   "reasoning_length": 7202,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 14,
-    "verified": 7,
-    "refuted": 7,
+    "total_claims": 15,
+    "verified": 12,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.45,
-    "action": "OVERRIDE",
+    "verification_rate": 0.84,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -48,10 +48,10 @@
           "name": "FT_Get_Advance",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for FT_Get_Advance",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: FT_Get_Advance at src/base/ftadvanc.c:74",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -59,32 +59,10 @@
           "name": "FT_Get_Advances",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for FT_Get_Advances",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "include/freetype/ftadvanc.h",
-          "line_content": "FT_EXPORT( FT_Error ) FT_Get_Advance( FT_Face face, FT_UInt gindex, FT_Int32 load_flags, FT_Fixed *padvance );"
-        },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 187 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "include/freetype/ftadvanc.h",
-          "line_content": "FT_EXPORT( FT_Error ) FT_Get_Advances( FT_Face face, FT_UInt start, FT_UInt count, FT_Int32 load_flags, FT_Fixed *padvances );"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 187 lines)",
-        "method": "file_read"
+        "evidence": "cymbal: FT_Get_Advances at src/base/ftadvanc.c:112",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -97,15 +75,48 @@
         "method": "os.walk_fuzzy"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "FT_Get_Advance",
+          "item": "ftadvanc.c",
+          "context": "excerpt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 2 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-509/src-vul/freetype2/src/base/ftbase.c:25:#include \"ftadvanc.c\"",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "FT_CONFIG_OPTION_ENVIRONMENT_PROPERTIES",
+          "value": "defined"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.75,
+        "evidence": "Flag 'FT_CONFIG_OPTION_ENVIRONMENT_PROPERTIES' found but not with value 'defined': /Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-509/src-vul/freetype2/devel/ftoption.h:105:#define FT_",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "FT_Get_Advance",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-509/src-vul/freetype2/include/freetype/ftadvanc.h:122:  FT_Get_Advance( FT_Face    face,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (af_shaper_get_elem, af_latin2_metrics_check_digits, af_cjk_metrics_init_widths)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "FT_Get_Advances",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (FT_Get_Advance, af_shaper_get_elem, af_latin2_metrics_check_digits)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -114,9 +125,20 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-509/src-vul/freetype2/include/freetype/ftadvanc.h:122:  FT_Get_Advance( FT_Face    face,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (af_shaper_get_elem, af_latin2_metrics_check_digits, af_cjk_metrics_init_widths)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "FT_Get_Advance",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (af_shaper_get_elem, af_latin2_metrics_check_digits, af_cjk_metrics_init_widths)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -144,23 +166,12 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "ft2build.h",
-          "import": "<freetype/config/ftheader.h>"
+          "import": "freetype/config/ftheader.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of <freetype/config/ftheader.h> found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-509/src-vul/freetype2/devel/ft2build.h:35:#include <freetype/config/ftheader.h>",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "CONFIG_FLAG",
-        "parameters": {
-          "flag": "FT_CONFIG_OPTION_ENVIRONMENT_PROPERTIES",
-          "value": "defined"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.75,
-        "evidence": "Flag 'FT_CONFIG_OPTION_ENVIRONMENT_PROPERTIES' found but not with value 'defined': /Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-509/src-vul/freetype2/devel/ftoption.h:105:#define FT_",
-        "method": "config_flag"
       }
     ]
   },

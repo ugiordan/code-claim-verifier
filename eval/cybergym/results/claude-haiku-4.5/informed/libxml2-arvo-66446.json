@@ -5,11 +5,11 @@
   "reasoning_length": 4557,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
+    "total_claims": 19,
     "verified": 6,
-    "refuted": 12,
+    "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.31,
+    "verification_rate": 0.32,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -59,20 +59,20 @@
           "file": "HTMLtree.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66446/src-vul/libxml2/HTMLtree.c:160:htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlSetMetaEncoding at HTMLtree.c:159",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "HTMLtree.c",
-          "line_number": 135,
+          "line": 135,
           "content": "char newcontent[100];"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1126 lines)",
+        "evidence": "Line 135: if (encoding == NULL)",
         "method": "file_read"
       },
       {
@@ -111,9 +111,32 @@
         "method": "file_read"
       },
       {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "htmlSetMetaEncoding",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (htmlSaveFileFormat, htmlNodeDumpOutputInternal, xmlDocContentDumpOutput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "htmlGetMetaEncoding",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 25 callers (htmlDocDumpMemoryFormat, htmlDocDump, htmlSaveFile)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "<libxml/xmlmemory.h>"
+          "file": "HTMLtree.c",
+          "import": "<libxml/xmlmemory.h>"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -123,7 +146,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "<libxml/tree.h>"
+          "file": "HTMLtree.c",
+          "import": "<libxml/tree.h>"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -133,7 +157,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "<string.h>"
+          "file": "HTMLtree.c",
+          "import": "<string.h>"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -143,7 +168,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "<stdlib.h>"
+          "file": "HTMLtree.c",
+          "import": "<stdlib.h>"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -151,14 +177,14 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "description": "encoding validation check",
-          "code": "if (!xmlStrcasecmp(encoding, BAD_CAST \"html\")) return(-1);"
+          "file": "HTMLtree.c",
+          "content": "if (!xmlStrcasecmp(encoding, BAD_CAST \"html\")) return(-1);"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1126 lines)",
         "method": "file_read"
       },
       {
@@ -167,9 +193,9 @@
           "name": "htmlParseDocument"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66446/src-vul/libxml2/HTMLparser.c:4750:htmlParseDocument(htmlParserCtxtPtr ctxt) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlParseDocument at HTMLparser.c:4749",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -177,9 +203,9 @@
           "name": "htmlReadDoc"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66446/src-vul/libxml2/HTMLparser.c:6355:htmlReadDoc(const xmlChar *str, const char *url, const char *encoding,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlReadDoc at HTMLparser.c:6354",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -189,23 +215,10 @@
             "htmlSetMetaEncoding"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: htmlParseDocument->htmlSetMetaEncoding: found htmlSetMetaEncoding() call but not in htmlParseDocument's body",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "htmlReadDoc",
-            "htmlSetMetaEncoding"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: htmlReadDoc->htmlSetMetaEncoding: found htmlSetMetaEncoding() call but not in htmlReadDoc's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: htmlParseDocument->htmlSetMetaEncoding: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

@@ -5,12 +5,12 @@
   "reasoning_length": 3642,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 14,
-    "refuted": 2,
+    "total_claims": 20,
+    "verified": 11,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.76,
-    "action": "FLAG",
+    "verification_rate": 0.47,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -105,9 +105,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/hb-test.h:59:    s = getenv (\"srcdir\");",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (_hb_options_init, _hb_shapers_get (void), srcdir (void))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -116,9 +116,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (467 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/test-buffer.c:109:  g_assert (hb_buffer_get_unicode_funcs (b) == hb_unicode",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (hb_test_normalize_path (const char *path), free_up0, free_up1)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -127,9 +127,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/test-version.c:44:  s = g_strdup_printf (\"%u.%u.%u\", major, minor, micro);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (hb_test_bug, hb_test_add_func_flavor, hb_test_add_data_func_flavor)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -138,57 +138,98 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (43 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/test-buffer.c:395:    g_free (escaped);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (hb_test_bug, hb_test_add_func, hb_test_add_func_flavor)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/api/hb-test.h",
-          "import": "hb-glib.h",
+          "import": "<hb-glib.h>",
           "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/hb-test.h:32:#include <hb-glib.h>",
+        "evidence": "No import of <hb-glib.h> found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/api/test-blob.c",
-          "import": "sys/mman.h",
+          "import": "<stdlib.h>",
           "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/test-blob.c:39:#include <sys/mman.h>",
+        "evidence": "No import of <stdlib.h> found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/api/test-blob.c",
-          "import": "unistd.h",
+          "import": "<string.h>",
           "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/test/api/test-blob.c:37:#include <unistd.h>",
+        "evidence": "No import of <string.h> found",
         "method": "grep_import"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "function": "main",
+          "import": "<stdio.h>",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <stdio.h> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "<sys/mman.h>",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <sys/mman.h> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "<unistd.h>",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <unistd.h> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/main.cc:42",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
           "file": "test-c.c",
-          "line": 58
+          "line_number": 58,
+          "content": "main"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-1856/src-vul/harfbuzz/NEWS:617:    HarfBuzz ignores the BOT flag.  If there's post-context, it ignores",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 62 lines)",
+        "method": "file_read"
       }
     ]
   },

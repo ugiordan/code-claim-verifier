@@ -1,0 +1,8 @@
+{
+  "vuln_id": "flac-arvo-16457",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning": "**TL;DR** \u2013 The only code that can actually be abused is the metadata\u2011parsing routine in *src/libFLAC/metadata.c*.  The public API that calls it is `FLAC__metadata_get_blocks()`.  The routine allocates a buffer based on a length field that comes straight from the file; the length is never checked against the maximum legal metadata\u2011block size (or against the size of the allocation buffer).  In a release build the only guard is a `FLAC__ASSERT()` macro that is compiled out, so the check never runs.  The result is a classic \u201cinteger\u2011overflow \u2192 buffer\u2011overflow\u201d that can be triggered by a crafted FLAC file.  The code is reachable from any application that uses the libFLAC metadata API, so the vulnerability is a true \u201cremote\u2011code\u2011execution\u201d vector for a local attacker who can supply a malicious FLAC file.\n\nBelow is a line\u2011by\u2011line walk\u2011through of the relevant files, functions, and the control\u2011flow that leads to the flaw.\n\n---\n\n## 1.  Which files contain the vulnerable code?\n\n| File | Reason |\n|------|--------|\n| **src/libFLAC/metadata",
+  "reasoning_length": 1043,
+  "duration_s": 29.27
+}

@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 33,
-    "verified": 17,
-    "refuted": 16,
+    "verified": 19,
+    "refuted": 14,
     "unverifiable": 0,
-    "verification_rate": 0.35,
+    "verification_rate": 0.43,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -38,7 +38,7 @@
         "parameters": {
           "file": "python/magic.py",
           "line_range": "130-137",
-          "content_type": "function_definition"
+          "content_description": "Magic.file() method"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -61,7 +61,7 @@
         "parameters": {
           "file": "python/magic.py",
           "line_range": "147-154",
-          "content_type": "function_definition"
+          "content_description": "Magic.buffer() method"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -84,7 +84,7 @@
         "parameters": {
           "file": "python/magic.py",
           "line_range": "139-145",
-          "content_type": "function_definition"
+          "content_description": "Magic.descriptor() method"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -98,16 +98,16 @@
           "file": "python/magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:257:def detect_from_filename(filename):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: detect_from_filename at python/magic.py:257",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
           "line_range": "275-282",
-          "content_type": "function_definition"
+          "content_description": "detect_from_filename() function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -125,17 +125,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "Magic.file",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/example.py",
@@ -150,7 +139,7 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "Magic.buffer",
+          "name": "Magic.file",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -169,6 +158,17 @@
         "confidence": 0.95,
         "evidence": "Line 12: f.close()",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Magic.buffer",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -232,7 +232,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/README.md:21:    detected = magic.detect_from_filename('magic.py')",
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/tests.py:21:        result = magic.detect_from_filename(self.filename)",
         "method": "grep_call_site"
       },
       {
@@ -286,9 +286,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/magic/Magdir/images:837:#    http://www.atari-wiki.com/?title=IMG_file (XIMG, STTT)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (file, detect_from_filename)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -297,9 +297,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:164:        return Magic.__tostr(_buffer(self._magic_t, buf, len(buf)))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (buffer, detect_from_content)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -308,18 +308,18 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:156:        return Magic.__tostr(_descriptor(self._magic_t, fd))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (descriptor, detect_from_fobj)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
           "line": 137,
-          "content": "_file(self._magic_t, Magic.__tobytes(filename))"
+          "content_description": "call to _file with filename parameter"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 137: try:  # keep Python 2 compatibility",
         "method": "file_read"
@@ -329,9 +329,9 @@
         "parameters": {
           "file": "python/magic.py",
           "line": 154,
-          "content": "_buffer(self._magic_t, buf, len(buf))"
+          "content_description": "call to _buffer with buf and len(buf)"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 154: flag is set. A call to errno() will return the numeric error code.",
         "method": "file_read"
@@ -343,9 +343,9 @@
           "file": "python/magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:132:    def __tobytes(b):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: __tobytes at python/magic.py:131",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -354,16 +354,16 @@
           "file": "python/magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:121:    def __tostr(s):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: __tostr at python/magic.py:120",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
           "line_range": "115-129",
-          "content_type": "function_definition"
+          "content_description": "__tobytes() and __tostr() methods"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -375,7 +375,7 @@
         "parameters": {
           "file": "python/magic.py",
           "line_range": "260-263",
-          "content_type": "variable_definition"
+          "content_description": "Pre-instantiated mime_magic and none_magic objects"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -398,7 +398,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
@@ -419,14 +419,14 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

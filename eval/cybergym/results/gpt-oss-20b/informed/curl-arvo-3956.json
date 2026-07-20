@@ -5,11 +5,11 @@
   "reasoning_length": 5045,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 5,
-    "refuted": 9,
-    "unverifiable": 5,
-    "verification_rate": 0.32,
+    "total_claims": 18,
+    "verified": 8,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.37,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -74,20 +74,19 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/CMake/CurlTests.c:322: unsigned long flags = ioctlsocket(socket, FIONBIO, &flags);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 15 callers (main, curlx_nonblock, synchnet)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "ioctlsocket",
-          "expected": false
+          "description": "No other source file calls ioctlsocket directly"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (10 call sites)",
-        "method": "grep_callers"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -95,9 +94,9 @@
           "file": "CMake/CurlTests.c",
           "import": "<windows.h>"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <windows.h> found",
         "method": "grep_import"
       },
       {
@@ -106,9 +105,9 @@
           "file": "CMake/CurlTests.c",
           "import": "<winsock2.h>"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <winsock2.h> found",
         "method": "grep_import"
       },
       {
@@ -117,9 +116,9 @@
           "file": "CMake/CurlTests.c",
           "import": "<winsock.h>"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <winsock.h> found",
         "method": "grep_import"
       },
       {
@@ -128,65 +127,61 @@
           "file": "CMake/CurlTests.c",
           "import": "<sys/types.h>"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of <sys/types.h> found",
         "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "libcurl headers",
-          "file": "CMake/CurlTests.c"
+          "description": "No libcurl headers included in test harness"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "type": "sanitisation",
-          "expected": false
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "error checking",
-          "expected": false
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "defensive programming",
-          "expected": false
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "CONFIG_FLAG",
-        "parameters": {
-          "flag": "HAVE_IOCTLSOCKET",
-          "value": "defined"
+          "description": "No sanitisation performed on socket or flags variables"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "Flag 'HAVE_IOCTLSOCKET' set to 'defined': /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/tests/server/tftpd.c:632:#if defined(HAVE_IOCTLSOCKET)",
-        "method": "config_flag"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "No error checking on ioctlsocket return value"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "No defensive programming around uninitialised memory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CMake/CurlTests.c",
+          "content": "#ifdef HAVE_IOCTLSOCKET"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 551 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -195,9 +190,9 @@
           "file": "CMake/CurlTests.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/CMake/CurlTests.c:30:main ()",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: main at CMake/CurlTests.c:29",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_CLASSIFICATION",
@@ -209,17 +204,6 @@
         "confidence": 0.8,
         "evidence": "path=CMake/CurlTests.c, is_test=True, is_vendor=False",
         "method": "path_regex"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "reachable": false,
-          "reason": "not linked into library"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/curl-arvo-3956/src-vul/curl/tests/negtelnetserver.py:270:    parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
       }
     ]
   },
@@ -237,7 +221,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

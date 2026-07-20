@@ -5,9 +5,9 @@
   "reasoning_length": 4101,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
-    "refuted": 6,
+    "total_claims": 24,
+    "verified": 16,
+    "refuted": 8,
     "unverifiable": 0,
     "verification_rate": 0.62,
     "action": "FLAG",
@@ -29,9 +29,9 @@
           "filename": "HTMLparser.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:167:htmlnamePush(htmlParserCtxtPtr ctxt, const xmlChar * value)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlnamePush at HTMLparser.c:166",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -52,9 +52,9 @@
           "filename": "HTMLparser.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:225:htmlNodeInfoPush(htmlParserCtxtPtr ctxt, htmlParserNodeInfo *value)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlNodeInfoPush at HTMLparser.c:224",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -75,9 +75,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (140 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:176:                         xmlRealloc((xmlChar * *)ctxt->nameTab,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -86,9 +86,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (18 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:180:            htmlErrMemory(ctxt, NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 27 callers (htmlnamePush, htmlNodeInfoPush, htmlNewInputStream)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -146,9 +146,9 @@
           "name": "htmlParseDocument"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:4721:htmlParseDocument(htmlParserCtxtPtr ctxt) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlParseDocument at HTMLparser.c:4720",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -156,9 +156,9 @@
           "name": "htmlParseChunk"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:6101:htmlParseChunk(htmlParserCtxtPtr ctxt, const char *chunk, int size,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlParseChunk at HTMLparser.c:6100",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -166,9 +166,9 @@
           "name": "htmlSAXParseDoc"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:6276:htmlSAXParseDoc(xmlChar *cur, const char *encoding, htmlSAXHandlerPtr sax, void *userData) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlSAXParseDoc at HTMLparser.c:6275",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -176,9 +176,9 @@
           "name": "htmlSAXParseFile"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-1461/src-vul/libxml2/HTMLparser.c:6402:htmlSAXParseFile(const char *filename, const char *encoding, htmlSAXHandlerPtr sax,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlSAXParseFile at HTMLparser.c:6401",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -209,6 +209,58 @@
         "confidence": 0.99,
         "evidence": "Path traversal detected",
         "method": "path_check"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "null_check",
+          "description": "NULL pointer checks after xmlRealloc"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "error_handling",
+          "description": "Memory allocation failure detection"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "integer_overflow_check"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "maximum_size_limits"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "multiplication_validation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

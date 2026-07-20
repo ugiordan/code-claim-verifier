@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 14,
-    "verified": 11,
-    "refuted": 2,
-    "unverifiable": 1,
-    "verification_rate": 0.78,
-    "action": "FLAG",
+    "verified": 13,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.89,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -68,10 +68,10 @@
           "name": "gps_query",
           "file": "gpsctl.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for gps_query",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: gps_query at gpsctl.c:73",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -89,33 +89,22 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "vsnprintf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/gpsmon/gpsmon.c:354:    (void)vsnprintf(buf, sizeof(buf) - 5, fmt, ap);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "gps_query",
           "caller": "main",
+          "callee": "gps_query",
           "file": "gpsctl.c",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (15 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/man/libgps.adoc:284:The *gps_query()* supported in major versions 1 and 2 of this library",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, run)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "gpsctl.c",
           "line": 120,
-          "content_description": "gps_query call inside option-handling loop"
+          "content_description": "main function calls gps_query"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -145,25 +134,30 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "vsnprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (nmea_send, tnt_send, oceanserver_send)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "location": "gps_query function"
+          "description": "input validation or format string escaping before vsnprintf"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "gpsctl command-line tool",
-          "options": [
-            "--echo",
-            "--ship",
-            "--reset"
-          ]
+          "entry_point": "gpsctl command-line tool"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

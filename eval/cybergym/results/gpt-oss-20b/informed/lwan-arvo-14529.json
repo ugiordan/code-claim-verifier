@@ -5,11 +5,11 @@
   "reasoning_length": 5287,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
+    "total_claims": 14,
     "verified": 10,
-    "refuted": 5,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.53,
+    "verification_rate": 0.7,
     "action": "FLAG",
     "claims": [
       {
@@ -28,17 +28,17 @@
           "name": "output_append",
           "file": "src/bin/tools/mimegen.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for output_append",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: output_append at src/bin/tools/mimegen.c:41",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
           "line": 30,
-          "content": "output_append()"
+          "content": "output_append() function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -52,9 +52,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14529/src-vul/lwan/src/bin/tools/mimegen.c:41:static int output_append(struct output *output, const char *str)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -63,9 +63,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (3 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -75,26 +75,14 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14529/src-vul/lwan/src/bin/tools/mimegen.c:41:static int output_append(struct output *output, const char *str)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/bin/tools/mimegen.c",
-          "line": 70,
-          "content": "output_append()"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 70: return strcmp(*exta, *extb);",
-        "method": "file_read"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "No other source file calls output_append"
+          "description": "other callers of output_append"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -127,17 +115,17 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
-          "import": "../../lib/hash.h"
+          "import": "\"../../lib/hash.h\""
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14529/src-vul/lwan/src/bin/tools/mimegen.c:34:#include \"../../lib/hash.h\"",
+        "evidence": "No import of \"../../lib/hash.h\" found",
         "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "No mitigation for overflow in output_append"
+          "description": "mitigation for overflow in output_append"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -147,7 +135,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "capacity field never updated after realloc"
+          "description": "capacity field update after realloc in output_append"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -168,7 +156,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "mimegen not linked into main server binary"
+          "description": "mimegen linked into main server binary"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -190,8 +178,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

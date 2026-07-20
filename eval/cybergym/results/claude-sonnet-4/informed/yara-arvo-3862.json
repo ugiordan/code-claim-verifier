@@ -5,11 +5,11 @@
   "reasoning_length": 5387,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 4,
-    "refuted": 11,
+    "total_claims": 16,
+    "verified": 9,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.19,
+    "verification_rate": 0.43,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -38,10 +38,10 @@
           "name": "args_parse_option",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse_option",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse_option at args.c:86",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -85,31 +85,30 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:172",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3862/src-vul/yara/args.c:86:args_error_type_t args_parse_option(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "args.c",
           "line": 189,
-          "content_contains": "args_parse_option"
+          "content": "args_parse_option"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 189: ",
         "method": "file_read"
@@ -119,9 +118,9 @@
         "parameters": {
           "file": "args.c",
           "line": 205,
-          "content_contains": "args_parse_option"
+          "content": "args_parse_option"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 205: {",
         "method": "file_read"
@@ -132,55 +131,65 @@
           "name": "main",
           "file": "yara.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at yara.c:988",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse",
-          "caller": "main",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3862/src-vul/yara/args.c:172:int args_parse(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "yara.c",
-          "content_contains": "static char* tags[MAX_ARGS_TAG + 1];"
+          "name": "strtol",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1253 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse_option, _yr_object_lookup(\n    YR_OBJECT* object,\n    int flags,\n    const char* pattern,\n    va_list args), args_parse)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "yara.c",
-          "content_contains": "static char* identifiers[MAX_ARGS_IDENTIFIER + 1];"
+          "name": "strchr",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1253 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "yara.c",
-          "content_contains": "static char* ext_vars[MAX_ARGS_EXT_VAR + 1];"
+          "name": "strstr",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1253 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), test_disabled_rules, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strlen",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), yr_arena_write_string, yr_hash_table_lookup_raw_key(\n    YR_HASH_TABLE* table,\n    const void* key,\n    size",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -190,15 +199,15 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 21,
-    "verified": 9,
-    "refuted": 12,
+    "verified": 10,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.27,
+    "verification_rate": 0.48,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "dump_curves_svg",
           "file": "iccdump.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dump_curves_svg",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dump_curves_svg at iccdump.c:104",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -63,10 +63,10 @@
           "name": "dump_curve",
           "file": "iccdump.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dump_curve",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dump_curve at iccdump.c:62",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -84,6 +84,7 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
+          "line_range": "95-110",
           "content": "char filename[32]; snprintf(filename, sizeof(filename), \"%s.csv\", name); FILE* fp = fopen(filename, \"wb\");"
         },
         "verdict": "REFUTED",
@@ -97,10 +98,10 @@
           "name": "signature_to_string",
           "file": "iccdump.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for signature_to_string",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: signature_to_string at iccdump.c:28",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -118,6 +119,7 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
+          "line_range": "30-35",
           "content": "str[0] = (char)(sig >> 24); str[1] = (char)(sig >> 16); str[2] = (char)(sig >> 8); str[3] = (char)(sig >> 0); str[4] = 0;"
         },
         "verdict": "REFUTED",
@@ -126,26 +128,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "dump_sig_field",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:36:static void dump_sig_field(const char* name, uint32_t val) {",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "main",
           "file": "iccdump.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at iccdump.c:149",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -166,9 +157,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (25 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:190:    if (!skcms_Parse(buf, bytesRead, &profile)) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -177,21 +168,20 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:226:        skcms_GetTagByIndex(&profile, i, &tag);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (LLVMFuzzerTestOneInput, main, main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "iccdump.c",
-          "line_range": "250+",
-          "content": "Loop through profile.tag_count"
+          "name": "dump_sig_field",
+          "file": "iccdump.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 267 lines)",
-        "method": "file_read"
+        "evidence": "cymbal: dump_sig_field at iccdump.c:36",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -201,10 +191,10 @@
             "skcms_Parse"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->skcms_Parse: found skcms_Parse() call but not in main's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->skcms_Parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -215,10 +205,10 @@
             "dump_curve"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->skcms_GetTagByIndex: found skcms_GetTagByIndex() call but not in main's body; skcms_GetTagByIndex->dump_curve: found dump_curve() call but not in skcms_GetTagByIndex's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->skcms_GetTagByIndex: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -229,10 +219,23 @@
             "dump_curves_svg"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->skcms_GetTagByIndex: found skcms_GetTagByIndex() call but not in main's body; skcms_GetTagByIndex->dump_curves_svg: found dump_curves_svg() call but not in skcms_GetTagByIndex's ",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->skcms_GetTagByIndex: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "dump_sig_field",
+            "signature_to_string"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: dump_sig_field->signature_to_string: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -241,9 +244,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -252,14 +255,14 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 5,
+    "matched": 6,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -271,29 +274,36 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

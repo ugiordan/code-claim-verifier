@@ -5,12 +5,12 @@
   "reasoning_length": 3676,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 21,
-    "verified": 14,
-    "refuted": 7,
+    "total_claims": 23,
+    "verified": 10,
+    "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.57,
-    "action": "FLAG",
+    "verification_rate": 0.41,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,17 +28,31 @@
           "name": "dbuf_printf",
           "file": "cutils.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dbuf_printf",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dbuf_printf at cutils.c:169",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line_range": "158-177",
-          "content_description": "dbuf_printf function definition"
+          "line_number": 158,
+          "content_type": "function_start",
+          "function": "dbuf_printf"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 631 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cutils.c",
+          "line_number": 177,
+          "content_type": "function_end",
+          "function": "dbuf_printf"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -51,17 +65,18 @@
           "name": "dbuf_realloc",
           "file": "cutils.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dbuf_realloc",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dbuf_realloc at cutils.c:104",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line_range": "100-117",
-          "content_description": "dbuf_realloc function definition"
+          "line_number": 100,
+          "content_type": "function_start",
+          "function": "dbuf_realloc"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -72,32 +87,9 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 165,
-          "content_description": "len = vsnprintf(buf, sizeof(buf), fmt, ap);"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 165: {",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "cutils.c",
-          "line": 172,
-          "content_description": "if (dbuf_realloc(s, s->size + len + 1))"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 172: va_list ap;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "cutils.c",
-          "line_range": "106-108",
-          "content_description": "size = s->allocated_size * 3 / 2; if (size > new_size) new_size = size;"
+          "line_number": 117,
+          "content_type": "function_end",
+          "function": "dbuf_realloc"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -105,25 +97,66 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "filename": "cutils.h"
+          "file": "cutils.c",
+          "line_number": 165,
+          "content_type": "function_call",
+          "function_called": "vsnprintf"
         },
         "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 631 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cutils.c",
+          "line_number": 172,
+          "content_type": "function_call",
+          "function_called": "dbuf_realloc"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 631 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cutils.c",
+          "line_number": 106,
+          "content_type": "assignment"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 631 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cutils.c",
+          "line_number": 108,
+          "content_type": "conditional"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 631 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.h",
-          "line": 285,
-          "content_description": "dbuf_printf function declaration"
+          "line_number": 285,
+          "content_type": "declaration",
+          "function": "dbuf_printf"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 285: else if (c >= 'A' && c <= 'F')",
+        "evidence": "Line 0 out of range (file has 297 lines)",
         "method": "file_read"
       },
       {
@@ -134,20 +167,21 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:116:    if (dbuf_realloc(s, s->size + len))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (dbuf_write, dbuf_put, dbuf_put_self)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 125,
-          "content_description": "call to dbuf_realloc from dbuf_write"
+          "line_number": 125,
+          "content_type": "function_call",
+          "function_called": "dbuf_realloc"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 125: int dbuf_write(DynBuf *s, size_t offset, const uint8_t *data, size_t len)",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
@@ -158,20 +192,21 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:116:    if (dbuf_realloc(s, s->size + len))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (dbuf_write, dbuf_put, dbuf_put_self)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 135,
-          "content_description": "call to dbuf_realloc from dbuf_put"
+          "line_number": 135,
+          "content_type": "function_call",
+          "function_called": "dbuf_realloc"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 135: }",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
@@ -182,20 +217,21 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:116:    if (dbuf_realloc(s, s->size + len))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (dbuf_write, dbuf_put, dbuf_put_self)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 145,
-          "content_description": "call to dbuf_realloc from dbuf_put_self"
+          "line_number": 145,
+          "content_type": "function_call",
+          "function_called": "dbuf_realloc"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 145: return 0;",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
@@ -206,9 +242,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:116:    if (dbuf_realloc(s, s->size + len))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (dbuf_write, dbuf_put, dbuf_put_self)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",

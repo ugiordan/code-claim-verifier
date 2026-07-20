@@ -5,12 +5,12 @@
   "reasoning_length": 3973,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 14,
-    "verified": 7,
-    "refuted": 7,
+    "total_claims": 20,
+    "verified": 14,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.42,
-    "action": "OVERRIDE",
+    "verification_rate": 0.52,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -38,10 +38,10 @@
           "name": "load_file",
           "file": "bench.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for load_file",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: load_file at bench.c:23",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -98,9 +98,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/tests.c:570:static void load_file(const char* filename, void** buf, size_t* len) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (main, test_Parse, test_SimpleRoundTrip)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -149,10 +149,76 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fopen",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (main, load_file, dump_curve)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fseek",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, load_file, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ftell",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, load_file, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "rewind",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, load_file, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fread",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, load_file, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "malloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 16 callers (main, load_file, main)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "main",
-          "file": "bench.c"
+          "file": "bench.c",
+          "type": "command_line"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -162,8 +228,8 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "main",
-          "file": "iccdump.c"
+          "file": "iccdump.c",
+          "type": "command_line"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -178,8 +244,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

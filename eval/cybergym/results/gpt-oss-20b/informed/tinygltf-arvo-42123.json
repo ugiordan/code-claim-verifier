@@ -5,9 +5,9 @@
   "reasoning_length": 3653,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 10,
-    "refuted": 10,
+    "total_claims": 26,
+    "verified": 15,
+    "refuted": 11,
     "unverifiable": 0,
     "verification_rate": 0.43,
     "action": "OVERRIDE",
@@ -43,6 +43,28 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tiny_gltf.h",
+          "import": "stb_image.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/tiny_gltf.h:1558:#include \"stb_image.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "stbi_load",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test_runner.py"
@@ -63,17 +85,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "tiny_gltf.h",
-          "import": "stb_image.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/tiny_gltf.h:1558:#include \"stb_image.h\"",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "stbi_load",
@@ -91,9 +102,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/stb_image.h:121://    unsigned char *data = stbi_load(filename, &x, &y, &n, 0);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -151,6 +162,49 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fopen",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 42 callers (outfile, stbi_write_hdr, stbi_write_png)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "stbi__fopen",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp), stbi_loadf(char const *filename, int *x, int *y, int *comp, int req_comp), stbi_is_hdr)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "stbi_load",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "path sanitization in stbi_load"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LoadImageFromFile",
@@ -162,6 +216,28 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "stbi_load",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "stbi_load_from_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp), stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LoadImage",
@@ -171,6 +247,17 @@
         "confidence": 0.85,
         "evidence": "No definition found for LoadImage",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LoadImageFromFile",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -186,23 +273,12 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "stbi_load",
+          "name": "LoadImage",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/stb_image.h:121://    unsigned char *data = stbi_load(filename, &x, &y, &n, 0);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "stbi_load_from_file",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/stb_image.h:374:STBIDEF stbi_uc *stbi_load_from_file  (FILE *f, int *x, int *y, int *",
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/examples/common/OpenGLWindow/Win32Window.cpp:503:\t\twcex.hIcon\t\t= LoadIcon( NULL, IDI_",
         "method": "grep_call_site"
       },
       {
@@ -216,19 +292,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: LoadModel not found in repo. Verified: ",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "path sanitization in stbi_load"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: LoadModel->LoadImage: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

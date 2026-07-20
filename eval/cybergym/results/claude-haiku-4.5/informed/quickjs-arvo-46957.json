@@ -5,11 +5,11 @@
   "reasoning_length": 5046,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 6,
-    "refuted": 14,
+    "total_claims": 21,
+    "verified": 9,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.23,
+    "verification_rate": 0.43,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -48,33 +48,33 @@
           "name": "dbuf_printf",
           "file": "cutils.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dbuf_printf",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dbuf_printf at cutils.c:169",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 155,
+          "line_number": 155,
           "content": "int __attribute__((format(printf, 2, 3))) dbuf_printf(DynBuf *s,"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 155: s->size += len;",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.h",
-          "line": 233,
+          "line_number": 233,
           "content": "dbuf_printf"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 233: /* XXX: should take an extra argument to pass slack information to the caller */",
+        "evidence": "Line 0 out of range (file has 297 lines)",
         "method": "file_read"
       },
       {
@@ -83,21 +83,21 @@
           "name": "dbuf_realloc",
           "file": "cutils.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dbuf_realloc",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dbuf_realloc at cutils.c:104",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 99,
+          "line_number": 99,
           "content": "dbuf_realloc"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 99: {",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
@@ -106,21 +106,21 @@
           "name": "dbuf_put",
           "file": "cutils.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dbuf_put",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dbuf_put at cutils.c:137",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 127,
+          "line_number": 127,
           "content": "dbuf_put"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 127: size_t end;",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
@@ -130,9 +130,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:434:    vsnprintf(s->u.error_msg, sizeof(s->u.error_msg), fmt, ap);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (dbuf_printf, re_parse_error, JS_ThrowError2)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -141,9 +141,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:116:    if (dbuf_realloc(s, s->size + len))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (dbuf_write, dbuf_put, dbuf_put_self)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -152,9 +152,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (25 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/quickjs-arvo-46957/src-vul/quickjs/libregexp.c:1324:                dbuf_put(&s->group_names, (uint8_t *)s->u.tmp_buf,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (dbuf_put_u16, dbuf_put_u32, dbuf_put_u64)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -215,25 +215,36 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 168,
-          "content": "if (dbuf_realloc(s, s->size + len + 1))"
+          "line_number": 168,
+          "content": "dbuf_realloc"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 168: ",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "cutils.c",
-          "line": 171,
-          "content": "vsnprintf((char *)(s->buf + s->size), s->allocated_size - s->size,"
+          "line_number": 171,
+          "content": "vsnprintf"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 171: {",
+        "evidence": "Line 0 out of range (file has 631 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "dbuf_printf",
+          "accessibility": "public"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -79,9 +79,9 @@
           "name": "gc_scan"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_gc.c:49: * gc_scan(root->ref)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: gc_scan at Zend/zend_gc.c:980",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -89,19 +89,19 @@
           "name": "gc_collect_cycles"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/tests/bug78379_2.phpt:15:gc_collect_cycles();",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: gc_collect_cycles at Zend/zend_builtin_functions.stub.php:114",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "zend_gc_collect_cycles"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for zend_gc_collect_cycles",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_gc_collect_cycles at Zend/zend_gc.c:1421",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -119,9 +119,9 @@
           "name": "gc_enable"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/tests/gc_001.phpt:7:gc_enable();",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: gc_enable at Zend/zend_gc.c:496",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -131,7 +131,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_builtin_functions.c:110:/* {{{ proto void gc_enable(void)",
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/Zend/zend_builtin_functions.c:110:/* {{{ proto void gc_enable(void)",
         "method": "grep_call_site"
       },
       {
@@ -145,9 +145,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: gc_scan does not call gc_remove_nested_data. Verified: zend_gc_collect_cycles->gc_collect_cycles: found gc_collect_cycles() call but not in zend_gc_collect_cycles's body; gc_collect_cycl",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: zend_gc_collect_cycles->gc_collect_cycles: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -157,17 +157,17 @@
             "gc_enable"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: OnUpdateGCEnabled->gc_enable: found gc_enable() call but not in OnUpdateGCEnabled's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: OnUpdateGCEnabled->gc_enable: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "Zend/zend.c",
-          "line_range": "~90-100",
-          "content": "gc_enable(val);"
+          "line_number": 90,
+          "content": "static ZEND_INI_MH(OnUpdateGCEnabled)"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,

@@ -5,11 +5,11 @@
   "reasoning_length": 5716,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
-    "verified": 8,
-    "refuted": 13,
+    "total_claims": 26,
+    "verified": 12,
+    "refuted": 14,
     "unverifiable": 0,
-    "verification_rate": 0.22,
+    "verification_rate": 0.4,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -75,26 +75,50 @@
         "method": "file_read"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "gpsctl.c",
+          "line_number": 158,
+          "content": "_exit(EXIT_FAILURE);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "gpsctl.c",
+          "line_number": 161,
+          "content": "_exit(EXIT_SUCCESS);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "onsig",
           "filename": "gpsctl.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for onsig",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: onsig at gpsctl.c:154",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "_exit",
-          "expected": true
+          "name": "gpsd_id",
+          "filename": "gpsctl.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/clients/gpxlogger.c:22:#include <unistd.h>          // for _exit()",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for gpsd_id",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -109,15 +133,16 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "gpsd_id",
-          "filename": "gpsctl.c"
+          "filename": "gpsctl.c",
+          "line_number": 169,
+          "content": "static char buf[128];"
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for gpsd_id",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -126,9 +151,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (141 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/clients/gps2udp.c:29:#include <string.h>      // for strlcpy(), strtok(), etc.",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, main, num_of_obs)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -137,9 +162,20 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (185 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/clients/cgps.c:1044:            (void)strlcat(scr, \"      \", sizeof(scr));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (aivdm_csv_dump, update_gps_panel, oceanserver_send)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "gps_query",
+          "filename": "gpsctl.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: gps_query at gpsctl.c:73",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -154,26 +190,37 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "gps_query",
-          "filename": "gpsctl.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for gps_query",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "vsnprintf",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/gpsmon/gpsmon.c:354:    (void)vsnprintf(buf, sizeof(buf) - 5, fmt, ap);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (nmea_send, tnt_send, oceanserver_send)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "in_library",
+          "filename": "maskaudit.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: in_library at maskaudit.py:59",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "in_daemon",
+          "filename": "maskaudit.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: in_daemon at maskaudit.py:66",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -188,26 +235,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "in_library",
-          "filename": "maskaudit.py"
+          "name": "getstatusoutput",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/maskaudit.py:59:    def in_library(self, flg):",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "in_daemon",
-          "filename": "maskaudit.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/maskaudit.py:66:    def in_daemon(self, flg):",
-        "method": "grep_function_def"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (in_library, in_daemon, relevant)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -216,20 +252,42 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/maskaudit.py:61:        (status, _output) = getstatusoutput(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (in_library, in_daemon, relevant)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "relevant",
+          "filename": "maskaudit.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: relevant at maskaudit.py:72",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "relevant",
+          "name": "in_library",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/maskaudit.py:169:                print(\"%-14s    %8s\" % (flag, source.relevant(flag)))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (relevant)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "in_daemon",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (relevant)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",

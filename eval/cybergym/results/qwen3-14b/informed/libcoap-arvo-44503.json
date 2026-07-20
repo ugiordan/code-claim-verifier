@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 12,
-    "verified": 7,
+    "verified": 8,
     "refuted": 4,
-    "unverifiable": 1,
-    "verification_rate": 0.47,
-    "action": "OVERRIDE",
+    "unverifiable": 0,
+    "verification_rate": 0.57,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,10 +28,10 @@
           "name": "check_synopsis",
           "file": "man/examples-code-check.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for check_synopsis",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: check_synopsis at man/examples-code-check.c:92",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -62,9 +62,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libcoap-arvo-44503/src-vul/libcoap/man/examples-code-check.c:118:  status = system(buffer);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (check_synopsis, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -73,9 +73,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (86 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libcoap-arvo-44503/src-vul/libcoap/man/examples-code-check.c:98:  snprintf(file_name, sizeof (file_name), \"tmp/%s-header.",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (hnd_get_time, hnd_get_time, print_timestamp)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -84,9 +84,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (3 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -100,21 +100,10 @@
         "method": "file_read"
       },
       {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "main",
-          "file": "man/examples-code-check.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libcoap-arvo-44503/src-vul/libcoap/ext/tinydtls/doc/Doxyfile.in:124:# are normally passed to the compiler using the -I flag.",
-        "method": "grep_entry_point"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "stdlib.h",
-          "symbol": "system"
+          "import": "system"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -125,7 +114,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "stdio.h",
-          "symbol": "snprintf"
+          "import": "snprintf"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -138,10 +127,20 @@
           "type": "input_sanitization",
           "location": "check_synopsis function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
       }
     ]
   },
@@ -158,8 +157,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

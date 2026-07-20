@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 20,
-    "verified": 12,
-    "refuted": 5,
-    "unverifiable": 3,
-    "verification_rate": 0.68,
-    "action": "FLAG",
+    "verified": 18,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.88,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -63,9 +63,9 @@
           "file": "test/xmlsuite/helper.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63463/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: generatexml at test/xmlsuite/helper.py:27",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -77,18 +77,6 @@
         "confidence": 0.65,
         "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63463/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
         "method": "grep_call_site"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "line": 24,
-          "content": "generatexml(path_to_dwg)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 24: if file.endswith(\".dwg\"):",
-        "method": "file_read"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -170,31 +158,51 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation"
+          "description": "input validation"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "shell_escaping"
+          "description": "shell escaping"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "safer_alternatives"
+          "description": "safer alternatives like subprocess.run with shell=False"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "allowlist of valid characters for filenames"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "sanitization of directory names"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -210,28 +218,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "test/xmlsuite/check.py",
-          "line": 10,
-          "content": "os.listdir()"
+          "type": "standalone script"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 10: from helper import *",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/xmlsuite/helper.py",
-          "line": 26,
-          "content": "glob.glob(\"*/*.txt\")"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 26: '''",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63463/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -5,11 +5,11 @@
   "reasoning_length": 6258,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
+    "total_claims": 17,
     "verified": 8,
-    "refuted": 10,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.35,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -48,10 +48,10 @@
           "name": "impd_drc_get_float_value",
           "file": "test/encoder/impd_drc_user_config.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for impd_drc_get_float_value",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: impd_drc_get_float_value at test/encoder/impd_drc_user_config.c:37",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -71,10 +71,10 @@
           "name": "impd_drc_get_integer_value",
           "file": "test/encoder/impd_drc_user_config.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for impd_drc_get_integer_value",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: impd_drc_get_integer_value at test/encoder/impd_drc_user_config.c:58",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -106,43 +106,10 @@
           "name": "ixheaace_read_drc_config_params",
           "file": "test/encoder/impd_drc_user_config.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ixheaace_read_drc_config_params",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61825/src-vul/libxaac/test/encoder/impd_drc_user_config.c:83:VOID ixheaace_read_drc_config_params(FILE *fp, i",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (35 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61825/src-vul/libxaac/test/encoder/impd_drc_user_config.c:58:static WORD32 impd_drc_get_integer_value(FILE *",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_float_value",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (17 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61825/src-vul/libxaac/test/encoder/impd_drc_user_config.c:37:static FLOAT32 impd_drc_get_float_value(FILE *f",
-        "method": "grep_call_site"
+        "confidence": 0.95,
+        "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -153,10 +120,10 @@
             "impd_drc_get_integer_value"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: ixheaace_testbench.c->ixheaace_read_drc_config_params: found ixheaace_read_drc_config_params() call but not in ixheaace_testbench.c's body; ixheaace_read_drc_config_params->impd_drc_ge",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -167,10 +134,21 @@
             "impd_drc_get_float_value"
           ]
         },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "expected": true
+        },
         "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: ixheaace_testbench.c->ixheaace_read_drc_config_params: found ixheaace_read_drc_config_params() call but not in ixheaace_testbench.c's body; ixheaace_read_drc_config_params->impd_drc_ge",
-        "method": "call_chain"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -204,6 +182,17 @@
         "confidence": 0.8,
         "evidence": "No import of <string.h> found",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fgets",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (ixheaacd_read_metadata_info, impd_drc_get_float_value, impd_drc_get_integer_value)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -246,22 +235,22 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

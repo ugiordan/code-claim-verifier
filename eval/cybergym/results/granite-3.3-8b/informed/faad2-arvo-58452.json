@@ -5,11 +5,11 @@
   "reasoning_length": 1922,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
-    "verified": 8,
+    "total_claims": 13,
+    "verified": 9,
     "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.57,
+    "verification_rate": 0.71,
     "action": "FLAG",
     "claims": [
       {
@@ -24,34 +24,41 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "audio.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): aacDECdrop/audio.c",
+        "method": "os.walk_fuzzy"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "write_wav_header",
-          "file": "audio.c",
-          "expected": true
+          "file": "audio.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_wav_header",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_wav_header at aacDECdrop/audio.c:133",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "write_wav_extensible_header",
-          "file": "audio.c",
-          "expected": true
+          "file": "audio.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_wav_extensible_header",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_wav_extensible_header at aacDECdrop/audio.c:197",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "open_audio_file",
-          "expected": true
+          "name": "open_audio_file"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -65,9 +72,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/audio.h:56:static int write_wav_header(audio_file *aufile);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -76,9 +83,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/audio.h:57:static int write_wav_extensible_header(audio_file *aufile, long chann",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -88,10 +95,10 @@
             "write_wav_header"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: open_audio_file->write_wav_header: found write_wav_header() call but not in open_audio_file's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: open_audio_file->write_wav_header: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -101,16 +108,15 @@
             "write_wav_extensible_header"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: open_audio_file->write_wav_extensible_header: found write_wav_extensible_header() call but not in open_audio_file's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: open_audio_file->write_wav_extensible_header: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "stdio.h",
-          "expected": true
+          "import": "stdio.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -120,19 +126,17 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "math.h",
-          "expected": true
+          "import": "math.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/configure.ac:107:#include <math.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/audio.c:34:#include <math.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "faad.h",
-          "expected": true
+          "import": "faad.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,

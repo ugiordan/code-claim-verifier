@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 14,
-    "verified": 7,
-    "refuted": 4,
-    "unverifiable": 3,
-    "verification_rate": 0.56,
+    "verified": 9,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.59,
     "action": "FLAG",
     "claims": [
       {
@@ -39,16 +39,16 @@
           "file": "compat/getopt.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-56837/src-vul/cyclonedds/compat/getopt.c:38:getopt(",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: getopt at compat/getopt.c:37",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "compat/getopt.c",
           "line_range": "30-100",
-          "content_description": "getopt function definition"
+          "content": "getopt function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -62,9 +62,9 @@
           "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (14 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -72,9 +72,9 @@
           "file": "compat/getopt.c",
           "import": "stdio.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-56837/src-vul/cyclonedds/compat/getopt.c:1:#include <stdio.h>",
         "method": "grep_import"
       },
       {
@@ -83,9 +83,9 @@
           "file": "compat/getopt.c",
           "import": "string.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-56837/src-vul/cyclonedds/compat/getopt.c:2:#include <string.h>",
         "method": "grep_import"
       },
       {
@@ -94,9 +94,9 @@
           "file": "compat/getopt.c",
           "import": "getopt.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-56837/src-vul/cyclonedds/compat/getopt.c:3:#include \"getopt.h\"",
         "method": "grep_import"
       },
       {
@@ -106,9 +106,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (42 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-56837/src-vul/cyclonedds/compat/getopt.c:57:    if (c == ':' || (cp = strchr(opts, c)) == NULL) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (getopt, is_valid_name, logsink)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -135,7 +135,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input sanitization for opts string and argv arguments"
+          "type": "input_sanitization",
+          "location": "getopt function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -145,7 +146,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking on opts string and argv elements"
+          "type": "bounds_checking",
+          "location": "getopt function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -155,11 +157,12 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "validation for argv array"
+          "type": "validation",
+          "location": "getopt function"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
+        "evidence": "grep_absent: 163 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-56837/src-vul/cyclonedds/src/idl/tests/parser.c:414:CU_Test(idl_parser, bit_bound_validation)",
         "method": "grep_absent"
       }
     ]
@@ -185,7 +188,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

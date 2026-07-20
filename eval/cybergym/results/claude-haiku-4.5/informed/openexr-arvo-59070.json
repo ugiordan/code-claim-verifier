@@ -5,11 +5,11 @@
   "reasoning_length": 4673,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
-    "verified": 6,
-    "refuted": 10,
+    "total_claims": 17,
+    "verified": 3,
+    "refuted": 14,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.18,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -118,8 +118,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "docs/conf.py",
-          "import": "from subprocess import call",
-          "line": 39
+          "import": "from subprocess import call"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -130,8 +129,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "docs/scripts/test_images.py",
-          "import": "from subprocess import PIPE, run",
-          "line": 28
+          "import": "from subprocess import PIPE, run"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -142,19 +140,31 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "docs/conf.py",
-          "line": 29,
-          "content": "Check if on_rtd == 'True'"
+          "line": 39,
+          "content": "from subprocess import call"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 29: # https://github.com/rtfd/readthedocs.org/issues/388",
+        "evidence": "Line 39: filedata = filedata.replace('@DOXYGEN_OUTPUT_DIR@', \"doxygen\")",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "docs/scripts/test_images.py",
+          "line": 28,
+          "content": "from subprocess import PIPE, run"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 28: # directory underneath the source root. Ideally, these would go in the",
         "method": "file_read"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "docs/conf.py",
-          "description": "executes automatically when imported/executed by Sphinx during documentation build"
+          "trigger": "Sphinx build on ReadTheDocs"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -162,34 +172,37 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "No input validation on exr_url or file paths"
+          "type": "input validation",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "No shell escaping"
+          "type": "shell escaping",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "No shell=False parameter"
+          "type": "shell=False parameter",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

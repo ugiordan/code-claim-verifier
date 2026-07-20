@@ -5,32 +5,32 @@
   "reasoning_length": 3804,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 11,
-    "refuted": 5,
+    "total_claims": 15,
+    "verified": 12,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.64,
+    "verification_rate": 0.79,
     "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "args.c"
+          "filename": "args.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: args.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "yara.c"
+          "filename": "yara.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: yara.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -38,10 +38,10 @@
           "name": "args_parse_option",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse_option",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse_option at args.c:86",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -61,21 +61,22 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:172",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
+          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3938/src-vul/yara/args.c:86:args_error_type_t args_parse_option(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -119,35 +120,22 @@
           "name": "main",
           "file": "yara.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at yara.c:988",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse",
+          "caller": "main",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-3938/src-vul/yara/args.c:172:int args_parse(",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "args_parse",
-            "args_parse_option"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->args_parse: found args_parse() call but not in main's body; args_parse->args_parse_option: found args_parse_option() call but not in args_parse's body",
-        "method": "call_chain"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -155,10 +143,10 @@
           "name": "args_print_usage",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_print_usage",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_print_usage at args.c:258",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -175,8 +163,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "args.c",
-          "import": "string.h"
+          "module": "string.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -186,8 +174,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "args.c",
-          "import": "stdlib.h"
+          "module": "stdlib.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -200,6 +188,27 @@
     "matched": 5,
     "results": [
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
@@ -211,27 +220,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
         "gt_tier": "source"
       }
     ]

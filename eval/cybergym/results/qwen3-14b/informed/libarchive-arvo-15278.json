@@ -7,9 +7,9 @@
   "ccv": {
     "total_claims": 17,
     "verified": 12,
-    "refuted": 4,
-    "unverifiable": 1,
-    "verification_rate": 0.69,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.71,
     "action": "FLAG",
     "claims": [
       {
@@ -17,10 +17,10 @@
         "parameters": {
           "file": "cat/bsdcat.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: cat/bsdcat.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -29,9 +29,9 @@
           "file": "cat/bsdcat.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:94:bsdcat_read_to_stdout(const char* filename)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: bsdcat_read_to_stdout at cat/bsdcat.c:93",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -52,9 +52,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (236 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:98:\tif (archive_read_open_filename(a, filename, BYTES_PER_BLOCK)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (bsdcat_read_to_stdout, extract, extract)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -63,9 +63,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:107:\telse if (archive_read_data_into_fd(a, 1) != ARCHIVE_OK)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (bsdcat_read_to_stdout, read_archive, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -85,9 +85,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:75:\t\t\tbsdcat_print_error();",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (bsdcat_next, bsdcat_read_to_stdout, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -96,9 +96,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1400 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:101:\telse if (r = archive_read_next_header(a, &ae),",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (bsdcat_read_to_stdout, main, extract)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -107,9 +107,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (3 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -130,9 +130,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:145:\t\tbsdcat_read_to_stdout(NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -141,35 +141,29 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/bsdcat.c:145:\t\tbsdcat_read_to_stdout(NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "main",
-            "bsdcat_read_to_stdout"
-          ]
+          "name": "main"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->bsdcat_read_to_stdout: found bsdcat_read_to_stdout() call but not in main's body",
-        "method": "call_chain"
+        "confidence": 0.95,
+        "evidence": "cymbal: main at cat/bsdcat.c:115",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "bsdcat_next",
-            "bsdcat_read_to_stdout"
-          ]
+          "name": "bsdcat_next"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: bsdcat_next->bsdcat_read_to_stdout: found bsdcat_read_to_stdout() call but not in bsdcat_next's body",
-        "method": "call_chain"
+        "confidence": 0.95,
+        "evidence": "cymbal: bsdcat_next at cat/bsdcat.c:70",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -177,9 +171,9 @@
           "import": "#include <archive.h>",
           "file": "bsdcat.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/test/test_expand_bz2.c:26:#include \"test.h\"",
+        "evidence": "No import of #include <archive.h> found",
         "method": "grep_import"
       },
       {
@@ -188,9 +182,9 @@
           "import": "#include <archive_entry.h>",
           "file": "bsdcat.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libarchive-arvo-15278/src-vul/libarchive/cat/test/test_expand_bz2.c:26:#include \"test.h\"",
+        "evidence": "No import of #include <archive_entry.h> found",
         "method": "grep_import"
       },
       {
@@ -199,9 +193,9 @@
           "type": "input_sanitization",
           "location": "bsdcat_read_to_stdout filename argument"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]
@@ -212,7 +206,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
+        "actual": "VERIFIED",
         "confidence": 0.99,
         "gt_tier": "source"
       },
@@ -220,7 +214,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

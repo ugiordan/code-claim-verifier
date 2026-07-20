@@ -5,11 +5,11 @@
   "reasoning_length": 8827,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 23,
-    "verified": 15,
-    "refuted": 8,
+    "total_claims": 21,
+    "verified": 14,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.56,
+    "verification_rate": 0.63,
     "action": "FLAG",
     "claims": [
       {
@@ -97,10 +97,10 @@
         "parameters": {
           "name": "magic_load"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for magic_load",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: magic_load at src/magic.c:297",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -139,49 +139,16 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/fuzz/magic_fuzzer.c:73:\tmagic_buffer(magic, data, size);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "_file",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/magic/Magdir/images:1377:#    http://www.atari-wiki.com/?title=IMG_file (XIMG, STTT)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "_descriptor",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:173:        return Magic.__tostr(_descriptor(self._magic_t, fd))",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "_buffer",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (27 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:181:        return Magic.__tostr(_buffer(self._magic_t, buf, len(buf)))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LLVMFuzzerTestOneInput, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/magic.c",
           "line": 2000,
-          "content": "magic_buffer"
+          "content_description": "magic_buffer function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -193,7 +160,7 @@
         "parameters": {
           "file": "src/magic.c",
           "line": 1800,
-          "content": "magic_file"
+          "content_description": "magic_file function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -205,7 +172,7 @@
         "parameters": {
           "file": "src/magic.c",
           "line": 1900,
-          "content": "magic_descriptor"
+          "content_description": "magic_descriptor function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -216,6 +183,16 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "description": "input sanitisation in python/magic.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "size checks in python/magic.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

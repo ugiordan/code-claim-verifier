@@ -90,7 +90,7 @@
         "parameters": {
           "file": "misc/mkhufftbl.py",
           "line_range": "1-200",
-          "content": "HUFFMAN_CODE_TABLE"
+          "content": "HUFFMAN_CODE_TABLE constant string"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -104,16 +104,16 @@
           "name": "mrb_init_mrblib"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/h2o-arvo-2623/src-vul/h2o/misc/h2get/deps/mruby-1.2.0/mrblib/init_mrblib.c:7:mrb_init_mrblib(mrb_state *mrb)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: mrb_init_mrblib at misc/h2get/deps/mruby-1.2.0/mrblib/init_mrblib.c:6",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "misc/h2get/deps/mruby-1.2.0/mrblib/init_mrblib.c",
           "line_range": "1-10",
-          "content": "mrb_init_mrblib"
+          "content": "mrb_init_mrblib function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -127,9 +127,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (19 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/h2o-arvo-2623/src-vul/h2o/misc/h2get/deps/mruby-1.2.0/tasks/mrbgem_spec.rake:155:            f.puts %Q[  mrb_load_irep(mr",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (mrb_init_mrbtest, mrb_init_mrblib, mrb_init_mrbtest)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -138,15 +138,15 @@
           "name": "mrb_ary_len"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/h2o-arvo-2623/src-vul/h2o/misc/h2get/deps/mruby-1.2.0/include/mruby/array.h:130:mrb_ary_len(mrb_state *mrb, mrb_value ary)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: mrb_ary_len at deps/mruby/include/mruby/array.h:242",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "mruby/array.h",
-          "content": "static inline mrb_int mrb_ary_len(mrb_state *mrb, mrb_value ary)"
+          "content": "static inline mrb_int mrb_ary_len(mrb_state *mrb, mrb_value ary) { (void)mrb; mrb_assert(mrb_array_p(ary)); return RARRAY_LEN(ary); }"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -160,31 +160,36 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (229 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/h2o-arvo-2623/src-vul/h2o/misc/h2get/deps/mruby-1.2.0/include/mruby/data.h:68:  mrb_assert(mrb_type(v) == MRB_TT_DATA);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (create_onig_region, onig_match_common, match_data_actual_index)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "mruby/array.h",
-          "import": "mruby.h"
+          "name": "RARRAY_LEN",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/h2o-arvo-2623/src-vul/h2o/misc/h2get/deps/mruby-1.2.0/tasks/mrbgems.rake:34:        f.puts %Q[#include \"mruby.h\"]",
-        "method": "grep_import"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (mrb_io_s_select, mrb_pack_pack, match_data_captures)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "file": "mruby/array.h",
-          "import": "mruby/common.h"
+          "type": "function_calls",
+          "items": [
+            "input()",
+            "sys.argv",
+            "file reads",
+            "network calls"
+          ]
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/h2o-arvo-2623/src-vul/h2o/misc/h2get/deps/mruby-1.2.0/include/mruby/error.h:10:#include \"mruby/common.h\"",
-        "method": "grep_import"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

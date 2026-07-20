@@ -5,11 +5,11 @@
   "reasoning_length": 4627,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 15,
-    "refuted": 3,
+    "total_claims": 17,
+    "verified": 13,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.75,
+    "verification_rate": 0.72,
     "action": "FLAG",
     "claims": [
       {
@@ -89,26 +89,25 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "item": "os.system calls",
-          "file": "test/xmlsuite/txttoxml.py"
+          "name": "os.system",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "generatexml",
-          "file": "test/xmlsuite/helper.py"
+          "name": "generatexml"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: generatexml at test/xmlsuite/helper.py:27",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -124,7 +123,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/check.py",
+          "file": "check.py",
           "import": "helper"
         },
         "verdict": "VERIFIED",
@@ -135,7 +134,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
+          "file": "helper.py",
           "import": "libxml2"
         },
         "verdict": "VERIFIED",
@@ -146,57 +145,35 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
+          "file": "helper.py",
           "import": "re"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/helper.py:3:import re",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/newxml.py:1:import re",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
+          "file": "helper.py",
           "import": "os"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/helper.py:4:import os",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/check.py:3:import os",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
+          "file": "helper.py",
           "import": "glob"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/helper.py:5:import glob",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.path.exists",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/test/xmlsuite/check.py:26:\t\t\tif not os.path.exists(outdir + \"/\" + dir):",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "type": "command_line"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/ChangeLog:3629:\tset bulges flag.",
-        "method": "grep_entry_point"
       },
       {
         "claim_type": "MITIGATION_EXISTS",
@@ -208,6 +185,17 @@
         "confidence": 0.7,
         "evidence": "File not found: ",
         "method": "file_read"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "check.py",
+          "type": "command_line"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-57722/src-vul/libredwg/src/dwg_api.c:16991:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
+        "method": "grep_entry_point"
       }
     ]
   },

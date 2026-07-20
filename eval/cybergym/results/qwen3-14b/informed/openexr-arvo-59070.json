@@ -5,11 +5,11 @@
   "reasoning_length": 3470,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 12,
-    "refuted": 7,
+    "total_claims": 18,
+    "verified": 10,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.58,
+    "verification_rate": 0.55,
     "action": "FLAG",
     "claims": [
       {
@@ -40,9 +40,9 @@
           "file": "docs/scripts/test_images.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openexr-arvo-59070/src-vul/openexr/docs/scripts/test_images.py:108:def write_exr_page(rst_lpath, exr_url, exr_filename, exr_lpath, jpg_lpath, readme):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: write_exr_page at docs/scripts/test_images.py:108",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -51,9 +51,9 @@
           "file": "docs/scripts/test_images.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/openexr-arvo-59070/src-vul/openexr/docs/scripts/test_images.py:36:def exr_header(exr_path):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: exr_header at docs/scripts/test_images.py:36",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -105,24 +105,25 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "exr_header",
+          "caller": "write_exr_page",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (write_exr_page, write_exr_to_index)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
           "name": "write_exr_page",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openexr-arvo-59070/src-vul/openexr/docs/scripts/test_images.py:314:    header = write_exr_page(rst_lpath, exr_url, exr_fil",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "exr_header",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openexr-arvo-59070/src-vul/openexr/docs/scripts/test_images.py:148:        header, rows = exr_header(local_exr)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (write_exr_to_index)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -171,19 +172,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "input sanitization for exr_url",
-          "file": "docs/scripts/test_images.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "input sanitization for jpg_lpath",
-          "file": "docs/scripts/test_images.py"
+          "type": "input sanitization",
+          "location": "exr_url and jpg_lpath before subprocess.run"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -204,12 +194,12 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "validation on URLs or file paths from test_images.txt",
-          "file": "docs/scripts/test_images.py"
+          "type": "validation",
+          "location": "URLs or file paths from test_images.txt"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
+        "evidence": "grep_absent: 9 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/openexr-arvo-59070/src-vul/openexr/share/ci/scripts/linux/validate_openexr_libs.sh:33:# Build the validation program",
         "method": "grep_absent"
       },
       {
@@ -238,14 +228,14 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

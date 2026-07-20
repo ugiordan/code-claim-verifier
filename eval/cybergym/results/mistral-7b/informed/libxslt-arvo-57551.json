@@ -5,11 +5,11 @@
   "reasoning_length": 1437,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 6,
-    "verified": 3,
-    "refuted": 1,
-    "unverifiable": 2,
-    "verification_rate": 0.75,
+    "total_claims": 7,
+    "verified": 5,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.7,
     "action": "FLAG",
     "claims": [
       {
@@ -29,9 +29,9 @@
           "file": "libxslt/attributes.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57551/src-vul/libxslt/libxslt/attributes.c:368:xsltParseStylesheetAttributeSet(xsltStylesheetPtr style, xmlNodePtr cur) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltParseStylesheetAttributeSet at libxslt/attributes.c:367",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -40,9 +40,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57551/src-vul/libxslt/libxslt/xslt.c:5601:\t    xsltParseStylesheetAttributeSet(cctxt->style, node);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (xsltParseTopLevelXSLTElem, xsltParseStylesheetTop, xsltParseXSLTStylesheetElemCore)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -55,14 +55,27 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "xsltParseStylesheet",
+            "xsltParseStylesheetAttributeSet"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xsltParseStylesheet->xsltParseStylesheetAttributeSet: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization",
           "function": "xsltParseStylesheetAttributeSet"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -71,9 +84,9 @@
           "type": "mitigations",
           "scope": "provided_code"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]

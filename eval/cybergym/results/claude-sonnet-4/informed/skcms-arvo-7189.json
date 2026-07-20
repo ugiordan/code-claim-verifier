@@ -5,11 +5,11 @@
   "reasoning_length": 4056,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 3,
-    "refuted": 10,
+    "total_claims": 26,
+    "verified": 7,
+    "refuted": 19,
     "unverifiable": 0,
-    "verification_rate": 0.14,
+    "verification_rate": 0.25,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "load_file",
           "file": "bench.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for load_file",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: load_file at bench.c:23",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -49,12 +49,132 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "bench.c",
-          "line": 37,
-          "content": "}"
+          "line": 23,
+          "content": "FILE* fp = fopen(filename, \"rb\");"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 37: expect(bytes_read == *len);",
+        "evidence": "Line 23: static void load_file(const char* filename, void** buf, size_t* len) {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 24,
+          "content": "expect(fp);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 24: FILE* fp = fopen(filename, \"rb\");",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 26,
+          "content": "expect(fseek(fp, 0L, SEEK_END) == 0);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 26: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 27,
+          "content": "long size = ftell(fp);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 27: expect(fseek(fp, 0L, SEEK_END) == 0);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 28,
+          "content": "expect(size > 0);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 28: long size = ftell(fp);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 29,
+          "content": "*len = (size_t)size;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 29: expect(size > 0);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 30,
+          "content": "rewind(fp);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 30: *len = (size_t)size;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 32,
+          "content": "*buf = malloc(*len);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 32: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 33,
+          "content": "expect(*buf);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 33: *buf = malloc(*len);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 35,
+          "content": "size_t bytes_read = fread(*buf, 1, *len, fp);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 35: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 36,
+          "content": "expect(bytes_read == *len);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 36: size_t bytes_read = fread(*buf, 1, *len, fp);",
         "method": "file_read"
       },
       {
@@ -64,9 +184,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (20 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-7189/src-vul/skcms/iccdump.c:230:    if (!load_file(filename, &buf, &len)) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, test_Parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -79,6 +199,17 @@
         "confidence": 0.95,
         "evidence": "Line 56: void  *src_buf, *dst_buf;",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "load_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, test_Parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -103,6 +234,17 @@
         "method": "path_check"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "load_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, test_Parse)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
@@ -115,17 +257,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "load_file_fp",
-          "file": "test_only.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for load_file_fp",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "filename": "test_only.c"
@@ -134,6 +265,29 @@
         "confidence": 0.99,
         "evidence": "Path traversal detected",
         "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "load_file_fp",
+          "file": "test_only.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: load_file_fp at test_only.c:201",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 1,
+          "content": "#define expect(cond) if (!(cond)) exit(1)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 1: /*",
+        "method": "file_read"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -165,8 +319,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

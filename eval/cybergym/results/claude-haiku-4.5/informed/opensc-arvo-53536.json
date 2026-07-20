@@ -5,11 +5,11 @@
   "reasoning_length": 4509,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 24,
-    "verified": 15,
-    "refuted": 9,
+    "total_claims": 23,
+    "verified": 16,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.51,
+    "verification_rate": 0.61,
     "action": "FLAG",
     "claims": [
       {
@@ -52,9 +52,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (30 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53536/src-vul/opensc/src/ui/strings.c:48:\tstrcpy(text, prefix);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 41 callers (dnie_select_file, openct_add_reader, sc_pkcs15_serialize_guid)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -63,9 +63,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (34 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53536/src-vul/opensc/src/ui/strings.c:49:\tsc_bin_to_hex(atr->value, atr->len, text + (sizeof prefix) - 1,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (coolkey_cuid_to_string(coolkey_cuid_t *cuid), parse_dir_record, match_atr_table)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -85,9 +85,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53536/src-vul/opensc/src/ui/strings.c:32:static const char *get_inserted_text(struct sc_pkcs15_card *p15card, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -117,10 +117,21 @@
           "name": "sc_notify_id",
           "file": "src/ui/notify.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for sc_notify_id",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ui_get_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -133,17 +144,6 @@
         "confidence": 0.95,
         "evidence": "Line 267: void sc_notify_init(void)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53536/src-vul/opensc/src/ui/strings.c:97:const char *ui_get_str(struct sc_context *ctx, struct sc_atr *atr,",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -217,9 +217,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53536/src-vul/opensc/src/ui/strings.c:70:\tscconf_block *atrblock = _sc_match_atr_block(ctx, NULL, atr);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 22 callers (sc_match_atr_block(sc_context_t *ctx, struct sc_card_driver *driver, struct sc_atr *atr), sc_card_sm_check, check_forced_protocol)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -227,33 +227,21 @@
           "name": "sc_notify_init",
           "file": "src/ui/notify.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for sc_notify_init",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_init at src/ui/notify.c:39",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "AddNotificationIcon",
-          "file": "src/ui/notify.c"
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for AddNotificationIcon",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/notify.c",
-          "line": 155,
-          "content": "AddNotificationIcon()"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 155: if (0 != strcmp(basename, \"opensc-notify.exe\")) {",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (sc_notify_init, module_init, WinMain)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -263,10 +251,10 @@
             "AddNotificationIcon"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: sc_notify_init->AddNotificationIcon: found AddNotificationIcon() call but not in sc_notify_init's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify_init->AddNotificationIcon: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -276,15 +264,15 @@
             "ui_get_str"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: sc_notify_id->ui_get_str: found ui_get_str() call but not in sc_notify_id's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 6,
+    "matched": 5,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -303,8 +291,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
@@ -317,15 +305,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

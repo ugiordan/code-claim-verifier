@@ -5,11 +5,11 @@
   "reasoning_length": 4179,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 11,
-    "verified": 2,
-    "refuted": 9,
+    "total_claims": 13,
+    "verified": 5,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.07,
+    "verification_rate": 0.18,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -93,16 +93,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "filename": "jpegdecoderhelper.cpp",
-          "line_number": 120,
-          "content": "memcpy(static_cast<void*>(mEXIFBuffer.data()), marker->data, len)"
+          "name": "JpegDecoderHelper::decode",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libultrahdr-arvo-63314/src-vul/libultrahdr/jpegdecoderhelper.cpp:215:bool JpegDecoderHelper::decode(const void* image, int",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -118,24 +117,46 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "decode",
+          "name": "memcmp",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (18 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libultrahdr-arvo-63314/src-vul/libultrahdr/include/ultrahdr/jpegdecoderhelper.h:124:    bool decode(const void* image, in",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "extractEXIF",
+          "name": "memcpy",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (6 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 19 callers (UltraHdrEncFuzzer::fillP010Buffer, UltraHdrEncFuzzer::fill420Buffer, JpegEncoderHelper::compressYuv)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "setjmp",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "longjmp",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (jpegrerror_exit)",
+        "method": "cymbal_callers"
       }
     ]
   },

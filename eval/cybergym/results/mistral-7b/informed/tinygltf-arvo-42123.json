@@ -5,37 +5,38 @@
   "reasoning_length": 1752,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 13,
-    "verified": 6,
-    "refuted": 2,
-    "unverifiable": 5,
-    "verification_rate": 0.62,
-    "action": "FLAG",
+    "total_claims": 12,
+    "verified": 4,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.28,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "stb_image.h"
+          "filename": "stb_image.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: stb_image.h",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "stb_image_write.h"
+          "filename": "stb_image_write.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: stb_image_write.h",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "stbi_load"
+          "name": "stbi_load",
+          "file": "stb_image.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -45,12 +46,13 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "stbi_write_png"
+          "name": "stbi_write_png",
+          "file": "stb_image_write.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for stbi_write_png",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: stbi_write_png at stb_image_write.h:1165",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -59,9 +61,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (7 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -70,9 +72,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (10 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (texture_dumper::dump_to_folder)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "DEPENDENCY_TYPE",
@@ -80,9 +82,9 @@
           "name": "stb_image",
           "type": "external"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
         "method": "manifest_parse"
       },
       {
@@ -91,9 +93,9 @@
           "name": "stb_image_write",
           "type": "external"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
         "method": "manifest_parse"
       },
       {
@@ -102,9 +104,9 @@
           "name": "jsonhpp",
           "type": "external"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: not found (transitive?)",
         "method": "manifest_parse"
       },
       {
@@ -113,9 +115,9 @@
           "name": "base64",
           "type": "external"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: not found (transitive?)",
         "method": "manifest_parse"
       },
       {
@@ -124,35 +126,20 @@
           "name": "stb_image_resize",
           "type": "external"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: not found (transitive?)",
         "method": "manifest_parse"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "input sanitization",
-          "scope": "codebase"
+          "type": "input_sanitization"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "reachable": true,
-          "functions": [
-            "stbi_load",
-            "stbi_write_png"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/examples/common/imgui/imgui.h:750:    ImGuiNavFlags_EnableKeyboard    = 1 << 0,   // Mas",
-        "method": "grep_entry_point"
       }
     ]
   },

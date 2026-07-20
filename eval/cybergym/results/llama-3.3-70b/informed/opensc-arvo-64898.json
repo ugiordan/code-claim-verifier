@@ -5,11 +5,11 @@
   "reasoning_length": 4587,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
-    "verified": 16,
-    "refuted": 9,
+    "total_claims": 24,
+    "verified": 21,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.51,
+    "verification_rate": 0.76,
     "action": "FLAG",
     "claims": [
       {
@@ -80,10 +80,10 @@
           "name": "AddNotificationIcon",
           "file": "src/ui/notify.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for AddNotificationIcon",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: AddNotificationIcon at src/ui/notify.c:151",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -91,10 +91,10 @@
           "name": "sc_notify_init",
           "file": "src/ui/notify.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for sc_notify_init",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_init at src/ui/notify.c:39",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -102,10 +102,10 @@
           "name": "sc_notify_close",
           "file": "src/ui/notify.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for sc_notify_close",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_close at src/ui/notify.c:43",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -125,9 +125,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/src/ui/wchar_from_char_str.h:33:\tout = LocalAlloc(0, (sizeof *out) * out_len);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (CardDeriveHashOrHMAC, HashDataWithBCrypt, DoTlsPrf)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -136,9 +136,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/src/ui/char_str_from_wchar.h:31:\tout_len = WideCharToMultiByte(CP_UTF8, 0, in, -1, NULL, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (char_str_from_wchar(const WCHAR *in))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -147,9 +147,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/src/ui/wchar_from_char_str.h:29:\tout_len = MultiByteToWideChar(CP_UTF8, 0, in, -1, NULL, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (wchar_from_char_str(const char *in))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -158,9 +158,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/src/ui/notify.c:188:\tr = Shell_NotifyIcon(NIM_ADD, &nid);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (AddNotificationIcon, DeleteNotificationIcon, RestoreTooltip)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -169,9 +169,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/src/ui/notify.c:151:static BOOL AddNotificationIcon(void)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (sc_notify_init, module_init, WinMain)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -180,9 +180,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/src/ui/notify.c:197:static BOOL DeleteNotificationIcon(void)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (sc_notify_close, module_close, C_Finalize)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -198,8 +198,38 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "import": "msiquery.h"
+          "import": "windows.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/win32/customactions.cpp:35:#include <windows.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "tchar.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/win32/customactions.cpp:36:#include <tchar.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "strsafe.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/win32/customactions.cpp:37:#include <strsafe.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "msiquery.h",
+          "file": "win32/customactions.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -209,8 +239,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "import": "wcautil.h"
+          "import": "wcautil.h",
+          "file": "win32/customactions.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -218,75 +248,26 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "type": "string_conversion",
-          "functions": [
-            "WideCharToMultiByte",
-            "MultiByteToWideChar"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "string_copy",
-          "functions": [
-            "strlcpy"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "memory_management",
-          "functions": [
-            "LocalAlloc",
-            "LocalFree"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "sc_notify_init"
+          "name": "strlcpy",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/etc/opensc.conf.example.in:1180:\t\t# Tokend ignore to read PIN protected certificate that is ",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, sc_card_sm_check)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "function": "sc_notify_close"
+          "name": "LocalFree",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/etc/opensc.conf.example.in:1180:\t\t# Tokend ignore to read PIN protected certificate that is ",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "ui_get_str"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/etc/opensc.conf.example.in:1180:\t\t# Tokend ignore to read PIN protected certificate that is ",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (md_dialog_perform_pin_operation, CardDeriveHashOrHMAC, HashDataWithBCrypt)",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -324,22 +305,22 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

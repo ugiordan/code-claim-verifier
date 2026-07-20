@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 18,
-    "verified": 7,
-    "refuted": 10,
+    "verified": 6,
+    "refuted": 11,
     "unverifiable": 1,
-    "verification_rate": 0.37,
+    "verification_rate": 0.33,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -59,7 +59,6 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "rawspeed3_capi.cpp",
-          "line_range": "217-237",
           "content": "xml_parse_result result = doc.load_string(document);"
         },
         "verdict": "REFUTED",
@@ -83,7 +82,7 @@
         "parameters": {
           "file": "rawspeed3_capi.cpp",
           "line_range": "50-65",
-          "content": "rawspeed3_init"
+          "content": "rawspeed3_init()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -106,7 +105,7 @@
         "parameters": {
           "file": "rawspeed3_capi.cpp",
           "line_range": "199-203",
-          "content": "rawspeed3_handle_data::rawspeed3_handle_data"
+          "content": "rawspeed3_handle_data::rawspeed3_handle_data()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -122,10 +121,10 @@
             "CameraMetaDataFromMem"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: rawspeed3_init->rawspeed3_handle_data::rawspeed3_handle_data: found rawspeed3_handle_data::rawspeed3_handle_data() call but not in rawspeed3_init's body; rawspeed3_handle_data::rawspee",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: rawspeed3_init->rawspeed3_handle_data::rawspeed3_handle_data: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -144,18 +143,18 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libraw-arvo-60728/src-vul/libraw/RawSpeed3/rawspeed3_c_api/rawspeed3_capi.h:47:    rawspeed3_init()",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (rawspeed3_handle_t rawspeed3_initdefault)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "../pugixml/pugixml.hpp"
+          "import": "#include <../pugixml/pugixml.hpp>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libraw-arvo-60728/src-vul/libraw/RawSpeed3/rawspeed3_c_api/rawspeed3_capi.cpp:4:#include <../pugixml/pugixml.hpp> // for xml_document, xml_pars...",
+        "evidence": "No import of #include <../pugixml/pugixml.hpp> found",
         "method": "grep_import"
       },
       {
@@ -196,10 +195,10 @@
         "parameters": {
           "name": "rawspeed3_decodefile"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for rawspeed3_decodefile",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: rawspeed3_decodefile at RawSpeed3/rawspeed3_c_api/rawspeed3_capi.cpp:89",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",

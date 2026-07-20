@@ -5,12 +5,12 @@
   "reasoning_length": 4619,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 50,
-    "verified": 38,
-    "refuted": 12,
+    "total_claims": 52,
+    "verified": 49,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.63,
-    "action": "FLAG",
+    "verification_rate": 0.87,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -49,10 +49,10 @@
           "name": "mvcd_aligned_free",
           "file": "test/mvcdec/main.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for mvcd_aligned_free",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: mvcd_aligned_free at test/mvcdec/main.c:192",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -60,10 +60,10 @@
           "name": "mvcd_get_argument",
           "file": "test/mvcdec/main.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for mvcd_get_argument",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: mvcd_get_argument at test/mvcdec/main.c:272",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -71,10 +71,10 @@
           "name": "read_input",
           "file": "test/encoder/input.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for read_input",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: read_input at test/encoder/input.c:120",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -82,10 +82,10 @@
           "name": "dump_input",
           "file": "test/encoder/input.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for dump_input",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dump_input at test/encoder/input.c:175",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -93,10 +93,32 @@
           "name": "allocate_input",
           "file": "test/encoder/input.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for allocate_input",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: allocate_input at test/encoder/input.c:229",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "posix_memalign",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (iv_aligned_malloc(void *ctxt, WORD32 alignment, WORD32 size), mvcd_aligned_malloc(void *pv_ctxt, WORD32 alignment, WORD32 i4_size), iv_aligned_malloc(void *ctxt, WORD32 alignment, W",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (iv_aligned_free, Codec::freeFrame, mvcd_aligned_free)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -104,10 +126,10 @@
           "name": "mvcd_print_usage",
           "file": "test/mvcdec/main.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for mvcd_print_usage",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: mvcd_print_usage at test/mvcdec/main.c:257",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -132,26 +154,59 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "posix_memalign",
+          "name": "mvcd_aligned_malloc",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:185:    if(0 != posix_memalign(&buf, alignment, i4_size))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "free",
+          "name": "mvcd_aligned_free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::freeFrame)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "read_input",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "dump_input",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (223 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:192:static inline void mvcd_aligned_free(void *pv_ctxt, void *pv_buf",
-        "method": "grep_call_site"
+        "evidence": "callers=yes (2 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "allocate_input",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -161,9 +216,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:181:static inline void *mvcd_aligned_malloc(void *pv_ctxt, WORD32 alig",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -173,9 +228,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:181:static inline void *mvcd_aligned_malloc(void *pv_ctxt, WORD32 alig",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -185,9 +240,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:192:static inline void mvcd_aligned_free(void *pv_ctxt, void *pv_buf)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::freeFrame)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -197,9 +252,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:192:static inline void mvcd_aligned_free(void *pv_ctxt, void *pv_buf)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (Codec::freeFrame)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -209,9 +264,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/encoder/app.h:371:IV_STATUS_T read_input(FILE *fp, iv_raw_buf_t *ps_raw_buf);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -221,9 +276,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/encoder/app.h:371:IV_STATUS_T read_input(FILE *fp, iv_raw_buf_t *ps_raw_buf);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -257,9 +312,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/encoder/app.h:367:void allocate_input(app_ctxt_t *ps_app_ctxt);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -269,31 +324,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/encoder/app.h:367:void allocate_input(app_ctxt_t *ps_app_ctxt);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fread",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (17 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:827:        u4_bytes_remaining = fread(pu1_bs_buf, sizeof(UWORD8), u4",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fwrite",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (45 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:654:                    fwrite(pu1_buf, 1, u2_width, pps_op_file[i]);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -538,34 +571,26 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "description": "mvcd_aligned_malloc checks return value of posix_memalign"
+          "name": "fread",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 13 callers (read_pic_info, read_mb_info, read_input)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "description": "mvcd_aligned_free checks pv_buf parameter for null"
+          "name": "fwrite",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "description": "read_input and dump_input check return values of fread and fwrite"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 21 callers (isvce_msv_dump_visualisation, dump_input, write_output)",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -589,43 +614,43 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

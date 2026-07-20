@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 14,
-    "verified": 6,
-    "refuted": 8,
+    "verified": 4,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.41,
+    "verification_rate": 0.31,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -43,9 +43,9 @@
           "end_line": 145
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14582/src-vul/lwan/src/bin/lwan/main.c:96:parse_args(int argc, char *argv[], struct lwan_config *config, char *root,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: parse_args at src/bin/lwan/main.c:95",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -56,9 +56,9 @@
           "end_line": 200
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14582/src-vul/lwan/src/bin/lwan/main.c:171:main(int argc, char *argv[])",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/bin/lwan/main.c:170",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -93,10 +93,10 @@
             "memcpy"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->parse_args: found parse_args() call but not in main's body; parse_args->memcpy: found memcpy() call but not in parse_args's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->parse_args: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -105,24 +105,14 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14582/src-vul/lwan/src/bin/lwan/main.c:186:    switch (parse_args(argc, argv, &c, root, &sj)) {",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "parse_args",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (1 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/bin/lwan/main.c",
           "import": "<string.h>"
         },
         "verdict": "REFUTED",
@@ -133,6 +123,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/bin/lwan/main.c",
           "import": "<stdlib.h>"
         },
         "verdict": "REFUTED",
@@ -143,6 +134,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/bin/lwan/main.c",
           "import": "<limits.h>"
         },
         "verdict": "REFUTED",
@@ -153,12 +145,25 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/bin/lwan/main.c",
           "import": "\"lwan-private.h\""
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
         "evidence": "No import of \"lwan-private.h\" found",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "bounds_check",
+          "location": "src/bin/lwan/main.c",
+          "description": "length check against PATH_MAX"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -188,14 +193,14 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

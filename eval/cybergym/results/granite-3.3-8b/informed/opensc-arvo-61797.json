@@ -5,18 +5,18 @@
   "reasoning_length": 2545,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 15,
+    "total_claims": 14,
     "verified": 14,
-    "refuted": 1,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.82,
+    "verification_rate": 0.84,
     "action": "BOOST",
     "claims": [
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "windows.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -27,7 +27,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "stdio.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -38,7 +38,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "stdlib.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -49,18 +49,18 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "string.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61797/src-vul/opensc/configure.ac:442:\t\tAC_CHECK_DECLS([strlcpy, strlcat], [], [], [[#include <string.h>]])",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61797/src-vul/opensc/src/ui/strings.c:25:#include <string.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "unistd.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -71,7 +71,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "tchar.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -82,7 +82,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "strsafe.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -93,7 +93,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "msiquery.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -104,7 +104,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "wcautil.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -115,7 +115,7 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "shlwapi.h",
-          "file": null
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -129,9 +129,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61797/src-vul/opensc/src/ui/char_str_from_wchar.h:31:\tout_len = WideCharToMultiByte(CP_UTF8, 0, in, -1, NULL, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (char_str_from_wchar(const WCHAR *in))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -140,9 +140,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61797/src-vul/opensc/src/ui/wchar_from_char_str.h:29:\tout_len = MultiByteToWideChar(CP_UTF8, 0, in, -1, NULL, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (wchar_from_char_str(const char *in))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -151,9 +151,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61797/src-vul/opensc/src/ui/wchar_from_char_str.h:33:\tout = LocalAlloc(0, (sizeof *out) * out_len);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), CardDeriveHashOrHMAC)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -162,20 +162,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-61797/src-vul/opensc/src/ui/wchar_from_char_str.h:39:\t\tLocalFree(out);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "error_checking",
-          "description": "Error checks are performed after calls to WideCharToMultiByte and MultiByteToWideChar"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), md_dialog_perform_pin_operation)",
+        "method": "cymbal_callers"
       }
     ]
   },

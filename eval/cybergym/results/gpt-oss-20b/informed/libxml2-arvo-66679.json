@@ -5,12 +5,12 @@
   "reasoning_length": 6096,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 6,
-    "refuted": 12,
+    "total_claims": 20,
+    "verified": 11,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.26,
-    "action": "OVERRIDE",
+    "verification_rate": 0.57,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -49,13 +49,14 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlAddIDSafe",
+          "caller": "xmlAddIDAttr",
+          "callee": "xmlAddIDSafe",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/valid.c:2625:    res = xmlAddIDSafe(doc, value, attr, xmlIsStreaming(ctxt), &id);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (xmlAddID, xmlNewPropInternal, xmlCopyPropInternal)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -64,14 +65,15 @@
           "file": "parser.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/parser.c:9767:xmlParseElement(xmlParserCtxtPtr ctxt) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlParseElement at parser.c:9766",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlAddIDAttr",
+          "caller": "xmlParseElement",
+          "callee": "xmlAddIDAttr",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -84,7 +86,7 @@
         "parameters": {
           "file": "tree.c",
           "line": 2000,
-          "content": "around line **2000**"
+          "content": "around line 2000"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -92,33 +94,11 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlStrndup",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (81 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/HTMLparser.c:347:    ret = xmlStrndup(start, cur - start);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlHashLookup",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (52 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/rngparser.c:568:        ret = xmlHashLookup(ctxt->namespaces, xmlCRelaxNGDefault);",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "tree.c",
           "line": 2100,
-          "content": "around line **2100**"
+          "content": "around line 2100"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -128,13 +108,14 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlAddIDSafe",
+          "caller": "xmlAddIDAttr",
+          "callee": "xmlAddIDSafe",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/valid.c:2625:    res = xmlAddIDSafe(doc, value, attr, xmlIsStreaming(ctxt), &id);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (xmlAddID, xmlNewPropInternal, xmlCopyPropInternal)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -148,57 +129,49 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: xmlReaderForFile does not call xmlReaderParse. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xmlReaderForFile->xmlReaderParse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "xmlReaderForMemory",
-            "xmlReaderParse",
-            "xmlParseElement",
-            "xmlAddIDAttr",
-            "xmlAddIDSafe"
-          ]
+          "name": "xmlReaderForFile"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: xmlReaderForMemory does not call xmlReaderParse. Verified: ",
-        "method": "call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReaderForFile at xmlreader.c:5048",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "xmlReadFile",
-            "xmlReaderParse",
-            "xmlParseElement",
-            "xmlAddIDAttr",
-            "xmlAddIDSafe"
-          ]
+          "name": "xmlReaderForMemory"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: xmlReadFile does not call xmlReaderParse. Verified: ",
-        "method": "call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReaderForMemory at xmlreader.c:5073",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "xmlReadMemory",
-            "xmlReaderParse",
-            "xmlParseElement",
-            "xmlAddIDAttr",
-            "xmlAddIDSafe"
-          ]
+          "name": "xmlReadFile"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: xmlReadMemory does not call xmlReaderParse. Verified: ",
-        "method": "call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReadFile at parser.c:13589",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReadMemory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReadMemory at parser.c:13630",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -212,24 +185,60 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlGetID"
+          "caller": "xmlReaderParse",
+          "callee": "xmlParseElement",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66679/src-vul/libxml2/valid.c:2764:xmlGetID(xmlDocPtr doc, const xmlChar *ID) {",
-        "method": "grep_function_def"
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (xmlParseDocument, xmlParseCatalogFile, xmlXIncludeParseFile)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlGetIDAttr"
+          "name": "xmlStrndup",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (htmlDocDumpMemoryFormat, xmlC14NDocDumpMemory, xmlCreateEntity)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlHashLookup",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlFuzzReadEntities, xmlFuzzEntityLoader, fuzzEntityRecorder)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlGetID",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (xmlValidateRef, xmlXPathGetElementsByIds, test_xmlGetID)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlGetIDAttr",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for xmlGetIDAttr",
-        "method": "grep_function_def"
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       }
     ]
   },

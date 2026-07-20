@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 19,
-    "verified": 9,
-    "refuted": 2,
-    "unverifiable": 8,
-    "verification_rate": 0.85,
+    "verified": 16,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.83,
     "action": "BOOST",
     "claims": [
       {
@@ -63,9 +63,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (23 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63537/src-vul/libredwg/test/xmlsuite/common.c:4:xmlChar *spointprepare (double x, double y, double z);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 20 callers (common_entity_attrs, add_line, add_circle)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -74,9 +74,9 @@
           "file": "test/unit-testing/3dline.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63537/src-vul/libredwg/test/unit-testing/3dline.c:6:api_process (dwg_object *obj)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: api_process at test/unit-testing/3dline.c:5",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -98,9 +98,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63537/src-vul/libredwg/test/unit-testing/common.c:73:void api_process (dwg_object *obj);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (print_api, output_process)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -109,9 +109,9 @@
           "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (23 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 20 callers (common_entity_attrs, add_line, add_circle)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -120,9 +120,9 @@
           "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (print_api, output_process)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
@@ -130,9 +130,9 @@
           "type": "input_validation",
           "context": "spointprepare function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -141,9 +141,9 @@
           "type": "input_validation",
           "context": "api_process function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -151,9 +151,9 @@
         "parameters": {
           "type": "mitigations"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -164,63 +164,68 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63537/src-vul/libredwg/ChangeLog:3629:\tset bulges flag.",
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63537/src-vul/libredwg/src/dwg_api.c:16991:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "library": "libxml2",
-          "file": "test/xmlsuite/common.c"
+          "name": "libxml2",
+          "file": "test/xmlsuite/common.c",
+          "purpose": "parsing and generating XML files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: not found (transitive?)",
+        "method": "manifest_parse"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "library": "dwg",
-          "file": "test/xmlsuite/common.c"
+          "name": "dwg",
+          "file": "test/xmlsuite/common.c",
+          "purpose": "handling DWG files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "library": "dwg_api",
-          "file": "test/xmlsuite/common.c"
+          "name": "dwg_api",
+          "file": "test/xmlsuite/common.c",
+          "purpose": "handling DWG files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "library": "dwg",
-          "file": "test/unit-testing/3dline.c"
+          "name": "dwg",
+          "file": "test/unit-testing/3dline.c",
+          "purpose": "handling DWG files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "library": "dwg_api",
-          "file": "test/unit-testing/3dline.c"
+          "name": "dwg_api",
+          "file": "test/unit-testing/3dline.c",
+          "purpose": "handling DWG files"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
       }
     ]
   },

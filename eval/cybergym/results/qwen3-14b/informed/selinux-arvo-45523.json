@@ -5,12 +5,12 @@
   "reasoning_length": 1089,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 5,
-    "verified": 2,
-    "refuted": 3,
+    "total_claims": 7,
+    "verified": 5,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.37,
-    "action": "OVERRIDE",
+    "verification_rate": 0.64,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,10 +28,10 @@
           "name": "setbool",
           "file": "setsebool.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for setbool",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: setbool at policycoreutils/setsebool/setsebool.c:221",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -59,13 +59,36 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "main",
+          "name": "fprintf",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (227 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-45523/src-vul/selinux/policycoreutils/setsebool/setsebool.c:34:int main(int argc, char **argv)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (read_source_policy, read_binary_policy, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "setbool",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (main, stand_alone, stand_alone)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "setbool",
+          "caller": "main",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (main, stand_alone, stand_alone)",
+        "method": "cymbal_callers"
       }
     ]
   },

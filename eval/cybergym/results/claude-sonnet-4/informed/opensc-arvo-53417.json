@@ -5,11 +5,11 @@
   "reasoning_length": 3849,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 21,
+    "total_claims": 22,
     "verified": 12,
-    "refuted": 9,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.54,
+    "verification_rate": 0.52,
     "action": "FLAG",
     "claims": [
       {
@@ -130,13 +130,14 @@
           "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (10 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (md_dialog_perform_pin_operation, CardAuthenticateEx, CardChangeAuthenticatorEx)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "win32/customactions.cpp",
           "import": "windows.h"
         },
         "verdict": "VERIFIED",
@@ -147,6 +148,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "win32/customactions.cpp",
           "import": "tchar.h"
         },
         "verdict": "VERIFIED",
@@ -157,6 +159,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "win32/customactions.cpp",
           "import": "strsafe.h"
         },
         "verdict": "VERIFIED",
@@ -187,6 +190,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "notify.c",
           "import": "shellapi.h"
         },
         "verdict": "VERIFIED",
@@ -197,6 +201,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "notify.c",
           "import": "shlwapi.h"
         },
         "verdict": "VERIFIED",
@@ -208,12 +213,13 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "strlcpy",
+          "file": "notify.c",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (107 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53417/src-vul/opensc/src/ui/notify.c:163:\t\tstrlcpy(nid.szTip, path, ARRAYSIZE(nid.szTip));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (gids_create_file, sc_card_sm_check, sc_get_cache_dir)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -228,15 +234,26 @@
         "method": "file_read"
       },
       {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "bounds_checking",
+          "location": "conversion functions"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "ARRAYSIZE",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53417/src-vul/opensc/src/ui/notify.c:151:\tif (GetModuleFileName(NULL, path, ARRAYSIZE(path))) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (AddNotificationIcon, notify_shell, md_is_pinpad_dlg_enable_cancel)",
+        "method": "cymbal_callers"
       }
     ]
   },

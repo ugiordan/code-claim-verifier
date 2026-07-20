@@ -5,11 +5,11 @@
   "reasoning_length": 4197,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 6,
-    "refuted": 11,
+    "total_claims": 15,
+    "verified": 5,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.3,
+    "verification_rate": 0.34,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "find_cameras_xml",
           "file": "src/utilities/identify/rawspeed-identify.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for find_cameras_xml",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: find_cameras_xml at src/utilities/identify/rawspeed-identify.cpp:50",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -88,9 +88,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4492/src-vul/librawspeed/src/utilities/identify/rawspeed-identify.cpp:48:std::string find_cameras_xml(con",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -102,18 +102,6 @@
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 125: using rawspeed::TYPE_FLOAT32;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/utilities/identify/rawspeed-identify.cpp",
-          "line": 126,
-          "content": "if (camfile.empty()) {"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 126: using rawspeed::RawspeedException;",
         "method": "file_read"
       },
       {
@@ -152,13 +140,13 @@
       {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "type": "empty_check",
-          "location": "src/utilities/identify/rawspeed-identify.cpp",
+          "description": "empty string check",
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
           "lines": "126-129"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range",
         "method": "file_read"
       },
       {
@@ -168,29 +156,16 @@
           "file": "src/utilities/identify/rawspeed-identify.cpp",
           "line": 112
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4492/src-vul/librawspeed/docs/Doxyfile.in:172:# using the -I flag.",
+        "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "find_cameras_xml"
-          ]
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->find_cameras_xml: found find_cameras_xml() call but not in main's body",
-        "method": "call_chain"
       },
       {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "directory": "fuzz/",
-          "classification": "test_harnesses"
+          "classification": "test harnesses"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -201,7 +176,7 @@
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "directory": "src/utilities/rstest/",
-          "classification": "test_benchmark"
+          "classification": "test/benchmark files"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -223,8 +198,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

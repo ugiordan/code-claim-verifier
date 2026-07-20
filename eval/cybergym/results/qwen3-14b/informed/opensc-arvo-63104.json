@@ -5,11 +5,11 @@
   "reasoning_length": 4399,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 8,
-    "refuted": 9,
+    "total_claims": 18,
+    "verified": 10,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.3,
+    "verification_rate": 0.49,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -46,6 +46,17 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "ui_get_str",
@@ -59,13 +70,13 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "get_inserted_text",
+          "name": "ui_get_str",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/strings.c:32:static const char *get_inserted_text(struct sc_pkcs15_card *p15card, ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -73,21 +84,10 @@
           "name": "sc_notify_id",
           "file": "src/ui/notify.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for sc_notify_id",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/strings.c:97:const char *ui_get_str(struct sc_context *ctx, struct sc_atr *atr,",
-        "method": "grep_call_site"
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -95,10 +95,24 @@
           "name": "sc_notify",
           "file": "src/ui/notify.c"
         },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify at src/ui/notify.c:282",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "sc_notify_id",
+            "ui_get_str",
+            "get_inserted_text"
+          ]
+        },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for sc_notify",
-        "method": "grep_function_def"
+        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -151,9 +165,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (115 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/notify.c:163:\t\tstrlcpy(nid.szTip, path, ARRAYSIZE(nid.szTip));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, sc_card_sm_check)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -173,9 +187,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (39 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/src/ui/strings.c:49:\tsc_bin_to_hex(atr->value, atr->len, text + (sizeof prefix) - 1,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (coolkey_cuid_to_string(coolkey_cuid_t *cuid), match_atr_table, parse_dir_record)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -184,9 +198,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (16 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (sc_pkcs15_verify_pin_with_session_pin, pkcs15_bind, pkcs15_unbind)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -195,9 +209,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (3 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -214,15 +228,15 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

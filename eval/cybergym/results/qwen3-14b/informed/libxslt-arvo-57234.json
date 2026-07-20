@@ -5,12 +5,12 @@
   "reasoning_length": 4790,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 12,
-    "refuted": 1,
+    "total_claims": 17,
+    "verified": 14,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.85,
-    "action": "BOOST",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -73,9 +73,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/attrvt.c:153:xsltSetAttrVTsegment(xsltAttrVTPtr avt, void *val) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltSetAttrVTsegment at libxslt/attrvt.c:152",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -85,9 +85,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/documents.c:61:xsltDocDefaultLoaderFunc(const xmlChar * URI, xmlDictPtr dict, int options,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltDocDefaultLoaderFunc at libxslt/documents.c:60",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -96,9 +96,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/documents.c:85:    inputStream = xmlLoadExternalEntity((const char *) URI, NULL",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (xsltDocDefaultLoaderFunc)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -107,9 +107,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/functions.c:133:\tidoc = xsltLoadDocument(tctxt, newURI);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (xsltDocumentFunctionLoadDocument, xsltDocumentFunction)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -119,20 +119,31 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/documents.c:285:xsltLoadDocument(xsltTransformContextPtr ctxt, const xmlChar *URI) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltLoadDocument at libxslt/documents.c:284",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlStrndup",
+          "name": "xmlXPathCompile",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltTransformError",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (28 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/xslt.c:1330:            element = xmlStrndup(element, end - element);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (exsltDynMapFunction, exsltNodeSetFunction, exsltSaxonLineNumberFunction)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -141,9 +152,44 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57234/src-vul/libxslt/libxslt/xslt.c:6749:\tres = xsltCheckRead(sec, NULL, filename);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (xsltLoadDocument, xsltLoadStyleDocument, xsltParseStylesheetImport)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltCheckRead",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (xsltLoadDocument, xsltLoadStyleDocument, xsltParseStylesheetImport)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlStrndup",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (xsltCompileAttr, xsltAttrTemplateValueProcessNode(xsltTransformContextPtr ctxt,\n\t  const xmlChar *str, xmlNodePtr inst), xsltNumberFormatTokenize)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "xsltLoadDocument",
+            "xsltDocDefaultLoaderFunc"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xsltLoadDocument->xsltDocDefaultLoaderFunc: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "ENTRY_POINT",

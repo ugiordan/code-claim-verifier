@@ -5,11 +5,11 @@
   "reasoning_length": 3517,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 23,
-    "verified": 14,
-    "refuted": 6,
-    "unverifiable": 3,
-    "verification_rate": 0.59,
+    "total_claims": 20,
+    "verified": 16,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.78,
     "action": "FLAG",
     "claims": [
       {
@@ -62,10 +62,10 @@
           "name": "decodeAACfile",
           "file": "aacDECdrop/decode.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for decodeAACfile",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: decodeAACfile at aacDECdrop/decode.c:160",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -88,9 +88,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:255:                aufile = open_audio_file(sndfile, samplerate, fram",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -101,9 +101,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (4 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (aac_decode, faad_main, decode_thread)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -121,10 +121,10 @@
         "parameters": {
           "name": "decthread_addfile"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for decthread_addfile",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: decthread_addfile at aacDECdrop/decthread.c:60",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -135,9 +135,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (3 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (HandleDrag, WndProc)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -145,10 +145,10 @@
           "name": "HandleDrag",
           "file": "main.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for HandleDrag",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: HandleDrag at aacDECdrop/main.c:252",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -162,27 +162,16 @@
             "open_audio_file"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: HandleDrag->decthread_addfile: found decthread_addfile() call but not in HandleDrag's body; decthread_addfile->decode_thread: found decode_thread() call but not in decthread_addfile's ",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fopen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (29 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:181:    infile = fopen(opt->filename, \"rb\");",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: HandleDrag->decthread_addfile: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "stdio.h",
-          "import": "fopen"
+          "import": "stdio.h",
+          "function": "fopen"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -190,32 +179,10 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "NeAACDecOpen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (15 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:196:    hDecoder = NeAACDecOpen();",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "NeAACDecDecode",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:225:        sample_buffer = NeAACDecDecode(hDecoder, &frameInfo, buffe",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "neaacdec.h",
-          "import": "NeAACDecOpen"
+          "import": "neaacdec.h",
+          "function": "NeAACDecOpen"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -225,8 +192,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "neaacdec.h",
-          "import": "NeAACDecDecode"
+          "import": "neaacdec.h",
+          "function": "NeAACDecDecode"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -240,9 +207,9 @@
           "function": "open_audio_file",
           "parameter": "infile"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -251,9 +218,9 @@
           "type": "path_traversal_checks",
           "function": "open_audio_file"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -262,16 +229,17 @@
           "type": "output_path_restrictions",
           "function": "open_audio_file"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "main.c",
-          "type": "GUI"
+          "type": "GUI",
+          "function": "HandleDrag"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
@@ -300,8 +268,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

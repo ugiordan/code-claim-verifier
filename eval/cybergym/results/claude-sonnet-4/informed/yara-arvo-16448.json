@@ -6,11 +6,11 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 14,
-    "verified": 4,
-    "refuted": 5,
-    "unverifiable": 5,
-    "verification_rate": 0.33,
-    "action": "OVERRIDE",
+    "verified": 10,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -38,10 +38,10 @@
           "name": "args_parse_option",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse_option",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse_option at args.c:88",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -49,10 +49,10 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:174",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -73,9 +73,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-16448/src-vul/yara/args.c:112:      *(int*) opt->value = strtol(opt_arg, &endptr, 0);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse_option, _yr_object_lookup(\n    YR_OBJECT* object,\n    int flags,\n    const char* pattern,\n    va_list args), args_parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -85,9 +85,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-16448/src-vul/yara/args.c:88:args_error_type_t args_parse_option(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -97,15 +97,15 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-16448/src-vul/yara/args.c:174:int args_parse(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "stdlib.h",
-          "import": "strtol"
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -117,19 +117,19 @@
         "parameters": {
           "type": "input sanitization libraries"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "bounds checking on integer value"
+          "type": "bounds checking"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 6 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-16448/src-vul/yara/libyara/grammar.c:577:   by yylex, with out-of-bounds checking.  */",
         "method": "grep_absent"
       },
       {
@@ -137,9 +137,9 @@
         "parameters": {
           "type": "overflow detection"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -147,9 +147,9 @@
         "parameters": {
           "type": "range validation"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -157,9 +157,9 @@
         "parameters": {
           "type": "errno checking for ERANGE"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]
@@ -170,15 +170,15 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

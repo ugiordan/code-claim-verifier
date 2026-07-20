@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 17,
-    "verified": 5,
-    "refuted": 12,
+    "verified": 7,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.24,
+    "verification_rate": 0.4,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -67,20 +67,20 @@
         "parameters": {
           "name": "run_broker"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for run_broker",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: run_broker at fuzzing/broker/broker_fuzz_test_config.cpp:32",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzzing/db_dump/db_dump_fuzz_load.cpp:46",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -89,9 +89,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:35:extern \"C\" int mosquitto_fuzz_main(int argc, char",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (run_broker, run_broker(void *args), LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -105,41 +105,29 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "run_broker",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:37:void *run_broker(void *args)",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
-            "LLVMFuzzerTestOneInput",
             "run_broker",
             "mosquitto_fuzz_main",
             "mosquitto_config_read_file"
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: mosquitto_fuzz_main does not call mosquitto_config_read_file. Verified: LLVMFuzzerTestOneInput->run_broker: found run_broker() call but not in LLVMFuzzerTestOneInput's body; run_broker->",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: run_broker->mosquitto_fuzz_main: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "function": "mosquitto_fuzz_main",
-          "description": "entry point that can trigger the vulnerable code"
+          "name": "run_broker",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/man/mqtt.7.xml:143:\t\tsometimes also known as the \"clean start\" flag. If clean session ",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -195,6 +183,17 @@
         "confidence": 0.8,
         "evidence": "No import of #include <unistd.h> found",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "mosquitto_fuzz_main",
+          "file": "src/mosquitto.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/man/mqtt.7.xml:143:\t\tsometimes also known as the \"clean start\" flag. If clean session ",
+        "method": "grep_entry_point"
       }
     ]
   },

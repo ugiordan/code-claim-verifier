@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 13,
-    "verified": 4,
-    "refuted": 9,
+    "verified": 5,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.25,
+    "verification_rate": 0.39,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "spinel_packed_uint_decode",
           "file": "third_party/openthread/src/ncp/spinel.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for spinel_packed_uint_decode",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: spinel_packed_uint_decode at third_party/openthread/src/ncp/spinel.c:149",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -62,10 +62,10 @@
           "name": "spinel_datatype_vunpack_",
           "file": "third_party/openthread/src/ncp/spinel.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for spinel_datatype_vunpack_",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: spinel_datatype_vunpack_ at third_party/openthread/src/ncp/spinel.c:254",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -76,10 +76,10 @@
             "spinel_packed_uint_decode"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: spinel_unpack->spinel_datatype_vunpack_: found spinel_datatype_vunpack_() call but not in spinel_unpack's body; spinel_datatype_vunpack_->spinel_packed_uint_decode: found spinel_packed",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: spinel_unpack->spinel_datatype_vunpack_: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -88,9 +88,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/wpantund-arvo-10864/src-vul/wpantund/third_party/openthread/src/ncp/spinel.c:149:spinel_ssize_t spinel_packed_uint_decode(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (spinel_datatype_iter_next, spinel_datatype_vunpack_, spinel_datatype_unpack_in_place)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -150,7 +150,9 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "check on the number of continuation bytes or on the shift amount i"
+          "description": "check on the number of continuation bytes or on the shift amount i",
+          "file": "third_party/openthread/src/ncp/spinel.c",
+          "function": "spinel_packed_uint_decode"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

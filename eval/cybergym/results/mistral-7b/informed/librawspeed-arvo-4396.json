@@ -5,12 +5,12 @@
   "reasoning_length": 1710,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 11,
-    "refuted": 7,
+    "total_claims": 18,
+    "verified": 14,
+    "refuted": 3,
     "unverifiable": 1,
-    "verification_rate": 0.62,
-    "action": "FLAG",
+    "verification_rate": 0.85,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -53,16 +53,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "file": "fuzz/librawspeed/decoders/RawSpeedDecoders/main.cpp"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "fuzz/rawspeed/main.cpp"
@@ -103,10 +93,20 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "file": "fuzz/librawspeed/decoders/RawSpeedDecoders/main.cpp"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
-          "file": "libFuzzer_dummy_main.cpp"
+          "file": "fuzz/libFuzzer_dummy_main.cpp"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -117,45 +117,45 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
-          "file": "librawspeed/decompressors/HuffmanTable/main.cpp"
+          "file": "fuzz/librawspeed/decompressors/HuffmanTable/main.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/librawspeed/decompressors/HuffmanTable/main.cpp:61",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
-          "file": "librawspeed/parsers/main.cpp"
+          "file": "fuzz/librawspeed/parsers/main.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/librawspeed/parsers/main.cpp:67",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
-          "file": "librawspeed/decoders/TiffDecoders/main.cpp"
+          "file": "fuzz/librawspeed/decoders/TiffDecoders/main.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/librawspeed/decoders/TiffDecoders/main.cpp:64",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
-          "file": "rawspeed/main.cpp"
+          "file": "fuzz/rawspeed/main.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/rawspeed/main.cpp:36",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -174,25 +174,15 @@
           "name": "BM_MD5",
           "file": "src/utilities/rstest/MD5Benchmark.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for BM_MD5",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "input sanitization"
-        },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.95,
+        "evidence": "cymbal: BM_MD5 at src/utilities/rstest/MD5Benchmark.cpp:27",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "existing mitigations"
+          "type": "input_sanitization"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -204,15 +194,15 @@
         "parameters": {
           "function": "main"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/docs/Doxyfile.in:172:# using the -I flag.",
+        "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 9,
+    "matched": 14,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -275,6 +265,41 @@
         "expected": "VERIFIED",
         "actual": "REFUTED",
         "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

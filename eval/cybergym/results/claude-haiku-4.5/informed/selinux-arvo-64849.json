@@ -5,12 +5,12 @@
   "reasoning_length": 5078,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
-    "verified": 14,
-    "refuted": 2,
+    "total_claims": 17,
+    "verified": 9,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.42,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -35,11 +35,23 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "283-293",
+          "content": "Syslog calls with unsanitized user-controlled data"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 311 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
           "file": "policycoreutils/run_init/open_init_pty.c",
           "line": 289,
-          "content_description": "Uninitialized variable usage"
+          "content": "Uninitialized variable usage"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 289: s_tty_attr.c_oflag &= ~(ONLCR);",
         "method": "file_read"
@@ -49,57 +61,19 @@
         "parameters": {
           "name": "setbool",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "start_line": 217,
-          "end_line": 310
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for setbool",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 283,
-          "content_description": "syslog call with format string"
+          "line_range": "217-310"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 283: *value_ptr = '\\0';",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 287,
-          "content_description": "syslog call with hardcoded format string"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 287: \"The %s policy boolean was changed to %s by %s\",",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 291,
-          "content_description": "syslog call with hardcoded format string"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 291: \"The %s policy boolean was changed to %s by uid:%d\",",
-        "method": "file_read"
+        "evidence": "cymbal: setbool at policycoreutils/setsebool/setsebool.c:221",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "main",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "start_line": 31,
-          "end_line": 75
+          "line_range": "31-75"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -109,51 +83,105 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "setbool",
-          "expected": true,
           "caller": "main",
-          "line": 73
+          "callee": "setbool",
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line": 73,
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-64849/src-vul/selinux/policycoreutils/setsebool/setsebool.c:24:int setbool(char **list, size_t start, size_t ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (main, stand_alone, stand_alone)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "setbool",
-          "expected": true,
           "caller": "main",
-          "line": 68
+          "callee": "setbool",
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line": 68,
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-64849/src-vul/selinux/policycoreutils/setsebool/setsebool.c:24:int setbool(char **list, size_t start, size_t ",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (main, stand_alone, stand_alone)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strchr",
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line": 60,
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (selinux_boolean_sub(const char *name), bool_open, security_get_initial_context_raw)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "snprintf",
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line": 67,
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (display_policycaps, sidtab_sid_stats, security_canonicalize_context_raw)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strchr",
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "237-240",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (selinux_boolean_sub(const char *name), bool_open, security_get_initial_context_raw)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "syslog",
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "283-293",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, restorecon_sb, process_color)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 60,
-          "content_description": "strchr(argv[optind], '=') call"
+          "line": 287,
+          "content": "hardcoded format string"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 60: }",
+        "evidence": "Line 287: \"The %s policy boolean was changed to %s by %s\",",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 67,
-          "content_description": "snprintf() call with format string"
+          "line": 291,
+          "content": "hardcoded format string"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 67: /* Check to see which way we are being called. If a '=' is passed,",
+        "evidence": "Line 291: \"The %s policy boolean was changed to %s by uid:%d\",",
         "method": "file_read"
       },
       {
@@ -161,9 +189,9 @@
         "parameters": {
           "file": "policycoreutils/setsebool/setsebool.c",
           "line": 239,
-          "content_description": "*value_ptr = '\\0' assignment"
+          "content": "*value_ptr = '\\0';"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 239: goto err;",
         "method": "file_read"
@@ -173,23 +201,11 @@
         "parameters": {
           "file": "policycoreutils/setsebool/setsebool.c",
           "line": 301,
-          "content_description": "*value_ptr = '=' assignment"
+          "content": "*value_ptr = '='"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 301: omem:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 237,
-          "content_description": "strchr() call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 237: \"setsebool: '=' not found in boolean expression %s\\n\",",
         "method": "file_read"
       },
       {
@@ -201,10 +217,10 @@
             "syslog"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->setbool: found setbool() call but not in main's body; setbool->syslog: found syslog() call but not in setbool's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->setbool: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },
@@ -228,8 +244,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

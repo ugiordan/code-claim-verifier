@@ -9,7 +9,7 @@
     "verified": 9,
     "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.72,
+    "verification_rate": 0.76,
     "action": "FLAG",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:174",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -40,9 +40,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-28253/src-vul/yara/args.c:174:int args_parse(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -63,10 +63,10 @@
             "args_parse"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->args_parse: found args_parse() call but not in main's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->args_parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -105,9 +105,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-28253/src-vul/yara/args.c:112:      *(int*) opt->value = strtol(opt_arg, &endptr, 0);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse_option, _yr_object_lookup(\n    YR_OBJECT* object,\n    int flags,\n    const char* pattern,\n    va_list args), args_parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
@@ -144,8 +144,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

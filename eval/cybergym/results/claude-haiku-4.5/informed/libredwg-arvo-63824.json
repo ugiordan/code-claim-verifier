@@ -5,11 +5,11 @@
   "reasoning_length": 4379,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 27,
-    "refuted": 2,
+    "total_claims": 32,
+    "verified": 29,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.94,
+    "verification_rate": 0.9,
     "action": "BOOST",
     "claims": [
       {
@@ -132,9 +132,9 @@
           "file": "helper.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/helper.py:50:def processattr(attr):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: processattr at test/xmlsuite/helper.py:50",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -143,9 +143,9 @@
           "file": "helper.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/helper.py:84:def xmlprocess(ideal, practical):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlprocess at test/xmlsuite/helper.py:84",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -154,9 +154,9 @@
           "file": "txttoxml.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/newxml.py:4:def processData(line):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: processData at test/xmlsuite/txttoxml.py:26",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -168,6 +168,28 @@
         "confidence": 0.85,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "generatexml",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlprocess",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/check.py:54:\t\t\t\tresult = xmlprocess(path_to_dwg+ \"/\" + dir + \"/\" + file",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -232,7 +254,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/configure.ac:675:  ac_python_libxml2_result=`$PYTHON -c \"import libxml2\" 2>&1`",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/helper.py:2:import libxml2",
         "method": "grep_import"
       },
       {
@@ -271,7 +293,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "JSON parsing functionality"
+          "type": "JSON parsing functionality"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -281,7 +303,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "HEADER.layer_colors references"
+          "type": "HEADER.layer_colors references"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -291,7 +313,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "injson library references"
+          "type": "injson library references"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -299,32 +321,37 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "chain": [
-            "check.py",
-            "generatexml",
-            "txttoxml.py"
-          ]
+          "file": "spointprepare",
+          "content": "result = malloc(100 * sizeof(xmlChar));"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: generatexml does not call txttoxml.py. Verified: check.py->generatexml: found generatexml() call but not in check.py's body",
-        "method": "call_chain"
+        "confidence": 0.95,
+        "evidence": "File not found: spointprepare",
+        "method": "file_read"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "chain": [
-            "check.py",
-            "xmlprocess",
-            "helper.py"
-          ]
+          "file": "doubletochar",
+          "content": "result = malloc(50 * sizeof(xmlChar));"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: xmlprocess does not call helper.py. Verified: check.py->xmlprocess: found xmlprocess() call but not in check.py's body",
-        "method": "call_chain"
+        "confidence": 0.95,
+        "evidence": "File not found: doubletochar",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "inttochar",
+          "content": "result = malloc(16 * sizeof(xmlChar));"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: inttochar",
+        "method": "file_read"
       }
     ]
   },

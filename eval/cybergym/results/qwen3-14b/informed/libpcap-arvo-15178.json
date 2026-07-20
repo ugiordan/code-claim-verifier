@@ -7,10 +7,10 @@
   "ccv": {
     "total_claims": 10,
     "verified": 8,
-    "refuted": 0,
-    "unverifiable": 2,
-    "verification_rate": 1.0,
-    "action": "BOOST",
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.8,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "ABSENCE",
@@ -26,18 +26,12 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "opt_cleanup function definition or reference",
-          "files": [
-            "arcnet.h",
-            "atmuni31.h",
-            "bpf_dump.c",
-            "bpf_filter.c",
-            "bpf_image.c"
-          ]
+          "item": "opt_cleanup",
+          "scope": "files arcnet.h, atmuni31.h, bpf_dump.c, bpf_filter.c, bpf_image.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
+        "evidence": "grep_absent: 4 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/optimize.c:346:static void opt_cleanup(opt_state_t *);",
         "method": "grep_absent"
       },
       {
@@ -47,9 +41,9 @@
           "import": "optimize.h",
           "expected": true
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_dump.c:29:#include \"optimize.h\"",
         "method": "grep_import"
       },
       {
@@ -67,13 +61,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "item": "opt_cleanup function",
-          "files": [
-            "arcnet.h",
-            "atmuni31.h",
-            "bpf_dump.c",
-            "bpf_filter.c",
-            "bpf_image.c"
-          ]
+          "scope": "files listed"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -86,10 +74,10 @@
           "function": "opt_cleanup",
           "expected": false
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No function name specified",
-        "method": "grep_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (bpf_optimize, pcap_compile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
@@ -109,9 +97,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_dump.c:32:bpf_dump(const struct bpf_program *p, int option)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: bpf_dump at bpf_dump.c:31",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -120,9 +108,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:88:pcap_filter_with_aux_data(const struct bpf_insn *pc, const u_char *p,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: pcap_filter_with_aux_data at bpf_filter.c:91",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",

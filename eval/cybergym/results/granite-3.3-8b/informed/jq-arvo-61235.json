@@ -5,9 +5,9 @@
   "reasoning_length": 3695,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 28,
-    "verified": 19,
-    "refuted": 9,
+    "total_claims": 41,
+    "verified": 26,
+    "refuted": 15,
     "unverifiable": 0,
     "verification_rate": 0.64,
     "action": "FLAG",
@@ -118,10 +118,10 @@
           "name": "LLVMFuzzerTestOneInput",
           "file": "tests/jq_fuzz_compile.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at tests/jq_fuzz_compile.c:7",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -129,10 +129,10 @@
           "name": "LLVMFuzzerTestOneInput",
           "file": "tests/jq_fuzz_load_file.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at tests/jq_fuzz_load_file.c:6",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -140,10 +140,10 @@
           "name": "LLVMFuzzerTestOneInput",
           "file": "tests/jq_fuzz_parse.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at tests/jq_fuzz_parse.c:7",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -174,9 +174,9 @@
           "file": "docs/build_website.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_website.py:57:def generate_file(env, fname):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: generate_file at docs/build_website.py:57",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -212,69 +212,212 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (9 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "RoffWalker.walk",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "callers=no (0 call sites)",
-        "method": "grep_callers"
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "load_yml_file",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (4 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (generate_file, convert_manual_to_markdown)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "generate_file",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_website.py:57:def generate_file(env, fname):",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_compile.c",
-          "import": "jq.h"
+          "module": "jq.h",
+          "file": "tests/jq_fuzz_compile.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/tests/jq_fuzz_compile.c:1:#include <stdint.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/tests/jq_fuzz_compile.c:5:#include \"jq.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_compile.c",
-          "import": "jv.h"
+          "module": "jv.h",
+          "file": "tests/jq_fuzz_compile.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of jv.h found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "re",
+          "file": "docs/build_manpage.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/tests/jq_fuzz_compile.c:1:#include <stdint.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_manpage.py:7:import re",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "sys",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_manpage.py:8:import sys",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "yaml",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_manpage.py:9:import yaml",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "markdown",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_manpage.py:5:import markdown",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "lxml",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/docs/build_manpage.py:4:from lxml import etree",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "os",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of os found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "os.path",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of os.path found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "shutil",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of shutil found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "argparse",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of argparse found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "glob",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of glob found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "itertools",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of itertools found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "jsonschema",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of jsonschema found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "Jinja2",
+          "file": "docs/build_manpage.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of Jinja2 found",
         "method": "grep_import"
       },
       {
@@ -284,9 +427,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-61235/src-vul/jq/tests/jq_fuzz_parse.c:14:  jv res = jv_parse(null_terminated);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (f_tonumber, run_jq_tests, jv_test)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -388,29 +531,29 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

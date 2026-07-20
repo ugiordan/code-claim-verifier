@@ -6,9 +6,9 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 18,
-    "verified": 13,
+    "verified": 14,
     "refuted": 4,
-    "unverifiable": 1,
+    "unverifiable": 0,
     "verification_rate": 0.8,
     "action": "BOOST",
     "claims": [
@@ -87,9 +87,9 @@
           "type": "input_sanitization",
           "function": "MdRegisterCard"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -117,6 +117,16 @@
         "method": "file_read"
       },
       {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "MdRegisterCard_EntryPoint"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60971/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
+        "method": "grep_entry_point"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -125,19 +135,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: MdRegisterCard_EntryPoint not found in repo. Verified: ",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "MdRegisterCard_EntryPoint"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60971/src-vul/opensc/etc/opensc.conf.example.in:1129:\t\t# Tokend ignore to read PIN protected certificate that is ",
-        "method": "grep_entry_point"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: MdRegisterCard_EntryPoint->MdRegisterCard: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FILE_EXISTS",

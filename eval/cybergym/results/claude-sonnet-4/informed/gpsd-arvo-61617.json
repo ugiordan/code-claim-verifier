@@ -5,11 +5,11 @@
   "reasoning_length": 3507,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 17,
+    "total_claims": 16,
     "verified": 3,
-    "refuted": 14,
+    "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.14,
+    "verification_rate": 0.15,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -52,9 +52,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/maskaudit.py:61:        (status, _output) = getstatusoutput(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (in_library, in_daemon, relevant)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -172,12 +172,12 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "maskaudit.py",
-          "line": 43,
-          "content": "try:\n    from subprocess import getstatusoutput\nexcept ImportError:\n    from commands import getstatusoutput"
+          "line": 78,
+          "content": "def relevant(self, flag):"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 43: \"pseudonmea.c\",",
+        "evidence": "Line 78: ",
         "method": "file_read"
       },
       {
@@ -191,22 +191,6 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/gpsd-arvo-61617/src-vul/gpsd/libgps/libgps_dbus.c:126:        (connection, (DBusHandleMessageFunction) signal_handler, NULL,",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "options.tabulate",
-            "source.relevant",
-            "in_library",
-            "getstatusoutput"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: main does not call options.tabulate. Verified: ",
-        "method": "call_chain"
       }
     ]
   },

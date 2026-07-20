@@ -5,11 +5,11 @@
   "reasoning_length": 3836,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 12,
-    "refuted": 5,
-    "unverifiable": 2,
-    "verification_rate": 0.7,
+    "total_claims": 22,
+    "verified": 13,
+    "refuted": 6,
+    "unverifiable": 3,
+    "verification_rate": 0.69,
     "action": "FLAG",
     "claims": [
       {
@@ -109,9 +109,9 @@
           "file": "go/sizes.go"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/flatbuffers-arvo-46883/src-vul/flatbuffers/go/sizes.go:53:func byteSliceToString(b []byte) string {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: byteSliceToString at go/sizes.go:53",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -144,9 +144,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/flatbuffers-arvo-46883/src-vul/flatbuffers/go/sizes.go:53:func byteSliceToString(b []byte) string {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (String, name, Name)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -159,6 +159,17 @@
         "confidence": 0.95,
         "evidence": "Line 25: }",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "String",
+          "file": "go/table.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/flatbuffers-arvo-46883/src-vul/flatbuffers/go/table.go:28:func (t *Table) String(off UOffsetT) string {",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -185,6 +196,18 @@
         "method": "file_read"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "go/encode.go",
+          "line": null,
+          "content": "_ = buf[7] // Force one bounds check. See: golang.org/issue/14808"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "package": "math",
@@ -207,6 +230,17 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "byteSliceToString",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (String, name, Name)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -215,10 +249,10 @@
             "byteSliceToString"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: Table->String: found String() call but not in Table's body; String->byteSliceToString: found byteSliceToString() call but not in String's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: Table->String: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

@@ -5,12 +5,12 @@
   "reasoning_length": 1998,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 5,
-    "refuted": 6,
+    "total_claims": 13,
+    "verified": 10,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.3,
-    "action": "OVERRIDE",
+    "verification_rate": 0.74,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,17 +28,17 @@
           "name": "FatalErrorQuit",
           "file": "testbed/testcms2.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for FatalErrorQuit",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: FatalErrorQuit at testbed/testcms2.c:249",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "testbed/testcms2.c",
           "line_range": "200-220",
-          "content_description": "definition of FatalErrorQuit"
+          "content": "definition of `FatalErrorQuit`"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -46,15 +46,16 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "Die",
-          "file": "testbed/testcms2.c"
+          "file": "testbed/testcms2.c",
+          "line_number": "~210",
+          "content": "FatalErrorQuit function definition"
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for Die",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 9753 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -63,20 +64,20 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lcms-arvo-64166/src-vul/lcms/testbed/testcms2.h:62:void Die(const char* Reason, ...);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 37 callers (MyMtxDestroy, chknull(void* mem), DebugMalloc(cmsContext ContextID, cmsUInt32Number size))",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "ResetFatalError",
-          "file": "testbed/testcms2.c"
+          "name": "vsprintf",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ResetFatalError",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (Fail, Fail, FatalError)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -85,29 +86,39 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (26 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lcms-arvo-64166/src-vul/lcms/testbed/zoo_icc.c:282:    cmsSetLogErrorHandler(NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (main, CheckProfileZOO, InitUtils)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ResetFatalError"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ResetFatalError at testbed/testcms2.c:259",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "CheckSimpleContext"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for CheckSimpleContext",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: CheckSimpleContext at testbed/testplugin.c:84",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "CheckAllocContext"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for CheckAllocContext",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: CheckAllocContext at testbed/testplugin.c:49",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -116,9 +127,19 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (7 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (CheckProfileZOO, CheckTagTypePlugin, CheckMPEPlugin)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Die"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: Die at testbed/testcms2.c:48",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -126,13 +147,14 @@
           "chain": [
             "ResetFatalError",
             "cmsSetLogErrorHandler",
-            "FatalErrorQuit"
+            "FatalErrorQuit",
+            "Die"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: ResetFatalError->cmsSetLogErrorHandler: found cmsSetLogErrorHandler() call but not in ResetFatalError's body; cmsSetLogErrorHandler->FatalErrorQuit: found FatalErrorQuit() call but not",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ResetFatalError->cmsSetLogErrorHandler: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

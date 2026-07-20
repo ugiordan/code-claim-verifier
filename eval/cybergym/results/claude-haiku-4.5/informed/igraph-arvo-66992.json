@@ -5,11 +5,11 @@
   "reasoning_length": 5333,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 9,
+    "total_claims": 16,
+    "verified": 12,
     "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.68,
+    "verification_rate": 0.7,
     "action": "FLAG",
     "claims": [
       {
@@ -58,21 +58,11 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ElementTree.parse",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "xml.etree.ElementTree",
-          "import": "ElementTree"
+          "import": "ElementTree",
+          "file": "tools/removeexamples.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -89,20 +79,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: tree.parse does not call ElementTree.parse. Verified: main->tree.parse: found tree.parse() call but not in main's body",
-        "method": "call_chain"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "entry": "if __name__ == \"__main__\": main()",
-          "line": 31
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/igraph-arvo-66992/src-vul/igraph/tools/strip_licenses_from_examples.py:29:    parser = argparse.ArgumentParser()",
-        "method": "grep_entry_point"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->tree.parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -117,37 +96,16 @@
         "method": "file_read"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "type": "validation",
-          "description": "No validation of the input file before parsing"
+          "file": "tools/removeexamples.py",
+          "line": 16,
+          "content": "def main():"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "mitigations",
-          "description": "No XML-specific security measures"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "library",
-          "description": "No use of safer parsing libraries"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 16: ",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -160,6 +118,83 @@
         "confidence": 0.95,
         "evidence": "Line 20: sys.exit(2)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "XML-specific security measures",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "use of safer parsing libraries",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "file type validation",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "XML schema validation",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "entity expansion limits",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "DTD restrictions",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "defusedxml library usage",
+          "file": "tools/removeexamples.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

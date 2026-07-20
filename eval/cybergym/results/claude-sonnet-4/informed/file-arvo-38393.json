@@ -5,12 +5,12 @@
   "reasoning_length": 3282,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 27,
-    "verified": 17,
+    "total_claims": 25,
+    "verified": 14,
     "refuted": 10,
-    "unverifiable": 0,
-    "verification_rate": 0.56,
-    "action": "FLAG",
+    "unverifiable": 1,
+    "verification_rate": 0.5,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -29,9 +29,9 @@
           "file": "python/magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:159:    def file(self, filename):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: file at python/magic.py:159",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -75,9 +75,9 @@
           "file": "python/magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:167:    def descriptor(self, fd):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: descriptor at python/magic.py:167",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -167,9 +167,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: ms.file does not call Magic.file. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ms.file->Magic.file: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -182,9 +182,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: ms.buffer does not call Magic.buffer. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ms.buffer->Magic.buffer: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -221,26 +221,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ctypes.cdll.LoadLibrary",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:21:    return ctypes.cdll.LoadLibrary(find_library('magic'))",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
-          "line": 16,
+          "line": "16",
           "content_description": "ctypes.cdll.LoadLibrary() call"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 16: def _init():",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
         "method": "file_read"
       },
       {
@@ -262,16 +251,16 @@
           "file": "python/magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:149:    def __tobytes(b):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: __tobytes at python/magic.py:148",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
           "line_range": "140-148",
-          "content_description": "__tobytes() helper method"
+          "content_description": "__tobytes() helper function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -281,43 +270,35 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "magic.open",
+          "name": "_file",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/example.py:5:ms = magic.open(magic.NONE)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (file, detect_from_filename)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "description": "input validation in file() method"
+          "name": "_buffer",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (buffer, detect_from_content)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "description": "size limits or content validation in buffer() method"
+          "name": "_descriptor",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "validation in descriptor() method"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (descriptor, detect_from_fobj)",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -335,7 +316,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
@@ -349,7 +330,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
@@ -377,7 +358,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

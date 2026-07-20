@@ -5,11 +5,11 @@
   "reasoning_length": 6994,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 28,
-    "verified": 10,
-    "refuted": 18,
+    "total_claims": 26,
+    "verified": 7,
+    "refuted": 19,
     "unverifiable": 0,
-    "verification_rate": 0.27,
+    "verification_rate": 0.22,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -53,9 +53,9 @@
           "file_path": "tools/ttf-checksum.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:12:def checkChecksum(infile):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: checkChecksum at tools/ttf-checksum.py:12",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -76,9 +76,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (60 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:44:    checkChecksum(file(sys.argv[1], 'r'))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 41 callers (Font, FuseGMockH, ProcessFile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -183,9 +183,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:19:    sum += readU32(contents, offset)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (checkChecksum)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -194,9 +194,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:24:  numTables = readU16(contents, 4)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (checkChecksum)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -263,46 +263,28 @@
         "parameters": {
           "chain": [
             "main entry point",
-            "checkChecksum"
+            "checkChecksum",
+            "readU16"
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: main entry point not found in repo. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main entry point->checkChecksum: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "readU16",
-          "expected": true
+          "chain": [
+            "main entry point",
+            "checkChecksum",
+            "readU32"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:24:  numTables = readU16(contents, 4)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "readU32",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:19:    sum += readU32(contents, offset)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "readU32",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:19:    sum += readU32(contents, offset)",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main entry point->checkChecksum: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",

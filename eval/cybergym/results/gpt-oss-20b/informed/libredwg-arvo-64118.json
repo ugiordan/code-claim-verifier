@@ -5,11 +5,11 @@
   "reasoning_length": 6409,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 31,
-    "verified": 21,
-    "refuted": 8,
+    "total_claims": 30,
+    "verified": 19,
+    "refuted": 9,
     "unverifiable": 2,
-    "verification_rate": 0.64,
+    "verification_rate": 0.62,
     "action": "FLAG",
     "claims": [
       {
@@ -81,36 +81,24 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "processData",
-          "file": "test/xmlsuite/newxml.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/test/xmlsuite/newxml.py:4:def processData(line):",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
           "name": "generatexml",
           "file": "test/xmlsuite/helper.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: generatexml at test/xmlsuite/helper.py:27",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "line_range": "48-55",
-          "content_description": "os.system(\"./testsuite \u2026\") call"
+          "name": "processData",
+          "file": "test/xmlsuite/newxml.py"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 104 lines)",
-        "method": "file_read"
+        "evidence": "cymbal: processData at test/xmlsuite/newxml.py:4",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -122,6 +110,18 @@
         "confidence": 0.65,
         "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/xmlsuite/check.py",
+          "line_range": "48-55",
+          "content_description": "os.system call"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 104 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -151,7 +151,7 @@
         "parameters": {
           "file": "test/xmlsuite/check.py",
           "line": "48",
-          "content_description": "os.system(\"./testsuite \u2026\") call"
+          "content_description": "os.system call"
         },
         "verdict": "UNVERIFIABLE",
         "confidence": 0.0,
@@ -199,18 +199,19 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/configure.ac:673:  ac_python_libxml2_result=`$PYTHON -c \"import libxml2\" 2>&1`",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/test/xmlsuite/helper.py:2:import libxml2",
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "sanitization on file names passed to shell"
+          "type": "input_sanitization",
+          "exists": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -230,7 +231,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/ChangeLog:3629:\tset bulges flag.",
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
         "method": "grep_entry_point"
       },
       {
@@ -238,7 +239,7 @@
         "parameters": {
           "file": "test/xmlsuite/check.py",
           "line_range": "48-55",
-          "content_description": "os.system(\"./testsuite \" + path_to_dwg + \"/\" + dir + \"/\" + file + \" \" + outdir + \"/\" + dir + \"/\" + dwg_xmlfile + \" 2> /dev/null\")"
+          "content_description": "os.system command with concatenated user-controlled input"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -250,7 +251,7 @@
         "parameters": {
           "file": "test/xmlsuite/helper.py",
           "line_range": "12-30",
-          "content_description": "os.system (me + \" \" + srcdir + \"/txttoxml.py \" + filename + \" \" + current_dir + \"/test_output\")"
+          "content_description": "os.system command with filename concatenation"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -333,22 +334,11 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sprintf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (41 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-64118/src-vul/libredwg/test/xmlsuite/common.c:31:  n = sprintf ((char *)result, \"(%.4f %.4f %.4f)\", x, y, z",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/xmlsuite/common.c",
           "line_range": "12-70",
-          "content_description": "sprintf calls in functions"
+          "content_description": "sprintf calls in various functions"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,

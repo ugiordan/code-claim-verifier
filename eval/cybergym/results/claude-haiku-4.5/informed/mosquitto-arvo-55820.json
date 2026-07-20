@@ -5,12 +5,12 @@
   "reasoning_length": 5414,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 37,
-    "verified": 19,
-    "refuted": 18,
+    "total_claims": 19,
+    "verified": 12,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.43,
-    "action": "OVERRIDE",
+    "verification_rate": 0.54,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -23,52 +23,15 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "buildtest.py",
-          "line": 38,
-          "content": "def run_test(msg, opts):"
+          "name": "run_test",
+          "file": "buildtest.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 38: def run_test(msg, opts):",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 39,
-          "content": "subprocess.run([\"make\", \"clean\"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 39: subprocess.run([\"make\", \"clean\"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 40,
-          "content": "print(\"%s: %s\" % (msg, str(opts)))"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 40: print(\"%s: %s\" % (msg, str(opts)))",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 41,
-          "content": "args = [\"make\", \"-j%d\" % (os.cpu_count())] + opts"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 41: args = [\"make\", \"-j%d\" % (os.cpu_count())] + opts",
-        "method": "file_read"
+        "evidence": "cymbal: run_test at buildtest.py:38",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -83,98 +46,26 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 43,
-          "content": "proc = subprocess.run(args, stdout=subprocess.DEVNULL)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 43: if proc.returncode != 0:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 44,
-          "content": "if proc.returncode != 0:"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 44: raise RuntimeError(\"BUILD FAILED: %s\" % (' '.join(args)))",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 45,
-          "content": "raise RuntimeError(\"BUILD FAILED: %s\" % (' '.join(args)))"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 45: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "run_test",
-          "file": "buildtest.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:38:def run_test(msg, opts):",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "simple_tests",
           "file": "buildtest.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:46:def simple_tests():",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: simple_tests at buildtest.py:46",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "buildtest.py",
-          "line": 47,
-          "content": "def simple_tests():"
+          "name": "run_test",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 47: for bv in build_variants:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 48,
-          "content": "for bv in build_variants:"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 48: for enabled in [\"yes\", \"no\"]:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 49,
-          "content": "for enabled in [\"yes\", \"no\"]:"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 49: opts = \"%s=%s\" % (bv, enabled)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (simple_tests, random_tests)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -201,85 +92,26 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "run_test",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:50:            run_test(\"SIMPLE BUILD\", [opts])",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "random_tests",
           "file": "buildtest.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:52:def random_tests(count=10):",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 53,
-          "content": "def random_tests(count=10):"
-        },
-        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 53: for i in range(1, count):",
-        "method": "file_read"
+        "evidence": "cymbal: random_tests at buildtest.py:52",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "buildtest.py",
-          "line": 54,
-          "content": "for i in range(1, count):"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 54: opts = []",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 55,
-          "content": "opts = []"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 55: for bv in build_variants:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 56,
-          "content": "for bv in build_variants:"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 56: opts.append(\"%s=%s\" % (bv, random.choice([\"yes\", \"no\"])))",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 57,
+          "line": 59,
           "content": "opts.append(\"%s=%s\" % (bv, random.choice([\"yes\", \"no\"])))"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 57: ",
+        "evidence": "Line 59: ",
         "method": "file_read"
       },
       {
@@ -293,75 +125,6 @@
         "confidence": 0.95,
         "evidence": "Line 60: ",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "run_test",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:50:            run_test(\"SIMPLE BUILD\", [opts])",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 64,
-          "content": "if __name__ == \"__main__\":"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 64 out of range (file has 63 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 65,
-          "content": "simple_tests()"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 65 out of range (file has 63 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "buildtest.py",
-          "line": 66,
-          "content": "random_tests(100)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 66 out of range (file has 63 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "simple_tests",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:62:    simple_tests()",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "random_tests",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55820/src-vul/mosquitto/buildtest.py:63:    random_tests(100)",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -438,6 +201,32 @@
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "simple_tests",
+            "run_test"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: simple_tests->run_test: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "random_tests",
+            "run_test"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: random_tests->run_test: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },
@@ -455,21 +244,21 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

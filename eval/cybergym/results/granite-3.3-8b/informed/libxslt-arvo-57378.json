@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 10,
-    "verified": 6,
-    "refuted": 1,
-    "unverifiable": 3,
-    "verification_rate": 0.8,
+    "verified": 7,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.66,
     "action": "FLAG",
     "claims": [
       {
@@ -50,9 +50,9 @@
           "file": "libxslt/attributes.c",
           "import": "libxml/xmlmemory.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:17:#include <libxml/xmlmemory.h>",
         "method": "grep_import"
       },
       {
@@ -61,9 +61,9 @@
           "file": "libxslt/attributes.c",
           "import": "libxml/tree.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:18:#include <libxml/tree.h>",
         "method": "grep_import"
       },
       {
@@ -72,9 +72,9 @@
           "file": "libxslt/attributes.c",
           "import": "libxml/xpath.h"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of libxml/xpath.h found",
         "method": "grep_import"
       },
       {
@@ -83,9 +83,9 @@
           "name": "xsltNewAttrVT"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:68:xsltNewAttrVT(xsltStylesheetPtr style) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltNewAttrVT at libxslt/attrvt.c:67",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -94,9 +94,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/tests/runtest.c:100:    ret->gl_pathv = (char **) malloc(nb_paths * sizeof(char *));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (main, xmlFuzzMalloc(size_t size), glob)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -106,10 +106,10 @@
             "xsltKeyFunction"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: xsltParseStylesheetAttributeSet->xsltKeyFunction: found xsltKeyFunction() call but not in xsltParseStylesheetAttributeSet's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xsltParseStylesheetAttributeSet->xsltKeyFunction: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FILE_EXISTS",

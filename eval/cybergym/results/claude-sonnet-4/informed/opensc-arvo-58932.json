@@ -5,11 +5,11 @@
   "reasoning_length": 3720,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 11,
-    "refuted": 8,
+    "total_claims": 20,
+    "verified": 10,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.56,
+    "verification_rate": 0.5,
     "action": "FLAG",
     "claims": [
       {
@@ -210,20 +210,31 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (107 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-58932/src-vul/opensc/src/ui/notify.c:163:\t\tstrlcpy(nid.szTip, path, ARRAYSIZE(nid.szTip));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (gids_create_file, sc_card_sm_check, sc_get_cache_dir)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "classification": "Windows Installer custom action DLL"
+          "type": "null_pointer_checks",
+          "location": "conversion functions"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=win32/customactions.cpp, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "error_checking",
+          "location": "Windows API calls"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

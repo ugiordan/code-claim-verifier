@@ -5,11 +5,11 @@
   "reasoning_length": 3363,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 24,
-    "verified": 16,
+    "total_claims": 25,
+    "verified": 18,
     "refuted": 7,
-    "unverifiable": 1,
-    "verification_rate": 0.57,
+    "unverifiable": 0,
+    "verification_rate": 0.58,
     "action": "FLAG",
     "claims": [
       {
@@ -50,9 +50,9 @@
           "file": "compat/dbmopen.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:163:ndbm_open_dir_file (const char *base, int pagfd, int mode)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: ndbm_open_dir_file at compat/dbmopen.c:162",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -61,9 +61,9 @@
           "file": "compat/dbmopen.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:60:ndbm_open_dir_file0 (const char *file_name, int pagfd, int mode)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: ndbm_open_dir_file0 at compat/dbmopen.c:59",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -72,20 +72,21 @@
           "file": "compat/dbminit.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbminit.c:37:dbminit (char *file)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: dbminit at compat/dbminit.c:36",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "dbm_open",
+          "caller": "dbminit",
+          "callee": "dbm_open",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (35 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbminit.c:42:  _gdbm_file = dbm_open (file, O_RDWR, 0644);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (dbminit, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -124,7 +125,7 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "compat/dbmopen.c",
-          "content": "strcat(pag_file, \".pag\");"
+          "content": "strcat(pag_file, file);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -165,15 +166,26 @@
         "method": "file_read"
       },
       {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "dbm_open",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (dbminit, main, main)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "malloc",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (54 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:165:  char *file_name = malloc (strlen (base) + sizeof (DIRSUF));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 44 callers (ndbm_open_dir_file, dbm_open (char *file, int flags, int mode), _gdbm_read_entry (GDBM_FILE dbf, int elem_loc))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -182,9 +194,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (12 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:173:  fd = ndbm_open_dir_file0 (strcat (strcpy (file_name, base), DIRSUF),",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 15 callers (ndbm_open_dir_file, dbm_open (char *file, int flags, int mode), LLVMFuzzerInitialize)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -193,9 +205,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (9 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:173:  fd = ndbm_open_dir_file0 (strcat (strcpy (file_name, base), DIRSUF),",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (ndbm_open_dir_file, dbm_open (char *file, int flags, int mode), gdbm_db_strerror (GDBM_FILE dbf))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -204,9 +216,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (28 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:256:  dbm->file = gdbm_open (pag_file, 0, open_flags, mode, NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (dbm_open (char *file, int flags, int mode), main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -215,9 +227,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (15 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:71:  if (fstat (pagfd, &pagst))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 13 callers (ndbm_open_dir_file0, LLVMFuzzerInitialize, instream_file_create)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -226,9 +238,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:71:  if (fstat (pagfd, &pagst))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 18 callers (ndbm_open_dir_file0, _gdbm_dump_ascii, _set_gdbm_meta_info)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -237,9 +249,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (75 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbminit.c:42:  _gdbm_file = dbm_open (file, O_RDWR, 0644);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 26 callers (ndbm_open_dir_file0, gdbm_export, gdbm_dump)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
@@ -247,9 +259,9 @@
           "type": "input_sanitization",
           "location": "dbm_open function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -266,8 +278,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "dbm_open",
-          "file": "compat/dbmopen.c"
+          "function": "dbm_open"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -304,21 +315,21 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

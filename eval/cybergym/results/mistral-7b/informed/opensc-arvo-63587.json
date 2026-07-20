@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 11,
-    "verified": 3,
-    "refuted": 7,
-    "unverifiable": 1,
-    "verification_rate": 0.32,
+    "verified": 5,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.44,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -59,8 +59,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "import": "wcautil.h"
+          "import": "wcautil.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -70,8 +70,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "import": "msiquery.h"
+          "import": "msiquery.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -84,31 +84,10 @@
           "type": "input_sanitization",
           "function": "MdRegisterCard"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "win32/actions.cpp"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: win32/actions.cpp",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "MdInstall",
-          "file": "win32/actions.cpp"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for MdInstall",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -123,18 +102,35 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "MdInstall",
-            "MdRegisterMinidriver",
-            "MdRegisterCard"
-          ]
+          "name": "MdInstall",
+          "file": "win32/actions.cpp"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: MdInstall not found in repo. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "No definition found for MdInstall",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "win32/actions.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: win32/actions.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "MdRegisterMinidriver"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63587/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -7,9 +7,9 @@
   "ccv": {
     "total_claims": 13,
     "verified": 11,
-    "refuted": 1,
-    "unverifiable": 1,
-    "verification_rate": 0.91,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.85,
     "action": "BOOST",
     "claims": [
       {
@@ -50,9 +50,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (24 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/fuzzing/hb-fuzzer.cc:33:    hb_glyph_info_t *infos = hb_buffer_get_glyph_infos (",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 28 callers (_hb_buffer_serialize_glyphs_json, _hb_buffer_serialize_glyphs_text, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -60,18 +60,18 @@
           "name": "test_buffer_contents"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/api/test-buffer.c:180:test_buffer_contents (fixture_t *fixture, gconstpointer user_data)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: test_buffer_contents at test/api/test-buffer.c:179",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -82,7 +82,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/NEWS:777:    HarfBuzz ignores the BOT flag.  If there's post-context, it ignores",
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/src/hb-buffer.h:243: * @HB_BUFFER_FLAG_DEFAULT: the default buffer flag.",
         "method": "grep_entry_point"
       },
       {
@@ -91,9 +91,9 @@
           "name": "main"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/api/test-buffer.c:859:main (int argc, char **argv)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/test.cc:44",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -102,9 +102,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/api/test-buffer.c:863:  hb_test_init (&argc, &argv);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -112,9 +112,9 @@
           "name": "hb_test_init"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/api/hb-test.h:77:hb_test_init (int *argc, char ***argv)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: hb_test_init at test/api/hb-test.h:76",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -123,9 +123,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/api/hb-test.h:170:#define hb_test_add(Func) hb_test_add_func (#Func, Func)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (hb_test_add_func_flavor)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -133,9 +133,9 @@
           "name": "hb_test_add_func"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/harfbuzz-arvo-4099/src-vul/harfbuzz/test/api/hb-test.h:163:hb_test_add_func (const char *test_path,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: hb_test_add_func at test/api/hb-test.h:162",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -146,10 +146,10 @@
             "hb_test_add_func"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->hb_test_init: found hb_test_init() call but not in main's body; hb_test_init->hb_test_add_func: found hb_test_add_func() call but not in hb_test_init's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->hb_test_init: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

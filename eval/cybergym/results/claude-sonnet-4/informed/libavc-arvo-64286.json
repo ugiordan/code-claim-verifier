@@ -5,11 +5,11 @@
   "reasoning_length": 3667,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 18,
-    "verified": 10,
+    "total_claims": 20,
+    "verified": 13,
     "refuted": 5,
-    "unverifiable": 3,
-    "verification_rate": 0.64,
+    "unverifiable": 2,
+    "verification_rate": 0.71,
     "action": "FLAG",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "allocate_input",
           "file": "test/encoder/input.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for allocate_input",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: allocate_input at test/encoder/input.c:229",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -150,8 +150,19 @@
       {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
+          "type": "bounds_checking",
+          "description": "MAX() and MIN() macros for buffer counts"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
           "type": "null_pointer_check",
-          "location": "after allocation"
+          "description": "Null pointer checks after allocation with codec_exit call"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
@@ -173,18 +184,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "integer_overflow_checks",
-          "location": "before multiplication"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "validation",
-          "description": "maximum reasonable dimensions"
+          "description": "No integer overflow checks before multiplication"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -194,13 +194,35 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "checks",
-          "description": "wraparound in size calculations"
+          "type": "dimension_validation",
+          "description": "No validation of maximum reasonable dimensions"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "wraparound_checks",
+          "description": "No checks for wraparound in size calculations"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "codec_exit",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (allocate_input, allocate_output, allocate_recon)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -227,8 +249,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

@@ -5,12 +5,12 @@
   "reasoning_length": 4455,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 11,
-    "refuted": 4,
+    "total_claims": 14,
+    "verified": 12,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.69,
-    "action": "FLAG",
+    "verification_rate": 0.82,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -52,9 +52,9 @@
           "file": "HTMLtree.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/HTMLtree.c:160:htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlSetMetaEncoding at HTMLtree.c:159",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -71,14 +71,14 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "htmlGetMetaEncoding",
           "caller": "htmlSetMetaEncoding",
-          "callee": "htmlGetMetaEncoding",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/xmlsave.c:1066:\tencoding = htmlGetMetaEncoding(doc);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 26 callers (htmlDocDumpMemoryFormat, htmlDocDump, htmlSaveFile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -87,9 +87,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (26 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/xpath.c:7980:    if (xmlStrstr(hay->stringval, needle->stringval))",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 26 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlEncodeEntitiesInternal(xmlDocPtr doc, const xmlChar *input, int attr), xmlShellGrep)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -98,9 +98,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (203 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/HTMLparser.c:2122:\t      snprintf(nbuf, sizeof(nbuf), \"#%u\", c);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, processPattern)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -119,21 +119,21 @@
           "file": "HTMLparser.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/HTMLparser.c:4745:htmlParseDocument(htmlParserCtxtPtr ctxt) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlParseDocument at HTMLparser.c:4744",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "htmlGetMetaEncoding",
           "caller": "htmlParseDocument",
-          "callee": "htmlGetMetaEncoding",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/xmlsave.c:1066:\tencoding = htmlGetMetaEncoding(doc);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 26 callers (htmlDocDumpMemoryFormat, htmlDocDump, htmlSaveFile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -141,14 +141,14 @@
           "name": "htmlReadFile"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/HTMLparser.c:6392:htmlReadFile(const char *filename, const char *encoding, int options)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlReadFile at HTMLparser.c:6391",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml2"
+          "module": "libxml2"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -158,21 +158,11 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "xmlStrstr"
+          "module": "libxml/"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of xmlStrstr found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "xmlStrcasecmp"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of xmlStrcasecmp found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-67552/src-vul/libxml2/rngparser.c:16:#include <libxml/parser.h>",
         "method": "grep_import"
       }
     ]

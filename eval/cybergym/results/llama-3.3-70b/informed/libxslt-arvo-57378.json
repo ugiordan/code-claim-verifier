@@ -9,7 +9,7 @@
     "verified": 16,
     "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.96,
+    "verification_rate": 0.85,
     "action": "BOOST",
     "claims": [
       {
@@ -19,7 +19,7 @@
         },
         "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 28 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/libxslt.syms:74:  xsltKeyFunction;",
+        "evidence": "grep_absent: 22 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/functions.c:344: * xsltKeyFunction:",
         "method": "grep_absent"
       },
       {
@@ -59,9 +59,9 @@
           "file": "libxslt/attributes.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:113:xsltNewAttrElem(xmlNodePtr attr) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltNewAttrElem at libxslt/attributes.c:112",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -70,9 +70,9 @@
           "file": "libxslt/attrvt.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:68:xsltNewAttrVT(xsltStylesheetPtr style) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltNewAttrVT at libxslt/attrvt.c:67",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -81,50 +81,50 @@
           "file": "libxslt/documents.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/documents.c:144:xsltNewDocument(xsltTransformContextPtr ctxt, xmlDocPtr doc) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: xsltNewDocument at libxslt/documents.c:143",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltNewAttrElem",
           "caller": "xsltAddAttrElemList",
+          "callee": "xsltNewAttrElem",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attributes.c:171:\treturn(xsltNewAttrElem(attr));",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (xsltAddAttrElemList, xsltMergeAttrSets, xsltParseStylesheetAttributeSet)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltNewAttrVT",
           "caller": "xsltCompileAttr",
+          "callee": "xsltNewAttrVT",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/attrvt.c:216:    avt = xsltNewAttrVT(style);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (xsltCompileAttr, xsltParseSequenceConstructor, xsltParseTemplateContent)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltNewDocument",
           "caller": "xsltNewStyleDocument",
+          "callee": "xsltNewDocument",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57378/src-vul/libxslt/libxslt/functions.c:502:\t\t    tmpNode->doc->_private = xsltNewDocument(tctxt, tmpNode->",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (xsltLoadDocument, xsltKeyFunction, xsltComputeAllKeys)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/xmlmemory.h"
+          "file": "libxml/xmlmemory.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -134,7 +134,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/tree.h"
+          "file": "libxml/tree.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -144,7 +144,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/xpath.h"
+          "file": "libxml/xpath.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -154,7 +154,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/xpathInternals.h"
+          "file": "libxml/xpathInternals.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -164,7 +164,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "xslt.h"
+          "file": "xslt.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -174,7 +174,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "xsltInternals.h"
+          "file": "xsltInternals.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -184,7 +184,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "xsltutils.h"
+          "file": "xsltutils.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,

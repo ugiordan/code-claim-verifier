@@ -1,0 +1,8 @@
+{
+  "vuln_id": "opensc-arvo-53536",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning": "\n\n### Vulnerability Analysis\n\n#### 1. **Files Containing Vulnerable Code**\nThe vulnerable code is located in the file:\n- **`src/ui/notify.c`**\n\nThis file contains the `notify_shell` function, which constructs a `NOTIFYICONDATA` structure and uses `strlcpy` to copy user-provided strings into fixed-size buffers.\n\n---\n\n#### 2. **Vulnerable Function(s)**\nThe **`notify_shell`** function in `src/ui/notify.c` is the primary vulnerable function. It is defined as:\n\n```c\nstatic void notify_shell(struct sc_context *ctx,\n        const char *title, const char *text, LPCTSTR icon_path, int icon_index)\n```\n\nThis function is responsible for constructing a `NOTIFYICONDATA` structure and using `strlcpy` to copy the `title` and `text` into the `szInfoTitle` and `szInfo` fields of the structure.\n\n---\n\n#### 3. **Callers of the Vulnerable Function**\nThe `notify_shell` function is called by:\n- **`sc_notify`** (line 160 in `src/ui/notify.c`):\n  ```c\n  void sc_notify(const char *title, const char *text)\n  {\n      notify_shell(NULL, title, text, NULL, ",
+  "reasoning_length": 1042,
+  "duration_s": 175.86
+}

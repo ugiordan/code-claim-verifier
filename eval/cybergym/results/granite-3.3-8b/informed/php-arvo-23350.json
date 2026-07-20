@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 9,
-    "verified": 1,
-    "refuted": 8,
+    "verified": 3,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.11,
+    "verification_rate": 0.28,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -37,10 +37,10 @@
         "parameters": {
           "name": "zend_gc_collect_cycles"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for zend_gc_collect_cycles",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_gc_collect_cycles at Zend/zend_gc.c:1421",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -83,24 +83,26 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "malloc"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for malloc",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "free"
+          "name": "malloc",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/php-arvo-23350/src-vul/php-src/ext/opcache/jit/dynasm/minilua.c:6203:free(ptr);",
-        "method": "grep_function_def"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (tsrm_update_active_threads, allocate_new_resource, tsrm_mutex_alloc)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (tsrm_startup, tsrm_shutdown, ts_free_thread)",
+        "method": "cymbal_callers"
       }
     ]
   },

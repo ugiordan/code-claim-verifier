@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 20,
-    "verified": 9,
-    "refuted": 11,
+    "verified": 8,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.36,
+    "verification_rate": 0.35,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -59,9 +59,9 @@
           "file": "HTMLparser.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-63157/src-vul/libxml2/HTMLparser.c:151:htmlnamePush(htmlParserCtxtPtr ctxt, const xmlChar * value)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlnamePush at HTMLparser.c:150",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -76,50 +76,26 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line": 152,
-          "content": "size_t newSize = ctxt->nameMax * 2;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 152: {",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "htmlNodeInfoPush",
           "file": "HTMLparser.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-63157/src-vul/libxml2/HTMLparser.c:211:htmlNodeInfoPush(htmlParserCtxtPtr ctxt, htmlParserNodeInfo *value)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlNodeInfoPush at HTMLparser.c:210",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "HTMLparser.c",
           "line": 200,
-          "content": "htmlNodeInfoPush"
+          "content": "htmlNodeInfoPush function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 200: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line": 205,
-          "content": "ctxt->nodeInfoMax *= 2;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 205: *",
         "method": "file_read"
       },
       {
@@ -129,20 +105,56 @@
           "file": "HTMLtree.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-63157/src-vul/libxml2/HTMLtree.c:160:htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlSetMetaEncoding at HTMLtree.c:159",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "HTMLtree.c",
           "line": 150,
-          "content": "htmlSetMetaEncoding"
+          "content": "htmlSetMetaEncoding function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 150: * @doc:  the document",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLparser.c",
+          "line": 151,
+          "content": "size_t newSize = ctxt->nameMax * 2;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 151: htmlnamePush(htmlParserCtxtPtr ctxt, const xmlChar * value)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLparser.c",
+          "line": 154,
+          "content": "tmp = xmlRealloc((xmlChar **) ctxt->nameTab, newSize * sizeof(ctxt->nameTab[0]));"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 154: ctxt->html = 3;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLparser.c",
+          "line": 204,
+          "content": "ctxt->nodeInfoMax *= 2;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 204: * @value:  the node info",
         "method": "file_read"
       },
       {
@@ -209,9 +221,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (24 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-63157/src-vul/libxml2/HTMLparser.c:164:            htmlErrMemory(ctxt, NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 29 callers (htmlnamePush, htmlNodeInfoPush, htmlNewInputStream)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -220,20 +232,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (136 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-63157/src-vul/libxml2/HTMLparser.c:161:        tmp = xmlRealloc((xmlChar **) ctxt->nameTab,",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "snprintf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (214 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-63157/src-vul/libxml2/HTMLparser.c:536:\t    snprintf(buffer, 149, \"Bytes: 0x%02X 0x%02X 0x%02X 0x%02X\\n\",",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, ConvertInput(const char *in, const char *encoding))",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -244,14 +245,14 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

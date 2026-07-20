@@ -5,11 +5,11 @@
   "reasoning_length": 6394,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 12,
-    "refuted": 17,
+    "total_claims": 34,
+    "verified": 9,
+    "refuted": 25,
     "unverifiable": 0,
-    "verification_rate": 0.36,
+    "verification_rate": 0.23,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -65,9 +65,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:622:  decNumberToString(&dec_double.number, literal);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -116,9 +116,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: jv_parse does not call jv_print. Verified: jq_compile->jq_parse: found jq_parse() call but not in jq_compile's body; jq_parse->jv_parse: found jv_parse() call but not in jq_parse's body",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: jq_compile->jq_parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -236,25 +236,44 @@
         "method": "file_read"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "jq_compile",
-            "jq_parse",
-            "jv_parse"
-          ]
+          "name": "jq_compile",
+          "file": "jq.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: jq_compile->jq_parse: found jq_parse() call but not in jq_compile's body; jq_parse->jv_parse: found jv_parse() call but not in jq_parse's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for jq_compile",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "jq_parse",
+          "file": "jq.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for jq_parse",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "jv_parse",
+          "file": "jq.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for jv_parse",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "jq.c",
           "line_range": "1400",
-          "content": "`jq_compile` \u2192 `jq_parse` \u2192 `jv_parse`"
+          "content": "The entry point for the fuzz tests"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -265,7 +284,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_compile",
-          "test_file": "tests/jq_fuzz_compile.c"
+          "file": "tests/jq_fuzz_compile.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -276,7 +295,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_parse",
-          "test_file": "tests/jq_fuzz_parse.c"
+          "file": "tests/jq_fuzz_parse.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -287,7 +306,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_parse",
-          "test_file": "tests/jq_fuzz_parse_extended.c"
+          "file": "tests/jq_fuzz_parse_extended.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -298,7 +317,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_parse",
-          "test_file": "tests/jq_fuzz_parse_stream.c"
+          "file": "tests/jq_fuzz_parse_stream.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -306,57 +325,94 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "jv_load_file",
-            "jv_parse",
-            "jv_print",
-            "decNumberToString"
-          ]
+          "name": "jv_parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (f_tonumber, run_jq_tests, jv_test)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "jv_load_file",
+          "file": "tests/jq_fuzz_load_file.c"
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: jv_parse does not call jv_print. Verified: jv_load_file->jv_parse: found jv_parse() call but not in jv_load_file's body",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "No definition found for jv_load_file",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "decNumber.c",
-          "import": "decNumber.h"
+          "import": "#include \"decNumber.h\""
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:202:#include \"decNumber/decNumber.h\"",
+        "evidence": "No import of #include \"decNumber.h\" found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "jv.c",
-          "import": "decNumber.h"
+          "import": "#include \"decNumber.h\""
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:202:#include \"decNumber/decNumber.h\"",
+        "evidence": "No import of #include \"decNumber.h\" found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "jq.c",
-          "import": "jv.h"
+          "import": "#include \"jv.h\""
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse_stream.c:5:#include \"jv.h\"",
+        "evidence": "No import of #include \"jv.h\" found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tests/*.c",
+          "import": "#include \"jq.h\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of #include \"jq.h\" found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tests/*.c",
+          "import": "#include \"jv.h\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of #include \"jv.h\" found",
         "method": "grep_import"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 0,
-    "results": []
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
   }
 }

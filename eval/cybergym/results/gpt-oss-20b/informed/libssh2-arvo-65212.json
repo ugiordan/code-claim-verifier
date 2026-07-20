@@ -5,11 +5,11 @@
   "reasoning_length": 6670,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
+    "total_claims": 19,
     "verified": 8,
-    "refuted": 12,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.37,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -112,7 +112,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/docs/libssh2_session_handshake.3:11:libssh2_session_handshake(LIBSSH2_SESSION *session, libssh2_socket_t socket);",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/src/session.c:859:libssh2_session_handshake(LIBSSH2_SESSION *session, libssh2_socket_t sock)",
         "method": "grep_function_def"
       },
       {
@@ -152,23 +152,10 @@
         "method": "file_read"
       },
       {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "libssh2_session_handshake",
-            "libssh2_kex_agree",
-            "_libssh2_kex_agree_instr"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: libssh2_session_handshake does not call libssh2_kex_agree. Verified: ",
-        "method": "call_chain"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "libssh2_kex_agree",
+          "caller": "libssh2_session_handshake",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -180,12 +167,13 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "_libssh2_kex_agree_instr",
+          "caller": "libssh2_kex_agree",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/src/kex.c:3404:            if(_libssh2_kex_agree_instr(hostkey, hostkey_len, s, method",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (_libssh2_packet_add, kex_agree_hostkey, kex_agree_kex_hostkey)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -194,9 +182,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/ssh2_exec.c:147:    while((rc = libssh2_session_handshake(session, sock)) ==",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 30 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",

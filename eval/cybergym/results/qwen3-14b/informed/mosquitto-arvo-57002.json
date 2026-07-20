@@ -5,12 +5,12 @@
   "reasoning_length": 5178,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 7,
-    "refuted": 11,
-    "unverifiable": 2,
-    "verification_rate": 0.35,
-    "action": "OVERRIDE",
+    "total_claims": 18,
+    "verified": 12,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.61,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -56,17 +56,17 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
-          "file": "broker_fuzz_test_config.cpp"
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzzing/broker/broker_fuzz_test_config.cpp:51",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
           "line_range": "30-50",
           "content": "writes the input data (from the fuzzer) to a temporary configuration file"
         },
@@ -78,7 +78,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
           "content": "snprintf(filename, sizeof(filename), \"/tmp/mosquitto_%d.conf\", getpid());"
         },
         "verdict": "REFUTED",
@@ -89,18 +89,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
-          "content": "fptr = fopen(filename, \"wb\");"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 67 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
           "content": "fwrite(data, 1, size, fptr);"
         },
         "verdict": "REFUTED",
@@ -112,17 +101,17 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "run_broker",
-          "file": "broker_fuzz_test_config.cpp"
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for run_broker",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: run_broker at fuzzing/broker/broker_fuzz_test_config.cpp:32",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
           "line_range": "20-28",
           "content": "invokes the broker with the --test-config flag"
         },
@@ -134,18 +123,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
-          "content": "argv[0] = strdup(\"mosquitto\");"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 67 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
           "content": "argv[1] = strdup(\"-v\");"
         },
         "verdict": "REFUTED",
@@ -156,19 +134,8 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
+          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
           "content": "argv[2] = strdup(\"-c\");"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 67 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "broker_fuzz_test_config.cpp",
-          "content": "argv[3] = strdup(filename);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -182,21 +149,32 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:35:extern \"C\" int mosquitto_fuzz_main(int argc, char",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (run_broker, run_broker(void *args), LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "run_broker",
           "caller": "LLVMFuzzerTestOneInput",
-          "callee": "run_broker",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:37:void *run_broker(void *args)",
-        "method": "grep_call_site"
+        "evidence": "callers=yes (5 call sites)",
+        "method": "grep_callers"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -214,9 +192,9 @@
           "type": "input_sanitization",
           "location": "broker_fuzz_test_config.cpp"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -225,9 +203,9 @@
           "type": "input_sanitization",
           "function": "fwrite"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]

@@ -5,11 +5,11 @@
   "reasoning_length": 5059,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 23,
-    "verified": 21,
-    "refuted": 2,
+    "total_claims": 20,
+    "verified": 19,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.84,
+    "verification_rate": 0.86,
     "action": "BOOST",
     "claims": [
       {
@@ -38,10 +38,10 @@
           "name": "allocate_input",
           "file": "test/encoder/input.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for allocate_input",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: allocate_input at test/encoder/input.c:229",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -172,9 +172,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (128 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:454:    sprintf((char *) pu1_view_file_name, \"%s_%d.%s\", apc_sub_str",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_input, allocate_output)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -183,9 +183,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (17 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:827:        u4_bytes_remaining = fread(pu1_bs_buf, sizeof(UWORD8), u4",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 13 callers (read_pic_info, read_mb_info, read_input)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -194,15 +194,14 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (45 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/mvcdec/main.c:654:                    fwrite(pu1_buf, 1, u2_width, pps_op_file[i]);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 21 callers (isvce_msv_dump_visualisation, dump_input, write_output)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "snprintf usage",
-          "context": "allocate_input function"
+          "item": "input validation on pic_size or num_mbs values"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -212,8 +211,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "vsnprintf usage",
-          "context": "allocate_input function"
+          "item": "use of safer alternatives like snprintf(), vsnprintf(), or strlcpy()"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -223,41 +221,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "strlcpy usage",
-          "context": "allocate_input function"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "input validation",
-          "context": "pic_size parameter"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "input validation",
-          "context": "num_mbs parameter"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "bounds checking",
-          "context": "sprintf calls"
+          "item": "bounds checking before sprintf() calls"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -286,8 +250,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

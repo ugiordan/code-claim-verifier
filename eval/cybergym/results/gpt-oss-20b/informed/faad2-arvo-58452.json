@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 24,
-    "verified": 10,
+    "verified": 14,
     "refuted": 10,
-    "unverifiable": 4,
-    "verification_rate": 0.42,
-    "action": "OVERRIDE",
+    "unverifiable": 0,
+    "verification_rate": 0.53,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -51,10 +51,10 @@
           "name": "WinMain",
           "file": "main.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for WinMain",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: WinMain at aacDECdrop/main.c:186",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -73,10 +73,10 @@
           "name": "aac_decode",
           "file": "decode.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for aac_decode",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: aac_decode at aacDECdrop/decode.c:526",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -84,10 +84,10 @@
           "name": "decodeAACfile",
           "file": "decode.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for decodeAACfile",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: decodeAACfile at aacDECdrop/decode.c:160",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -103,34 +103,37 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "lt_update_state",
+          "caller": "lt_process",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/lt_predict.h:55:void lt_update_state(int16_t *lt_pred_stat,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (reconstruct_single_channel, reconstruct_channel_pair, single_lfe_channel_element)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "NeAACDecDecode",
+          "caller": "decodeAACfile",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/decode.c:225:        sample_buffer = NeAACDecDecode(hDecoder, &frameInfo, buffe",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (LLVMFuzzerTestOneInput, decodeAACfile, decodeMP4file)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "lt_update_state",
+          "caller": "NeAACDecDecode",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/lt_predict.h:55:void lt_update_state(int16_t *lt_pred_stat,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (reconstruct_single_channel, reconstruct_channel_pair, single_lfe_channel_element)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -145,9 +148,9 @@
           ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "Chain broken: WinMain does not call decthread. Verified: ",
-        "method": "call_chain"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: WinMain->decthread: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -202,47 +205,52 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "lt.h"
+          "file": "lt.h",
+          "imported_item": "lt_state"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of lt.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "neaacdec.h"
+          "file": "lt.h",
+          "imported_item": "lt_spec"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of lt.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "mp4ff.h"
+          "file": "lt.h",
+          "imported_item": "lt_update_state"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of lt.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "audio.h"
+          "file": "neaacdec.h",
+          "imported_item": "NeAACDecDecode"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/aacDECdrop/decode.c:34:#include <neaacdec.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "defensive checks in lt_update_state"
+          "item": "defensive checks",
+          "context": "lt_update_state function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -252,7 +260,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checks in lt_update_state"
+          "item": "bounds checks",
+          "context": "lt_update_state function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -262,7 +271,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "lt_update_state function in posted snippet"
+          "item": "lt_update_state function",
+          "context": "posted snippet"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

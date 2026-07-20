@@ -5,11 +5,11 @@
   "reasoning_length": 7103,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 36,
-    "verified": 20,
-    "refuted": 12,
-    "unverifiable": 4,
-    "verification_rate": 0.53,
+    "total_claims": 34,
+    "verified": 21,
+    "refuted": 13,
+    "unverifiable": 0,
+    "verification_rate": 0.55,
     "action": "FLAG",
     "claims": [
       {
@@ -78,10 +78,10 @@
           "name": "main",
           "file": "tools/plistutil.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at tools/plistutil.c:158",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -181,24 +181,13 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "parse_arguments",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/tools/plistutil.c:75:static options_t *parse_arguments(int argc, char *argv[])",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "fopen",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (12 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/tools/plistutil.c:233:        iplist = fopen(options->in_file, \"rb\");",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -207,9 +196,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/tools/plistutil.c:241:        fstat(fileno(iplist), &filestats);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -218,9 +207,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (47 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/tools/plistutil.c:182:        plist_entire = malloc(sizeof(char) * read_capacity);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (byte_array_new(size_t initial), hash_table_new(hash_func_t hash_func, compare_func_t compare_func, free_func_t free_func), hash_table_insert)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -229,9 +218,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/tools/plistutil.c:244:        read_size = fread(plist_entire, sizeof(char), filestats",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -240,9 +229,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (217 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/tools/plistutil.c:88:                free(options);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (node_list_destroy, dictionary_fill, array_fill)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -250,9 +239,9 @@
           "function": "main",
           "file": "tools/plistutil.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/doxygen.cfg.in:124:# are normally passed to the compiler using the -I flag.",
+        "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
       },
       {
@@ -373,9 +362,9 @@
           "type": "validation",
           "context": "fread return value"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -384,9 +373,9 @@
           "type": "check",
           "context": "read_size == filestats.st_size"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 31 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54948/src-vul/libplist/test/data/j2.json:1:{\"Some ASCII string\":\"Test ASCII String\",\"Some UTF8 strings\":[\"\u00e0",
         "method": "grep_absent"
       },
       {
@@ -395,20 +384,9 @@
           "type": "error_handling",
           "context": "partial reads or I/O errors"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "validation",
-          "context": "plist parsing functions received complete data"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]
@@ -461,8 +439,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

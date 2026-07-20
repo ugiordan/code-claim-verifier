@@ -5,9 +5,9 @@
   "reasoning_length": 5813,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 31,
-    "verified": 23,
-    "refuted": 8,
+    "total_claims": 26,
+    "verified": 19,
+    "refuted": 7,
     "unverifiable": 0,
     "verification_rate": 0.7,
     "action": "FLAG",
@@ -89,13 +89,12 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "TPMLIB_Process",
-          "file": "tpm_library.h"
+          "name": "TPMLIB_Process"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for TPMLIB_Process",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: TPMLIB_Process at src/tpm_library.c:164",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -103,9 +102,9 @@
           "name": "TPM2_RSA_Encrypt"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/RSA_Encrypt_fp.h:84:TPM2_RSA_Encrypt(",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: TPM2_RSA_Encrypt at src/tpm2/AsymmetricCommands.c:65",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -113,9 +112,9 @@
           "name": "TPM2_RSA_Decrypt"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/RSA_Decrypt_fp.h:84:TPM2_RSA_Decrypt(",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: TPM2_RSA_Decrypt at src/tpm2/AsymmetricCommands.c:101",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -123,74 +122,45 @@
           "name": "TPM2_CreatePrimary"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/CreatePrimary_fp.h:91:TPM2_CreatePrimary(",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "TPM2_CreateKey"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for TPM2_CreateKey",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: TPM2_CreatePrimary at src/tpm2/HierarchyCommands.c:64",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "TpmRsa_GeneratePrimeForRSA",
+          "caller": "CryptRsaGenerateKey",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/openssl/CryptRsa.c:1433:\t    if(TpmRsa_GeneratePrimeForRSA(Z->P, keySiz",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "CryptRsaGenerateKey",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/openssl/CryptRsa.c:1361:LIB_EXPORT TPM_RC CryptRsaGenerateKey(",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "TpmRsa_GeneratePrimeForRSA",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/openssl/CryptRsa.c:1433:\t    if(TpmRsa_GeneratePrimeForRSA(Z->P, keySiz",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (CryptRsaGenerateKey, CryptCreateObject)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "RsaAdjustPrimeCandidate",
+          "caller": "TpmRsa_GeneratePrimeForRSA",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/CryptPrime_fp.h:128:void RsaAdjustPrimeCandidate(Crypt_Int*        prim",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (TpmRsa_GeneratePrimeForRSA, CryptRsaGenerateKey)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "RsaAdjustPrimeCandidate_New",
+          "caller": "TpmRsa_GeneratePrimeForRSA",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/openssl/CryptPrime.c:405:        RsaAdjustPrimeCandidate_New(prime);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (RsaAdjustPrimeCandidate, TpmRsa_GeneratePrimeForRSA)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -203,10 +173,10 @@
             "RsaAdjustPrimeCandidate"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: TPMLIB_Process->TPM2_RSA_Encrypt: found TPM2_RSA_Encrypt() call but not in TPMLIB_Process's body; TPM2_RSA_Encrypt->CryptRsaGenerateKey: found CryptRsaGenerateKey() call but not in TPM",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: TPMLIB_Process->TPM2_RSA_Encrypt: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -264,29 +234,10 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "TPM_Malloc"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm_memory.c:48:/* TPM_Malloc() is a general purpose wrapper around malloc()",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "TPM_Realloc"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm_memory.c:88:/* TPM_Realloc() is a general purpose wrapper around realloc()",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input validation for RSA key sizes in the public API"
+          "item": "input validation for RSA key sizes",
+          "location": "public API"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -296,7 +247,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking visible in the headers"
+          "item": "bounds checking",
+          "location": "headers"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -306,7 +258,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "size validation before casting bigNum to Crypt_Int"
+          "item": "size validation before casting bigNum to Crypt_Int"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -316,7 +268,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "runtime bounds checking on array access"
+          "item": "runtime bounds checking on array access"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -326,7 +278,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "type-safe wrapper functions"
+          "item": "type-safe wrapper functions"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -336,7 +288,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "compile-time assertions on structure sizes"
+          "item": "compile-time assertions on structure sizes"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

@@ -9,7 +9,7 @@
     "verified": 7,
     "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.66,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
@@ -38,10 +38,10 @@
         "parameters": {
           "name": "plist_to_bin"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for plist_to_bin",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: plist_to_bin at src/bplist.c:1186",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -50,9 +50,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:260:            input_res = plist_from_xml(plist_entire, read_size",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (LLVMFuzzerTestOneInput, Structure::FromXml(const std::string& xml), main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -63,6 +63,17 @@
         "confidence": 0.9,
         "evidence": "exists (fuzzy match): test/plist_test.c",
         "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "plist_to_bin",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (Structure::ToBin, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_CLASSIFICATION",
@@ -76,20 +87,9 @@
         "method": "path_regex"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "plist_to_bin",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (12 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/tools/plistutil.c:262:                output_res = plist_to_bin(root_node, &plist_ou",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "existing mitigations or input sanitization in the vulnerable code"
+          "description": "mitigations or input sanitization in vulnerable code"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -102,9 +102,9 @@
           "function": "plist_to_bin",
           "reachable": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libplist-arvo-54949/src-vul/libplist/doxygen.cfg.in:124:# are normally passed to the compiler using the -I flag.",
+        "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
       }
     ]

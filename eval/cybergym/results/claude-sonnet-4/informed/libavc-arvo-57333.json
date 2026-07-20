@@ -6,11 +6,11 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 13,
-    "verified": 7,
-    "refuted": 6,
+    "verified": 8,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.39,
-    "action": "OVERRIDE",
+    "verification_rate": 0.52,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,69 +28,69 @@
           "name": "allocate_input",
           "file": "test/encoder/input.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for allocate_input",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: allocate_input at test/encoder/input.c:229",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/input.c",
-          "line_number": 250,
+          "line": 250,
           "content": "luma_size = ps_app_ctxt->u4_wd * ps_app_ctxt->u4_ht;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 310 lines)",
+        "evidence": "Line 250: num_mbs = ALIGN16(ps_app_ctxt->u4_max_wd) *  ALIGN16(ps_app_ctxt->u4_max_ht);",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/input.c",
-          "line_number": 251,
+          "line": 251,
           "content": "chroma_size = luma_size >> 1;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 310 lines)",
+        "evidence": "Line 251: num_mbs /= 256;",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/input.c",
-          "line_number": 252,
+          "line": 252,
           "content": "pic_size = luma_size + chroma_size;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 310 lines)",
+        "evidence": "Line 252: ",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/input.c",
-          "line_number": 254,
+          "line": 254,
           "content": "num_mbs = ALIGN16(ps_app_ctxt->u4_max_wd) *  ALIGN16(ps_app_ctxt->u4_max_ht);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 310 lines)",
+        "evidence": "Line 254: memset(ps_app_ctxt->as_input_buf, 0, sizeof(input_buf_t) * DEFAULT_MAX_INPUT_BUFS);",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/input.c",
-          "line_number": 255,
+          "line": 255,
           "content": "num_mbs /= 256;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 310 lines)",
+        "evidence": "Line 255: ",
         "method": "file_read"
       },
       {
@@ -100,9 +100,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-57333/src-vul/libavc/test/encoder/input.c:258:        pu1_buf[0] = (UWORD8 *)ih264a_aligned_malloc(16, pic_si",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (allocate_input, allocate_output, allocate_recon)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -111,9 +111,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (603 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-57333/src-vul/libavc/test/mvcdec/main.c:945:    memset(au4_peak_window, 0, sizeof(WORD32) * PEAK_WINDOW_SIZE",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (isvc_memset_2d_neon, ih264_intra_pred_chroma_8x8_mode_dc, ih264_memset)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -122,9 +122,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (128 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-57333/src-vul/libavc/test/mvcdec/main.c:454:    sprintf((char *) pu1_view_file_name, \"%s_%d.%s\", apc_sub_str",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_input, allocate_output)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -133,9 +133,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (136 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-57333/src-vul/libavc/test/encoder/app.h:375:void codec_exit(CHAR *pc_err_message);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (allocate_input, allocate_output, allocate_recon)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -174,8 +174,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

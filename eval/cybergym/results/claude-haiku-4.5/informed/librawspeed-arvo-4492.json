@@ -5,12 +5,12 @@
   "reasoning_length": 4840,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
-    "verified": 17,
-    "refuted": 8,
+    "total_claims": 24,
+    "verified": 19,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.66,
-    "action": "FLAG",
+    "verification_rate": 0.83,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -105,42 +105,55 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "main",
+          "file": "fuzz/libFuzzer_dummy_main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at fuzz/libFuzzer_dummy_main.cpp:51",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "process",
+          "file": "fuzz/libFuzzer_dummy_main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: process at fuzz/libFuzzer_dummy_main.cpp:39",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
           "name": "LLVMFuzzerTestOneInput"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/rawspeed/main.cpp:36",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "main"
+          "name": "main",
+          "file": "src/utilities/identify/rawspeed-identify.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "process"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for process",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/utilities/identify/rawspeed-identify.cpp:129",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "find_cameras_xml"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for find_cameras_xml",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: find_cameras_xml at src/utilities/identify/rawspeed-identify.cpp:50",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -151,10 +164,10 @@
             "LLVMFuzzerTestOneInput"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->process: found process() call but not in main's body; process->LLVMFuzzerTestOneInput: found LLVMFuzzerTestOneInput() call but not in process's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->process: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -163,36 +176,14 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4492/src-vul/librawspeed/src/utilities/identify/rawspeed-identify.cpp:48:std::string find_cameras_xml(con",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "process",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (29 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4492/src-vul/librawspeed/cmake/Modules/Pugixml.cmake:8:execute_process(",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "LLVMFuzzerTestOneInput",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4492/src-vul/librawspeed/fuzz/librawspeed/decompressors/HuffmanTable/main.cpp:42:extern \"C\" int LLVMFuzz",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "io/Buffer.h"
+          "import": "io/Buffer.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -202,7 +193,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "io/FileReader.h"
+          "import": "io/FileReader.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -212,7 +203,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "io/IOException.h"
+          "import": "io/IOException.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -222,7 +213,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "decompressors/HuffmanTable.h"
+          "import": "decompressors/HuffmanTable.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -276,7 +267,7 @@
     ]
   },
   "gt_comparison": {
-    "matched": 9,
+    "matched": 12,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -339,6 +330,27 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

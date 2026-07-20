@@ -5,11 +5,11 @@
   "reasoning_length": 5120,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
-    "verified": 8,
+    "total_claims": 20,
+    "verified": 7,
     "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.33,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -63,21 +63,21 @@
           "name": "main",
           "file": "tests/mapper.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for main",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at tests/mapper.c:60",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "tests/mapper.c",
-          "line": 75,
+          "line_range": "75-77",
           "content": "buf[i] = str[sizeof(str) - 2 - i];"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 75: buf = map_file(argv[2]);",
+        "evidence": "Line 0 out of range (file has 96 lines)",
         "method": "file_read"
       },
       {
@@ -87,9 +87,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/mapper.c:75:    buf = map_file(argv[2]);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -100,10 +100,10 @@
             "mmap"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->map_file: found map_file() call but not in main's body; map_file->mmap: found mmap() call but not in map_file's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->map_file: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -219,17 +219,6 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "item": "bounds checking on writes",
-          "file": "tests/mapper.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "error handling for mmap failures on small files",
           "file": "tests/mapper.c"
         },
         "verdict": "VERIFIED",

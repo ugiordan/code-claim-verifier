@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 13,
-    "verified": 6,
-    "refuted": 7,
+    "verified": 7,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.31,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "LLVMFuzzerTestOneInput",
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzzing/broker/broker_fuzz_test_config.cpp:51",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -75,10 +75,10 @@
           "name": "run_broker",
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for run_broker",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: run_broker at fuzzing/broker/broker_fuzz_test_config.cpp:32",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -99,9 +99,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (12 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz_test_config.cpp:59:\tfwrite(data, 1, size, fptr);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 15 callers (copy_contents, LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -110,9 +110,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:37:void *run_broker(void *args)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -121,9 +121,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:35:extern \"C\" int mosquitto_fuzz_main(int argc, char",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (run_broker, run_broker(void *args), LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -135,10 +135,10 @@
             "mosquitto_fuzz_main"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: LLVMFuzzerTestOneInput->fwrite: found fwrite() call but not in LLVMFuzzerTestOneInput's body; fwrite->run_broker: found run_broker() call but not in fwrite's body; run_broker->mosquitt",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: LLVMFuzzerTestOneInput->fwrite: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "DEFAULT_VALUE",

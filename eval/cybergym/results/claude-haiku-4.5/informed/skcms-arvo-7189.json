@@ -5,11 +5,11 @@
   "reasoning_length": 5744,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 28,
-    "verified": 18,
-    "refuted": 8,
-    "unverifiable": 2,
-    "verification_rate": 0.61,
+    "total_claims": 29,
+    "verified": 22,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.73,
     "action": "FLAG",
     "claims": [
       {
@@ -18,10 +18,10 @@
           "name": "load_file",
           "file": "bench.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for load_file",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: load_file at bench.c:23",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -66,9 +66,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (20 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-7189/src-vul/skcms/iccdump.c:230:    if (!load_file(filename, &buf, &len)) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, test_Parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -101,9 +101,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (20 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-7189/src-vul/skcms/iccdump.c:230:    if (!load_file(filename, &buf, &len)) {",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, test_Parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -116,6 +116,17 @@
         "confidence": 0.95,
         "evidence": "Line 289: dump_curves_svg(\"B_curves.svg\", a2b->output_channels, a2b->output_curves);",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "load_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (main, main, test_Parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -277,9 +288,9 @@
         "parameters": {
           "type": "SIZE_MAX check"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -287,9 +298,9 @@
         "parameters": {
           "type": "file size limit"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -299,9 +310,21 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (51 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-7189/src-vul/skcms/skcms.h:175:bool skcms_Transform(const void*             src,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 19 callers (main, LLVMFuzzerTestOneInput, test_FormatConversions)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bench.c",
+          "line": 68,
+          "content": "skcms_Transform"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 68: skcms_PixelFormat src_fmt = skcms_PixelFormat_RGB_565,",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -309,23 +332,10 @@
           "name": "load_file_fp",
           "file": "test_only.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for load_file_fp",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "load_file"
-          ]
-        },
         "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->load_file: found load_file() call but not in main's body",
-        "method": "call_chain"
+        "confidence": 0.95,
+        "evidence": "cymbal: load_file_fp at test_only.c:201",
+        "method": "cymbal_function"
       }
     ]
   },
@@ -335,8 +345,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

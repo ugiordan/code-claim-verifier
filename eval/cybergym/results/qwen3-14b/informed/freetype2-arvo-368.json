@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 9,
-    "verified": 4,
+    "verified": 6,
     "refuted": 3,
-    "unverifiable": 2,
-    "verification_rate": 0.61,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
     "action": "FLAG",
     "claims": [
       {
@@ -52,9 +52,9 @@
           "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (4 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (af_shaper_get_elem, af_latin2_metrics_check_digits, af_cjk_metrics_init_widths)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -77,6 +77,26 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input validation on gindex parameter in FT_Get_Advance"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds-checking in FT_Get_Advance function logic"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "ft2build.h"
@@ -85,29 +105,6 @@
         "confidence": 0.9,
         "evidence": "exists (fuzzy match): devel/ft2build.h",
         "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_validation",
-          "function": "FT_Get_Advance",
-          "parameter": "gindex"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "bounds_checking",
-          "function": "FT_Get_Advance"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
       }
     ]
   },

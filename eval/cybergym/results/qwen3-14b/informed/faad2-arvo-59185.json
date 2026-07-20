@@ -5,12 +5,12 @@
   "reasoning_length": 3035,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 3,
-    "refuted": 5,
-    "unverifiable": 3,
-    "verification_rate": 0.41,
-    "action": "OVERRIDE",
+    "total_claims": 9,
+    "verified": 7,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.8,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,10 +28,10 @@
           "name": "write_audio_file",
           "file": "frontend/audio.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_audio_file",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_audio_file at frontend/audio.c:104",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -54,47 +54,6 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "function": "write_audio_file",
-          "expected": true
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No function name specified",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "main.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): frontend/main.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "write_audio_16bit"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_audio_16bit",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "write_audio_24bit"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_audio_24bit",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "frontend/audio.c",
@@ -112,22 +71,41 @@
           "function": "write_audio_file",
           "parameter": "offset"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "type": "bounds_check",
           "function": "write_audio_file",
-          "parameter": "offset"
+          "expected": true
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (decodeAACfile, decodeMP4file, faad_main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write_audio_16bit"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_audio_16bit at frontend/audio.c:305",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write_audio_24bit"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_audio_24bit at frontend/audio.c:348",
+        "method": "cymbal_function"
       }
     ]
   },

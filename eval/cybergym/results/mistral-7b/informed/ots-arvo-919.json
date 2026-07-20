@@ -5,10 +5,10 @@
   "reasoning_length": 2692,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 6,
-    "verified": 5,
+    "total_claims": 7,
+    "verified": 7,
     "refuted": 0,
-    "unverifiable": 1,
+    "unverifiable": 0,
     "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
@@ -29,9 +29,50 @@
           "file": "ttf-checksum.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:12:def checkChecksum(infile):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: checkChecksum at tools/ttf-checksum.py:12",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "checkChecksum",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:44:    checkChecksum(file(sys.argv[1], 'r'))",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "struct"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:1:import struct",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "sys"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:2:import sys",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -43,39 +84,6 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/third_party/googletest/googletest/test/gtest-printers_test.cc:1203:TEST(PrintReferenceTest, HandlesF",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "struct",
-          "file": "ttf-checksum.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:1:import struct",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "sys",
-          "file": "ttf-checksum.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:2:import sys",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "file": "ttf-checksum.py"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
-        "method": "grep_absent"
       }
     ]
   },

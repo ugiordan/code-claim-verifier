@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 38,
-    "verified": 19,
-    "refuted": 19,
+    "verified": 20,
+    "refuted": 18,
     "unverifiable": 0,
-    "verification_rate": 0.35,
+    "verification_rate": 0.39,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -48,10 +48,10 @@
           "name": "args_print_usage",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_print_usage",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_print_usage at args.c:260",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -155,10 +155,10 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:174",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -166,10 +166,10 @@
           "name": "args_print_error",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_print_error",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_print_error at args.c:147",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -229,10 +229,10 @@
             "exit"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->args_parse: found args_parse() call but not in main's body; args_parse->args_print_error: found args_print_error() call but not in args_parse's body; args_print_error->exit: foun",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->args_parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -243,10 +243,10 @@
             "printf"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->args_print_usage: found args_print_usage() call but not in main's body; args_print_usage->printf: found printf() call but not in args_print_usage's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->args_print_usage: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -310,9 +310,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (527 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:268:    int len = sprintf(buffer, \"  \");",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (args_print_usage, digest_to_ascii, dotnet_parse_guid)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -321,9 +321,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:194:        const char* equal = strchr(arg, '=');",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -332,9 +332,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:75:          strstr(arg, options->long_name) == arg)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), test_disabled_rules, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -343,9 +343,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (69 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:72:      size_t l = strlen(options->long_name);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), _yr_hash_table_lookup(\n    YR_HASH_TABLE* table,\n    const void* key,\n    size_t key_length,\n    const char*",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -354,9 +354,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:112:      *(int*) opt->value = strtol(opt_arg, &endptr, 0);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse_option, _yr_object_lookup(\n    YR_OBJECT* object,\n    int flags,\n    const char* pattern,\n    va_list args), args_parse)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -365,9 +365,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (75 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:154:      fprintf(stderr, \"unknown option `%s`\\n\", option);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 33 callers (compile_files, args_print_error, yy_fatal_error)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -376,9 +376,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (798 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:154:      fprintf(stderr, \"unknown option `%s`\\n\", option);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (args_print_usage, _yr_ac_print_automaton_state, yr_ac_print_automaton)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
@@ -450,22 +450,22 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

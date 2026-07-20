@@ -7,9 +7,9 @@
   "ccv": {
     "total_claims": 12,
     "verified": 4,
-    "refuted": 7,
-    "unverifiable": 1,
-    "verification_rate": 0.36,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.32,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -84,9 +84,9 @@
           "type": "input_sanitization",
           "function": "MdRegisterCard"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -133,14 +133,18 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "function": "MdRegisterMinidriver"
+          "chain": [
+            "MdInstall",
+            "MdRegisterMinidriver",
+            "MdRegisterCard"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63104/src-vul/opensc/etc/opensc.conf.example.in:1161:\t\t# Tokend ignore to read PIN protected certificate that is ",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: MdInstall->MdRegisterMinidriver: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

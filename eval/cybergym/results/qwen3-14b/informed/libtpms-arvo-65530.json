@@ -7,9 +7,9 @@
   "ccv": {
     "total_claims": 11,
     "verified": 8,
-    "refuted": 2,
-    "unverifiable": 1,
-    "verification_rate": 0.74,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.68,
     "action": "FLAG",
     "claims": [
       {
@@ -74,9 +74,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/CryptPrime_fp.h:128:void RsaAdjustPrimeCandidate(Crypt_Int*        prim",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (TpmRsa_GeneratePrimeForRSA, CryptRsaGenerateKey)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -86,9 +86,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/openssl/CryptPrime.c:405:        RsaAdjustPrimeCandidate_New(prime);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (RsaAdjustPrimeCandidate, TpmRsa_GeneratePrimeForRSA)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -98,9 +98,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libtpms-arvo-65530/src-vul/libtpms/src/tpm2/crypto/openssl/CryptRsa.c:1433:\t    if(TpmRsa_GeneratePrimeForRSA(Z->P, keySiz",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (CryptRsaGenerateKey, CryptCreateObject)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -123,10 +123,10 @@
             "RsaAdjustPrimeCandidate"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: TPMLIB_Process->CryptRsaGenerateKey: found CryptRsaGenerateKey() call but not in TPMLIB_Process's body; CryptRsaGenerateKey->TpmRsa_GeneratePrimeForRSA: found TpmRsa_GeneratePrimeForRS",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: TPMLIB_Process->CryptRsaGenerateKey: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "ABSENCE",
@@ -134,9 +134,9 @@
           "type": "input_sanitization",
           "context": "bounds-checking"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       }
     ]

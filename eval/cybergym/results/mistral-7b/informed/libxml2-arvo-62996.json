@@ -5,11 +5,11 @@
   "reasoning_length": 1678,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 8,
+    "total_claims": 9,
     "verified": 5,
-    "refuted": 2,
-    "unverifiable": 1,
-    "verification_rate": 0.65,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.5,
     "action": "FLAG",
     "claims": [
       {
@@ -50,9 +50,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62996/src-vul/libxml2/HTMLparser.c:3431:htmlParseComment(htmlParserCtxtPtr ctxt) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlParseComment at HTMLparser.c:3430",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -73,10 +73,10 @@
             "htmlDecodeEntities"
           ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: htmlParseComment->htmlDecodeEntities: found htmlDecodeEntities() call but not in htmlParseComment's body",
-        "method": "call_chain"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: htmlParseComment->htmlDecodeEntities: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "DEPENDENCY_TYPE",
@@ -84,9 +84,9 @@
           "name": "libxml",
           "type": "library"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
         "method": "manifest_parse"
       },
       {
@@ -99,6 +99,17 @@
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "htmlDecodeEntities",
+          "reachable": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62996/src-vul/libxml2/xmlschemas.c:5251:    /* TODO: Remove the flag. */",
+        "method": "grep_entry_point"
       }
     ]
   },

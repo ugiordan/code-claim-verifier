@@ -5,11 +5,11 @@
   "reasoning_length": 5091,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
-    "verified": 12,
-    "refuted": 9,
+    "total_claims": 20,
+    "verified": 15,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.54,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
@@ -28,17 +28,17 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:174",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "args.c",
           "line": 100,
-          "content": "args_parse"
+          "content": "args_parse function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -61,7 +61,7 @@
         "parameters": {
           "file": "args.c",
           "line": 30,
-          "content": "args_get_short_option"
+          "content": "args_get_short_option function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -74,22 +74,32 @@
           "name": "args_parse_option",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse_option",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse_option at args.c:88",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "args.c",
           "line": 50,
-          "content": "args_parse_option"
+          "content": "args_parse_option function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 50: while (options->type != ARGS_OPT_END)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "yara.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: yara.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -98,16 +108,16 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/args.c:174:int args_parse(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "yara.c",
           "line": 300,
-          "content": "args_parse"
+          "content": "call to args_parse"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -119,7 +129,7 @@
         "parameters": {
           "file": "yara.c",
           "line": 100,
-          "content": "options"
+          "content": "options array definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -129,11 +139,11 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "yara.c"
+          "file": "args.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "exists: yara.c",
+        "evidence": "exists: args.h",
         "method": "os.path.isfile"
       },
       {
@@ -159,6 +169,16 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "common.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: common.h",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "yara.c",
@@ -170,24 +190,14 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "args.h"
+          "name": "compile_files"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: args.h",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "common.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: common.h",
-        "method": "os.path.isfile"
+        "confidence": 0.95,
+        "evidence": "cymbal: compile_files at common.h:39",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -210,16 +220,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "compile_files"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for compile_files",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "args_parse",
@@ -229,18 +229,6 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/libyara/modules/pe_utils.c:1174:        sprintf(name, \"DllRegisterServer\");",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "args.c",
-          "line_range": "multiple",
-          "content": "if (arg[j + 1] == '\\0') {\n    // short option followed by a space, argv[i + 1] could be\n    // an argument for the option (i.e: -a <arg>)\n    error = args_parse_option(opt, argv[i + 1], &arg_used);\n    if (arg_used)\n        i++;\n} else {\n    // short option followed by another option (i.e: -ab), no\n    // argument for this option\n    error = args_parse_option(opt, NULL, NULL);\n}"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 293 lines)",
-        "method": "file_read"
       }
     ]
   },
@@ -257,8 +245,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
@@ -271,8 +259,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

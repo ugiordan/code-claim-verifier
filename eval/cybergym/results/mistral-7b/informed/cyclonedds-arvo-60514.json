@@ -5,11 +5,11 @@
   "reasoning_length": 1361,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 10,
-    "verified": 9,
-    "refuted": 0,
-    "unverifiable": 1,
-    "verification_rate": 1.0,
+    "total_claims": 11,
+    "verified": 10,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.89,
     "action": "BOOST",
     "claims": [
       {
@@ -29,9 +29,9 @@
           "file": "getopt.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-60514/src-vul/cyclonedds/compat/getopt.c:38:getopt(",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: getopt at compat/getopt.c:37",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -40,14 +40,14 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-60514/src-vul/cyclonedds/compat/getopt.h:20:int getopt(int argc, char **argv, const char *opts);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "getting_started/helloworld/publisher.cpp"
+          "file": "publisher.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
@@ -57,7 +57,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "getting_started/helloworld/subscriber.cpp"
+          "file": "subscriber.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
@@ -68,7 +68,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "main",
-          "file": "getting_started/helloworld/publisher.cpp"
+          "file": "publisher.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -79,7 +79,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "main",
-          "file": "getting_started/helloworld/subscriber.cpp"
+          "file": "subscriber.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -89,18 +89,28 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "dds/dds.hpp",
-          "import_type": "header"
+          "import": "dds/dds.hpp"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/cyclonedds-arvo-60514/src-vul/cyclonedds/docs/manual/getting_started/helloworld/publisher.cpp:18:#include \"dds/dds.hpp\"",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "dds/dds.hpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: dds/dds.hpp",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "mitigations or input sanitization in getopt function"
+          "type": "input_sanitization",
+          "function": "getopt"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -111,8 +121,8 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "files": [
-            "getting_started/helloworld/publisher.cpp",
-            "getting_started/helloworld/subscriber.cpp"
+            "publisher.cpp",
+            "subscriber.cpp"
           ]
         },
         "verdict": "VERIFIED",

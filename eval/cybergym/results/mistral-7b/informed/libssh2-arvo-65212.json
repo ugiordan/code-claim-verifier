@@ -5,12 +5,12 @@
   "reasoning_length": 1387,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
+    "total_claims": 8,
     "verified": 5,
-    "refuted": 1,
-    "unverifiable": 1,
-    "verification_rate": 0.86,
-    "action": "BOOST",
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.64,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -34,18 +34,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "main",
-            "libssh2_session_handshake",
-            "_libssh2_kex_agree_instr"
-          ]
+          "name": "_libssh2_kex_agree_instr",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.7,
-        "evidence": "Chain verified: main->libssh2_session_handshake: found libssh2_session_handshake() call but not in main's body; libssh2_session_handshake->_libssh2_kex_agree_instr: found _libssh2_kex_agree_instr() ca",
-        "method": "call_chain"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (_libssh2_packet_add, kex_agree_hostkey, kex_agree_kex_hostkey)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -54,9 +51,23 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/example/ssh2_exec.c:147:    while((rc = libssh2_session_handshake(session, sock)) ==",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 30 callers (main, main, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "libssh2_session_handshake",
+            "_libssh2_kex_agree_instr"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->libssh2_session_handshake: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "DEPENDENCY_TYPE",
@@ -64,9 +75,9 @@
           "name": "libssh2",
           "type": "library"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No package specified",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
         "method": "manifest_parse"
       },
       {
@@ -88,7 +99,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/os400/libssh2rpg/libssh2.rpgle.in:648:     d libssh2_session_flag...",
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libssh2-arvo-65212/src-vul/libssh2/src/comp.c:377:    if(session->flag.compress)",
         "method": "grep_entry_point"
       }
     ]

@@ -5,10 +5,10 @@
   "reasoning_length": 1210,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 10,
+    "total_claims": 12,
+    "verified": 12,
     "refuted": 0,
-    "unverifiable": 1,
+    "unverifiable": 0,
     "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
@@ -29,9 +29,20 @@
           "file": "buildtest.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55948/src-vul/mosquitto/buildtest.py:38:def run_test(msg, opts):",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: run_test at buildtest.py:38",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "run_test",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (simple_tests, random_tests)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -40,33 +51,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "run_test",
-          "caller": "simple_tests",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55948/src-vul/mosquitto/buildtest.py:50:            run_test(\"SIMPLE BUILD\", [opts])",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "run_test",
-          "caller": "random_tests",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55948/src-vul/mosquitto/buildtest.py:50:            run_test(\"SIMPLE BUILD\", [opts])",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (simple_tests, random_tests)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -104,18 +91,40 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "what": "input sanitization",
-          "function": "run_test"
+          "description": "input sanitization in run_test function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "simple_tests",
+          "file": "buildtest.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: simple_tests at buildtest.py:46",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "random_tests",
+          "file": "buildtest.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: random_tests at buildtest.py:52",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "simple_tests"
+          "function": "simple_tests",
+          "file": "buildtest.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -125,7 +134,8 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "random_tests"
+          "function": "random_tests",
+          "file": "buildtest.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -135,7 +145,7 @@
     ]
   },
   "gt_comparison": {
-    "matched": 2,
+    "matched": 4,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -148,7 +158,21 @@
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
-        "confidence": 0.85,
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

@@ -5,8 +5,8 @@
   "reasoning_length": 3775,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 21,
-    "verified": 19,
+    "total_claims": 25,
+    "verified": 23,
     "refuted": 2,
     "unverifiable": 0,
     "verification_rate": 0.86,
@@ -100,10 +100,10 @@
           "name": "args_parse_option",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse_option",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse_option at args.c:88",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -111,63 +111,48 @@
           "name": "args_parse",
           "file": "args.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for args_parse",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: args_parse at args.c:174",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse",
-          "caller_file": "yara.c",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/args.c:174:int args_parse(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_get_short_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/args.c:210:        args_option_t* opt = args_get_short_option(options, arg[j]);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "args_get_long_option",
-          "caller": "args_parse",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/args.c:190:      args_option_t* opt = args_get_long_option(options, arg);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/args.c:88:args_error_type_t args_parse_option(",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "stdio.h"
+          "file": "stdio.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -177,7 +162,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "stdlib.h"
+          "file": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -187,7 +172,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "string.h"
+          "file": "string.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -197,7 +182,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "yara.h"
+          "file": "yara.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -207,21 +192,21 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "threading.h"
+          "file": "threading.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/libyara/re_lexer.l:57:#include <yara/threading.h>",
+        "evidence": "No import of threading.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "common.h"
+          "file": "common.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/yarac.c:50:#include \"common.h\"",
+        "evidence": "No import of common.h found",
         "method": "grep_import"
       },
       {
@@ -233,6 +218,56 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/libyara/modules/pe_utils.c:1174:        sprintf(name, \"DllRegisterServer\");",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization or validation mechanisms"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds checking on option names in args_get_short_option"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds checking on option names in args_get_long_option"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "checks on integer values in args_parse_option"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "null pointer dereference checks in args_parse_option"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },
@@ -298,15 +333,15 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

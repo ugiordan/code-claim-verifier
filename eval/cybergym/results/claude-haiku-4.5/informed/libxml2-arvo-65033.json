@@ -5,52 +5,52 @@
   "reasoning_length": 4927,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 26,
-    "verified": 13,
-    "refuted": 13,
+    "total_claims": 25,
+    "verified": 17,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.41,
-    "action": "OVERRIDE",
+    "verification_rate": 0.63,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "HTMLparser.c"
+          "file": "HTMLparser.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: HTMLparser.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "HTMLtree.c"
+          "file": "HTMLtree.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: HTMLtree.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "SAX.c"
+          "file": "SAX.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: SAX.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "SAX2.c"
+          "file": "SAX2.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: SAX2.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -59,9 +59,9 @@
           "file": "HTMLtree.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/HTMLtree.c:160:htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlSetMetaEncoding at HTMLtree.c:159",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -159,16 +159,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "HTMLtree.h"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "HTMLtree.c",
@@ -252,9 +242,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (216 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/HTMLparser.c:497:\t    snprintf(buffer, 149, \"Bytes: 0x%02X 0x%02X 0x%02X 0x%02X\\n\",",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, processPattern)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -263,9 +253,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (25 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/xmlIO.c:3755:            if ((xmlStrstr(BAD_CAST mime, BAD_CAST \"/xml\")) ||",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlEncodeEntitiesInternal(xmlDocPtr doc, const xmlChar *input, int attr), xmlShellGrep)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -274,9 +264,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (136 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/HTMLparser.c:127:        tmp = xmlRealloc((xmlChar **) ctxt->nameTab,",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -285,9 +275,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (39 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/xinclude.c:2155:\tend = xmlNewDocNode(cur->doc, cur->ns, cur->name, NULL);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 38 callers (main, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -296,15 +286,36 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (72 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/rngparser.c:680:\t    xmlAddChild(ctxt->insert, cur);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, xmlSAX2StartElement)",
+        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 1,
+    "matched": 4,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

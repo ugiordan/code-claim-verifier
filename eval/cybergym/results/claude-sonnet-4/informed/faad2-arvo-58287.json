@@ -5,12 +5,12 @@
   "reasoning_length": 4722,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 31,
-    "verified": 15,
-    "refuted": 16,
+    "total_claims": 36,
+    "verified": 24,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.45,
-    "action": "OVERRIDE",
+    "verification_rate": 0.65,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -38,17 +38,18 @@
           "name": "write_wav_header",
           "file": "aacDECdrop/audio.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_wav_header",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_wav_header at aacDECdrop/audio.c:133",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/audio.c",
-          "line_start": 118,
-          "line_end": 179
+          "line_range": "118-179",
+          "content_type": "function_definition",
+          "function": "write_wav_header"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -61,17 +62,18 @@
           "name": "write_wav_extensible_header",
           "file": "aacDECdrop/audio.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for write_wav_extensible_header",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_wav_extensible_header at aacDECdrop/audio.c:197",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/audio.c",
-          "line_start": 181,
-          "line_end": 268
+          "line_range": "181-268",
+          "content_type": "function_definition",
+          "function": "write_wav_extensible_header"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -84,17 +86,18 @@
           "name": "decodeAACfile",
           "file": "aacDECdrop/decode.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for decodeAACfile",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: decodeAACfile at aacDECdrop/decode.c:160",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/decode.c",
-          "line_start": 154,
-          "line_end": 290
+          "line_range": "154-290",
+          "content_type": "function_definition",
+          "function": "decodeAACfile"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -105,12 +108,50 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/decode.c",
-          "line_start": 42,
-          "line_end": 75
+          "line_range": "42-75",
+          "content_type": "macro_definitions"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 566 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "aacDECdrop/audio.c",
+          "line_range": "118-179",
+          "content_type": "function_body",
+          "function": "write_wav_header"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 494 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "aacDECdrop/audio.c",
+          "line_range": "181-268",
+          "content_type": "function_body",
+          "function": "write_wav_extensible_header"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 494 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "aacDECdrop/audio.c",
+          "line_range": "130-135",
+          "content_type": "code_block"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 494 lines)",
         "method": "file_read"
       },
       {
@@ -118,65 +159,70 @@
         "parameters": {
           "caller": "open_audio_file",
           "callee": "write_wav_header",
+          "file": "aacDECdrop/audio.c",
           "line": 77,
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/audio.h:56:static int write_wav_header(audio_file *aufile);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "caller": "close_audio_file",
           "callee": "write_wav_header",
+          "file": "aacDECdrop/audio.c",
           "line": 108,
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/audio.h:56:static int write_wav_header(audio_file *aufile);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "caller": "open_audio_file",
           "callee": "write_wav_extensible_header",
+          "file": "aacDECdrop/audio.c",
           "line": 75,
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/audio.h:57:static int write_wav_extensible_header(audio_file *aufile, long chann",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "caller": "close_audio_file",
           "callee": "write_wav_extensible_header",
+          "file": "aacDECdrop/audio.c",
           "line": 106,
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/audio.h:57:static int write_wav_extensible_header(audio_file *aufile, long chann",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "caller": "decodeAACfile",
           "callee": "open_audio_file",
+          "file": "aacDECdrop/decode.c",
           "line": 245,
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:255:                aufile = open_audio_file(sndfile, samplerate, fram",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -305,20 +351,20 @@
           "name": "WinMain",
           "file": "main.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for WinMain",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: WinMain at aacDECdrop/main.c:186",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "HandleDrag"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for HandleDrag",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: HandleDrag at aacDECdrop/main.c:252",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -326,10 +372,10 @@
           "name": "decode_thread",
           "file": "decthread.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for decode_thread",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: decode_thread at aacDECdrop/decthread.c:150",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -339,9 +385,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:526:int aac_decode(aac_dec_opt *opt)",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (decode_thread)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -351,21 +397,42 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58287/src-vul/faad2/aacDECdrop/decode.c:255:                aufile = open_audio_file(sndfile, samplerate, fram",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "line_start": 130,
-          "line_end": 135
+          "name": "write_wav_header",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 494 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "write_wav_extensible_header",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "open_audio_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
       }
     ]
   },
@@ -389,8 +456,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

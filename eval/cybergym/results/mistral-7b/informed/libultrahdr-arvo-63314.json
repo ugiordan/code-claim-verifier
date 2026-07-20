@@ -6,31 +6,31 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 8,
-    "verified": 6,
-    "refuted": 2,
+    "verified": 4,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.62,
-    "action": "FLAG",
+    "verification_rate": 0.3,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "gainmapmath.cpp"
+          "filename": "gainmapmath.cpp"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: gainmapmath.cpp",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "icc.cpp"
+          "filename": "icc.cpp"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: icc.cpp",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -79,8 +79,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "input sanitization",
-          "context": "ShepardsIDW::euclideanDistance function"
+          "type": "input_sanitization",
+          "function": "ShepardsIDW::euclideanDistance"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -88,35 +88,20 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "item": "mitigations",
-          "context": "ShepardsIDW::euclideanDistance function"
+          "function": "ShepardsIDW::fillShepardsIDW",
+          "reachable": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libultrahdr-arvo-63314/src-vul/libultrahdr/third_party/image_io/includes/image_io/xml/xml_handler.h:19:/// with a different r",
+        "method": "grep_entry_point"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 2,
-    "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      }
-    ]
+    "matched": 0,
+    "results": []
   }
 }

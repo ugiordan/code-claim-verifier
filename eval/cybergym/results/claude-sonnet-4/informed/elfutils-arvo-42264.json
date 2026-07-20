@@ -5,11 +5,11 @@
   "reasoning_length": 4223,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 10,
-    "verified": 8,
+    "total_claims": 13,
+    "verified": 11,
     "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.77,
+    "verification_rate": 0.72,
     "action": "FLAG",
     "claims": [
       {
@@ -29,9 +29,9 @@
           "file": "libdw/cfi.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/cfi.c:102:execute_cfi (Dwarf_CFI *cache,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: execute_cfi at libdw/cfi.c:101",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -40,9 +40,9 @@
           "file": "libdw/cfi.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/cfi.c:60:enough_registers (Dwarf_Word reg, Dwarf_Frame **pfs, int *result)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: enough_registers at libdw/cfi.c:59",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -75,9 +75,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/cfi.c:122:    if (unlikely (! enough_registers (regno, &fs, &result)))\t\\",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (execute_cfi, cie_cache_initial_state, __libdw_frame_at_address)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -86,9 +86,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/dwarf_cfi_addrframe.c:46:  int error = __libdw_frame_at_address (cache, fde, ad",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (dwarf_cfi_addrframe, handle_cfi, handle_address)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -121,6 +121,39 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/cfi.c:37:#include \"encoded-value.h\"",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "realloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 48 callers (xrealloc (void *p, size_t n), reallocarray (void *ptr, size_t nmemb, size_t size), enough_registers)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "malloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmalloc (size_t n), asm_newcomsym (AsmCtx_t *ctx, const char *name, GElf_Xword size,\n\t       GElf_Addr align), asm_newabssym (AsmCtx_t *ctx, const char *name, GElf_Xword size,\n\t   ",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "memcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (asm_addsleb128, asm_addstrz, asm_adduleb128)",
+        "method": "cymbal_callers"
       }
     ]
   },

@@ -5,12 +5,12 @@
   "reasoning_length": 3369,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 13,
-    "verified": 7,
-    "refuted": 6,
+    "total_claims": 14,
+    "verified": 9,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.47,
-    "action": "OVERRIDE",
+    "verification_rate": 0.64,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -28,10 +28,10 @@
           "name": "createHuffmanTable",
           "file": "fuzz/librawspeed/decompressors/HuffmanTable/main.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for createHuffmanTable",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: createHuffmanTable at fuzz/librawspeed/decompressors/HuffmanTable/main.cpp:44",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -75,10 +75,10 @@
           "name": "LLVMFuzzerTestOneInput",
           "file": "fuzz/librawspeed/decompressors/HuffmanTable/main.cpp"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LLVMFuzzerTestOneInput",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/librawspeed/decompressors/HuffmanTable/main.cpp:61",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -99,9 +99,20 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3505/src-vul/librawspeed/fuzz/librawspeed/decompressors/HuffmanTable/main.cpp:44:static rawspeed::Huffman",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (LLVMFuzzerTestOneInput, NikonDecompressor::decompress, process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "createHuffmanTable",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (LLVMFuzzerTestOneInput, NikonDecompressor::decompress, process)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -138,15 +149,15 @@
         "parameters": {
           "function": "LLVMFuzzerTestOneInput"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3505/src-vul/librawspeed/docs/Doxyfile.in:172:# using the -I flag.",
+        "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking on input size before reading data from buffer"
+          "description": "bounds checking on input size"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -168,15 +179,15 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

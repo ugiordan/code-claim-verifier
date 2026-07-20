@@ -5,11 +5,11 @@
   "reasoning_length": 1458,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 8,
+    "total_claims": 7,
     "verified": 6,
     "refuted": 1,
-    "unverifiable": 1,
-    "verification_rate": 0.83,
+    "unverifiable": 0,
+    "verification_rate": 0.84,
     "action": "BOOST",
     "claims": [
       {
@@ -26,12 +26,12 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "bpf_dump",
-          "file": "bpf_dump.c"
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_dump.c:32:bpf_dump(const struct bpf_program *p, int option)",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: bpf_dump at bpf_dump.c:31",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -47,12 +47,12 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "pcap_filter_with_aux_data",
-          "file": "bpf_filter.c"
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:88:pcap_filter_with_aux_data(const struct bpf_insn *pc, const u_char *p,",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: pcap_filter_with_aux_data at bpf_filter.c:91",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -61,9 +61,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap/bpf.h:250:PCAP_API void\tbpf_dump(const struct bpf_program *, int);",
-        "method": "grep_call_site"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (plain_dump, main, opt_dump)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
@@ -71,9 +71,9 @@
           "type": "input_sanitization",
           "location": "bpf_dump function"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No pattern to search for in claim parameters",
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -85,17 +85,6 @@
         "confidence": 0.99,
         "evidence": "not found: pcap_filter.c",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "pcap_filter_with_aux_data",
-          "file": "pcap_filter.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/configure.ac:1799:\t# flag.",
-        "method": "grep_entry_point"
       }
     ]
   },

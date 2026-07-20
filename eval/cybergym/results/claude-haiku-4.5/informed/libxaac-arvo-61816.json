@@ -5,12 +5,12 @@
   "reasoning_length": 6383,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
+    "total_claims": 19,
     "verified": 12,
-    "refuted": 8,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.44,
-    "action": "OVERRIDE",
+    "verification_rate": 0.62,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -48,32 +48,10 @@
           "name": "impd_drc_get_float_value",
           "file": "test/encoder/impd_drc_user_config.c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for impd_drc_get_float_value",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "file": "test/encoder/impd_drc_user_config.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for impd_drc_get_integer_value",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "file": "test/encoder/impd_drc_user_config.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ixheaace_read_drc_config_params",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: impd_drc_get_float_value at test/encoder/impd_drc_user_config.c:37",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -88,6 +66,17 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "impd_drc_get_integer_value",
+          "file": "test/encoder/impd_drc_user_config.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: impd_drc_get_integer_value at test/encoder/impd_drc_user_config.c:58",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
@@ -98,6 +87,51 @@
         "confidence": 0.95,
         "evidence": "Line 66: while ((line[0] == '#' || line[0] == '\\n') && (retval != NULL)) {",
         "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 69,
+          "content": "if (c[0] == '0' && c[1] == 'x')"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 69: while (line[i] != ':') {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "file": "test/encoder/impd_drc_user_config.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "impd_drc_get_integer_value",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "impd_drc_get_float_value",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -124,38 +158,16 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "test/encoder/ixheaace_testbench.c",
           "line": 39,
-          "content": "#include \"impd_drc_user_config.h\""
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 39: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "expected": true
+          "import": "impd_drc_user_config.h"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (35 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/impd_drc_user_config.c:58:static WORD32 impd_drc_get_integer_value(FILE *",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_float_value",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (17 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/impd_drc_user_config.c:37:static FLOAT32 impd_drc_get_float_value(FILE *f",
-        "method": "grep_call_site"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/ixheaace_testbench.c:31:#include \"impd_drc_user_config.h\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -191,48 +203,28 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "fgets",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 47,
+          "content": "retval = fgets(line, sizeof(line), fp);"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/impd_drc_user_config.c:42:  retval = fgets(line, sizeof(line), fp);",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 47: }",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "atof",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 62,
+          "content": "retval = fgets(line, sizeof(line), fp);"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/impd_drc_user_config.c:53:    result = (FLOAT32)atof(c);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "atoi",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (62 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/impd_drc_user_config.c:77:      result = atoi(c);",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strtol",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61816/src-vul/libxaac/test/encoder/impd_drc_user_config.c:75:      result = (WORD32)strtol(c, NULL, 16);",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 62: pCHAR8 retval;",
+        "method": "file_read"
       }
     ]
   },
@@ -263,22 +255,22 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
-        "actual": "REFUTED",
-        "confidence": 0.85,
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]
