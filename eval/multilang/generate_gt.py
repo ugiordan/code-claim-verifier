@@ -407,19 +407,24 @@ def generate_gt_for_case(candidate: dict, base_dir: str) -> dict:
 def run_generate_gt(candidates_path: str, base_dir: str) -> None:
     """Main entry point: generate ground truth for all verified candidates."""
     candidates = load_jsonl(candidates_path)
-    updated: list[dict] = []
+    _SAVE_INTERVAL = 50
+    gt_count = 0
 
     for i, c in enumerate(candidates):
         if c.get("status") == CandidateStatus.READY:
-            updated.append(c)
             continue
         if c.get("status") != CandidateStatus.VERIFIED:
-            updated.append(c)
             continue
 
         logger.info("[%d/%d] Generating GT for %s", i + 1, len(candidates), c["osv_id"])
-        updated.append(generate_gt_for_case(c, base_dir))
+        candidates[i] = generate_gt_for_case(c, base_dir)
+        gt_count += 1
 
-    save_jsonl(updated, candidates_path)
-    ready = sum(1 for c in updated if c.get("status") == CandidateStatus.READY)
-    logger.info("Ready: %d / %d", ready, len(updated))
+        if gt_count % _SAVE_INTERVAL == 0:
+            save_jsonl(candidates, candidates_path)
+            ready_so_far = sum(1 for x in candidates if x.get("status") == CandidateStatus.READY)
+            logger.info("Checkpoint: %d ready so far (%d processed)", ready_so_far, gt_count)
+
+    save_jsonl(candidates, candidates_path)
+    ready = sum(1 for c in candidates if c.get("status") == CandidateStatus.READY)
+    logger.info("Ready: %d / %d", ready, len(candidates))
