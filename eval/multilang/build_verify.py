@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import os
+import re
 import subprocess
 import time
 
@@ -11,6 +12,75 @@ from eval.multilang.constants import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _detect_required_version(source_path: str, language: str) -> str | None:
+    """Read build files to detect the required language version."""
+    try:
+        if language == "go":
+            go_mod = os.path.join(source_path, "go.mod")
+            if os.path.isfile(go_mod):
+                with open(go_mod) as f:
+                    for line in f:
+                        m = re.match(r"^go\s+(1\.\d+)", line)
+                        if m:
+                            return m.group(1)
+        elif language == "python":
+            pyproject = os.path.join(source_path, "pyproject.toml")
+            if os.path.isfile(pyproject):
+                with open(pyproject) as f:
+                    for line in f:
+                        m = re.search(r'python_requires\s*=\s*["\']>=\s*(3\.\d+)', line)
+                        if m:
+                            return m.group(1)
+        elif language == "rust":
+            cargo = os.path.join(source_path, "Cargo.toml")
+            if os.path.isfile(cargo):
+                with open(cargo) as f:
+                    for line in f:
+                        m = re.search(r'rust-version\s*=\s*["\'](1\.\d+)', line)
+                        if m:
+                            return m.group(1)
+        elif language in ("javascript", "typescript"):
+            pkg = os.path.join(source_path, "package.json")
+            if os.path.isfile(pkg):
+                import json
+                with open(pkg) as f:
+                    data = json.load(f)
+                engines = data.get("engines", {}).get("node", "")
+                m = re.search(r"(\d+)", engines)
+                if m:
+                    return m.group(1)
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+def _reorder_images(images: list[str], required_version: str | None,
+                    language: str) -> list[str]:
+    """Put the best-matching base image first based on detected version."""
+    if not required_version:
+        return images
+    best = []
+    rest = []
+    for img in images:
+        tag = img.split(":")[-1]
+        version_in_tag = re.search(r"(\d+\.?\d*)", tag)
+        if version_in_tag and version_in_tag.group(1) == required_version:
+            best.append(img)
+        elif version_in_tag:
+            try:
+                tag_major = float(version_in_tag.group(1))
+                req_major = float(required_version)
+                if tag_major >= req_major:
+                    best.append(img)
+                else:
+                    rest.append(img)
+            except ValueError:
+                rest.append(img)
+        else:
+            rest.append(img)
+    return best + rest
 
 
 def generate_containerfile(
@@ -128,7 +198,10 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
         return candidate
 
     project_files = _detect_project_files(source_path)
-    images = BASE_IMAGES.get(language, [])
+    required_version = _detect_required_version(source_path, language)
+    images = _reorder_images(BASE_IMAGES.get(language, []), required_version, language)
+    if required_version:
+        logger.debug("Detected %s version %s for %s", language, required_version, osv_id)
 
     for base_image in images:
         cf_content = generate_containerfile(

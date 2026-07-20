@@ -27,8 +27,8 @@ ECOSYSTEM_TO_LANG: dict[str, str] = {
 }
 
 BASE_IMAGES: dict[str, list[str]] = {
-    "go": ["golang:1.22", "golang:1.21", "golang:1.20", "golang:1.19", "golang:1.18"],
-    "python": ["python:3.12", "python:3.11", "python:3.10", "python:3.9", "python:3.8"],
+    "go": ["golang:1.24", "golang:1.23", "golang:1.22", "golang:1.21", "golang:1.20", "golang:1.19"],
+    "python": ["python:3.13", "python:3.12", "python:3.11", "python:3.10", "python:3.9"],
     "javascript": ["node:22", "node:20", "node:18", "node:16"],
     "java": [
         "maven:3.9-eclipse-temurin-21",
