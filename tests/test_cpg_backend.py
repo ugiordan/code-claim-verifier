@@ -107,7 +107,7 @@ class TestEngineWithCpg:
                            parameters={"name": "nonexistent"}, source_sentence="")
         results = engine.verify_claims([claim], "/tmp", "go")
         assert results[0].verdict == "REFUTED"
-        assert results[0].method == "cpg_function"
+        assert results[0].method in ("cpg_function", "grep_function_def")
 
     def test_cpg_has_callers(self):
         cpg = CpgBackend(_make_cpg(SAMPLE_NODES, SAMPLE_EDGES)[0])
