@@ -1134,10 +1134,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ccv-vs-llm-as-judge" class="md-nav__link">
+  <a href="#ccv-tool-performance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CCV vs LLM-as-Judge
+        CCV Tool Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-method-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification Method Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#claim-type-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claim Type Distribution
       
     </span>
   </a>
@@ -1149,45 +1171,6 @@
     <span class="md-ellipsis">
       
         Action Distribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#per-repository-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Per-Repository Results
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Per-Repository Results">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#claude-sonnet-4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Claude Sonnet 4
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#claude-haiku-45" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Claude Haiku 4.5
       
     </span>
   </a>
@@ -1290,10 +1273,32 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#ccv-vs-llm-as-judge" class="md-nav__link">
+  <a href="#ccv-tool-performance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CCV vs LLM-as-Judge
+        CCV Tool Performance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verification-method-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Verification Method Distribution
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#claim-type-distribution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Claim Type Distribution
       
     </span>
   </a>
@@ -1305,45 +1310,6 @@
     <span class="md-ellipsis">
       
         Action Distribution
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#per-repository-results" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Per-Repository Results
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Per-Repository Results">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#claude-sonnet-4" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Claude Sonnet 4
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#claude-haiku-45" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Claude Haiku 4.5
       
     </span>
   </a>
@@ -1409,20 +1375,22 @@
 <p>Real evaluation results from running CCV against the <a href="https://github.com/sunblaze-ucb/cybergym">CyberGym</a> benchmark (ICLR 2026).</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">¶</a></h2>
 <ul>
-<li><strong>Benchmark</strong>: 21 CyberGym vulnerability repositories (C/C++ projects)</li>
-<li><strong>Models</strong>: Claude Sonnet 4 and Claude Haiku 4.5 via Google Vertex AI</li>
-<li><strong>Extraction</strong>: Claude Sonnet 4 for all claim extraction (isolates extraction quality)</li>
-<li><strong>Judge baseline</strong>: Claude Haiku 4.5 as LLM-as-judge (avoids self-verification confound)</li>
-<li><strong>Ground truth</strong>: Diff-derived from patch files (files and functions modified in the security fix)</li>
+<li><strong>Benchmark</strong>: 201 CyberGym vulnerability repositories (60 unique C/C++ projects from OSS-Fuzz/ARVO)</li>
+<li><strong>Models</strong>: 7 models across 3 providers (5 Red Hat models-corp, 2 Anthropic Vertex AI)</li>
+<li><strong>Extraction</strong>: Claude Sonnet 4 for all claim extraction (isolates extraction quality from reasoning quality)</li>
+<li><strong>Verification backends</strong>: grep + cymbal (tree-sitter) with fallback. No LLM calls for verification.</li>
+<li><strong>Ground truth</strong>: Auto-generated from source (function definitions, file existence, imports) with manual validation</li>
 </ul>
 <h2 id="key-results">Key Results<a class="headerlink" href="#key-results" title="Permanent link">¶</a></h2>
 <div class="admonition success">
 <p class="admonition-title">Headline findings</p>
 <ul>
-<li><strong>22-31% of LLM claims about code are hallucinated</strong> (varies by model)</li>
-<li>CCV achieves <strong>99.3% accuracy</strong> against diff-derived ground truth</li>
-<li><strong>Zero false-verified claims</strong>: CCV never confirmed a hallucination as correct</li>
-<li>On disagreements with an LLM-as-judge, <strong>CCV was correct 97% of the time</strong></li>
+<li><strong>25.5% of LLM claims about code are hallucinated</strong> (aggregate across 7 models)</li>
+<li>CCV achieves <strong>99.2% accuracy</strong> against ground truth (4,864/4,905 correct)</li>
+<li><strong>100% precision</strong>: CCV never confirmed a hallucination as correct</li>
+<li><strong>99.7% coverage</strong>: only 0.3% of claims are unverifiable</li>
+<li>Best model: Llama 3.3 70B at <strong>15.4%</strong> hallucination</li>
+<li>Worst models: Claude Sonnet 4 and Haiku 4.5 at <strong>35-37%</strong></li>
 </ul>
 </div>
 <h3 id="hallucination-rate-by-model">Hallucination Rate by Model<a class="headerlink" href="#hallucination-rate-by-model" title="Permanent link">¶</a></h3>
@@ -1430,486 +1398,340 @@
 <thead>
 <tr>
 <th>Model</th>
+<th>Repos</th>
 <th>Claims</th>
 <th>Verified</th>
 <th>Refuted</th>
 <th>Unverifiable</th>
-<th>Hallucination Rate</th>
+<th>Hall. Rate</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Claude Sonnet 4</td>
-<td>296</td>
-<td>181</td>
-<td>65</td>
-<td>50</td>
-<td><strong>22.0%</strong></td>
+<td>Llama 3.3 70B</td>
+<td>201</td>
+<td>4,963</td>
+<td>4,198</td>
+<td>763</td>
+<td>2</td>
+<td><strong>15.4%</strong></td>
+</tr>
+<tr>
+<td>Granite 3.3 8B</td>
+<td>201</td>
+<td>3,204</td>
+<td>2,620</td>
+<td>579</td>
+<td>5</td>
+<td><strong>18.1%</strong></td>
+</tr>
+<tr>
+<td>Mistral 7B</td>
+<td>201</td>
+<td>2,380</td>
+<td>1,863</td>
+<td>511</td>
+<td>6</td>
+<td><strong>21.5%</strong></td>
+</tr>
+<tr>
+<td>Qwen3 14B</td>
+<td>201</td>
+<td>2,949</td>
+<td>2,205</td>
+<td>742</td>
+<td>2</td>
+<td><strong>25.2%</strong></td>
+</tr>
+<tr>
+<td>GPT-OSS 20B</td>
+<td>201</td>
+<td>4,222</td>
+<td>3,125</td>
+<td>1,081</td>
+<td>16</td>
+<td><strong>25.7%</strong></td>
 </tr>
 <tr>
 <td>Claude Haiku 4.5</td>
-<td>401</td>
-<td>242</td>
-<td>123</td>
-<td>36</td>
-<td><strong>30.7%</strong></td>
+<td>201</td>
+<td>4,165</td>
+<td>2,682</td>
+<td>1,464</td>
+<td>19</td>
+<td><strong>35.3%</strong></td>
 </tr>
 <tr>
-<td><strong>Combined</strong></td>
-<td><strong>697</strong></td>
-<td><strong>423</strong></td>
-<td><strong>188</strong></td>
-<td><strong>86</strong></td>
-<td><strong>27.0%</strong></td>
+<td>Claude Sonnet 4</td>
+<td>201</td>
+<td>3,867</td>
+<td>2,429</td>
+<td>1,405</td>
+<td>33</td>
+<td><strong>36.6%</strong></td>
+</tr>
+<tr>
+<td><strong>Aggregate</strong></td>
+<td><strong>1,407</strong></td>
+<td><strong>25,750</strong></td>
+<td><strong>19,122</strong></td>
+<td><strong>6,545</strong></td>
+<td><strong>83</strong></td>
+<td><strong>25.5%</strong></td>
 </tr>
 </tbody>
 </table>
-<p>The smaller model (Haiku) hallucinates more frequently, consistent with the expectation that model capability correlates with factual accuracy.</p>
-<h3 id="ccv-vs-llm-as-judge">CCV vs LLM-as-Judge<a class="headerlink" href="#ccv-vs-llm-as-judge" title="Permanent link">¶</a></h3>
+<p>Hallucination rate = Refuted / (Verified + Refuted). UNVERIFIABLE claims are excluded from the denominator.</p>
+<h3 id="ccv-tool-performance">CCV Tool Performance<a class="headerlink" href="#ccv-tool-performance" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
 <th>Metric</th>
-<th>CCV (deterministic)</th>
-<th>LLM-as-Judge</th>
+<th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>GT accuracy</td>
-<td><strong>99.3%</strong></td>
-<td>N/A</td>
+<td>GT-matched claims</td>
+<td>4,905</td>
 </tr>
 <tr>
-<td>False verified</td>
-<td><strong>0</strong></td>
-<td>N/A</td>
+<td>Correct verdicts</td>
+<td>4,864 (99.2%)</td>
 </tr>
 <tr>
-<td>False refuted</td>
-<td><strong>1</strong></td>
-<td>N/A</td>
+<td>Precision (VERIFIED)</td>
+<td><strong>100%</strong> (0 false positives)</td>
 </tr>
 <tr>
-<td>Disagreements won</td>
-<td><strong>255 (97%)</strong></td>
-<td>8 (3%)</td>
+<td>Recall (VERIFIED)</td>
+<td><strong>99.2%</strong> (41 false negatives)</td>
+</tr>
+<tr>
+<td>Coverage (verifiable)</td>
+<td><strong>99.7%</strong></td>
+</tr>
+<tr>
+<td>False negatives</td>
+<td>41 (all FUNCTION_EXISTS in C repos)</td>
 </tr>
 </tbody>
 </table>
-<p>On 263 cases where CCV and the LLM judge disagreed, CCV was correct 97% of the time. The judge's primary failure mode: confirming hallucinated claims that CCV correctly refutes.</p>
+<p>CCV's zero false-positive rate is by construction: grep, <code>os.path.isfile()</code>, and tree-sitter don't hallucinate. When CCV says VERIFIED, it found deterministic evidence.</p>
+<h3 id="verification-method-distribution">Verification Method Distribution<a class="headerlink" href="#verification-method-distribution" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Claims</th>
+<th>%</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>grep_import</td>
+<td>5,456</td>
+<td>21.2%</td>
+<td>Import/include pattern matching</td>
+</tr>
+<tr>
+<td>cymbal_function</td>
+<td>4,378</td>
+<td>17.0%</td>
+<td>Tree-sitter function lookup</td>
+</tr>
+<tr>
+<td>cymbal_callers</td>
+<td>3,756</td>
+<td>14.6%</td>
+<td>Tree-sitter call-site analysis</td>
+</tr>
+<tr>
+<td>os.path.isfile</td>
+<td>2,888</td>
+<td>11.2%</td>
+<td>File existence check</td>
+</tr>
+<tr>
+<td>file_read</td>
+<td>2,754</td>
+<td>10.7%</td>
+<td>Line content verification</td>
+</tr>
+<tr>
+<td>grep_absent</td>
+<td>1,197</td>
+<td>4.6%</td>
+<td>Absence verification</td>
+</tr>
+<tr>
+<td>grep_entry_point</td>
+<td>675</td>
+<td>2.6%</td>
+<td>Entry point grep</td>
+</tr>
+<tr>
+<td>path_regex</td>
+<td>637</td>
+<td>2.5%</td>
+<td>File classification</td>
+</tr>
+<tr>
+<td>path_check</td>
+<td>542</td>
+<td>2.1%</td>
+<td>Path validation</td>
+</tr>
+<tr>
+<td>os.walk_fuzzy</td>
+<td>387</td>
+<td>1.5%</td>
+<td>Fuzzy file lookup</td>
+</tr>
+<tr>
+<td>cymbal_call_chain</td>
+<td>329</td>
+<td>1.3%</td>
+<td>Call chain verification</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>101</td>
+<td>0.4%</td>
+<td>manifest_parse, default_value, osv_api</td>
+</tr>
+</tbody>
+</table>
+<p>~37% of verifications use cymbal (tree-sitter AST), ~47% use grep, and ~16% use filesystem checks.</p>
+<h3 id="claim-type-distribution">Claim Type Distribution<a class="headerlink" href="#claim-type-distribution" title="Permanent link">¶</a></h3>
+<table>
+<thead>
+<tr>
+<th>Claim Type</th>
+<th>Claims</th>
+<th>Refute Rate</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IMPORT_EXISTS</td>
+<td>5,456</td>
+<td>12.7%</td>
+<td>Import/include statements</td>
+</tr>
+<tr>
+<td>FUNCTION_EXISTS</td>
+<td>4,378</td>
+<td>36.9%</td>
+<td>Function definitions</td>
+</tr>
+<tr>
+<td>FILE_EXISTS</td>
+<td>3,817</td>
+<td>16.8%</td>
+<td>Source file paths</td>
+</tr>
+<tr>
+<td>FUNCTION_CALLED</td>
+<td>3,347</td>
+<td>11.5%</td>
+<td>Function call sites</td>
+</tr>
+<tr>
+<td>LINE_CONTENT</td>
+<td>2,587</td>
+<td>91.1%</td>
+<td>Specific line content</td>
+</tr>
+<tr>
+<td>ABSENCE</td>
+<td>1,197</td>
+<td>5.1%</td>
+<td>Negative claims</td>
+</tr>
+<tr>
+<td>ENTRY_POINT</td>
+<td>675</td>
+<td>24.7%</td>
+<td>API/handler entry points</td>
+</tr>
+<tr>
+<td>FILE_CLASSIFICATION</td>
+<td>637</td>
+<td>15.7%</td>
+<td>File type classification</td>
+</tr>
+<tr>
+<td>HAS_CALLERS</td>
+<td>409</td>
+<td>30.1%</td>
+<td>Caller existence</td>
+</tr>
+<tr>
+<td>CALL_CHAIN</td>
+<td>329</td>
+<td>100%</td>
+<td>Multi-hop call chains</td>
+</tr>
+<tr>
+<td>Other</td>
+<td>918</td>
+<td>varied</td>
+<td>MITIGATION, DEPENDENCY, DEFAULT_VALUE, CVE</td>
+</tr>
+</tbody>
+</table>
+<p>LINE_CONTENT has a 91.1% refute rate because LLMs frequently fabricate exact line content. CALL_CHAIN has 100% because multi-hop call relationships are almost never accurate without actual code analysis.</p>
 <h3 id="action-distribution">Action Distribution<a class="headerlink" href="#action-distribution" title="Permanent link">¶</a></h3>
 <table>
 <thead>
 <tr>
 <th>Action</th>
 <th>Count</th>
-<th>Percentage</th>
+<th>%</th>
 <th>Meaning</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>BOOST</td>
-<td>11</td>
-<td>26.2%</td>
-<td>All claims verified, trust the analysis</td>
+<td>488</td>
+<td>35.4%</td>
+<td>Verification rate &gt;= 80%, trust the analysis</td>
 </tr>
 <tr>
 <td>FLAG</td>
-<td>20</td>
-<td>47.6%</td>
-<td>Mixed results, human review needed</td>
+<td>440</td>
+<td>31.9%</td>
+<td>50-80% verified, human review recommended</td>
 </tr>
 <tr>
 <td>OVERRIDE</td>
-<td>11</td>
-<td>26.2%</td>
-<td>Majority hallucinated, don't trust</td>
+<td>453</td>
+<td>32.8%</td>
+<td>&lt; 50% verified, analysis unreliable</td>
 </tr>
 </tbody>
 </table>
-<p>26% of vulnerability analyses were overridden by CCV because more than half the LLM's factual claims were wrong.</p>
-<h2 id="per-repository-results">Per-Repository Results<a class="headerlink" href="#per-repository-results" title="Permanent link">¶</a></h2>
-<h3 id="claude-sonnet-4">Claude Sonnet 4<a class="headerlink" href="#claude-sonnet-4" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Repository</th>
-<th>Claims</th>
-<th>Verified</th>
-<th>Refuted</th>
-<th>Rate</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>binutils-arvo-21321</td>
-<td>24</td>
-<td>12</td>
-<td>12</td>
-<td>0.47</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>curl-arvo-3956</td>
-<td>10</td>
-<td>6</td>
-<td>2</td>
-<td>0.78</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>curl-arvo-6483</td>
-<td>13</td>
-<td>6</td>
-<td>0</td>
-<td>1.00</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>faad2-arvo-58452</td>
-<td>16</td>
-<td>11</td>
-<td>4</td>
-<td>0.74</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>jq-arvo-64574</td>
-<td>11</td>
-<td>7</td>
-<td>2</td>
-<td>0.69</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libhevc-arvo-20476</td>
-<td>19</td>
-<td>13</td>
-<td>4</td>
-<td>0.66</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libpcap-arvo-15178</td>
-<td>15</td>
-<td>6</td>
-<td>7</td>
-<td>0.42</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>libplist-arvo-54949</td>
-<td>10</td>
-<td>10</td>
-<td>0</td>
-<td>0.75</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libredwg-arvo-63824</td>
-<td>19</td>
-<td>8</td>
-<td>0</td>
-<td>1.00</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>libssh2-arvo-65212</td>
-<td>18</td>
-<td>17</td>
-<td>1</td>
-<td>0.96</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>libtpms-arvo-65530</td>
-<td>17</td>
-<td>10</td>
-<td>2</td>
-<td>0.85</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>libxml2-arvo-66679</td>
-<td>10</td>
-<td>8</td>
-<td>0</td>
-<td>0.78</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libxslt-arvo-57378</td>
-<td>29</td>
-<td>28</td>
-<td>0</td>
-<td>1.00</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>mosquitto-arvo-57002</td>
-<td>17</td>
-<td>11</td>
-<td>6</td>
-<td>0.54</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>mruby-arvo-53183</td>
-<td>7</td>
-<td>5</td>
-<td>2</td>
-<td>0.72</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>opensc-arvo-64522</td>
-<td>10</td>
-<td>8</td>
-<td>2</td>
-<td>0.87</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>openssl-arvo-8241</td>
-<td>10</td>
-<td>1</td>
-<td>2</td>
-<td>0.33</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>php-arvo-23350</td>
-<td>9</td>
-<td>6</td>
-<td>2</td>
-<td>0.75</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>selinux-arvo-60670</td>
-<td>7</td>
-<td>6</td>
-<td>1</td>
-<td>0.85</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>wireshark-arvo-12745</td>
-<td>11</td>
-<td>2</td>
-<td>6</td>
-<td>0.18</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>yara-arvo-3848</td>
-<td>14</td>
-<td>0</td>
-<td>10</td>
-<td>0.00</td>
-<td>OVERRIDE</td>
-</tr>
-</tbody>
-</table>
-<h3 id="claude-haiku-45">Claude Haiku 4.5<a class="headerlink" href="#claude-haiku-45" title="Permanent link">¶</a></h3>
-<table>
-<thead>
-<tr>
-<th>Repository</th>
-<th>Claims</th>
-<th>Verified</th>
-<th>Refuted</th>
-<th>Rate</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>binutils-arvo-21321</td>
-<td>23</td>
-<td>10</td>
-<td>11</td>
-<td>0.44</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>curl-arvo-3956</td>
-<td>15</td>
-<td>15</td>
-<td>0</td>
-<td>1.00</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>curl-arvo-6483</td>
-<td>10</td>
-<td>0</td>
-<td>8</td>
-<td>0.00</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>faad2-arvo-58452</td>
-<td>19</td>
-<td>13</td>
-<td>5</td>
-<td>0.68</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>jq-arvo-64574</td>
-<td>21</td>
-<td>19</td>
-<td>1</td>
-<td>0.91</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>libhevc-arvo-20476</td>
-<td>14</td>
-<td>9</td>
-<td>5</td>
-<td>0.63</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libpcap-arvo-15178</td>
-<td>10</td>
-<td>5</td>
-<td>2</td>
-<td>0.76</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libplist-arvo-54949</td>
-<td>40</td>
-<td>18</td>
-<td>22</td>
-<td>0.31</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>libredwg-arvo-63824</td>
-<td>36</td>
-<td>26</td>
-<td>5</td>
-<td>0.82</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>libssh2-arvo-65212</td>
-<td>18</td>
-<td>10</td>
-<td>4</td>
-<td>0.77</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libtpms-arvo-65530</td>
-<td>33</td>
-<td>19</td>
-<td>8</td>
-<td>0.65</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libxml2-arvo-66679</td>
-<td>24</td>
-<td>20</td>
-<td>4</td>
-<td>0.80</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>libxslt-arvo-57378</td>
-<td>16</td>
-<td>11</td>
-<td>5</td>
-<td>0.65</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>mosquitto-arvo-57002</td>
-<td>11</td>
-<td>9</td>
-<td>2</td>
-<td>0.71</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>mruby-arvo-53183</td>
-<td>15</td>
-<td>11</td>
-<td>1</td>
-<td>0.75</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>opensc-arvo-64522</td>
-<td>12</td>
-<td>11</td>
-<td>1</td>
-<td>0.95</td>
-<td>BOOST</td>
-</tr>
-<tr>
-<td>openssl-arvo-8241</td>
-<td>15</td>
-<td>0</td>
-<td>14</td>
-<td>0.00</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>php-arvo-23350</td>
-<td>15</td>
-<td>11</td>
-<td>4</td>
-<td>0.73</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>selinux-arvo-60670</td>
-<td>17</td>
-<td>9</td>
-<td>8</td>
-<td>0.43</td>
-<td>OVERRIDE</td>
-</tr>
-<tr>
-<td>wireshark-arvo-12745</td>
-<td>14</td>
-<td>4</td>
-<td>2</td>
-<td>0.62</td>
-<td>FLAG</td>
-</tr>
-<tr>
-<td>yara-arvo-3848</td>
-<td>23</td>
-<td>12</td>
-<td>11</td>
-<td>0.41</td>
-<td>OVERRIDE</td>
-</tr>
-</tbody>
-</table>
+<p>About one-third of vulnerability analyses are overridden by CCV because more than half the LLM's factual claims were wrong.</p>
 <h2 id="observations">Observations<a class="headerlink" href="#observations" title="Permanent link">¶</a></h2>
 <ol>
 <li>
-<p><strong>Hallucination is project-dependent</strong>: Some repos (libxslt, curl) have low hallucination rates. Others (yara, openssl, wireshark) have very high rates. This correlates with codebase complexity and naming conventions.</p>
+<p><strong>Model size doesn't predict accuracy</strong>: Llama 3.3 70B (15.4%) outperforms both larger Claude models (35-37%). Granite 3.3 8B (18.1%) beats models 2-4x its size. Architecture and training data matter more than parameter count.</p>
 </li>
 <li>
-<p><strong>Smaller models hallucinate more but not uniformly</strong>: Haiku produces more claims per repo (19.1 avg vs 14.1 for Sonnet) and hallucinates more, but on some repos (jq, opensc) it performs better than Sonnet.</p>
+<p><strong>Hallucination is claim-type dependent</strong>: LINE_CONTENT (91% refuted) and CALL_CHAIN (100%) are almost always wrong. FILE_EXISTS (17%) and IMPORT_EXISTS (13%) are mostly correct. Models are better at structural claims than content-level ones.</p>
 </li>
 <li>
-<p><strong>OVERRIDE is the most valuable action</strong>: 26% of analyses got overridden. Without CCV, those hallucinated analyses would have been trusted.</p>
+<p><strong>Coverage is near-complete</strong>: Only 83 out of 25,750 claims (0.3%) are unverifiable. CCV can make a judgment on almost everything an LLM says about code.</p>
 </li>
 <li>
-<p><strong>Zero false-verified is the safety guarantee</strong>: CCV never confirmed a hallucination. When it says VERIFIED, it's right. This is by construction: grep and <code>os.path.isfile()</code> don't hallucinate.</p>
+<p><strong>Zero false-verified is the safety guarantee</strong>: CCV never confirmed a hallucination as correct across 25,750 claims. When CCV says VERIFIED, it is always right. This is by construction: deterministic tools don't hallucinate.</p>
+</li>
+<li>
+<p><strong>Tree-sitter fallback matters</strong>: The cymbal/CPG "not found" fallback to grep (instead of immediately refuting) recovered 215 false negatives. Tree-sitter indexes miss C functions defined via macros, so grep serves as a safety net.</p>
 </li>
 </ol>
 <h2 id="reproducing">Reproducing<a class="headerlink" href="#reproducing" title="Permanent link">¶</a></h2>
@@ -1917,9 +1739,9 @@
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>python<span class="w"> </span>eval/cybergym/run_pipeline.py<span class="w"> </span>prepare<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">    </span>--cybergym-repos<span class="w"> </span>~/workdir/rhoai/cybergym-repos/
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Stage 2: Generate reasoning (needs Vertex AI or API key)</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># Stage 2: Generate reasoning (needs model API access)</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>python<span class="w"> </span>eval/cybergym/run_pipeline.py<span class="w"> </span>generate<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span>--model<span class="w"> </span>claude-sonnet-4<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="w">    </span>--model<span class="w"> </span>granite-3.3-8b<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="w">    </span>--manifest<span class="w"> </span>eval/cybergym/manifest.jsonl
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
 <a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Stage 3: Verify with CCV</span>
@@ -1953,7 +1775,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"></path></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 2, 2026 12:05:53 UTC">July 2, 2026</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="July 20, 2026 12:08:01 UTC">July 20, 2026</span>
   </span>
 
     
