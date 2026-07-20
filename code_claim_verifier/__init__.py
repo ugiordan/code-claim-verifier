@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 from code_claim_verifier.types import TypedClaim, VerifiedClaim, VerificationReport, CLAIM_TYPES
 from code_claim_verifier.extractor import extract_claims, LLMFunction
 from code_claim_verifier.calibrator import calibrate
@@ -28,6 +30,32 @@ class CodeClaimVerifier:
         self.repo_path = repo_path
         self.engine = VerificationEngine()
         self._extraction_hints: list[str] = []
+
+    def quick_index(self, repo_path: str | None = None) -> None:
+        """Run architecture-analyzer quick-index for fast tree-sitter verification.
+
+        Requires arch-analyzer on PATH (github.com/ugiordan/architecture-analyzer).
+        ~40-60x faster than cymbal. Produces a quick-index.json that CCV's CPG
+        backend can read directly (converted from functions/calls to nodes/edges).
+        """
+        import shutil
+        import subprocess
+        if not shutil.which("arch-analyzer"):
+            return
+        target = repo_path or self.repo_path
+        output = os.path.join(target, "quick-index.json")
+        try:
+            subprocess.run(
+                ["arch-analyzer", "quick-index", target, "-output", output],
+                capture_output=True, timeout=300,
+            )
+            if os.path.isfile(output):
+                from code_claim_verifier.cpg_backend import load_quick_index
+                cpg = load_quick_index(output)
+                if cpg:
+                    self.engine.cpg = cpg
+        except Exception:
+            pass
 
     def load_cymbal(self, repo_path: str | None = None) -> None:
         """Index the repo with cymbal (tree-sitter) for AST-level verification.

@@ -236,6 +236,88 @@ class CpgBackend:
         return {"CERTAIN": 0.95, "INFERRED": 0.80, "UNCERTAIN": 0.65}.get(conf, 0.65)
 
 
+def load_quick_index(path: str) -> CpgBackend | None:
+    """Load a quick-index.json from architecture-analyzer's quick-index command.
+
+    Converts the quick-index format (functions/calls/http_endpoints) to CPG
+    format (nodes/edges) that CpgBackend expects.
+    """
+    try:
+        with open(path) as f:
+            data = json.load(f)
+
+        nodes: list[dict] = []
+        edges: list[dict] = []
+        fn_index: dict[tuple[str, str], str] = {}
+
+        for fn in data.get("functions") or []:
+            name = fn["name"]
+            file = fn.get("file", "")
+            node_id = f"fn_{name}_{file}_{fn.get('line', 0)}"
+            fn_index[(name, file)] = node_id
+            nodes.append({
+                "id": node_id,
+                "kind": "Function",
+                "name": name,
+                "file": file,
+                "line": fn.get("line", 0),
+                "end_line": fn.get("end_line", 0),
+                "language": fn.get("language", ""),
+                "param_names": fn.get("params", []),
+            })
+
+        for ep in data.get("http_endpoints") or []:
+            nodes.append({
+                "id": f"ep_{ep['name']}_{ep.get('line', 0)}",
+                "kind": "HTTPEndpoint",
+                "name": ep.get("route", ep["name"]),
+                "file": ep.get("file", ""),
+                "line": ep.get("line", 0),
+                "route": ep.get("route", ""),
+                "http_method": ep.get("method", ""),
+            })
+
+        for call in data.get("calls") or []:
+            caller_raw = call.get("caller", "")
+            caller_file = call.get("caller_file", "")
+            callee_name = call.get("callee", "")
+            callee_file = call.get("callee_file", "")
+
+            caller_id = fn_index.get((caller_raw, caller_file))
+            if not caller_id:
+                candidates = [v for (n, _), v in fn_index.items() if n == caller_raw]
+                caller_id = candidates[0] if candidates else f"fn_{caller_raw}__0"
+
+            callee_id = fn_index.get((callee_name, callee_file))
+            if not callee_id:
+                candidates = [v for (n, _), v in fn_index.items() if n == callee_name]
+                callee_id = candidates[0] if candidates else f"fn_{callee_name}__0"
+
+            cs_id = f"cs_{caller_id}_{callee_name}_{call.get('line', 0)}"
+            nodes.append({
+                "id": cs_id, "kind": "CallSite", "name": callee_name,
+                "file": caller_file, "line": call.get("line", 0),
+            })
+            edges.append({"from": caller_id, "to": cs_id, "kind": "CONTAINS"})
+            conf = (call.get("confidence") or "uncertain").upper()
+            edges.append({
+                "from": cs_id, "to": callee_id, "kind": "CALLS",
+                "confidence": conf,
+            })
+
+        cpg_data = {"nodes": nodes, "edges": edges, "schema_version": 3}
+
+        import tempfile
+        tmp = tempfile.NamedTemporaryFile(suffix=".json", delete=False, mode="w")
+        json.dump(cpg_data, tmp)
+        tmp.close()
+        return CpgBackend(tmp.name)
+
+    except Exception as e:
+        logger.warning("Failed to load quick-index from %s: %s", path, e)
+        return None
+
+
 def load_cpg(repo_path: str) -> CpgBackend | None:
     """Try to load a CPG from common locations relative to repo_path."""
     candidates = [

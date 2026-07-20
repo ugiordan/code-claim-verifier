@@ -11,7 +11,8 @@ def verify_absence(claim: TypedClaim, repo_path: str, language: str) -> Verified
     pattern = (claim.parameters.get("pattern", "")
                or claim.parameters.get("item", "")
                or claim.parameters.get("description", "")
-               or claim.parameters.get("name", ""))
+               or claim.parameters.get("name", "")
+               or claim.parameters.get("type", ""))
     if not pattern:
         return VerifiedClaim(
             claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,

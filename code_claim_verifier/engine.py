@@ -444,27 +444,22 @@ class VerificationEngine:
                     evidence=f"CPG: {node['name']} at {node['file']}:{node['line']}",
                     method="cpg_function",
                 )
-            return VerifiedClaim(
-                claim=claim, verdict="REFUTED", method_confidence=0.95,
-                evidence=f"CPG: no function '{name}' found",
-                method="cpg_function",
-            )
+            return None
 
         if ct in ("FUNCTION_CALLED", "HAS_CALLERS"):
             name = params.get("name", "")
             expected = params.get("expected", True)
             callers = cpg.function_callers(name)
-            has_callers = len(callers) > 0
-            match = has_callers == expected
-            conf = max((cpg.get_confidence_for_edge(c) for c in callers), default=0.65) if callers else 0.80
-            evidence = f"CPG: {len(callers)} callers" if callers else f"CPG: no callers found"
-            return VerifiedClaim(
-                claim=claim,
-                verdict="VERIFIED" if match else "REFUTED",
-                method_confidence=conf,
-                evidence=evidence,
-                method="cpg_callers",
-            )
+            if callers:
+                conf = max(cpg.get_confidence_for_edge(c) for c in callers)
+                return VerifiedClaim(
+                    claim=claim,
+                    verdict="VERIFIED" if expected else "REFUTED",
+                    method_confidence=conf,
+                    evidence=f"CPG: {len(callers)} callers",
+                    method="cpg_callers",
+                )
+            return None
 
         if ct == "CALL_CHAIN":
             chain = params.get("chain", [])
@@ -630,11 +625,7 @@ class VerificationEngine:
                     evidence=f"cymbal: {node['name']} at {node.get('rel_path', '')}:{node.get('start_line', '')}",
                     method="cymbal_function",
                 )
-            return VerifiedClaim(
-                claim=claim, verdict="REFUTED", method_confidence=0.90,
-                evidence=f"cymbal: no function '{name}' found",
-                method="cymbal_function",
-            )
+            return None
 
         if ct in ("FUNCTION_CALLED", "HAS_CALLERS"):
             name = (params.get("name", "") or params.get("callee", "")
@@ -643,20 +634,16 @@ class VerificationEngine:
             if not name:
                 return None
             callers = cymbal.function_callers(name)
-            has_callers = len(callers) > 0
-            match = has_callers == expected
             if callers:
                 caller_names = ", ".join(c.get("caller", "?") for c in callers[:3])
-                evidence = f"cymbal: {len(callers)} callers ({caller_names})"
-            else:
-                evidence = "cymbal: no callers found"
-            return VerifiedClaim(
-                claim=claim,
-                verdict="VERIFIED" if match else "REFUTED",
-                method_confidence=0.90,
-                evidence=evidence,
-                method="cymbal_callers",
-            )
+                return VerifiedClaim(
+                    claim=claim,
+                    verdict="VERIFIED" if expected else "REFUTED",
+                    method_confidence=0.90,
+                    evidence=f"cymbal: {len(callers)} callers ({caller_names})",
+                    method="cymbal_callers",
+                )
+            return None
 
         if ct == "CALL_CHAIN":
             chain = params.get("chain", [])

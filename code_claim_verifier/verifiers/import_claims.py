@@ -14,10 +14,12 @@ def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> Ve
     module = (claim.parameters.get("module", "")
               or claim.parameters.get("import", "")
               or claim.parameters.get("name", ""))
+    file_param = claim.parameters.get("file", "")
+    if not module and file_param and file_param.endswith((".h", ".hpp")):
+        module = file_param
     if not module:
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
                              evidence="No module specified", method="grep_import")
-    file_param = claim.parameters.get("file", "")
 
     lang = detect_language(file_param) if file_param else language
     patterns = get_import_patterns(module, lang)
@@ -151,13 +153,16 @@ def _parse_package_lock(path: str, package: str) -> str | None:
 
 
 def verify_dependency_type(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
-    package = claim.parameters.get("package", "")
+    package = (claim.parameters.get("package", "")
+               or claim.parameters.get("name", "")
+               or claim.parameters.get("dependency", ""))
     if not package:
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
                              evidence="No package specified", method="manifest_parse")
     expected_type = claim.parameters.get("type", claim.parameters.get("dep_type", "direct"))
 
-    manifests = ["go.mod", "requirements.txt", "package.json", "Pipfile", "pyproject.toml"]
+    manifests = ["go.mod", "requirements.txt", "package.json", "Pipfile", "pyproject.toml",
+                  "CMakeLists.txt", "Makefile", "configure.ac", "meson.build", "Cargo.toml"]
     for manifest in manifests:
         manifest_path = os.path.join(repo_path, manifest)
         if os.path.isfile(manifest_path):
