@@ -61,26 +61,19 @@ def _reorder_images(images: list[str], required_version: str | None,
     """Put the best-matching base image first based on detected version."""
     if not required_version:
         return images
-    best = []
-    rest = []
-    for img in images:
+
+    def _sort_key(img: str) -> tuple[int, float]:
         tag = img.split(":")[-1]
-        version_in_tag = re.search(r"(\d+\.?\d*)", tag)
-        if version_in_tag and version_in_tag.group(1) == required_version:
-            best.append(img)
-        elif version_in_tag:
-            try:
-                tag_major = float(version_in_tag.group(1))
-                req_major = float(required_version)
-                if tag_major >= req_major:
-                    best.append(img)
-                else:
-                    rest.append(img)
-            except ValueError:
-                rest.append(img)
-        else:
-            rest.append(img)
-    return best + rest
+        m = re.search(r"(\d+\.?\d*)", tag)
+        if not m:
+            return (2, 0.0)
+        tag_ver = float(m.group(1))
+        req_ver = float(required_version)
+        if tag_ver == req_ver:
+            return (0, 0.0)
+        return (1, abs(tag_ver - req_ver))
+
+    return sorted(images, key=_sort_key)
 
 
 def generate_containerfile(
@@ -203,7 +196,7 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
     if required_version:
         logger.debug("Detected %s version %s for %s", language, required_version, osv_id)
 
-    images = images[:2]
+    images = images[:3]
 
     for base_image in images:
         cf_content = generate_containerfile(
@@ -218,7 +211,7 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
         with open(cf_path, "w") as f:
             f.write(cf_content)
 
-        tag = f"polyvuln/{language}/{osv_id}:latest"
+        tag = f"polyvuln/{language}/{osv_id}:latest".lower()
         success, output, elapsed = _podman_build(cf_path, source_path, tag)
 
         if success:
