@@ -150,7 +150,11 @@ def make_models_corp(model_id: str, registry_name: str = "") -> LLMFunction:
                 {"role": "user", "content": user},
             ],
         )
-        content = response.choices[0].message.content
+        msg = response.choices[0].message
+        content = msg.content
+        if content is None:
+            raw = msg.model_dump() if hasattr(msg, "model_dump") else {}
+            content = raw.get("reasoning") or raw.get("reasoning_content")
         if content is None:
             raise RuntimeError(f"None content from {model_id}")
         return content
