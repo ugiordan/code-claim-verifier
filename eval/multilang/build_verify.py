@@ -203,6 +203,8 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
     if required_version:
         logger.debug("Detected %s version %s for %s", language, required_version, osv_id)
 
+    images = images[:2]
+
     for base_image in images:
         cf_content = generate_containerfile(
             language, base_image, source_root,
@@ -244,28 +246,29 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
 def run_build(candidates_path: str, containerfiles_dir: str, base_dir: str,
               max_builds: int = 0, retry_failed: bool = False) -> None:
     candidates = load_jsonl(candidates_path)
-    updated: list[dict] = []
     build_count = 0
+    _SAVE_INTERVAL = 25
 
     for i, c in enumerate(candidates):
         if c.get("status") == CandidateStatus.BUILD_OK:
-            updated.append(c)
             continue
         if c.get("status") == CandidateStatus.FAILED and c.get("failure_stage") == "build":
             if not retry_failed:
-                updated.append(c)
                 continue
         if c.get("status") != CandidateStatus.CLONED and not retry_failed:
-            updated.append(c)
             continue
         if max_builds > 0 and build_count >= max_builds:
-            updated.append(c)
             continue
 
         logger.info("[%d/%d] Building %s", i + 1, len(candidates), c["osv_id"])
-        updated.append(build_case(c, containerfiles_dir, base_dir))
+        candidates[i] = build_case(c, containerfiles_dir, base_dir)
         build_count += 1
 
-    save_jsonl(updated, candidates_path)
-    built = sum(1 for c in updated if c.get("build_success"))
-    logger.info("Built: %d / %d", built, len(updated))
+        if build_count % _SAVE_INTERVAL == 0:
+            save_jsonl(candidates, candidates_path)
+            built_so_far = sum(1 for x in candidates if x.get("build_success"))
+            logger.info("Checkpoint: %d built so far (%d attempted)", built_so_far, build_count)
+
+    save_jsonl(candidates, candidates_path)
+    built = sum(1 for c in candidates if c.get("build_success"))
+    logger.info("Built: %d / %d", built, len(candidates))
