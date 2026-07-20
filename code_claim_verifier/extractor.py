@@ -171,7 +171,11 @@ def _parse_claimify_output(raw: str) -> list[TypedClaim]:
 
 
 def _parse_extraction_output(raw: str, valid_types: frozenset[str] = CLAIM_TYPES) -> list[TypedClaim]:
-    """Parse LLM output into TypedClaim objects."""
+    """Parse LLM output into TypedClaim objects.
+
+    Handles truncated JSON from token-limited responses by finding complete
+    JSON objects within a potentially incomplete array.
+    """
     text = raw.strip()
     if text.startswith("```"):
         text = text.split("\n", 1)[1] if "\n" in text else text[3:]
@@ -180,14 +184,42 @@ def _parse_extraction_output(raw: str, valid_types: frozenset[str] = CLAIM_TYPES
         text = text.strip()
 
     start = text.find("[")
-    end = text.rfind("]")
-    if start == -1 or end == -1:
+    if start == -1:
         return []
 
+    json_str = text[start:]
+    items = None
+
     try:
-        items = json.loads(text[start:end + 1])
+        items = json.loads(json_str)
     except json.JSONDecodeError:
-        return []
+        # Try closing the array (truncated response)
+        for repair in ("]", "}]", "\"}]", "\": \"\"}]"):
+            try:
+                items = json.loads(json_str + repair)
+                break
+            except json.JSONDecodeError:
+                continue
+
+    if items is None:
+        # Last resort: extract complete JSON objects individually
+        items = []
+        depth = 0
+        obj_start = -1
+        for i, ch in enumerate(json_str):
+            if ch == "{" and depth == 0:
+                obj_start = i
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0 and obj_start >= 0:
+                    try:
+                        obj = json.loads(json_str[obj_start:i + 1])
+                        items.append(obj)
+                    except json.JSONDecodeError:
+                        pass
+                    obj_start = -1
 
     claims = []
     for item in items:

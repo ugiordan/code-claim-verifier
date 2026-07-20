@@ -30,7 +30,7 @@ def make_anthropic(model: str = "claude-sonnet-4@20250514") -> LLMFunction:
 
     def call(system: str, user: str) -> str:
         response = client.messages.create(
-            model=model, max_tokens=4096, temperature=0,
+            model=model, max_tokens=8192, temperature=0,
             system=system,
             messages=[{"role": "user", "content": user}],
         )
@@ -52,7 +52,7 @@ def make_openai(model: str = "gpt-4o") -> LLMFunction:
 
     def call(system: str, user: str) -> str:
         response = client.chat.completions.create(
-            model=model, max_tokens=4096, temperature=0,
+            model=model, max_tokens=8192, temperature=0,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -144,7 +144,7 @@ def make_models_corp(model_id: str, registry_name: str = "") -> LLMFunction:
 
     def call(system: str, user: str) -> str:
         response = client.chat.completions.create(
-            model=model_id, max_tokens=4096, temperature=0,
+            model=model_id, max_tokens=8192, temperature=0,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
@@ -169,7 +169,7 @@ def make_generic_openai(base_url: str, api_key: str,
 
     def call(system: str, user: str) -> str:
         response = client.chat.completions.create(
-            model=model, max_tokens=4096, temperature=0,
+            model=model, max_tokens=8192, temperature=0,
             messages=[
                 {"role": "system", "content": system},
                 {"role": "user", "content": user},
