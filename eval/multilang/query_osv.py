@@ -97,30 +97,62 @@ def _extract_severity(entry: dict) -> str:
 
 
 def _cvss_base_from_vector(vector: str) -> float:
+    """
+    Calculate CVSS 3.1 base score from vector string.
+    Bug #10 fix: Added Scope handling for accurate base score calculation.
+    Bug #12 fix: Use ceiling (roundup) to nearest 0.1 instead of standard round.
+    Note: This is an approximate calculation used for filtering purposes.
+    """
+    import math
+
     parts = {}
     for segment in vector.split("/"):
         if ":" in segment:
             key, val = segment.split(":", 1)
             parts[key] = val
+
     av_scores = {"N": 0.85, "A": 0.62, "L": 0.55, "P": 0.20}
     ac_scores = {"L": 0.77, "H": 0.44}
     pr_scores = {"N": 0.85, "L": 0.62, "H": 0.27}
+    pr_scores_changed = {"N": 0.85, "L": 0.68, "H": 0.50}  # When scope is changed
     ui_scores = {"N": 0.85, "R": 0.62}
     impact_map = {"H": 0.56, "L": 0.22, "N": 0.0}
+
+    scope = parts.get("S", "U")  # U = Unchanged, C = Changed
     av = av_scores.get(parts.get("AV", "N"), 0.85)
     ac = ac_scores.get(parts.get("AC", "L"), 0.77)
-    pr = pr_scores.get(parts.get("PR", "N"), 0.85)
+
+    # Bug #10: PR values differ when Scope is Changed
+    if scope == "C":
+        pr = pr_scores_changed.get(parts.get("PR", "N"), 0.85)
+    else:
+        pr = pr_scores.get(parts.get("PR", "N"), 0.85)
+
     ui = ui_scores.get(parts.get("UI", "N"), 0.85)
     c = impact_map.get(parts.get("C", "N"), 0.0)
     i = impact_map.get(parts.get("I", "N"), 0.0)
     a = impact_map.get(parts.get("A", "N"), 0.0)
+
     iss = 1 - (1 - c) * (1 - i) * (1 - a)
-    impact = 6.42 * iss
+
+    # Bug #10: Impact calculation differs when Scope is Changed
+    if scope == "C":
+        impact = 7.52 * (iss - 0.029) - 3.25 * pow(iss - 0.02, 15)
+    else:
+        impact = 6.42 * iss
+
     exploitability = 8.22 * av * ac * pr * ui
+
     if impact <= 0:
         return 0.0
-    base = min(impact + exploitability, 10.0)
-    return round(base, 1)
+
+    if scope == "C":
+        base = min(1.08 * (impact + exploitability), 10.0)
+    else:
+        base = min(impact + exploitability, 10.0)
+
+    # Bug #12: Use ceiling (roundup) instead of round
+    return math.ceil(base * 10) / 10
 
 
 def _parse_osv_entry(entry: dict) -> dict | None:
@@ -132,8 +164,13 @@ def _parse_osv_entry(entry: dict) -> dict | None:
         return None
 
     published = entry.get("published", "")
-    if published and int(published[:4]) < _MIN_YEAR:
-        return None
+    # Bug #13 fix: Handle malformed dates with try/except
+    if published:
+        try:
+            if int(published[:4]) < _MIN_YEAR:
+                return None
+        except (ValueError, IndexError):
+            pass
 
     fix_commit = _extract_fix_commit(entry)
     if not fix_commit:
@@ -171,7 +208,10 @@ def _parse_osv_entry(entry: dict) -> dict | None:
     }
 
 
+_gh_warning_logged = False
+
 def _get_star_count(repo_url: str) -> int | None:
+    global _gh_warning_logged
     import subprocess
     parts = repo_url.rstrip("/").split("/")
     if len(parts) < 2:
@@ -184,8 +224,11 @@ def _get_star_count(repo_url: str) -> int | None:
         )
         if result.returncode == 0 and result.stdout.strip().isdigit():
             return int(result.stdout.strip())
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        pass
+    except (subprocess.TimeoutExpired, FileNotFoundError) as e:
+        # Bug #14 fix: Log warning when gh CLI is missing
+        if isinstance(e, FileNotFoundError) and not _gh_warning_logged:
+            logger.warning("gh CLI not found, star filtering will be skipped")
+            _gh_warning_logged = True
     return None
 
 

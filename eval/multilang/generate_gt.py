@@ -126,7 +126,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
     if language == "python":
         import_re = re.compile(r"^(?:import\s+([\w.]+)|from\s+([\w.]+)\s+import)", re.MULTILINE)
     elif language == "go":
-        import_re = re.compile(r'"([^"]+)"')
+        # Bug #11 fix: Only match imports within import blocks or import lines
+        import_re = re.compile(r'(?:^import\s+"([^"]+)"|^import\s+\(\s*\n(?:\s*"([^"]+)"\s*\n)+\s*\))', re.MULTILINE)
     elif language in ("javascript", "typescript"):
         import_re = re.compile(r"""(?:from\s+['"]([^'"]+)['"]|require\(['"]([^'"]+)['"]\))""")
     elif language == "java":
@@ -142,16 +143,44 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
             if ext not in SOURCE_EXTENSIONS:
                 continue
             content = _read_file_safe(os.path.join(dirpath, fname))
-            for m in import_re.finditer(content):
-                for g in m.groups():
-                    if g:
-                        if language in ("python", "java"):
-                            module = g.split(".")[0]
-                        elif language == "go":
-                            module = g.split("/")[-1] if "/" in g else g
-                        else:
-                            module = g
-                        imports.add(module)
+
+            # For Go, need special handling
+            if language == "go":
+                # Find all import statements
+                for line in content.split("\n"):
+                    line = line.strip()
+                    if line.startswith("import "):
+                        # Single import: import "path"
+                        m = re.search(r'import\s+"([^"]+)"', line)
+                        if m:
+                            module = m.group(1).split("/")[-1] if "/" in m.group(1) else m.group(1)
+                            imports.add(module)
+                # Find import blocks
+                in_import_block = False
+                for line in content.split("\n"):
+                    line = line.strip()
+                    if line.startswith("import ("):
+                        in_import_block = True
+                        continue
+                    if in_import_block:
+                        if line == ")":
+                            in_import_block = False
+                            continue
+                        m = re.search(r'"([^"]+)"', line)
+                        if m:
+                            module = m.group(1).split("/")[-1] if "/" in m.group(1) else m.group(1)
+                            imports.add(module)
+            else:
+                for m in import_re.finditer(content):
+                    for g in m.groups():
+                        if g:
+                            if language in ("python", "java"):
+                                module = g.split(".")[0]
+                            elif language == "go":
+                                module = g.split("/")[-1] if "/" in g else g
+                            else:
+                                module = g
+                            imports.add(module)
 
     return sorted(imports)
 
@@ -162,6 +191,9 @@ def _extract_call_sites(source_root: str, func_names: list[str],
     calls: list[tuple[str, str]] = []
     for func_name in func_names:
         call_pattern = re.compile(re.escape(func_name) + r"\s*\(")
+        func_def_template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
+        func_def_re = re.compile(func_def_template.format(name=re.escape(func_name)))
+
         for dirpath, _dirs, files in os.walk(source_root):
             for fname in files:
                 ext = os.path.splitext(fname)[1].lower()
@@ -170,10 +202,17 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                 full = os.path.join(dirpath, fname)
                 rel = os.path.relpath(full, source_root)
                 content = _read_file_safe(full)
-                func_def_template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
-                func_def_re = re.compile(func_def_template.format(name=re.escape(func_name)))
+
+                # Bug #9 fix: Check if call position overlaps with any definition
+                # Find all definition positions first
+                def_positions: set[int] = set()
+                for def_match in func_def_re.finditer(content):
+                    # Mark the range of the definition
+                    def_positions.add(def_match.start())
+
                 for m in call_pattern.finditer(content):
-                    if func_def_re.match(content, m.start()):
+                    # Skip if this call is at a definition position
+                    if m.start() in def_positions:
                         continue
                     line_start = content.rfind("\n", 0, m.start()) + 1
                     line_text = content[line_start:m.start()].lstrip()

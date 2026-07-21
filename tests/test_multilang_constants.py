@@ -13,8 +13,9 @@ def test_ecosystems_mapping():
 
 def test_base_images_per_language():
     from eval.multilang.constants import BASE_IMAGES
-    assert BASE_IMAGES["go"][0] == "golang:1.22"
-    assert BASE_IMAGES["python"][0] == "python:3.12"
+    # Bug #3 fix: Update assertions to match current values
+    assert BASE_IMAGES["go"][0] == "golang:1.24"
+    assert BASE_IMAGES["python"][0] == "python:3.13"
     assert BASE_IMAGES["javascript"][0] == "node:22"
     assert BASE_IMAGES["java"][0] == "maven:3.9-eclipse-temurin-21"
     assert BASE_IMAGES["rust"][0] == "rust:1.79"

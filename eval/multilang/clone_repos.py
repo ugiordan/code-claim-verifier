@@ -39,7 +39,8 @@ def _checkout_pre_fix(repo_path: str, fix_commit: str) -> bool:
 def _detect_primary_language(repo_path: str, ecosystem: str) -> str:
     fallback = ECOSYSTEM_TO_LANG.get(ecosystem, "unknown")
     for root, _dirs, files in os.walk(repo_path):
-        if ".git" in root:
+        # Bug #8 fix: Check for .git as basename not substring
+        if os.path.basename(root) == ".git" or "/.git/" in root:
             continue
         for f in files:
             ext = os.path.splitext(f)[1].lower()
@@ -89,6 +90,10 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
                 candidate["failure_stage"] = "clone"
                 return candidate
         except subprocess.TimeoutExpired:
+            # Bug #15 fix: Clean up partial clone on timeout
+            if os.path.isdir(dest):
+                import shutil
+                shutil.rmtree(dest, ignore_errors=True)
             candidate["status"] = CandidateStatus.FAILED
             candidate["failure_reason"] = "clone timed out"
             candidate["failure_stage"] = "clone"
@@ -110,7 +115,8 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
     language = _detect_primary_language(dest, ecosystem)
     commit_date = _get_commit_date(dest)
 
-    candidate["source_root"] = os.path.relpath(dest, os.path.dirname(repos_dir))
+    # Bug #4 fix: Make source_root consistent by using os.path.join directly
+    candidate["source_root"] = os.path.join("repos", lang_dir, dir_name)
     candidate["language"] = language
     candidate["file_count"] = file_count
     candidate["commit_date"] = commit_date

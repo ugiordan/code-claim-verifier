@@ -56,22 +56,33 @@ def _detect_required_version(source_path: str, language: str) -> str | None:
     return None
 
 
+def _parse_version_tuple(s: str) -> tuple[int, int]:
+    """Parse version string as (major, minor) tuple."""
+    parts = s.split(".")
+    try:
+        return (int(parts[0]), int(parts[1]) if len(parts) > 1 else 0)
+    except (ValueError, IndexError):
+        return (0, 0)
+
+
 def _reorder_images(images: list[str], required_version: str | None,
                     language: str) -> list[str]:
     """Put the best-matching base image first based on detected version."""
     if not required_version:
         return images
 
-    def _sort_key(img: str) -> tuple[int, float]:
+    req = _parse_version_tuple(required_version)
+
+    def _sort_key(img: str) -> tuple[int, int, int]:
         tag = img.split(":")[-1]
-        m = re.search(r"(\d+\.?\d*)", tag)
+        m = re.search(r"(\d+\.\d+)", tag)
         if not m:
-            return (2, 0.0)
-        tag_ver = float(m.group(1))
-        req_ver = float(required_version)
-        if tag_ver == req_ver:
-            return (0, 0.0)
-        return (1, abs(tag_ver - req_ver))
+            return (2, 0, 0)
+        tag_ver = _parse_version_tuple(m.group(1))
+        if tag_ver == req:
+            return (0, 0, 0)
+        dist = abs(tag_ver[0] - req[0]) * 100 + abs(tag_ver[1] - req[1])
+        return (1, dist, 0)
 
     return sorted(images, key=_sort_key)
 
@@ -192,7 +203,10 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
 
     project_files = _detect_project_files(source_path)
     required_version = _detect_required_version(source_path, language)
-    images = _reorder_images(BASE_IMAGES.get(language, []), required_version, language)
+
+    # Map typescript to javascript for base images (Bug #6 fix)
+    image_lang = "javascript" if language == "typescript" else language
+    images = _reorder_images(BASE_IMAGES.get(image_lang, []), required_version, language)
     if required_version:
         logger.debug("Detected %s version %s for %s", language, required_version, osv_id)
 
@@ -243,12 +257,16 @@ def run_build(candidates_path: str, containerfiles_dir: str, base_dir: str,
     _SAVE_INTERVAL = 25
 
     for i, c in enumerate(candidates):
-        if c.get("status") == CandidateStatus.BUILD_OK:
+        status = c.get("status")
+        if status == CandidateStatus.BUILD_OK:
             continue
-        if c.get("status") == CandidateStatus.FAILED and c.get("failure_stage") == "build":
-            if not retry_failed:
+        # Bug #1 fix: protect VERIFIED/READY from being rebuilt
+        if status in (CandidateStatus.VERIFIED, CandidateStatus.READY):
+            continue
+        if status == CandidateStatus.FAILED:
+            if c.get("failure_stage") != "build" or not retry_failed:
                 continue
-        if c.get("status") != CandidateStatus.CLONED and not retry_failed:
+        if status != CandidateStatus.CLONED:
             continue
         if max_builds > 0 and build_count >= max_builds:
             continue

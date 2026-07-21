@@ -82,11 +82,14 @@ def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
         candidate["failure_stage"] = "verify_vuln"
         return candidate
 
+    # Bug #7 fix: Add depth limit to prevent infinite loop
     repo_root = source_path
     git_dir = os.path.join(repo_root, ".git")
-    while not os.path.isdir(git_dir) and repo_root != "/":
+    depth = 0
+    while not os.path.isdir(git_dir) and repo_root != "/" and depth < 10:
         repo_root = os.path.dirname(repo_root)
         git_dir = os.path.join(repo_root, ".git")
+        depth += 1
 
     changed_files = _get_changed_files(repo_root, fix_commit)
     candidate["changed_files"] = changed_files
@@ -98,13 +101,7 @@ def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
         candidate["vuln_verified"] = False
         return candidate
 
-    for f in changed_files:
-        full = os.path.join(source_path, f)
-        if not os.path.isfile(full):
-            alt = os.path.join(repo_root, f)
-            if not os.path.isfile(alt):
-                continue
-
+    # Bug #5 fix: Remove dead loop that does nothing
     ccv_ok, ccv_count = _verify_via_ccv(description, source_path, language)
     if ccv_ok:
         candidate["vuln_verified"] = True
