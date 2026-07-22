@@ -11,14 +11,14 @@ _MANIFEST_FIELDS = [
     "vuln_id", "osv_id", "cve_id", "ecosystem", "package", "repo_url",
     "fix_commit", "source_root", "language", "description", "severity",
     "published_date", "source_files", "source_functions", "gt_claims",
-    "build_verified", "vuln_verified", "verification_method",
+    "build_success", "vuln_verified", "verification_method",
 ]
 
 
 def _validate_manifest_entry(candidate: dict) -> bool:
     if len(candidate.get("description", "")) < 50:
         return False
-    if not candidate.get("build_verified") and not candidate.get("build_success"):
+    if not candidate.get("build_success"):
         return False
     if not candidate.get("vuln_verified"):
         return False

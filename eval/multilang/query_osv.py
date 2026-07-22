@@ -205,7 +205,7 @@ def _get_star_count(repo_url: str) -> int | None:
     import subprocess
     parts = repo_url.rstrip("/").split("/")
     if len(parts) < 2:
-        return None
+        return 0
     owner_repo = f"{parts[-2]}/{parts[-1]}"
     try:
         result = subprocess.run(
@@ -216,17 +216,17 @@ def _get_star_count(repo_url: str) -> int | None:
             return int(result.stdout.strip())
         if result.returncode != 0 and "404" in result.stderr:
             return 0  # Definitive 404, repo doesn't exist
-        # Rate limiting or other API errors: log and return None to skip filtering
+        # Rate limiting or other API errors: return 0 to treat as 0-star repo
         logger.debug("gh API error for %s: %s", repo_url, result.stderr[:100])
-        return None
+        return 0
     except subprocess.TimeoutExpired:
         logger.debug("gh API timeout for %s", repo_url)
-        return None
+        return 0
     except FileNotFoundError:
         if not _gh_warning_logged:
             logger.warning("gh CLI not found, star filtering will be skipped")
             _gh_warning_logged = True
-        return None  # gh not installed
+        return None  # gh not installed, skip filtering entirely
 
 
 def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> list[dict]:

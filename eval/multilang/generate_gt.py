@@ -227,6 +227,13 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                 rel = os.path.relpath(full, source_root)
                 content = _read_file_safe(full)
 
+                # Bug #9 fix: Strip block comments and docstrings like _extract_functions does
+                if language in ("c", "cpp", "java", "javascript", "typescript", "go", "rust"):
+                    content = _strip_block_comments(content)
+                if language == "python":
+                    content = re.sub(r'""".*?"""', '', content, flags=re.DOTALL)
+                    content = re.sub(r"'''.*?'''", '', content, flags=re.DOTALL)
+
                 # Bug #4 fix: Store definition ranges not just start positions
                 # Find all definition ranges first
                 def_ranges: list[tuple[int, int]] = []
