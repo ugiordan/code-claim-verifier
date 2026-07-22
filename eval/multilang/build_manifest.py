@@ -12,7 +12,6 @@ _MANIFEST_FIELDS = [
     "fix_commit", "source_root", "language", "description", "severity",
     "published_date", "source_files", "source_functions", "gt_claims",
     "build_verified", "vuln_verified", "verification_method",
-    "container_image_tag",
 ]
 
 

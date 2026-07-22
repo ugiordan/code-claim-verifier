@@ -105,11 +105,14 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
             for match in generic_regex.finditer(content):
                 line_start = content.rfind("\n", 0, match.start()) + 1
                 line_text = content[line_start:match.start()].lstrip()
-                if line_text.startswith("#"):
+                if line_text.startswith("#") or line_text.startswith("//"):
                     continue
-                name = match.group(1)
+                # Bug #5 fix: Handle multi-group regex (JS/TS arrow functions)
+                name = next((g for g in match.groups() if g), None)
+                if not name:
+                    continue
                 exclusions = _LANG_EXCLUSIONS.get(language, _COMMON_EXCLUSIONS)
-                if not name or name in exclusions or len(name) < 3:
+                if name in exclusions or len(name) < 3:
                     continue
                 if name[0].isdigit() or name.startswith("0x"):
                     continue
@@ -203,16 +206,17 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                 rel = os.path.relpath(full, source_root)
                 content = _read_file_safe(full)
 
-                # Bug #9 fix: Check if call position overlaps with any definition
-                # Find all definition positions first
-                def_positions: set[int] = set()
+                # Bug #4 fix: Store definition ranges not just start positions
+                # Find all definition ranges first
+                def_ranges: list[tuple[int, int]] = []
                 for def_match in func_def_re.finditer(content):
-                    # Mark the range of the definition
-                    def_positions.add(def_match.start())
+                    # Store the range of the entire definition match
+                    def_ranges.append((def_match.start(), def_match.end()))
 
                 for m in call_pattern.finditer(content):
-                    # Skip if this call is at a definition position
-                    if m.start() in def_positions:
+                    # Skip if this call overlaps with any definition range
+                    is_def = any(ds <= m.start() <= de for ds, de in def_ranges)
+                    if is_def:
                         continue
                     line_start = content.rfind("\n", 0, m.start()) + 1
                     line_text = content[line_start:m.start()].lstrip()

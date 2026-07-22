@@ -57,7 +57,7 @@ def _detect_required_version(source_path: str, language: str) -> str | None:
 
 
 def _parse_version_tuple(s: str) -> tuple[int, int]:
-    """Parse version string as (major, minor) tuple."""
+    """Parse version string as (major, minor) tuple. Bug #7 fix: Handle single-number versions."""
     parts = s.split(".")
     try:
         return (int(parts[0]), int(parts[1]) if len(parts) > 1 else 0)
@@ -75,7 +75,8 @@ def _reorder_images(images: list[str], required_version: str | None,
 
     def _sort_key(img: str) -> tuple[int, int, int]:
         tag = img.split(":")[-1]
-        m = re.search(r"(\d+\.\d+)", tag)
+        # Bug #7 fix: Match major-only versions (e.g., "22") or major.minor (e.g., "1.22")
+        m = re.search(r"(\d+(?:\.\d+)?)", tag)
         if not m:
             return (2, 0, 0)
         tag_ver = _parse_version_tuple(m.group(1))
@@ -145,8 +146,8 @@ def _podman_build(containerfile_path: str, context_dir: str, tag: str,
         success = result.returncode == 0
         output = result.stdout + result.stderr
         return success, output, elapsed
-    except subprocess.TimeoutExpired:
-        return False, "build timed out", time.monotonic() - start
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False, "podman not found or build timed out", time.monotonic() - start
 
 
 def _count_test_output(output: str, language: str) -> tuple[bool, int]:
@@ -266,7 +267,7 @@ def run_build(candidates_path: str, containerfiles_dir: str, base_dir: str,
         if status == CandidateStatus.FAILED:
             if c.get("failure_stage") != "build" or not retry_failed:
                 continue
-        if status != CandidateStatus.CLONED:
+        elif status != CandidateStatus.CLONED:
             continue
         if max_builds > 0 and build_count >= max_builds:
             continue

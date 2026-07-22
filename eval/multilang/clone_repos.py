@@ -128,7 +128,11 @@ def run_clone(candidates_path: str, repos_dir: str) -> None:
     candidates = load_jsonl(candidates_path)
     updated: list[dict] = []
     for i, c in enumerate(candidates):
-        if c.get("status") == CandidateStatus.FAILED:
+        status = c.get("status")
+        if status in (CandidateStatus.BUILD_OK, CandidateStatus.VERIFIED, CandidateStatus.READY):
+            updated.append(c)
+            continue
+        if status == CandidateStatus.FAILED:
             updated.append(c)
             continue
         logger.info("[%d/%d] Cloning %s", i + 1, len(candidates), c["osv_id"])

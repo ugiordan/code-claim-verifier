@@ -72,7 +72,8 @@ def _extract_severity(entry: dict) -> str:
             base = float(score_str.split("/")[0].split(":")[-1]) if ":" in score_str else 0
         except (ValueError, IndexError):
             pass
-        if "/AV:" in score_str:
+        # Bug #8 fix: Only parse CVSS v3.x, skip v4.0
+        if "/AV:" in score_str and "CVSS:4" not in score_str:
             try:
                 base_score = _cvss_base_from_vector(score_str)
                 if base_score >= 9.0:
@@ -243,14 +244,14 @@ def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> lis
             with zipfile.ZipFile(cached) as zf:
                 return _parse_zip(zf)
 
+    # Bug #9 fix: Move resp.content inside try/except
     try:
         resp = requests.get(url, timeout=120, stream=True)
         resp.raise_for_status()
+        content = resp.content
     except requests.RequestException as e:
         logger.error("Failed to download %s: %s", url, e)
         return []
-
-    content = resp.content
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
         with open(cached, "wb") as f:
