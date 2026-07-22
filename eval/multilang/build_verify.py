@@ -30,7 +30,7 @@ def _detect_required_version(source_path: str, language: str) -> str | None:
             if os.path.isfile(pyproject):
                 with open(pyproject) as f:
                     for line in f:
-                        m = re.search(r'python_requires\s*=\s*["\']>=\s*(3\.\d+)', line)
+                        m = re.search(r'(?:python_requires|requires-python)\s*=\s*["\']>=\s*(3\.\d+)', line)
                         if m:
                             return m.group(1)
         elif language == "rust":
@@ -148,8 +148,10 @@ def _podman_build(containerfile_path: str, context_dir: str, tag: str,
         success = result.returncode == 0
         output = result.stdout + result.stderr
         return success, output, elapsed
-    except (subprocess.TimeoutExpired, FileNotFoundError):
-        return False, "podman not found or build timed out", time.monotonic() - start
+    except FileNotFoundError:
+        return False, "podman is not installed", time.monotonic() - start
+    except subprocess.TimeoutExpired:
+        return False, "build timed out", time.monotonic() - start
 
 
 def _count_test_output(output: str, language: str) -> tuple[bool, int]:

@@ -17,7 +17,8 @@ def _repo_dir_name(repo_url: str, osv_id: str) -> str:
 
 def _count_source_files(path: str) -> int:
     count = 0
-    for root, _dirs, files in os.walk(path):
+    for root, dirs, files in os.walk(path):
+        dirs[:] = [d for d in dirs if d != '.git']
         for f in files:
             ext = os.path.splitext(f)[1].lower()
             if ext in SOURCE_EXTENSIONS:

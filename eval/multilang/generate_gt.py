@@ -66,7 +66,8 @@ def _read_file_safe(path: str, max_size: int = _MAX_FILE_SIZE) -> str:
 
 
 def _grep_fixed_in_tree(pattern: str, root: str) -> bool:
-    for dirpath, _dirs, files in os.walk(root):
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d != '.git']
         for fname in files:
             ext = os.path.splitext(fname)[1].lower()
             if ext not in SOURCE_EXTENSIONS:
@@ -79,7 +80,8 @@ def _grep_fixed_in_tree(pattern: str, root: str) -> bool:
 
 def _grep_regex_in_tree(regex: str, root: str) -> bool:
     compiled = re.compile(regex)
-    for dirpath, _dirs, files in os.walk(root):
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d != '.git']
         for fname in files:
             ext = os.path.splitext(fname)[1].lower()
             if ext not in SOURCE_EXTENSIONS:
@@ -90,11 +92,17 @@ def _grep_regex_in_tree(regex: str, root: str) -> bool:
     return False
 
 
+def _strip_block_comments(content: str) -> str:
+    """Strip /* ... */ block comments from content."""
+    return re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
+
+
 def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]:
     template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
     generic_regex = re.compile(template.format(name=r"(\w+)"))
     functions: list[tuple[str, str]] = []
-    for root, _dirs, files in os.walk(source_root):
+    for root, dirs, files in os.walk(source_root):
+        dirs[:] = [d for d in dirs if d != '.git']
         for f in files:
             ext = os.path.splitext(f)[1].lower()
             if ext not in SOURCE_EXTENSIONS or ext in _SKIP_EXTENSIONS:
@@ -102,14 +110,16 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
             full = os.path.join(root, f)
             rel = os.path.relpath(full, source_root)
             content = _read_file_safe(full)
+            content = _strip_block_comments(content)
             for match in generic_regex.finditer(content):
                 line_start = content.rfind("\n", 0, match.start()) + 1
                 line_text = content[line_start:match.start()].lstrip()
-                if line_text.startswith("#") or line_text.startswith("//") or line_text.startswith("/*") or line_text.startswith("*"):
+                if line_text.startswith("#") or line_text.startswith("//"):
                     continue
-                # Bug #6 fix: Skip if line_text ends with "new " or "return " (Java false positives)
+                # Bug #1 fix: Check if "new" appears right before the captured name
                 if language == "java":
-                    if line_text.endswith("new ") or line_text.endswith("return "):
+                    match_text = content[match.start():match.end()]
+                    if " new " in match_text or match_text.lstrip().startswith("new "):
                         continue
                 # Bug #5 fix: Handle multi-group regex (JS/TS arrow functions)
                 name = next((g for g in match.groups() if g), None)
@@ -144,7 +154,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
     else:
         return []
 
-    for dirpath, _dirs, files in os.walk(source_root):
+    for dirpath, dirs, files in os.walk(source_root):
+        dirs[:] = [d for d in dirs if d != '.git']
         for fname in files:
             ext = os.path.splitext(fname)[1].lower()
             if ext not in SOURCE_EXTENSIONS:
@@ -201,7 +212,8 @@ def _extract_call_sites(source_root: str, func_names: list[str],
         func_def_template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
         func_def_re = re.compile(func_def_template.format(name=re.escape(func_name)))
 
-        for dirpath, _dirs, files in os.walk(source_root):
+        for dirpath, dirs, files in os.walk(source_root):
+            dirs[:] = [d for d in dirs if d != '.git']
             for fname in files:
                 ext = os.path.splitext(fname)[1].lower()
                 if ext not in SOURCE_EXTENSIONS or ext in _SKIP_EXTENSIONS:
@@ -226,14 +238,6 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                     line_text = content[line_start:m.start()].lstrip()
                     if line_text.startswith("#") or line_text.startswith("//") or line_text.startswith("/*") or line_text.startswith("*"):
                         continue
-                    # Bug #7 fix: Skip JS/TS class methods (funcName() { ... })
-                    if language in ("javascript", "typescript"):
-                        line_end = content.find("\n", m.end())
-                        if line_end == -1:
-                            line_end = len(content)
-                        rest_of_line = content[m.end():line_end].lstrip()
-                        if rest_of_line.startswith("{"):
-                            continue
                     calls.append((func_name, rel))
                     break
     return calls
@@ -243,7 +247,8 @@ def generate_verified_gt(source_root: str, language: str) -> list[dict]:
     """Generate verified (positive) ground truth claims."""
     claims: list[dict] = []
 
-    for root, _dirs, files in os.walk(source_root):
+    for root, dirs, files in os.walk(source_root):
+        dirs[:] = [d for d in dirs if d != '.git']
         for f in files:
             full = os.path.join(root, f)
             rel = os.path.relpath(full, source_root)
@@ -433,7 +438,8 @@ def generate_gt_for_case(candidate: dict, base_dir: str) -> dict:
     func_names = [c["parameters"]["name"] for c in verified_gt if c["claim_type"] == "FUNCTION_EXISTS"]
     import_names = [c["parameters"]["module"] for c in verified_gt if c["claim_type"] == "IMPORT_EXISTS"]
     src_files: list[str] = []
-    for root, _dirs, files in os.walk(source_path):
+    for root, dirs, files in os.walk(source_path):
+        dirs[:] = [d for d in dirs if d != '.git']
         for f in files:
             ext = os.path.splitext(f)[1].lower()
             if ext in SOURCE_EXTENSIONS:
