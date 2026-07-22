@@ -27,6 +27,7 @@ IMPORT_PATTERNS: dict[str, list[str]] = {
     "java": [r"import\s+.*{module}"],
     "c": [r"#include\s+[<\"].*{module}"],
     "cpp": [r"#include\s+[<\"].*{module}"],
+    "rust": [r"use\s+.*{module}"],
     "unknown": [r"import.*{module}", r"require.*{module}", r"#include.*{module}"],
 }
 

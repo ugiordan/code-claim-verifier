@@ -89,7 +89,7 @@ def _extract_severity(entry: dict) -> str:
         if sev.get("type") == "ECOSYSTEM":
             text = sev.get("score", "").upper()
             for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):
-                if level in text:
+                if level in text or (level == "MEDIUM" and "MODERATE" in text):
                     return level
     db_severity = entry.get("database_specific", {}).get("severity")
     if db_severity:
@@ -158,8 +158,8 @@ def _cvss_base_from_vector(vector: str) -> float:
 
 def _parse_osv_entry(entry: dict) -> dict | None:
     osv_id = entry.get("id", "")
-    summary = entry.get("summary", "")
-    details = entry.get("details", "")
+    summary = entry.get("summary") or ""
+    details = entry.get("details") or ""
     description = details if len(details) > len(summary) else summary
     if len(description) < _MIN_DESC_LEN:
         return None
@@ -254,8 +254,10 @@ def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> lis
         return []
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
-        with open(cached, "wb") as f:
+        tmp_path = cached + ".tmp"
+        with open(tmp_path, "wb") as f:
             f.write(content)
+        os.replace(tmp_path, cached)
 
     with zipfile.ZipFile(io.BytesIO(content)) as zf:
         return _parse_zip(zf)

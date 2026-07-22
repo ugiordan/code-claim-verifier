@@ -115,8 +115,9 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
     language = _detect_primary_language(dest, ecosystem)
     commit_date = _get_commit_date(dest)
 
-    # Bug #4 fix: Make source_root consistent by using os.path.join directly
-    candidate["source_root"] = os.path.join("repos", lang_dir, dir_name)
+    # Compute source_root relative to base_dir (parent of repos_dir)
+    base_dir = os.path.dirname(repos_dir)
+    candidate["source_root"] = os.path.relpath(dest, base_dir)
     candidate["language"] = language
     candidate["file_count"] = file_count
     candidate["commit_date"] = commit_date
@@ -127,6 +128,9 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
 def run_clone(candidates_path: str, repos_dir: str) -> None:
     candidates = load_jsonl(candidates_path)
     updated: list[dict] = []
+    clone_count = 0
+    _SAVE_INTERVAL = 50
+
     for i, c in enumerate(candidates):
         status = c.get("status")
         if status in (CandidateStatus.BUILD_OK, CandidateStatus.VERIFIED, CandidateStatus.READY):
@@ -137,6 +141,12 @@ def run_clone(candidates_path: str, repos_dir: str) -> None:
             continue
         logger.info("[%d/%d] Cloning %s", i + 1, len(candidates), c["osv_id"])
         updated.append(clone_and_checkout(c, repos_dir))
+        clone_count += 1
+
+        if clone_count % _SAVE_INTERVAL == 0:
+            save_jsonl(updated, candidates_path)
+            cloned_so_far = sum(1 for x in updated if x.get("status") == CandidateStatus.CLONED)
+            logger.info("Checkpoint: %d cloned so far (%d attempted)", cloned_so_far, clone_count)
 
     save_jsonl(updated, candidates_path)
     cloned = sum(1 for c in updated if c.get("status") == CandidateStatus.CLONED)

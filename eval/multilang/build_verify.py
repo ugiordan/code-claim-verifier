@@ -47,10 +47,12 @@ def _detect_required_version(source_path: str, language: str) -> str | None:
                 import json
                 with open(pkg) as f:
                     data = json.load(f)
-                engines = data.get("engines", {}).get("node", "")
-                m = re.search(r"(\d+)", engines)
-                if m:
-                    return m.group(1)
+                engines = data.get("engines", {})
+                if isinstance(engines, dict):
+                    node_ver = engines.get("node", "")
+                    m = re.search(r"(\d+)", node_ver)
+                    if m:
+                        return m.group(1)
     except (OSError, ValueError):
         pass
     return None
@@ -166,7 +168,9 @@ def _count_test_output(output: str, language: str) -> tuple[bool, int]:
                 nums = re.findall(r"(\d+)\s+(?:passed|failed)", line)
                 test_count += sum(int(n) for n in nums)
     elif language in ("javascript", "typescript"):
-        test_count = output.count("passing") + output.count("failing")
+        for pattern in [r"(\d+)\s+passing", r"(\d+)\s+failing", r"(\d+)\s+(?:passed|failed)"]:
+            for m in re.finditer(pattern, output):
+                test_count += int(m.group(1))
     elif language == "java":
         for line in output.split("\n"):
             if "Tests run:" in line:

@@ -134,7 +134,7 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
     elif language in ("javascript", "typescript"):
         import_re = re.compile(r"""(?:from\s+['"]([^'"]+)['"]|require\(['"]([^'"]+)['"]\))""")
     elif language == "java":
-        import_re = re.compile(r"^import\s+([\w.]+)", re.MULTILINE)
+        import_re = re.compile(r"^import\s+(?:static\s+)?([\w.]+)", re.MULTILINE)
     elif language == "rust":
         import_re = re.compile(r"^use\s+([\w:]+)", re.MULTILINE)
     else:
@@ -396,7 +396,8 @@ def validate_negatives(claims: list[dict], source_root: str,
 
     validated_func_count = sum(1 for c in valid if c["claim_type"] == "FUNCTION_EXISTS")
     if original_func_count > 0 and validated_func_count == 0:
-        file_param = claims[0]["parameters"].get("file", "main.go")
+        func_claims = [c for c in claims if c["claim_type"] == "FUNCTION_EXISTS"]
+        file_param = func_claims[0]["parameters"].get("file", "main.go") if func_claims else "main.go"
         for idx in range(min(original_func_count, 10)):
             valid.append({
                 "claim_type": "FUNCTION_EXISTS",
