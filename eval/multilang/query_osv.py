@@ -21,42 +21,32 @@ _MIN_YEAR = 2020
 _MEDIUM_PLUS = {"MEDIUM", "HIGH", "CRITICAL"}
 
 
-def _extract_fix_commit(entry: dict) -> str | None:
-    for affected in entry.get("affected", []):
-        for rng in affected.get("ranges", []):
+def _extract_fix_info(entry: dict) -> tuple[str | None, str | None]:
+    """Extract fix commit and repo URL from the same source to avoid mismatches."""
+    # First try GIT ranges (fix commit + repo in same range)
+    for affected in entry.get("affected") or []:
+        for rng in affected.get("ranges") or []:
             if rng.get("type") != "GIT":
                 continue
-            for event in rng.get("events", []):
+            fix = None
+            for event in rng.get("events") or []:
                 if "fixed" in event:
-                    return event["fixed"]
+                    fix = event["fixed"]
+            repo = rng.get("repo", "")
+            if fix and "github.com" in repo:
+                return fix, repo.rstrip("/").removesuffix(".git")
 
-    for ref in entry.get("references", []):
+    # Fallback: references (commit URL contains both)
+    for ref in entry.get("references") or []:
         url = ref.get("url", "")
         if "github.com" in url and "/commit/" in url:
             parts = url.rstrip("/").split("/commit/")
             if len(parts) == 2 and len(parts[1]) >= 7:
-                return parts[1].split("#")[0].split("?")[0]
+                commit = parts[1].split("#")[0].split("?")[0]
+                repo = parts[0].rstrip("/").removesuffix(".git")
+                return commit, repo
 
-    return None
-
-
-def _extract_repo_url(entry: dict) -> str | None:
-    for affected in entry.get("affected", []):
-        for rng in affected.get("ranges", []):
-            if rng.get("type") != "GIT":
-                continue
-            repo = rng.get("repo", "")
-            if "github.com" in repo:
-                return repo.rstrip("/").removesuffix(".git")
-
-    for ref in entry.get("references", []):
-        url = ref.get("url", "")
-        if "github.com" in url and "/commit/" in url:
-            parts = url.split("/commit/")[0]
-            if "github.com" in parts:
-                return parts.rstrip("/").removesuffix(".git")
-
-    return None
+    return None, None
 
 
 def _extract_severity(entry: dict) -> str:
@@ -91,7 +81,7 @@ def _extract_severity(entry: dict) -> str:
             for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):
                 if level in text or (level == "MEDIUM" and "MODERATE" in text):
                     return level
-    db_severity = entry.get("database_specific", {}).get("severity")
+    db_severity = (entry.get("database_specific") or {}).get("severity")
     if db_severity:
         normalized = db_severity.upper()
         if normalized == "MODERATE":
@@ -176,12 +166,8 @@ def _parse_osv_entry(entry: dict) -> dict | None:
         except (ValueError, IndexError):
             pass
 
-    fix_commit = _extract_fix_commit(entry)
-    if not fix_commit:
-        return None
-
-    repo_url = _extract_repo_url(entry)
-    if not repo_url:
+    fix_commit, repo_url = _extract_fix_info(entry)
+    if not fix_commit or not repo_url:
         return None
 
     severity = _extract_severity(entry)
@@ -192,7 +178,7 @@ def _parse_osv_entry(entry: dict) -> dict | None:
     package_name = ""
     ecosystem = ""
     for affected in entry.get("affected", []):
-        pkg = affected.get("package", {})
+        pkg = affected.get("package") or {}
         package_name = pkg.get("name", "")
         ecosystem = pkg.get("ecosystem", "")
         if package_name:
@@ -251,8 +237,13 @@ def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> lis
         cached = os.path.join(cache_dir, f"{ecosystem.replace('/', '_')}.zip")
         if os.path.isfile(cached):
             logger.info("Using cached zip: %s", cached)
-            with zipfile.ZipFile(cached) as zf:
-                return _parse_zip(zf)
+            try:
+                with zipfile.ZipFile(cached) as zf:
+                    return _parse_zip(zf)
+            except zipfile.BadZipFile:
+                logger.warning("Corrupt cache file %s, re-downloading", cached)
+                os.unlink(cached)
+                # Fall through to download
 
     # Bug #9 fix: Move resp.content inside try/except
     try:

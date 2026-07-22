@@ -39,10 +39,11 @@ def _is_source_change(changed_files: list[str]) -> bool:
     return False
 
 
-def _verify_via_source_pattern(source_path: str, changed_files: list[str]) -> bool:
+def _verify_via_source_pattern(source_path: str, changed_files: list[str], repo_root: str = "") -> bool:
     for f in changed_files:
-        full = os.path.join(source_path, f)
-        if os.path.isfile(full):
+        if os.path.isfile(os.path.join(source_path, f)):
+            return True
+        if repo_root and os.path.isfile(os.path.join(repo_root, f)):
             return True
     return False
 
@@ -82,8 +83,8 @@ def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
         candidate["failure_stage"] = "verify_vuln"
         return candidate
 
-    # Bug #7 fix: Add depth limit to prevent infinite loop
-    repo_root = source_path
+    # Bug #8 fix: Convert to absolute path before walking up
+    repo_root = os.path.abspath(source_path)
     git_dir = os.path.join(repo_root, ".git")
     depth = 0
     while not os.path.isdir(git_dir) and repo_root != "/" and depth < 10:
@@ -110,7 +111,7 @@ def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
         candidate["status"] = CandidateStatus.VERIFIED
         return candidate
 
-    if _verify_via_source_pattern(source_path, changed_files):
+    if _verify_via_source_pattern(source_path, changed_files, repo_root):
         candidate["vuln_verified"] = True
         candidate["verification_method"] = "pattern_match"
         candidate["ccv_verified_claims"] = 0

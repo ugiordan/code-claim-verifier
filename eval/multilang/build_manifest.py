@@ -52,7 +52,6 @@ def _to_manifest_entry(candidate: dict) -> dict:
         if field in candidate:
             entry[field] = candidate[field]
     entry["vuln_id"] = candidate.get("osv_id", candidate.get("vuln_id", ""))
-    entry["build_verified"] = candidate.get("build_success", False)
     if "container_image_tag" in candidate:
         entry["container_image"] = candidate["container_image_tag"]
     return entry

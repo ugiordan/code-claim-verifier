@@ -5,8 +5,7 @@ from unittest.mock import patch, MagicMock
 
 from eval.multilang.query_osv import (
     _parse_osv_entry,
-    _extract_fix_commit,
-    _extract_repo_url,
+    _extract_fix_info,
     _extract_severity,
 )
 
@@ -48,27 +47,37 @@ def _make_osv_entry(
     return entry
 
 
-class TestExtractFixCommit:
+class TestExtractFixInfo:
     def test_extracts_from_git_range(self):
-        entry = _make_osv_entry(fix_commit="abc123")
-        assert _extract_fix_commit(entry) == "abc123"
+        entry = _make_osv_entry(fix_commit="abc123", repo_url="https://github.com/example/pkg")
+        commit, repo = _extract_fix_info(entry)
+        assert commit == "abc123"
+        assert repo == "https://github.com/example/pkg"
 
     def test_returns_none_when_no_git_range(self):
         entry = _make_osv_entry()
         entry["affected"][0]["ranges"] = [
             {"type": "SEMVER", "events": [{"introduced": "0"}, {"fixed": "1.2.3"}]}
         ]
-        assert _extract_fix_commit(entry) is None
-
-
-class TestExtractRepoUrl:
-    def test_extracts_from_git_range(self):
-        entry = _make_osv_entry(repo_url="https://github.com/example/pkg")
-        assert _extract_repo_url(entry) == "https://github.com/example/pkg"
+        commit, repo = _extract_fix_info(entry)
+        assert commit is None
+        assert repo is None
 
     def test_returns_none_for_non_github(self):
         entry = _make_osv_entry(repo_url="https://gitlab.com/example/pkg")
-        assert _extract_repo_url(entry) is None
+        commit, repo = _extract_fix_info(entry)
+        assert commit is None
+        assert repo is None
+
+    def test_extracts_from_commit_url_in_references(self):
+        entry = _make_osv_entry()
+        entry["affected"][0]["ranges"] = []
+        entry["references"] = [
+            {"url": "https://github.com/example/pkg/commit/abc123def"}
+        ]
+        commit, repo = _extract_fix_info(entry)
+        assert commit == "abc123def"
+        assert repo == "https://github.com/example/pkg"
 
 
 class TestExtractSeverity:

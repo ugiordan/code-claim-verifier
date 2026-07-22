@@ -111,6 +111,11 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
             rel = os.path.relpath(full, source_root)
             content = _read_file_safe(full)
             content = _strip_block_comments(content)
+
+            # Bug #9 fix: Strip Python docstrings
+            if language == "python":
+                content = re.sub(r'""".*?"""', '', content, flags=re.DOTALL)
+                content = re.sub(r"'''.*?'''", '', content, flags=re.DOTALL)
             for match in generic_regex.finditer(content):
                 line_start = content.rfind("\n", 0, match.start()) + 1
                 line_text = content[line_start:match.start()].lstrip()

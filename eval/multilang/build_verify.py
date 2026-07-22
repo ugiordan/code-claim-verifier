@@ -245,6 +245,8 @@ def build_case(candidate: dict, containerfiles_dir: str, base_dir: str) -> dict:
             candidate["container_image_tag"] = tag
             candidate["base_image"] = base_image
             candidate["status"] = CandidateStatus.BUILD_OK
+            candidate.pop("failure_reason", None)
+            candidate.pop("failure_stage", None)
             logger.info("Build OK for %s with %s (%.1fs)", osv_id, base_image, elapsed)
             return candidate
 
