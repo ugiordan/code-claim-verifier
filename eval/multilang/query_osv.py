@@ -228,12 +228,14 @@ def _get_star_count(repo_url: str) -> int | None:
         )
         if result.returncode == 0 and result.stdout.strip().isdigit():
             return int(result.stdout.strip())
-    except (subprocess.TimeoutExpired, FileNotFoundError) as e:
-        # Bug #14 fix: Log warning when gh CLI is missing
-        if isinstance(e, FileNotFoundError) and not _gh_warning_logged:
+        return 0  # API worked but returned error (404, private repo)
+    except subprocess.TimeoutExpired:
+        return 0  # Timeout, treat as low-star
+    except FileNotFoundError:
+        if not _gh_warning_logged:
             logger.warning("gh CLI not found, star filtering will be skipped")
             _gh_warning_logged = True
-    return None
+        return None  # gh not installed
 
 
 def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> list[dict]:
@@ -308,22 +310,20 @@ def query_ecosystem(ecosystem: str, min_stars: int = 100,
     logger.info("After filtering: %d candidates for %s", len(candidates), ecosystem)
 
     if min_stars > 0:
-        gh_available = True
         filtered = []
-        seen_repos: dict[str, int | None] = {}
+        seen_repos: dict[str, int] = {}
         for c in candidates:
             repo = c["repo_url"]
             if repo not in seen_repos:
                 stars = _get_star_count(repo)
-                if stars is None and gh_available:
-                    gh_available = False
+                if stars is None:
                     logger.warning("gh CLI unavailable, skipping star filter")
                     filtered = candidates
                     break
                 seen_repos[repo] = stars
                 time.sleep(0.5)
-            stars = seen_repos.get(repo)
-            if stars is not None and stars >= min_stars:
+            stars = seen_repos.get(repo, 0)
+            if stars >= min_stars:
                 filtered.append(c)
         logger.info("After star filter (>=%d): %d candidates for %s",
                      min_stars, len(filtered), ecosystem)

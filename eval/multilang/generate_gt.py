@@ -105,7 +105,7 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
             for match in generic_regex.finditer(content):
                 line_start = content.rfind("\n", 0, match.start()) + 1
                 line_text = content[line_start:match.start()].lstrip()
-                if line_text.startswith("#") or line_text.startswith("//"):
+                if line_text.startswith("#") or line_text.startswith("//") or line_text.startswith("/*") or line_text.startswith("*"):
                     continue
                 # Bug #6 fix: Skip if line_text ends with "new " or "return " (Java false positives)
                 if language == "java":
@@ -197,7 +197,7 @@ def _extract_call_sites(source_root: str, func_names: list[str],
     """Find where functions are called. Returns list of (func_name, file)."""
     calls: list[tuple[str, str]] = []
     for func_name in func_names:
-        call_pattern = re.compile(re.escape(func_name) + r"\s*\(")
+        call_pattern = re.compile(r"\b" + re.escape(func_name) + r"\s*\(")
         func_def_template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
         func_def_re = re.compile(func_def_template.format(name=re.escape(func_name)))
 
@@ -224,7 +224,7 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                         continue
                     line_start = content.rfind("\n", 0, m.start()) + 1
                     line_text = content[line_start:m.start()].lstrip()
-                    if line_text.startswith("#") or line_text.startswith("//"):
+                    if line_text.startswith("#") or line_text.startswith("//") or line_text.startswith("/*") or line_text.startswith("*"):
                         continue
                     # Bug #7 fix: Skip JS/TS class methods (funcName() { ... })
                     if language in ("javascript", "typescript"):

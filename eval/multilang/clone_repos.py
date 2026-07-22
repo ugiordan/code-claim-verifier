@@ -37,7 +37,10 @@ def _checkout_pre_fix(repo_path: str, fix_commit: str) -> bool:
 
 
 def _detect_primary_language(repo_path: str, ecosystem: str) -> str:
-    fallback = ECOSYSTEM_TO_LANG.get(ecosystem, "unknown")
+    lang = ECOSYSTEM_TO_LANG.get(ecosystem)
+    if lang:
+        return lang
+    # Fallback: detect from files
     for root, _dirs, files in os.walk(repo_path):
         # Bug #8 fix: Check for .git as basename not substring
         if os.path.basename(root) == ".git" or "/.git/" in root:
@@ -46,7 +49,7 @@ def _detect_primary_language(repo_path: str, ecosystem: str) -> str:
             ext = os.path.splitext(f)[1].lower()
             if ext in SOURCE_EXTENSIONS and ext != ".h":
                 return detect_language(f)
-    return fallback
+    return "unknown"
 
 
 def _get_commit_date(repo_path: str) -> str:
@@ -78,6 +81,10 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
     fix_commit = candidate["fix_commit"]
 
     os.makedirs(os.path.dirname(dest), exist_ok=True)
+
+    if os.path.isdir(dest) and not os.path.isdir(os.path.join(dest, ".git")):
+        import shutil
+        shutil.rmtree(dest, ignore_errors=True)
 
     if not os.path.isdir(dest):
         try:

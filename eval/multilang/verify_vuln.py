@@ -27,7 +27,7 @@ def _get_changed_files(repo_path: str, fix_commit: str) -> list[str]:
             if ext in SOURCE_EXTENSIONS:
                 source_files.append(f)
         return source_files
-    except subprocess.TimeoutExpired:
+    except (subprocess.TimeoutExpired, FileNotFoundError):
         return []
 
 
@@ -126,19 +126,24 @@ def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
 
 def run_verify_vuln(candidates_path: str, base_dir: str) -> None:
     candidates = load_jsonl(candidates_path)
-    updated: list[dict] = []
+    verify_count = 0
+    _SAVE_INTERVAL = 50
 
     for i, c in enumerate(candidates):
         if c.get("status") in (CandidateStatus.VERIFIED, CandidateStatus.READY):
-            updated.append(c)
             continue
         if c.get("status") != CandidateStatus.BUILD_OK:
-            updated.append(c)
             continue
 
         logger.info("[%d/%d] Verifying %s", i + 1, len(candidates), c["osv_id"])
-        updated.append(verify_vulnerability(c, base_dir))
+        candidates[i] = verify_vulnerability(c, base_dir)
+        verify_count += 1
 
-    save_jsonl(updated, candidates_path)
-    verified = sum(1 for c in updated if c.get("vuln_verified"))
-    logger.info("Verified: %d / %d", verified, len(updated))
+        if verify_count % _SAVE_INTERVAL == 0:
+            save_jsonl(candidates, candidates_path)
+            verified_so_far = sum(1 for x in candidates if x.get("vuln_verified"))
+            logger.info("Checkpoint: %d verified so far (%d processed)", verified_so_far, verify_count)
+
+    save_jsonl(candidates, candidates_path)
+    verified = sum(1 for c in candidates if c.get("vuln_verified"))
+    logger.info("Verified: %d / %d", verified, len(candidates))
