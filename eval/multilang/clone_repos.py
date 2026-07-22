@@ -32,7 +32,7 @@ def _checkout_pre_fix(repo_path: str, fix_commit: str) -> bool:
             cwd=repo_path, capture_output=True, text=True, timeout=60,
         )
         return result.returncode == 0
-    except subprocess.TimeoutExpired:
+    except (subprocess.TimeoutExpired, FileNotFoundError):
         return False
 
 
@@ -57,12 +57,13 @@ def _get_commit_date(repo_path: str) -> str:
         )
         if result.returncode == 0:
             return result.stdout.strip()[:10]
-    except subprocess.TimeoutExpired:
+    except (subprocess.TimeoutExpired, FileNotFoundError):
         pass
     return ""
 
 
 def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
+    repos_dir = repos_dir.rstrip("/")
     osv_id = candidate["osv_id"]
     ecosystem = candidate["ecosystem"]
     lang_dir = ECOSYSTEM_TO_LANG.get(ecosystem, "unknown")
@@ -89,7 +90,7 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
                 candidate["failure_reason"] = f"clone failed: {result.stderr[:200]}"
                 candidate["failure_stage"] = "clone"
                 return candidate
-        except subprocess.TimeoutExpired:
+        except (subprocess.TimeoutExpired, FileNotFoundError):
             # Bug #15 fix: Clean up partial clone on timeout
             if os.path.isdir(dest):
                 import shutil
@@ -126,28 +127,28 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
 
 
 def run_clone(candidates_path: str, repos_dir: str) -> None:
+    repos_dir = repos_dir.rstrip("/")
     candidates = load_jsonl(candidates_path)
-    updated: list[dict] = []
     clone_count = 0
     _SAVE_INTERVAL = 50
 
     for i, c in enumerate(candidates):
         status = c.get("status")
         if status in (CandidateStatus.BUILD_OK, CandidateStatus.VERIFIED, CandidateStatus.READY):
-            updated.append(c)
             continue
         if status == CandidateStatus.FAILED:
-            updated.append(c)
+            continue
+        if status == CandidateStatus.CLONED:
             continue
         logger.info("[%d/%d] Cloning %s", i + 1, len(candidates), c["osv_id"])
-        updated.append(clone_and_checkout(c, repos_dir))
+        candidates[i] = clone_and_checkout(c, repos_dir)
         clone_count += 1
 
         if clone_count % _SAVE_INTERVAL == 0:
-            save_jsonl(updated, candidates_path)
-            cloned_so_far = sum(1 for x in updated if x.get("status") == CandidateStatus.CLONED)
-            logger.info("Checkpoint: %d cloned so far (%d attempted)", cloned_so_far, clone_count)
+            save_jsonl(candidates, candidates_path)
+            cloned_so_far = sum(1 for x in candidates if x.get("status") == CandidateStatus.CLONED)
+            logger.info("Checkpoint: %d cloned so far (%d processed)", cloned_so_far, clone_count)
 
-    save_jsonl(updated, candidates_path)
-    cloned = sum(1 for c in updated if c.get("status") == CandidateStatus.CLONED)
-    logger.info("Cloned: %d / %d", cloned, len(updated))
+    save_jsonl(candidates, candidates_path)
+    cloned = sum(1 for c in candidates if c.get("status") == CandidateStatus.CLONED)
+    logger.info("Cloned: %d / %d", cloned, len(candidates))

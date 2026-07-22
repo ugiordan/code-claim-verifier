@@ -107,6 +107,10 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                 line_text = content[line_start:match.start()].lstrip()
                 if line_text.startswith("#") or line_text.startswith("//"):
                     continue
+                # Bug #6 fix: Skip if line_text ends with "new " or "return " (Java false positives)
+                if language == "java":
+                    if line_text.endswith("new ") or line_text.endswith("return "):
+                        continue
                 # Bug #5 fix: Handle multi-group regex (JS/TS arrow functions)
                 name = next((g for g in match.groups() if g), None)
                 if not name:
@@ -153,8 +157,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                 for line in content.split("\n"):
                     line = line.strip()
                     if line.startswith("import "):
-                        # Single import: import "path"
-                        m = re.search(r'import\s+"([^"]+)"', line)
+                        # Single import: import "path" or import alias "path" or import . "path" or import _ "path"
+                        m = re.search(r'import\s+(?:\w+\s+)?"([^"]+)"', line)
                         if m:
                             module = m.group(1).split("/")[-1] if "/" in m.group(1) else m.group(1)
                             imports.add(module)
@@ -166,7 +170,7 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                         in_import_block = True
                         continue
                     if in_import_block:
-                        if line == ")":
+                        if line.startswith(")"):
                             in_import_block = False
                             continue
                         m = re.search(r'"([^"]+)"', line)
@@ -222,6 +226,14 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                     line_text = content[line_start:m.start()].lstrip()
                     if line_text.startswith("#") or line_text.startswith("//"):
                         continue
+                    # Bug #7 fix: Skip JS/TS class methods (funcName() { ... })
+                    if language in ("javascript", "typescript"):
+                        line_end = content.find("\n", m.end())
+                        if line_end == -1:
+                            line_end = len(content)
+                        rest_of_line = content[m.end():line_end].lstrip()
+                        if rest_of_line.startswith("{"):
+                            continue
                     calls.append((func_name, rel))
                     break
     return calls

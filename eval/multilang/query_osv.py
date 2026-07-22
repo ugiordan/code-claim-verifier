@@ -93,7 +93,10 @@ def _extract_severity(entry: dict) -> str:
                     return level
     db_severity = entry.get("database_specific", {}).get("severity")
     if db_severity:
-        return db_severity.upper()
+        normalized = db_severity.upper()
+        if normalized == "MODERATE":
+            normalized = "MEDIUM"
+        return normalized
     return "UNKNOWN"
 
 
@@ -157,7 +160,7 @@ def _cvss_base_from_vector(vector: str) -> float:
 
 
 def _parse_osv_entry(entry: dict) -> dict | None:
-    osv_id = entry.get("id", "")
+    osv_id = entry.get("id") or ""
     summary = entry.get("summary") or ""
     details = entry.get("details") or ""
     description = details if len(details) > len(summary) else summary
@@ -305,14 +308,21 @@ def query_ecosystem(ecosystem: str, min_stars: int = 100,
     logger.info("After filtering: %d candidates for %s", len(candidates), ecosystem)
 
     if min_stars > 0:
+        gh_available = True
         filtered = []
         seen_repos: dict[str, int | None] = {}
         for c in candidates:
             repo = c["repo_url"]
             if repo not in seen_repos:
-                seen_repos[repo] = _get_star_count(repo)
+                stars = _get_star_count(repo)
+                if stars is None and gh_available:
+                    gh_available = False
+                    logger.warning("gh CLI unavailable, skipping star filter")
+                    filtered = candidates
+                    break
+                seen_repos[repo] = stars
                 time.sleep(0.5)
-            stars = seen_repos[repo]
+            stars = seen_repos.get(repo)
             if stars is not None and stars >= min_stars:
                 filtered.append(c)
         logger.info("After star filter (>=%d): %d candidates for %s",
