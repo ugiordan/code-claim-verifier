@@ -213,16 +213,15 @@ def _get_star_count(repo_url: str) -> int | None:
         if result.returncode == 0 and result.stdout.strip().isdigit():
             return int(result.stdout.strip())
         if "404" in (result.stderr or ""):
-            return 0  # Definitive 404, repo doesn't exist
-        # Rate limiting or other API errors: return None to skip filter
-        return None
+            return 0
+        return -1  # API error, unknown star count
     except subprocess.TimeoutExpired:
-        return None
+        return -1  # timeout, unknown star count
     except FileNotFoundError:
         if not _gh_warning_logged:
             logger.warning("gh CLI not found, star filtering will be skipped")
             _gh_warning_logged = True
-        return None  # gh not installed, skip filtering entirely
+        return None  # gh not installed
 
 
 def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> list[dict]:
@@ -310,19 +309,22 @@ def query_ecosystem(ecosystem: str, min_stars: int = 100,
 
     if min_stars > 0:
         filtered = []
-        seen_repos: dict[str, int] = {}
+        seen_repos: dict[str, int | None] = {}
+        gh_missing = False
         for c in candidates:
             repo = c["repo_url"]
             if repo not in seen_repos:
                 stars = _get_star_count(repo)
                 if stars is None:
-                    logger.warning("gh CLI unavailable, skipping star filter")
+                    gh_missing = True
                     filtered = candidates
                     break
                 seen_repos[repo] = stars
                 time.sleep(0.5)
-            stars = seen_repos.get(repo, 0)
-            if stars >= min_stars:
+            stars = seen_repos.get(repo, -1)
+            if stars == -1:
+                filtered.append(c)
+            elif stars >= min_stars:
                 filtered.append(c)
         logger.info("After star filter (>=%d): %d candidates for %s",
                      min_stars, len(filtered), ecosystem)

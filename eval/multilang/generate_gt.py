@@ -65,6 +65,21 @@ def _read_file_safe(path: str, max_size: int = _MAX_FILE_SIZE) -> str:
         return ""
 
 
+_INLINE_COMMENT_RE = re.compile(r'//[^\n]*|#[^\n]*')
+_BLOCK_COMMENT_RE = re.compile(r'/\*.*?\*/', re.DOTALL)
+_PY_DOCSTRING_RE = re.compile(r'""".*?"""|\'\'\'.*?\'\'\'', re.DOTALL)
+
+
+def _strip_comments(content: str, language: str) -> str:
+    if language in ("c", "cpp", "java", "go", "javascript", "typescript", "rust"):
+        content = _BLOCK_COMMENT_RE.sub("", content)
+        content = _INLINE_COMMENT_RE.sub("", content)
+    elif language == "python":
+        content = _PY_DOCSTRING_RE.sub("", content)
+        content = re.sub(r'#[^\n]*', '', content)
+    return content
+
+
 def _grep_fixed_in_tree(pattern: str, root: str) -> bool:
     for dirpath, dirs, files in os.walk(root):
         dirs[:] = [d for d in dirs if d != '.git']
@@ -107,10 +122,6 @@ def _grep_regex_in_tree(regex: str, root: str) -> bool:
     return False
 
 
-def _strip_block_comments(content: str) -> str:
-    """Strip /* ... */ block comments from content."""
-    return re.sub(r'/\*.*?\*/', '', content, flags=re.DOTALL)
-
 
 def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]:
     template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
@@ -124,13 +135,7 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                 continue
             full = os.path.join(root, f)
             rel = os.path.relpath(full, source_root)
-            content = _read_file_safe(full)
-            content = _strip_block_comments(content)
-
-            # Bug #9 fix: Strip Python docstrings
-            if language == "python":
-                content = re.sub(r'""".*?"""', '', content, flags=re.DOTALL)
-                content = re.sub(r"'''.*?'''", '', content, flags=re.DOTALL)
+            content = _strip_comments(_read_file_safe(full), language)
             for match in generic_regex.finditer(content):
                 line_start = content.rfind("\n", 0, match.start()) + 1
                 line_text = content[line_start:match.start()].lstrip()
@@ -177,15 +182,21 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
     else:
         return []
 
+    lang_exts = {
+        "python": {".py"}, "go": {".go"}, "java": {".java"},
+        "javascript": {".js"}, "typescript": {".ts", ".tsx"},
+        "rust": {".rs"}, "c": {".c", ".h"}, "cpp": {".cpp", ".hpp"},
+    }
+    target_exts = lang_exts.get(language, SOURCE_EXTENSIONS)
+
     for dirpath, dirs, files in os.walk(source_root):
         dirs[:] = [d for d in dirs if d != '.git']
         for fname in files:
             ext = os.path.splitext(fname)[1].lower()
-            if ext not in SOURCE_EXTENSIONS:
+            if ext not in target_exts:
                 continue
             content = _read_file_safe(os.path.join(dirpath, fname))
 
-            # For Go, need special handling
             if language == "go":
                 # Find all import statements
                 for line in content.split("\n"):
@@ -253,14 +264,7 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                     continue
                 full = os.path.join(dirpath, fname)
                 rel = os.path.relpath(full, source_root)
-                content = _read_file_safe(full)
-
-                # Bug #9 fix: Strip block comments and docstrings like _extract_functions does
-                if language in ("c", "cpp", "java", "javascript", "typescript", "go", "rust"):
-                    content = _strip_block_comments(content)
-                if language == "python":
-                    content = re.sub(r'""".*?"""', '', content, flags=re.DOTALL)
-                    content = re.sub(r"'''.*?'''", '', content, flags=re.DOTALL)
+                content = _strip_comments(_read_file_safe(full), language)
 
                 # Bug #4 fix: Store definition ranges not just start positions
                 # Find all definition ranges first
