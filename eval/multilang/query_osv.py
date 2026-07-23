@@ -191,7 +191,7 @@ def _parse_osv_entry(entry: dict) -> dict | None:
         "fix_commit": fix_commit,
         "description": description,
         "severity": severity,
-        "published_date": published[:10] if published else "",
+        "published_date": str(published)[:10] if published else "",
         "status": CandidateStatus.PENDING,
     }
 
@@ -258,10 +258,20 @@ def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> lis
     # Only cache after successful parse
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
-        tmp_path = cached + ".tmp"
-        with open(tmp_path, "wb") as f:
-            f.write(content)
-        os.replace(tmp_path, cached)
+        fd = tempfile.NamedTemporaryFile(dir=cache_dir, suffix=".zip.tmp", delete=False)
+        try:
+            fd.write(content)
+            fd.flush()
+            os.fsync(fd.fileno())
+            fd.close()
+            os.replace(fd.name, cached)
+        except BaseException:
+            fd.close()
+            try:
+                os.unlink(fd.name)
+            except OSError:
+                pass
+            raise
 
     return entries
 

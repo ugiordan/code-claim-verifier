@@ -68,10 +68,15 @@ def _get_commit_date(repo_path: str) -> str:
 
 def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
     repos_dir = repos_dir.rstrip("/")
-    osv_id = candidate["osv_id"]
-    ecosystem = candidate["ecosystem"]
+    osv_id = candidate.get("osv_id", "")
+    if not osv_id:
+        candidate["status"] = CandidateStatus.FAILED
+        candidate["failure_reason"] = "empty osv_id"
+        candidate["failure_stage"] = "clone"
+        return candidate
+    ecosystem = candidate.get("ecosystem", "")
     lang_dir = ECOSYSTEM_TO_LANG.get(ecosystem, "unknown")
-    dir_name = _repo_dir_name(candidate["repo_url"], osv_id)
+    dir_name = _repo_dir_name(candidate.get("repo_url", ""), osv_id)
     dest = os.path.join(repos_dir, lang_dir, dir_name)
 
     if os.path.isdir(dest) and candidate.get("status") == CandidateStatus.CLONED:

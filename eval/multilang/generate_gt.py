@@ -71,6 +71,17 @@ _PY_DOCSTRING_RE = re.compile(r'""".*?"""|\'\'\'.*?\'\'\'', re.DOTALL)
 _PY_COMMENT_RE = re.compile(r'#[^\n]*')
 
 
+def _strip_string_literals(content: str) -> str:
+    """Remove string literal contents to prevent false matches inside strings."""
+    # Remove double-quoted strings (handles escaped quotes)
+    content = re.sub(r'"(?:[^"\\]|\\.)*"', '""', content)
+    # Remove single-quoted strings
+    content = re.sub(r"'(?:[^'\\]|\\.)*'", "''", content)
+    # Remove backtick template literals (JS/TS)
+    content = re.sub(r'`(?:[^`\\]|\\.)*`', '``', content)
+    return content
+
+
 def _strip_comments(content: str, language: str) -> str:
     if language in ("c", "cpp", "java", "go", "javascript", "typescript", "rust"):
         content = _BLOCK_COMMENT_RE.sub("", content)
@@ -136,7 +147,8 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                 continue
             full = os.path.join(root, f)
             rel = os.path.relpath(full, source_root)
-            content = _strip_comments(_read_file_safe(full), language)
+            content = _strip_string_literals(_read_file_safe(full))
+            content = _strip_comments(content, language)
             for match in generic_regex.finditer(content):
                 line_start = content.rfind("\n", 0, match.start()) + 1
                 line_text = content[line_start:match.start()].lstrip()
@@ -145,11 +157,23 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                 line_full = content[line_start:content.find("\n", match.end()) if content.find("\n", match.end()) != -1 else len(content)]
                 if line_full.lstrip().startswith(("'", '"')):
                     continue
-                # Bug #1 fix: Check if "new" appears right before the captured name
+                # Bug #1 + Round 14 fix: Filter Java false matches from return/throw/new
                 if language == "java":
                     match_text = content[match.start():match.end()]
                     if " new " in match_text or match_text.lstrip().startswith("new "):
                         continue
+                    # The Java regex matches "return funcName(" because \s+ satisfies
+                    # the modifier group. Check that the word before name is a real type,
+                    # not a keyword like return/throw.
+                    words = match_text.split()
+                    if len(words) >= 2:
+                        word_before_name = words[-2]
+                        java_keywords = {
+                            "return", "throw", "new", "if", "while",
+                            "for", "switch", "case", "synchronized",
+                        }
+                        if word_before_name in java_keywords:
+                            continue
                 # Bug #5 fix: Handle multi-group regex (JS/TS arrow functions)
                 name = next((g for g in match.groups() if g), None)
                 if not name:
@@ -265,7 +289,8 @@ def _extract_call_sites(source_root: str, func_names: list[str],
                     continue
                 full = os.path.join(dirpath, fname)
                 rel = os.path.relpath(full, source_root)
-                content = _strip_comments(_read_file_safe(full), language)
+                content = _strip_string_literals(_read_file_safe(full))
+                content = _strip_comments(content, language)
 
                 # Bug #4 fix: Store definition ranges not just start positions
                 # Find all definition ranges first
