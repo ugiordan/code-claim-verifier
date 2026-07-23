@@ -98,13 +98,18 @@ def clone_and_checkout(candidate: dict, repos_dir: str) -> dict:
                 candidate["failure_reason"] = f"clone failed: {result.stderr[:200]}"
                 candidate["failure_stage"] = "clone"
                 return candidate
-        except (subprocess.TimeoutExpired, FileNotFoundError):
+        except subprocess.TimeoutExpired:
             # Bug #15 fix: Clean up partial clone on timeout
             if os.path.isdir(dest):
                 import shutil
                 shutil.rmtree(dest, ignore_errors=True)
             candidate["status"] = CandidateStatus.FAILED
             candidate["failure_reason"] = "clone timed out"
+            candidate["failure_stage"] = "clone"
+            return candidate
+        except FileNotFoundError:
+            candidate["status"] = CandidateStatus.FAILED
+            candidate["failure_reason"] = "git is not installed"
             candidate["failure_stage"] = "clone"
             return candidate
 
@@ -149,7 +154,14 @@ def run_clone(candidates_path: str, repos_dir: str) -> None:
         if status == CandidateStatus.CLONED:
             continue
         logger.info("[%d/%d] Cloning %s", i + 1, len(candidates), c["osv_id"])
-        candidates[i] = clone_and_checkout(c, repos_dir)
+        try:
+            candidates[i] = clone_and_checkout(c, repos_dir)
+        except Exception:
+            logger.exception("Unexpected error cloning %s", c.get("osv_id"))
+            c["status"] = CandidateStatus.FAILED
+            c["failure_reason"] = "unexpected error during clone"
+            c["failure_stage"] = "clone"
+            candidates[i] = c
         clone_count += 1
 
         if clone_count % _SAVE_INTERVAL == 0:

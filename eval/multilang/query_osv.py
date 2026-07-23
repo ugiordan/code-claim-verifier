@@ -21,10 +21,12 @@ _MIN_YEAR = 2020
 _MEDIUM_PLUS = {"MEDIUM", "HIGH", "CRITICAL"}
 
 
-def _extract_fix_info(entry: dict) -> tuple[str | None, str | None]:
-    """Extract fix commit and repo URL from the same source to avoid mismatches."""
-    # First try GIT ranges (fix commit + repo in same range)
+def _extract_fix_info(entry: dict) -> tuple[str | None, str | None, str, str]:
+    """Returns (fix_commit, repo_url, ecosystem, package) from the same source."""
     for affected in entry.get("affected") or []:
+        pkg = affected.get("package") or {}
+        eco = pkg.get("ecosystem", "")
+        pkg_name = pkg.get("name", "")
         for rng in affected.get("ranges") or []:
             if rng.get("type") != "GIT":
                 continue
@@ -34,9 +36,9 @@ def _extract_fix_info(entry: dict) -> tuple[str | None, str | None]:
                     fix = event["fixed"]
             repo = rng.get("repo", "")
             if fix and "github.com" in repo:
-                return fix, repo.rstrip("/").removesuffix(".git")
+                return fix, repo.rstrip("/").removesuffix(".git"), eco, pkg_name
 
-    # Fallback: references (commit URL contains both)
+    # Fallback to references
     for ref in entry.get("references") or []:
         url = ref.get("url", "")
         if "github.com" in url and "/commit/" in url:
@@ -44,9 +46,13 @@ def _extract_fix_info(entry: dict) -> tuple[str | None, str | None]:
             if len(parts) == 2 and len(parts[1]) >= 7:
                 commit = parts[1].split("#")[0].split("?")[0]
                 repo = parts[0].rstrip("/").removesuffix(".git")
-                return commit, repo
+                # For references fallback, get ecosystem from first affected
+                for affected in entry.get("affected") or []:
+                    pkg = affected.get("package") or {}
+                    return commit, repo, pkg.get("ecosystem", ""), pkg.get("name", "")
+                return commit, repo, "", ""
 
-    return None, None
+    return None, None, "", ""
 
 
 def _extract_severity(entry: dict) -> str:
@@ -167,7 +173,7 @@ def _parse_osv_entry(entry: dict) -> dict | None:
         except (ValueError, IndexError, TypeError):
             pass
 
-    fix_commit, repo_url = _extract_fix_info(entry)
+    fix_commit, repo_url, ecosystem, package_name = _extract_fix_info(entry)
     if not fix_commit or not repo_url:
         return None
 
@@ -175,15 +181,6 @@ def _parse_osv_entry(entry: dict) -> dict | None:
 
     aliases = entry.get("aliases") or []
     cve_id = next((a for a in aliases if a.startswith("CVE-")), "")
-
-    package_name = ""
-    ecosystem = ""
-    for affected in entry.get("affected") or []:
-        pkg = affected.get("package") or {}
-        package_name = pkg.get("name", "")
-        ecosystem = pkg.get("ecosystem", "")
-        if package_name:
-            break
 
     return {
         "osv_id": osv_id,
@@ -220,8 +217,7 @@ def _get_star_count(repo_url: str) -> int | None:
         # Rate limiting or other API errors: return None to skip filter
         return None
     except subprocess.TimeoutExpired:
-        logger.debug("gh API timeout for %s", repo_url)
-        return 0
+        return None
     except FileNotFoundError:
         if not _gh_warning_logged:
             logger.warning("gh CLI not found, star filtering will be skipped")

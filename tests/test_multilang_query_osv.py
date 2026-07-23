@@ -50,24 +50,30 @@ def _make_osv_entry(
 class TestExtractFixInfo:
     def test_extracts_from_git_range(self):
         entry = _make_osv_entry(fix_commit="abc123", repo_url="https://github.com/example/pkg")
-        commit, repo = _extract_fix_info(entry)
+        commit, repo, eco, pkg = _extract_fix_info(entry)
         assert commit == "abc123"
         assert repo == "https://github.com/example/pkg"
+        assert eco == "Go"
+        assert pkg == "github.com/example/pkg"
 
     def test_returns_none_when_no_git_range(self):
         entry = _make_osv_entry()
         entry["affected"][0]["ranges"] = [
             {"type": "SEMVER", "events": [{"introduced": "0"}, {"fixed": "1.2.3"}]}
         ]
-        commit, repo = _extract_fix_info(entry)
+        commit, repo, eco, pkg = _extract_fix_info(entry)
         assert commit is None
         assert repo is None
+        assert eco == ""
+        assert pkg == ""
 
     def test_returns_none_for_non_github(self):
         entry = _make_osv_entry(repo_url="https://gitlab.com/example/pkg")
-        commit, repo = _extract_fix_info(entry)
+        commit, repo, eco, pkg = _extract_fix_info(entry)
         assert commit is None
         assert repo is None
+        assert eco == ""
+        assert pkg == ""
 
     def test_extracts_from_commit_url_in_references(self):
         entry = _make_osv_entry()
@@ -75,9 +81,11 @@ class TestExtractFixInfo:
         entry["references"] = [
             {"url": "https://github.com/example/pkg/commit/abc123def"}
         ]
-        commit, repo = _extract_fix_info(entry)
+        commit, repo, eco, pkg = _extract_fix_info(entry)
         assert commit == "abc123def"
         assert repo == "https://github.com/example/pkg"
+        assert eco == "Go"
+        assert pkg == "github.com/example/pkg"
 
 
 class TestExtractSeverity:

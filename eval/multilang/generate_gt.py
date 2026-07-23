@@ -136,6 +136,9 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                 line_text = content[line_start:match.start()].lstrip()
                 if line_text.startswith("#") or line_text.startswith("//"):
                     continue
+                line_full = content[line_start:content.find("\n", match.end()) if content.find("\n", match.end()) != -1 else len(content)]
+                if line_full.lstrip().startswith(("'", '"')):
+                    continue
                 # Bug #1 fix: Check if "new" appears right before the captured name
                 if language == "java":
                     match_text = content[match.start():match.end()]
@@ -205,6 +208,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                         if line.startswith(")"):
                             in_import_block = False
                             continue
+                        if line.startswith("//"):
+                            continue
                         m = re.search(r'"([^"]+)"', line)
                         if m:
                             # Keep full import path for verifiability
@@ -220,7 +225,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                                 module = g.split("/")[-1] if "/" in g else g
                             else:
                                 module = g
-                            imports.add(module)
+                            if module:
+                                imports.add(module)
 
     return sorted(imports)
 
