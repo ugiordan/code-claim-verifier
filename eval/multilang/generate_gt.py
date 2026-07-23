@@ -78,6 +78,21 @@ def _grep_fixed_in_tree(pattern: str, root: str) -> bool:
     return False
 
 
+def _grep_word_in_tree(pattern: str, root: str) -> bool:
+    """Bug #8 fix: Use word-boundary matching instead of substring for ABSENCE checks."""
+    regex = re.compile(r'\b' + re.escape(pattern) + r'\b', re.IGNORECASE)
+    for dirpath, dirs, files in os.walk(root):
+        dirs[:] = [d for d in dirs if d != '.git']
+        for fname in files:
+            ext = os.path.splitext(fname)[1].lower()
+            if ext not in SOURCE_EXTENSIONS:
+                continue
+            content = _read_file_safe(os.path.join(dirpath, fname))
+            if regex.search(content):
+                return True
+    return False
+
+
 def _grep_regex_in_tree(regex: str, root: str) -> bool:
     compiled = re.compile(regex)
     for dirpath, dirs, files in os.walk(root):
@@ -176,7 +191,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                         # Single import: import "path" or import alias "path" or import . "path" or import _ "path"
                         m = re.search(r'import\s+(?:\w+\s+)?"([^"]+)"', line)
                         if m:
-                            module = m.group(1).split("/")[-1] if "/" in m.group(1) else m.group(1)
+                            # Keep full import path for verifiability
+                            module = m.group(1)
                             imports.add(module)
                 # Find import blocks
                 in_import_block = False
@@ -191,7 +207,8 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                             continue
                         m = re.search(r'"([^"]+)"', line)
                         if m:
-                            module = m.group(1).split("/")[-1] if "/" in m.group(1) else m.group(1)
+                            # Keep full import path for verifiability
+                            module = m.group(1)
                             imports.add(module)
             else:
                 for m in import_re.finditer(content):
@@ -308,7 +325,9 @@ def generate_verified_gt(source_root: str, language: str) -> list[dict]:
         })
 
     for pattern in _ABSENT_PATTERNS:
-        if not _grep_fixed_in_tree(pattern, source_root):
+        # Bug #8 fix: Use word-boundary matching to avoid false positives
+        # (e.g., "express" matching in "expressed", "spring" matching in "offspring")
+        if not _grep_word_in_tree(pattern, source_root):
             claims.append({
                 "claim_type": "ABSENCE",
                 "parameters": {"pattern": pattern, "scope": "repo"},
@@ -341,6 +360,9 @@ def generate_refuted_gt(real_files: list[str], real_functions: list[str],
         prefix = random.choice(_FUNC_PREFIXES)
         suffix = func.split("_")[-1] if "_" in func else func
         fake_func = prefix + suffix
+        # Bug #5 fix: If collision likely due to short suffix, try alternative mutation
+        if len(suffix) < 4:
+            fake_func = prefix + func + "_nonexistent"
         claims.append({
             "claim_type": "FUNCTION_EXISTS",
             "parameters": {"name": fake_func, "file": real_files[0] if real_files else "main.go"},
@@ -478,11 +500,26 @@ def generate_gt_for_case(candidate: dict, base_dir: str) -> dict:
     return candidate
 
 
-def run_generate_gt(candidates_path: str, base_dir: str) -> None:
+def run_generate_gt(candidates_path: str, base_dir: str,
+                    retry_failed: bool = False) -> None:
     """Main entry point: generate ground truth for all verified candidates."""
     candidates = load_jsonl(candidates_path)
     _SAVE_INTERVAL = 50
     gt_count = 0
+
+    # Bug #2 fix: Reset FAILED candidates with failure_stage='generate_gt'
+    # back to VERIFIED so they get reprocessed
+    if retry_failed:
+        reset_count = 0
+        for c in candidates:
+            if (c.get("status") == CandidateStatus.FAILED
+                    and c.get("failure_stage") == "generate_gt"):
+                c["status"] = CandidateStatus.VERIFIED
+                c.pop("failure_reason", None)
+                c.pop("failure_stage", None)
+                reset_count += 1
+        if reset_count:
+            logger.info("Reset %d failed GT candidates for retry", reset_count)
 
     for i, c in enumerate(candidates):
         if c.get("status") == CandidateStatus.READY:
@@ -491,7 +528,14 @@ def run_generate_gt(candidates_path: str, base_dir: str) -> None:
             continue
 
         logger.info("[%d/%d] Generating GT for %s", i + 1, len(candidates), c["osv_id"])
-        candidates[i] = generate_gt_for_case(c, base_dir)
+        try:
+            candidates[i] = generate_gt_for_case(c, base_dir)
+        except Exception:
+            logger.exception("Unexpected error generating GT for %s", c.get("osv_id"))
+            c["status"] = CandidateStatus.FAILED
+            c["failure_reason"] = "unexpected error during GT generation"
+            c["failure_stage"] = "generate_gt"
+            candidates[i] = c
         gt_count += 1
 
         if gt_count % _SAVE_INTERVAL == 0:

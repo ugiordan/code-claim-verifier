@@ -50,7 +50,7 @@ def _extract_fix_info(entry: dict) -> tuple[str | None, str | None]:
 
 
 def _extract_severity(entry: dict) -> str:
-    for sev in entry.get("severity", []):
+    for sev in entry.get("severity") or []:
         score_str = sev.get("score", "")
         if "CVSS" not in score_str:
             continue
@@ -62,8 +62,8 @@ def _extract_severity(entry: dict) -> str:
             base = float(score_str.split("/")[0].split(":")[-1]) if ":" in score_str else 0
         except (ValueError, IndexError):
             pass
-        # Bug #8 fix: Only parse CVSS v3.x, skip v4.0
-        if "/AV:" in score_str and "CVSS:4" not in score_str:
+        # Bug #8 fix: Only parse CVSS v3.x, skip v4.0 and v2.0
+        if "/AV:" in score_str and "CVSS:4" not in score_str and "CVSS:2" not in score_str:
             try:
                 base_score = _cvss_base_from_vector(score_str)
                 if base_score >= 9.0:
@@ -75,7 +75,7 @@ def _extract_severity(entry: dict) -> str:
                 return "LOW"
             except Exception:
                 pass
-    for sev in entry.get("severity", []):
+    for sev in entry.get("severity") or []:
         if sev.get("type") == "ECOSYSTEM":
             text = sev.get("score", "").upper()
             for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):
@@ -86,7 +86,8 @@ def _extract_severity(entry: dict) -> str:
         normalized = db_severity.upper()
         if normalized == "MODERATE":
             normalized = "MEDIUM"
-        return normalized
+        if normalized in ("CRITICAL", "HIGH", "MEDIUM", "LOW"):
+            return normalized
     return "UNKNOWN"
 
 
@@ -163,7 +164,7 @@ def _parse_osv_entry(entry: dict) -> dict | None:
         try:
             if int(published[:4]) < _MIN_YEAR:
                 return None
-        except (ValueError, IndexError):
+        except (ValueError, IndexError, TypeError):
             pass
 
     fix_commit, repo_url = _extract_fix_info(entry)
@@ -177,7 +178,7 @@ def _parse_osv_entry(entry: dict) -> dict | None:
 
     package_name = ""
     ecosystem = ""
-    for affected in entry.get("affected", []):
+    for affected in entry.get("affected") or []:
         pkg = affected.get("package") or {}
         package_name = pkg.get("name", "")
         ecosystem = pkg.get("ecosystem", "")
@@ -214,11 +215,10 @@ def _get_star_count(repo_url: str) -> int | None:
         )
         if result.returncode == 0 and result.stdout.strip().isdigit():
             return int(result.stdout.strip())
-        if result.returncode != 0 and "404" in result.stderr:
+        if "404" in (result.stderr or ""):
             return 0  # Definitive 404, repo doesn't exist
-        # Rate limiting or other API errors: return 0 to treat as 0-star repo
-        logger.debug("gh API error for %s: %s", repo_url, result.stderr[:100])
-        return 0
+        # Rate limiting or other API errors: return None to skip filter
+        return None
     except subprocess.TimeoutExpired:
         logger.debug("gh API timeout for %s", repo_url)
         return 0
@@ -253,6 +253,14 @@ def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> lis
     except requests.RequestException as e:
         logger.error("Failed to download %s: %s", url, e)
         return []
+    try:
+        with zipfile.ZipFile(io.BytesIO(content)) as zf:
+            entries = _parse_zip(zf)
+    except zipfile.BadZipFile:
+        logger.error("Downloaded invalid zip for %s", ecosystem)
+        return []
+
+    # Only cache after successful parse
     if cache_dir:
         os.makedirs(cache_dir, exist_ok=True)
         tmp_path = cached + ".tmp"
@@ -260,8 +268,7 @@ def _download_ecosystem_zip(ecosystem: str, cache_dir: str | None = None) -> lis
             f.write(content)
         os.replace(tmp_path, cached)
 
-    with zipfile.ZipFile(io.BytesIO(content)) as zf:
-        return _parse_zip(zf)
+    return entries
 
 
 def _parse_zip(zf: zipfile.ZipFile) -> list[dict]:

@@ -281,7 +281,14 @@ def run_build(candidates_path: str, containerfiles_dir: str, base_dir: str,
             continue
 
         logger.info("[%d/%d] Building %s", i + 1, len(candidates), c["osv_id"])
-        candidates[i] = build_case(c, containerfiles_dir, base_dir)
+        try:
+            candidates[i] = build_case(c, containerfiles_dir, base_dir)
+        except Exception:
+            logger.exception("Unexpected error building %s", c.get("osv_id"))
+            c["status"] = CandidateStatus.FAILED
+            c["failure_reason"] = "unexpected error during build"
+            c["failure_stage"] = "build"
+            candidates[i] = c
         build_count += 1
 
         if build_count % _SAVE_INTERVAL == 0:
