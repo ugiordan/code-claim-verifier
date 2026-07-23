@@ -65,18 +65,19 @@ def _read_file_safe(path: str, max_size: int = _MAX_FILE_SIZE) -> str:
         return ""
 
 
-_INLINE_COMMENT_RE = re.compile(r'//[^\n]*|#[^\n]*')
+_CSTYLE_COMMENT_RE = re.compile(r'//[^\n]*')
 _BLOCK_COMMENT_RE = re.compile(r'/\*.*?\*/', re.DOTALL)
 _PY_DOCSTRING_RE = re.compile(r'""".*?"""|\'\'\'.*?\'\'\'', re.DOTALL)
+_PY_COMMENT_RE = re.compile(r'#[^\n]*')
 
 
 def _strip_comments(content: str, language: str) -> str:
     if language in ("c", "cpp", "java", "go", "javascript", "typescript", "rust"):
         content = _BLOCK_COMMENT_RE.sub("", content)
-        content = _INLINE_COMMENT_RE.sub("", content)
+        content = _CSTYLE_COMMENT_RE.sub("", content)
     elif language == "python":
         content = _PY_DOCSTRING_RE.sub("", content)
-        content = re.sub(r'#[^\n]*', '', content)
+        content = _PY_COMMENT_RE.sub("", content)
     return content
 
 

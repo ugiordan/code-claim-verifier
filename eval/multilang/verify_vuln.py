@@ -40,12 +40,16 @@ def _is_source_change(changed_files: list[str]) -> bool:
 
 
 def _verify_via_source_pattern(source_path: str, changed_files: list[str], repo_root: str = "") -> bool:
+    if not changed_files:
+        return False
+    # Check if any changed files exist in pre-fix source (modified files)
+    found_any = False
     for f in changed_files:
         if os.path.isfile(os.path.join(source_path, f)):
-            return True
-        if repo_root and os.path.isfile(os.path.join(repo_root, f)):
-            return True
-    return False
+            found_any = True
+        elif repo_root and os.path.isfile(os.path.join(repo_root, f)):
+            found_any = True
+    return found_any
 
 
 def _verify_via_ccv(description: str, source_path: str, language: str) -> tuple[bool, int]:
@@ -74,6 +78,12 @@ def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
     fix_commit = candidate.get("fix_commit", "")
     language = candidate.get("language", "unknown")
     description = candidate.get("description", "")
+
+    if not source_root:
+        candidate["status"] = CandidateStatus.FAILED
+        candidate["failure_reason"] = "empty source_root"
+        candidate["failure_stage"] = "verify_vuln"
+        return candidate
 
     source_path = os.path.join(base_dir, source_root) if not os.path.isabs(source_root) else source_root
 
@@ -137,7 +147,14 @@ def run_verify_vuln(candidates_path: str, base_dir: str) -> None:
             continue
 
         logger.info("[%d/%d] Verifying %s", i + 1, len(candidates), c["osv_id"])
-        candidates[i] = verify_vulnerability(c, base_dir)
+        try:
+            candidates[i] = verify_vulnerability(c, base_dir)
+        except Exception:
+            logger.exception("Unexpected error verifying %s", c.get("osv_id"))
+            c["status"] = CandidateStatus.FAILED
+            c["failure_reason"] = "unexpected error during verification"
+            c["failure_stage"] = "verify_vuln"
+            candidates[i] = c
         verify_count += 1
 
         if verify_count % _SAVE_INTERVAL == 0:
