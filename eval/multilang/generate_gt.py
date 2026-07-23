@@ -164,7 +164,7 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
     imports: set[str] = set()
 
     if language == "python":
-        import_re = re.compile(r"^(?:import\s+([\w.]+)|from\s+([\w.]+)\s+import)", re.MULTILINE)
+        import_re = re.compile(r"^(?:import\s+([\w.]+(?:\s*,\s*[\w.]+)*)|from\s+([\w.]+)\s+import)", re.MULTILINE)
     elif language == "go":
         # Bug #11 fix: Only match imports within import blocks or import lines
         import_re = re.compile(r'(?:^import\s+"([^"]+)"|^import\s+\(\s*\n(?:\s*"([^"]+)"\s*\n)+\s*\))', re.MULTILINE)
@@ -219,14 +219,19 @@ def _extract_imports(source_root: str, language: str) -> list[str]:
                 for m in import_re.finditer(content):
                     for g in m.groups():
                         if g:
-                            if language in ("python", "java"):
-                                module = g.split(".")[0]
-                            elif language == "go":
-                                module = g.split("/")[-1] if "/" in g else g
-                            else:
-                                module = g
-                            if module:
-                                imports.add(module)
+                            parts = g.split(",") if language == "python" and "," in g else [g]
+                            for part in parts:
+                                part = part.strip()
+                                if not part:
+                                    continue
+                                if language in ("python", "java"):
+                                    module = part.split(".")[0]
+                                elif language == "go":
+                                    module = part
+                                else:
+                                    module = part
+                                if module:
+                                    imports.add(module)
 
     return sorted(imports)
 
