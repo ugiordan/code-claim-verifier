@@ -24,14 +24,18 @@ _MEDIUM_PLUS = {"MEDIUM", "HIGH", "CRITICAL"}
 def _extract_fix_info(entry: dict) -> tuple[str | None, str | None, str, str]:
     """Returns (fix_commit, repo_url, ecosystem, package) from the same source."""
     for affected in entry.get("affected") or []:
+        if not isinstance(affected, dict):
+            continue
         pkg = affected.get("package") or {}
-        eco = pkg.get("ecosystem", "")
-        pkg_name = pkg.get("name", "")
+        eco = pkg.get("ecosystem", "") or ""
+        pkg_name = pkg.get("name", "") or ""
         for rng in affected.get("ranges") or []:
-            if rng.get("type") != "GIT":
+            if not isinstance(rng, dict) or rng.get("type") != "GIT":
                 continue
             fix = None
             for event in rng.get("events") or []:
+                if not isinstance(event, dict):
+                    continue
                 if "fixed" in event:
                     fix = event["fixed"]
             repo = rng.get("repo") or ""
@@ -40,6 +44,8 @@ def _extract_fix_info(entry: dict) -> tuple[str | None, str | None, str, str]:
 
     # Fallback to references
     for ref in entry.get("references") or []:
+        if not isinstance(ref, dict):
+            continue
         url = ref.get("url") or ""
         if "github.com" in url and "/commit/" in url:
             parts = url.rstrip("/").split("/commit/")
@@ -57,7 +63,9 @@ def _extract_fix_info(entry: dict) -> tuple[str | None, str | None, str, str]:
 
 def _extract_severity(entry: dict) -> str:
     for sev in entry.get("severity") or []:
-        score_str = sev.get("score", "")
+        if not isinstance(sev, dict):
+            continue
+        score_str = sev.get("score") or ""
         if "CVSS" not in score_str:
             continue
         try:
@@ -305,7 +313,11 @@ def query_ecosystem(ecosystem: str, min_stars: int = 100,
             continue
         seen_ids.add(osv_id)
 
-        parsed = _parse_osv_entry(entry)
+        try:
+            parsed = _parse_osv_entry(entry)
+        except Exception:
+            logger.debug("Skipping malformed OSV entry: %s", osv_id)
+            continue
         if parsed is None:
             continue
 
@@ -352,10 +364,15 @@ def run_query(output_path: str, ecosystems: list[str] | None = None,
         cache_dir = os.path.join(os.path.dirname(output_path), ".osv_cache")
 
     all_candidates: list[dict] = []
+    seen_ids: set[str] = set()
     for eco in ecosystems:
         candidates = query_ecosystem(eco, min_stars=min_stars, cache_dir=cache_dir)
-        all_candidates.extend(candidates)
-        logger.info("Total so far: %d", len(all_candidates))
+        for c in candidates:
+            osv_id = c.get("osv_id", "")
+            if osv_id not in seen_ids:
+                seen_ids.add(osv_id)
+                all_candidates.append(c)
+        logger.info("Total so far: %d (deduped)", len(all_candidates))
 
     save_jsonl(all_candidates, output_path)
     logger.info("Wrote %d candidates to %s", len(all_candidates), output_path)
