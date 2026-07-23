@@ -77,8 +77,8 @@ def _strip_string_literals(content: str) -> str:
     content = re.sub(r'"(?:[^"\\]|\\.)*"', '""', content)
     # Remove single-quoted strings
     content = re.sub(r"'(?:[^'\\]|\\.)*'", "''", content)
-    # Remove backtick template literals (JS/TS)
-    content = re.sub(r'`(?:[^`\\]|\\.)*`', '``', content)
+    # Remove backtick strings (JS/TS template literals, Go raw strings)
+    content = re.sub(r'`[^`]*`', '``', content)
     return content
 
 

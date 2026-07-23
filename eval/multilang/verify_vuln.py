@@ -66,10 +66,14 @@ def _verify_via_ccv(description: str, source_path: str, language: str) -> tuple[
     if not claims:
         return False, 0
 
-    engine = VerificationEngine()
-    verified = engine.verify_claims_with_chaining(claims, source_path, language)
-    verified_count = sum(1 for vc in verified if vc.verdict == "VERIFIED")
-    return verified_count > 0, verified_count
+    try:
+        engine = VerificationEngine()
+        verified = engine.verify_claims_with_chaining(claims, source_path, language)
+        verified_count = sum(1 for vc in verified if vc.verdict == "VERIFIED")
+        return verified_count > 0, verified_count
+    except Exception:
+        logger.debug("CCV verification engine failed, skipping")
+        return False, 0
 
 
 def verify_vulnerability(candidate: dict, base_dir: str) -> dict:

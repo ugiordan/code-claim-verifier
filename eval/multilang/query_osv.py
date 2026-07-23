@@ -34,13 +34,13 @@ def _extract_fix_info(entry: dict) -> tuple[str | None, str | None, str, str]:
             for event in rng.get("events") or []:
                 if "fixed" in event:
                     fix = event["fixed"]
-            repo = rng.get("repo", "")
+            repo = rng.get("repo") or ""
             if fix and "github.com" in repo:
                 return fix, repo.rstrip("/").removesuffix(".git"), eco, pkg_name
 
     # Fallback to references
     for ref in entry.get("references") or []:
-        url = ref.get("url", "")
+        url = ref.get("url") or ""
         if "github.com" in url and "/commit/" in url:
             parts = url.rstrip("/").split("/commit/")
             if len(parts) == 2 and len(parts[1]) >= 7:

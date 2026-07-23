@@ -9,7 +9,7 @@ import tempfile
 logger = logging.getLogger(__name__)
 
 SOURCE_EXTENSIONS = frozenset(
-    (".c", ".cpp", ".h", ".py", ".go", ".ts", ".js", ".java", ".rs")
+    (".c", ".cpp", ".h", ".py", ".go", ".ts", ".tsx", ".js", ".java", ".rs")
 )
 
 
