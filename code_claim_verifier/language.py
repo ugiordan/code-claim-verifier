@@ -3,16 +3,18 @@ import re
 
 LANG_MAP = {
     ".py": "python", ".go": "go", ".ts": "typescript", ".tsx": "typescript",
-    ".js": "javascript", ".java": "java", ".c": "c", ".cpp": "cpp",
+    ".js": "javascript", ".java": "java", ".kt": "kotlin", ".kts": "kotlin",
+    ".c": "c", ".cpp": "cpp",
     ".h": "c", ".hpp": "cpp", ".rs": "rust", ".rb": "ruby",
 }
 
 FUNCTION_DEF_PATTERNS: dict[str, str] = {
     "python": r"def\s+{name}\s*\(",
     "go": r"func\s+(?:\([^)]*\)\s+)?{name}\s*\(",
-    "typescript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=)",
-    "javascript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=)",
+    "typescript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=|{name}\s*\()",
+    "javascript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=|{name}\s*\()",
     "java": r"(?:public|private|protected|static|\s)+[\w<>\[\]]+\s+{name}\s*\(",
+    "kotlin": r"(?:fun\s+{name}\s*[\(<]|(?:override\s+)?fun\s+{name}\s*[\(<])",
     "c": r"(?:[\w*]+\s+{name}\s*\(|^{name}\s*\()",
     "cpp": r"(?:[\w*:]+\s+{name}\s*\(|^{name}\s*\()",
     "rust": r"fn\s+{name}\s*[<(]",
@@ -24,7 +26,8 @@ IMPORT_PATTERNS: dict[str, list[str]] = {
     "go": [r'"\s*{module}\s*"'],
     "typescript": [r"import\s+.*from\s+['\"].*{module}", r"require\(['\"].*{module}"],
     "javascript": [r"import\s+.*from\s+['\"].*{module}", r"require\(['\"].*{module}"],
-    "java": [r"import\s+.*{module}"],
+    "java": [r"import\s+.*{module}", r"import\s+{module_prefix}\.\*"],
+    "kotlin": [r"import\s+.*{module}", r"import\s+{module_prefix}\.\*"],
     "c": [r"#include\s+[<\"].*{module}"],
     "cpp": [r"#include\s+[<\"].*{module}"],
     "rust": [r"use\s+.*{module}"],
@@ -44,4 +47,11 @@ def get_function_pattern(name: str, language: str) -> str:
 
 def get_import_patterns(module: str, language: str) -> list[str]:
     templates = IMPORT_PATTERNS.get(language, IMPORT_PATTERNS["unknown"])
-    return [t.format(module=re.escape(module)) for t in templates]
+    module_prefix = ".".join(module.split(".")[:-1]) if "." in module else module
+    results = []
+    for t in templates:
+        try:
+            results.append(t.format(module=re.escape(module), module_prefix=re.escape(module_prefix)))
+        except KeyError:
+            results.append(t.format(module=re.escape(module)))
+    return results

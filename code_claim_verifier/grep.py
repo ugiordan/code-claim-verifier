@@ -11,7 +11,8 @@ _grep_cache: contextvars.ContextVar[dict | None] = contextvars.ContextVar(
 
 _SOURCE_EXTENSIONS = [
     "*.c", "*.cpp", "*.cc", "*.cxx", "*.h", "*.hpp", "*.hh",
-    "*.py", "*.go", "*.rs", "*.java", "*.js", "*.ts", "*.tsx",
+    "*.py", "*.go", "*.rs", "*.java", "*.kt", "*.kts",
+    "*.js", "*.ts", "*.tsx", "*.jsx",
     "*.rb", "*.sh", "*.yaml", "*.yml", "*.json", "*.toml",
     "*.mod", "*.sum", "*.txt", "*.cfg", "*.ini", "*.xml",
     "Makefile", "Dockerfile", "CMakeLists.txt",

@@ -9,6 +9,17 @@ from code_claim_verifier.language import get_function_pattern, detect_language
 from code_claim_verifier.security import safe_path
 
 
+def _strip_qualifier(name: str) -> str:
+    """Strip type/module qualifier from a method name.
+
+    finder.Find -> Find, Args::parse -> parse, Foo.Bar.baz -> baz
+    """
+    for sep in ("::", "."):
+        if sep in name:
+            return name.rsplit(sep, 1)[-1]
+    return name
+
+
 def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
     if not name:
@@ -24,9 +35,15 @@ def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> 
         lang = language
         search_path = repo_path
 
-    pattern = get_function_pattern(name, lang)
+    bare_name = _strip_qualifier(name)
+    pattern = get_function_pattern(bare_name, lang)
     matches = _grep(pattern, search_path)
     found = len(matches) > 0
+
+    if not found and bare_name != name:
+        pattern = get_function_pattern(name, lang)
+        matches = _grep(pattern, search_path)
+        found = len(matches) > 0
 
     return VerifiedClaim(
         claim=claim, verdict="VERIFIED" if found else "REFUTED",
