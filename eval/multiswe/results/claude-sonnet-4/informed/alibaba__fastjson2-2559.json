@@ -1,0 +1,112 @@
+{
+  "vuln_id": "alibaba__fastjson2-2559",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4018,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 5,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.6,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "TypeUtils.cast",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for TypeUtils.cast",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "JSONObject.toJavaObject",
+          "class": "JSONObject"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for JSONObject.toJavaObject",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JSONObject.toJavaObject",
+            "TypeUtils.cast"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JSONObject.toJavaObject->TypeUtils.cast: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.math.BigDecimal",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java:9:import java.math.BigDecimal;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.math.BigInteger",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java:10:import java.math.BigInteger;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "import",
+          "item": "org.bson.types.Decimal128",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "conversion_support",
+          "item": "org.bson.types.Decimal128",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

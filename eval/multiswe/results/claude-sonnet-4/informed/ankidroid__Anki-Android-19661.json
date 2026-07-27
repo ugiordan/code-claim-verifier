@@ -1,0 +1,164 @@
+{
+  "vuln_id": "ankidroid__Anki-Android-19661",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3676,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 8,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.57,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "onCreate",
+          "file": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt:94:    override fun onCreate() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt",
+          "line": 218,
+          "content": "onCreate() method"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 218: savedInstanceState: Bundle?,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getAppSpecificExternalAnkiDroidDirectory",
+          "file": "CollectionHelper"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getAppSpecificExternalAnkiDroidDirectory",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getDefaultAnkiDroidDirectory",
+          "file": "CollectionHelper"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getDefaultAnkiDroidDirectory",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "build",
+          "file": "SystemStorageException.Companion"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for build",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "AnkiDroidApp.onCreate",
+            "CollectionHelper.getDefaultAnkiDroidDirectory",
+            "CollectionHelper.getAppSpecificExternalAnkiDroidDirectory",
+            "SystemStorageException.Companion.build"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: AnkiDroidApp.onCreate->CollectionHelper.getDefaultAnkiDroidDirectory: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "AnkiDroidApp.onCreate",
+          "description": "main application entry point"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/test/java/com/ichi2/anki/HandlerUtilsTest.kt:36:    fun checkHandlerFunctionExecution()",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt",
+          "import": "com.ichi2.anki.exception.StorageAccessException"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt:45:import com.ichi2.anki.exception.StorageAccessException",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "null-checking for getExternalFilesDir() return values"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "null-safety checks before using getExternalFilesDir() result"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "graceful fallback when external storage is unavailable"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "retry mechanism for transient storage issues"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

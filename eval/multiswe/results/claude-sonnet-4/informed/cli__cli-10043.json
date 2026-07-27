@@ -1,0 +1,164 @@
+{
+  "vuln_id": "cli__cli-10043",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3433,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 7,
+    "refuted": 4,
+    "unverifiable": 2,
+    "verification_rate": 0.62,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/codespace/common.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/codespace/common.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/shared/shared.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/run/shared/shared.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "chooseCodespaceFromList",
+          "file": "pkg/cmd/codespace/common.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: chooseCodespaceFromList at pkg/cmd/codespace/common.go:92",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/codespace/common.go",
+          "line_range": "75-105",
+          "content": "chooseCodespaceFromList function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 263 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "formatCodespacesForSelect",
+          "file": "pkg/cmd/codespace/common.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: formatCodespacesForSelect at pkg/cmd/codespace/common.go:128",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/codespace/common.go",
+          "line_range": "107-116",
+          "content": "formatCodespacesForSelect function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 263 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Title",
+          "file": "pkg/cmd/run/shared/shared.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/shared/shared.go:142:func (r Run) Title() string {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/run/shared/shared.go",
+          "line_range": "130-140",
+          "content": "Run.Title method"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 625 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/AlecAivazis/survey/v2"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/internal/codespaces/api"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "gh run view",
+            "chooseCodespaceFromList",
+            "formatCodespacesForSelect"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: gh run view->chooseCodespaceFromList: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "command": "gh run view"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "command": "gh codespace"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

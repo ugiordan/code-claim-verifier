@@ -1,0 +1,134 @@
+{
+  "vuln_id": "darkreader__darkreader-6747",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3941,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 8,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.79,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/generators/dynamic-theme.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/generators/dynamic-theme.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getDynamicThemeFixesFor",
+          "file": "src/generators/dynamic-theme.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: getDynamicThemeFixesFor at src/generators/dynamic-theme.ts:49",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/generators/dynamic-theme.ts",
+          "line": 61,
+          "content": "if (fixes.length === 0 || fixes[fixes.length - 1].url[0] !== '*') {"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 61: if (fixes.length === 0 || fixes[fixes.length - 1].url[0] !== '*') {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getSitesFixesFor",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (getDynamicThemeFixesFor, getInversionFixesFor, getThemeFor)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "isURLInList",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 27 callers (FilterSettings, CustomSettingsToggle, ManageSettingsPage)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "./utils/parse",
+          "import": "getSitesFixesFor"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/darkreader__darkreader/src/generators/static-theme.ts:4:import {parseSitesFixesConfig, getSitesFixesFor} from './utils/parse';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "../utils/url",
+          "import": "isURLInList"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/darkreader__darkreader/src/background/extension.ts:12:import {isURLInList, getURLHostOrProtocol, isURLEnabled, isPDF} from '../utils/url';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/generators/dynamic-theme.ts",
+          "line": 48,
+          "content": "const fixes = getSitesFixesFor(frameURL || url, text, index, {...});"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 48: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/generators/dynamic-theme.ts",
+          "line": 64,
+          "content": "const genericFix = fixes[fixes.length - 1];"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 64: const genericFix = fixes[fixes.length - 1];",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/generators/dynamic-theme.ts",
+          "line": 73,
+          "content": ".slice(0, fixes.length - 1)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 73: if (enabledForPDF) {",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

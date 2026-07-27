@@ -1,0 +1,143 @@
+{
+  "vuln_id": "cli__cli-10364",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4352,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 6,
+    "refuted": 3,
+    "unverifiable": 2,
+    "verification_rate": 0.64,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/rename/rename.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/repo/rename/rename.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "renameRun",
+          "file": "pkg/cmd/repo/rename/rename.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: renameRun at pkg/cmd/repo/rename/rename.go:89",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/rename/rename.go",
+          "line": 102,
+          "content": "newRepoName := opts.newRepoSelector"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 102: if newRepoName == \"\" {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/rename/rename.go",
+          "line": 125,
+          "content": "newRepo, err := api.RenameRepo(apiClient, currRepo, newRepoName)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 125: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "api.RenameRepo",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/fork/fork.go:229:\t\tforkedRepo, err = api.RenameRepo(apiClient, forkedRepo, opts.ForkName)",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdRename"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdRename at pkg/cmd/gist/rename/rename.go:30",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "NewCmdRename",
+            "renameRun",
+            "api.RenameRepo"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: NewCmdRename->renameRun: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/api"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/internal/ghrepo"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input validation",
+          "location": "newRepoName parameter"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "command": "gh repo rename",
+          "accessible": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

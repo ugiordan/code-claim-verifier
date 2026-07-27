@@ -1,0 +1,123 @@
+{
+  "vuln_id": "cli__cli-9271",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4067,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 7,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.75,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable code",
+          "scope": "provided source files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "git/client.go",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: git/client.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gh/main.go",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "context/context.go",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: context/context.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/clone.go",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: pkg/cmd/repo/clone.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "git/client.go",
+          "line_range": "67-88",
+          "content": "if c.RepoDir != \"\" {\n    args = append([]string{\"-C\", c.RepoDir}, args...)\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 726 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "git/client.go",
+          "import": "os/exec",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/git/client.go:10:\t\"os/exec\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "git/client.go",
+          "import": "github.com/cli/safeexec",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/git/client.go:18:\t\"github.com/cli/safeexec\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "specific handling for bare repositories",
+          "scope": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

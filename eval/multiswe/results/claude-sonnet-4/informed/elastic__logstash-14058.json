@@ -1,0 +1,108 @@
+{
+  "vuln_id": "elastic__logstash-14058",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4042,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 5,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.62,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "writeEntry",
+          "file": "DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for writeEntry",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "DeadLetterQueueWriter.java",
+          "line": 115,
+          "content": "writeEntry(Event event, String pluginName, String pluginId, String reason)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 115: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getCurrentQueueSize",
+          "file": "DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getCurrentQueueSize",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "DeadLetterQueueWriter.java",
+          "import": "java.util.concurrent.atomic.LongAdder"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/plugins/pipeline/PipelineBusTest.java:36:import java.util.concurrent.atomic.LongAdder;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "DeadLetterQueueWriter.java",
+          "import": "org.logstash.DLQEntry"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueReaderTest.java:28:import org.logstash.DLQEntry;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "DeadLetterQueueWriter.java",
+          "import": "org.logstash.Event"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/benchmarks/src/main/java/org/logstash/benchmark/QueueWriteBenchmark.java:28:import org.logstash.Event;",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

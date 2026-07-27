@@ -1,0 +1,220 @@
+{
+  "vuln_id": "elastic__logstash-15233",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3817,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 19,
+    "verified": 12,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.5,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "DeadLetterQueueWriter",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for DeadLetterQueueWriter",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_start": 82,
+          "line_end": 103
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cleanupTempFiles",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (DeadLetterQueueWriter, DLQWriterAdapter, NullDeadLetterQueueWriter)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getSegmentPaths",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (DeadLetterQueueReader, pollNewSegments, DeadLetterQueueWriter)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "FileLockFactory.obtainLock",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/runner.rb:394:    @data_path_lock = FileLockFactory.obtainLock(java.nio.file",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "nextWriter",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (DeadLetterQueueWriter, finalizeSegment, DLQWriterAdapter)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "createFlushScheduler",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (DeadLetterQueueWriter, DLQWriterAdapter, NullDeadLetterQueueWriter)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.channels.FileLock"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/FileLockFactoryTest.java:35:import java.nio.channels.FileLock;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:28:import java.nio.file.Files;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Path"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:29:import java.nio.file.Paths;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.StandardCopyOption"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/LogstashInstallation.java:32:import java.nio.file.StandardCopyOption;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.*"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of java.util.concurrent.* found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.FileLockFactory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/runner.rb:54:java_import 'org.logstash.FileLockFactory'",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "writeEntry"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for writeEntry",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "isOpen"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for isOpen",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getPath"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getPath",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getCurrentQueueSize"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getCurrentQueueSize",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line": 119
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 119: }",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

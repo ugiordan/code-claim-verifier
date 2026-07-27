@@ -1,0 +1,191 @@
+{
+  "vuln_id": "cli__cli-9433",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3701,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 3,
+    "unverifiable": 1,
+    "verification_rate": 0.79,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/issue/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/issue/create/create.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/pr/create/create.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/shared/survey.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/pr/shared/survey.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "CreateOptions",
+          "file": "pkg/cmd/issue/create/create.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for CreateOptions",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdCreate",
+          "file": "pkg/cmd/issue/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdCreate at pkg/cmd/issue/create/create.go:45",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "CreateOptions",
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for CreateOptions",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "BodySurvey",
+          "file": "pkg/cmd/pr/shared/survey.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: BodySurvey at pkg/cmd/pr/shared/survey.go:85",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "survey.go",
+          "content": "result, err := p.MarkdownEditor(\"Body\", state.Body, true)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 319 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MarkdownEditor",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (reviewSurvey, EditFieldsSurvey, BodySurvey)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "--editor flag",
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "logic to handle editor-based creation",
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "editor workflow that bypasses interactive prompts",
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "cmdutil.ReadFile"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmdutil/file_input.go:8:func ReadFile(filename string, stdin io.ReadCloser) ([]byte, error) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdCreate"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdCreate at pkg/cmd/gist/create/create.go:42",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "createRun",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 31 callers (NewCmdCreate, newCmdCreate, TestCreateRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/spf13/cobra"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

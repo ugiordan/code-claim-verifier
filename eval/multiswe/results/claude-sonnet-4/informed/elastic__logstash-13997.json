@@ -1,0 +1,145 @@
+{
+  "vuln_id": "elastic__logstash-13997",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3718,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 7,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.55,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/config/ir/compiler/EventCondition.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/config/ir/compiler/EventCondition.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/Rubyfier.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/Rubyfier.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "buildCondition",
+          "file": "logstash-core/src/main/java/org/logstash/config/ir/compiler/EventCondition.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for buildCondition",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/config/ir/compiler/EventCondition.java",
+          "line": 125,
+          "content": "expression.toRubyString()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 125: condition = truthy((Truthy) expression);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "toRubyString",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (toString, hashSource, humanReadableExpression)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java",
+          "import": "org.logstash.secret.store.SecretStore"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java:48:import org.logstash.secret.store.SecretStore;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java",
+          "import": "org.logstash.plugins.ConfigVariableExpander"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java:47:import org.logstash.plugins.ConfigVariableExpander;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "CompiledPipeline constructor",
+            "ConfigVariableExpander",
+            "SecretStore"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: CompiledPipeline constructor->ConfigVariableExpander: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "EventCondition.Compiler.buildCondition",
+            "expression.toRubyString"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: EventCondition.Compiler.buildCondition->expression.toRubyString: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "deep",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (deepList, deepMap, unconvert)",
+        "method": "cymbal_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

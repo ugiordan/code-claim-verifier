@@ -1,0 +1,88 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-1294",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3302,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 3,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.53,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/app.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/app.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/args.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/args.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: globset/src/glob.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/app.rs",
+          "line_start": 85,
+          "line_end": 87,
+          "content": ".arg(flag(\"glob\").short(\"g\")\n     .takes_value(true).multiple(true).number_of_values(1)\n     .value_name(\"GLOB\"))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 529 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MatchStrategy",
+          "file": "globset/src/glob.rs",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for MatchStrategy",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "glob_overrides",
+          "file": "src/args.rs",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for glob_overrides",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

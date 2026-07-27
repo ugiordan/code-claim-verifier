@@ -1,0 +1,166 @@
+{
+  "vuln_id": "cli__cli-9983",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3152,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 11,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.79,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/repo/fork/fork.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "forkRun",
+          "file": "pkg/cmd/repo/fork/fork.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: forkRun at pkg/cmd/repo/fork/fork.go:145",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdFork",
+          "file": "pkg/cmd/repo/fork/fork.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdFork at pkg/cmd/repo/fork/fork.go:64",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "forkRun",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (NewCmdFork, TestRepoFork, TestNewCmdFork)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "line": 108,
+          "content": "Any existing 'origin' will be renamed to upstream"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 108: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "defaultRemoteName",
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "default_behavior": "origin"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'defaultRemoteName' found in 2 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "opts.Rename",
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "default_behavior": "true"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'opts.Rename' found in 2 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "import": "github.com/cli/cli/v2/git"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/fork/fork.go:16:\t\"github.com/cli/cli/v2/git\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/fork/fork.go:21:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/fork/fork.go:18:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "line_range": "75-85",
+          "content": "By default, the new fork is set to be your origin remote and any existing origin remote is renamed to upstream."
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 386 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gh/main.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdRoot",
+          "file": "root"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/root/root.go:54:func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, error) {",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

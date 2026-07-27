@@ -1,0 +1,121 @@
+{
+  "vuln_id": "elastic__logstash-14878",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3253,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 4,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.41,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 95,
+          "expected_content": "this.lastEntryTimestamp = Timestamp.now();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 96,
+          "expected_content": "createFlushScheduler();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "import": "java.time.Duration"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/common/io/DeadLetterQueueReaderTest.java:35:import java.time.Duration;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "import": "java.time.Instant"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/TimestampTest.java:29:import java.time.Instant;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "import": "java.util.concurrent.ScheduledExecutorService"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/plugins/inputs/Generator.java:40:import java.util.concurrent.ScheduledExecutorService;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "import": "org.logstash.Timestamp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/spec/logstash/agent_spec.rb:28:java_import org.logstash.Timestamp",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "createFlushScheduler",
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for createFlushScheduler",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "close",
+          "file_path": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for close",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

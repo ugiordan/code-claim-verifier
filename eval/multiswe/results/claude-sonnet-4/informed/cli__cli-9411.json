@@ -1,0 +1,230 @@
+{
+  "vuln_id": "cli__cli-9411",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3593,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 19,
+    "verified": 13,
+    "refuted": 3,
+    "unverifiable": 3,
+    "verification_rate": 0.78,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/variable/get/get.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/variable/get/get.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/variable/delete/delete.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/variable/delete/delete.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/secret/delete/delete.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/secret/delete/delete.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getRun",
+          "file": "pkg/cmd/variable/get/get.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: getRun at pkg/cmd/variable/get/get.go:79",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "removeRun",
+          "file": "pkg/cmd/variable/delete/delete.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: removeRun at pkg/cmd/variable/delete/delete.go:71",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "removeRun",
+          "file": "pkg/cmd/secret/delete/delete.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: removeRun at pkg/cmd/secret/delete/delete.go:76",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/variable/get/get.go",
+          "line_range": "82-120",
+          "content_description": "getRun() function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 132 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/variable/delete/delete.go",
+          "line_range": "65-125",
+          "content_description": "removeRun() function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 134 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/secret/delete/delete.go",
+          "line_range": "73-140",
+          "content_description": "removeRun() function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 152 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "opts.Config",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (52 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/alias/delete/delete.go:54:\tcfg, err := opts.Config()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cfg.Authentication().DefaultHost",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (42 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/api/api.go:78:\t\t\thost, _ := cfg.Authentication().DefaultHost()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "client.REST",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (38 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/api/queries_pr.go:697:\treturn client.REST(repo.RepoHost(), \"DELETE\", path, nil, nil)",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "opts.BaseRepo",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (56 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/ruleset/list/list.go:106:\t\trepoI, repoErr = opts.BaseRepo()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/api",
+          "file": "any"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/internal/gh",
+          "file": "any"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/internal/ghrepo",
+          "file": "any"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "getRun",
+          "command": "gh variable get"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "removeRun",
+          "command": "gh variable delete"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "removeRun",
+          "command": "gh secret delete"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "vuln_id": "cli__cli-10388",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3528,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 7,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.79,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/api/api.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/api/api.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gh/main.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdApi"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdApi at pkg/cmd/api/api.go:63",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ghcmd.Main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ghcmd.Main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "encoding/json",
+          "file": "pkg/cmd/api/api.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/api/api.go:5:\t\"encoding/json\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "net/http",
+          "file": "pkg/cmd/api/api.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/api/api.go:9:\t\"net/http\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "github.com/cli/cli/v2/api",
+          "file": "pkg/cmd/api/api.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/api/api.go:19:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/api/api.go",
+          "line": 134,
+          "content_description": "cuts off in the middle of an example"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 134: $ gh api gists -F 'files[myfile.txt][content]=@myfile.txt'",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "cmd/gh/main.go",
+            "ghcmd.Main",
+            "NewCmdApi",
+            "runF"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: cmd/gh/main.go->ghcmd.Main: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

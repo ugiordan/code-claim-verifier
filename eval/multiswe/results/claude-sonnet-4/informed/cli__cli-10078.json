@@ -1,0 +1,170 @@
+{
+  "vuln_id": "cli__cli-10078",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4055,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 8,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.6,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/pr/shared/finder.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "findForBranch",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: findForBranch at pkg/cmd/pr/shared/finder.go:306",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Find",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/shared/finder.go:88:func (f *finder) Find(opts FindOptions) (*api.PullRequest, ghrepo.Interface, error) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/shared/finder.go",
+          "line_number": 95,
+          "content": "if opts.Selector == \"\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 574 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/shared/finder.go",
+          "line_number": 155,
+          "content": "pr, err = findForBranch(httpClient, f.repo, opts.BaseBranch, f.branchName, opts.States, fields.ToSlice())"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 574 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "baseRepoFn",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for baseRepoFn",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/shared/finder.go",
+          "line_number": 88,
+          "content": "f.baseRepoFn()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 574 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseCurrentBranch",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/shared/finder.go:235:func (f *finder) parseCurrentBranch() (string, int, error) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "Find",
+            "parseCurrentBranch",
+            "findForBranch"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: Find->parseCurrentBranch: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/api",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/shared/finder.go:15:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/internal/ghrepo",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/shared/finder.go:19:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/git",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/shared/finder.go:17:\t\"github.com/cli/cli/v2/git\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/context",
+          "alias": "remotes",
+          "file": "pkg/cmd/pr/shared/finder.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/shared/finder.go:16:\tremotes \"github.com/cli/cli/v2/context\"",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

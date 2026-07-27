@@ -1,0 +1,146 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-727",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3524,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 8,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.71,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/args.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/args.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/app.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/app.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/args.rs",
+          "line": 50,
+          "content": "grep: Grep,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 50: glob_overrides: Override,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/args.rs",
+          "line": 120,
+          "content": "pub fn grep(&self) -> Grep"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 120: /// Whether ripgrep should be quiet or not.",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Args::parse",
+          "file": "src/args.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/args.rs:90:    pub fn parse() -> Result<Args> {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ArgMatches(matches).to_args",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/args.rs:102:        ArgMatches(matches).to_args()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "regex",
+          "file": "src/args.rs",
+          "line": 17
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/args.rs:17:use regex;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "grep",
+          "file": "src/args.rs",
+          "line": 13
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/args.rs:14:use grep::{Grep, GrepBuilder};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "clap",
+          "file": "src/args.rs",
+          "line": 12
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/args.rs:11:use clap;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "Args::parse",
+            "ArgMatches(matches).to_args"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: Args::parse->ArgMatches(matches).to_args: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ArgMatches::to_args"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/args.rs:309:    fn to_args(&self) -> Result<Args> {",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

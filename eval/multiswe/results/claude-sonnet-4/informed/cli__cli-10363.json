@@ -1,0 +1,156 @@
+{
+  "vuln_id": "cli__cli-10363",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3165,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 8,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.64,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/edit/edit.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/repo/edit/edit.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/edit/edit.go",
+          "line_start": 60,
+          "line_end": 85,
+          "content_description": "EditRepositoryInput struct definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 543 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/edit/edit.go",
+          "line": 87,
+          "content_description": "NewCmdEdit() function definition"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 87: IO:       f.IOStreams,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdEdit",
+          "file": "pkg/cmd/repo/edit/edit.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdEdit at pkg/cmd/repo/edit/edit.go:85",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "EditRepositoryInput",
+          "file": "pkg/cmd/repo/edit/edit.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for EditRepositoryInput",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gh/main.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ghcmd.Main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ghcmd.Main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "cmd/gh/main.go",
+            "ghcmd.Main",
+            "NewCmdEdit"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: cmd/gh/main.go->ghcmd.Main: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "squash_merge_commit_title field",
+          "location": "EditRepositoryInput struct"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "squash_merge_commit_message field",
+          "location": "EditRepositoryInput struct"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "merge_commit_title field",
+          "location": "EditRepositoryInput struct"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "merge_commit_message field",
+          "location": "EditRepositoryInput struct"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

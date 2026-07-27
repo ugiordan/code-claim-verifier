@@ -1,0 +1,99 @@
+{
+  "vuln_id": "expressjs__express-3495",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3314,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 5,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.69,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "req.hostname property",
+          "file": "lib/request.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "lib/request.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: lib/request.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: index.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "index.js",
+          "classification": "Simple module export"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=index.js, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "proxy-addr",
+          "line": 25
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:24:var proxyaddr = require('proxy-addr');",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "History.md",
+          "line": 89,
+          "content": "perf: skip parsing of entire `X-Forwarded-Proto` header"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 89: - perf: unroll the \"fast-path\" `RegExp`",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "History.md",
+          "line_range": "126-130",
+          "content": "Updates to `proxy-addr` dependency with fixes for `X-Forwarded-For` header parsing"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 3427 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

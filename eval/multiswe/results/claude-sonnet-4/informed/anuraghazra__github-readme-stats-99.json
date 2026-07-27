@@ -1,0 +1,163 @@
+{
+  "vuln_id": "anuraghazra__github-readme-stats-99",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2828,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 4,
+    "refuted": 7,
+    "unverifiable": 1,
+    "verification_rate": 0.33,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "fetchRepo",
+          "file": "src/fetchRepo.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: fetchRepo at src/fetchRepo.js:3",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "renderRepoCard",
+          "file": "src/renderRepoCard.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: renderRepoCard at src/renderRepoCard.js:3",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "isArchived field",
+          "location": "GraphQL query fragment RepoInfo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/fetchRepo.js",
+          "line_range": "8-18",
+          "content": "fragment RepoInfo on Repository"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 63 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/renderRepoCard.js",
+          "line_range": "6-70",
+          "content": "renderRepoCard function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 66 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "archive status check",
+          "location": "renderRepoCard function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "api/pin.js",
+            "fetchRepo",
+            "renderRepoCard"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: api/pin.js->fetchRepo: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "fetchRepo.js",
+          "import": "{ request }",
+          "from": "./utils"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of { request } found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "renderRepoCard.js",
+          "import": "{ kFormatter, encodeHTML, isValidHexColor }",
+          "from": "../src/utils"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of { kFormatter, encodeHTML, isValidHexColor } found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "fetchRepo.js",
+          "line_range": "4-6",
+          "content": "validates username/reponame are present"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 63 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "renderRepoCard.js",
+          "line": "44",
+          "content": "uses encodeHTML() for description"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "renderRepoCard.js",
+          "line_range": "18-21",
+          "content": "isValidHexColor() validates color inputs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 66 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

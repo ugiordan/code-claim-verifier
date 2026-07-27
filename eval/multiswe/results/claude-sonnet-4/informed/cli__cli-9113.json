@@ -1,0 +1,157 @@
+{
+  "vuln_id": "cli__cli-9113",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3566,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 8,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.66,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/run/watch/watch.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "watchRun",
+          "file": "pkg/cmd/run/watch/watch.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: watchRun at pkg/cmd/run/watch/watch.go:86",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "renderRun",
+          "file": "pkg/cmd/run/watch/watch.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: renderRun at pkg/cmd/run/watch/watch.go:206",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go",
+          "line": 134,
+          "content": "annotationCache := map[int64][]shared.Annotation{}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 134: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go",
+          "line": 142,
+          "content": "run, err = renderRun(out, *opts, client, repo, run, prNumber, annotationCache)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 142: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdWatch"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdWatch at pkg/cmd/run/watch/watch.go:37",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "NewCmdWatch",
+            "watchRun",
+            "renderRun"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: NewCmdWatch->watchRun: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "renderRun",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (watchRun, NewCmdWatch, TestWatchRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go",
+          "import": "github.com/cli/cli/v2/api"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/watch/watch.go:11:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go",
+          "import": "github.com/cli/cli/v2/pkg/cmd/run/shared"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/watch/watch.go:14:\t\"github.com/cli/cli/v2/pkg/cmd/run/shared\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go",
+          "import": "net/http"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/watch/watch.go:7:\t\"net/http\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go",
+          "line": 25,
+          "content": "help text documentation"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 25: BaseRepo   func() (ghrepo.Interface, error)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

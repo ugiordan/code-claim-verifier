@@ -1,0 +1,124 @@
+{
+  "vuln_id": "cli__cli-9794",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4126,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 4,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.42,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/extension/command.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/extension/command.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/gen-docs/main.go",
+          "line": 85,
+          "content": "stub implementation"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 85: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/extension/command.go",
+          "line_range": "42-44",
+          "content": "// An extension cannot override any of the core gh commands. If an extension name conflicts\n// with a core gh command, you can use `gh extension exec <extname>`."
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 676 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "InstallLocal",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:109:func (e *em) InstallLocal(_ string) error {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "mainRun",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: mainRun at cmd/gh/main.go:50",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/gh/main.go",
+          "line": 44,
+          "content": "mainRun() function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 44: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "root.NewCmdRoot",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:49:\trootCmd, _ := root.NewCmdRoot(&cmdutil.Factory{",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/gh/main.go",
+          "line": 89,
+          "content": "root.NewCmdRoot()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 89: return ansi.ColorCode(style)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/gen-docs/main.go",
+          "line": 85,
+          "content": "func (e *em) InstallLocal(_ string) error {\n    return nil  // No validation performed\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 85: }",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "vuln_id": "clap-rs__clap-4248",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2983,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 12,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.92,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "CHANGELOG.md"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: CHANGELOG.md",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_bench/benches/04_new_help.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_bench/benches/05_ripgrep.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_bench/benches/05_ripgrep.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "build_help",
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: build_help at clap_bench/benches/04_new_help.rs:6",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_bench/benches/04_new_help.rs",
+          "line_range": "6-11",
+          "content": "fn build_help(cmd: &mut Command) -> String {\n    let mut buf = Cursor::new(Vec::with_capacity(50));\n    cmd.write_help(&mut buf).unwrap();\n    let content = buf.into_inner();\n    String::from_utf8(content).unwrap()\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 221 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cmd.write_help",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (12 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/tests/derive/help.rs:283:    cmd.write_help(&mut buffer).unwrap();",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "build_help",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (example1, example2, example3)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "example1",
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: example1 at clap_bench/benches/04_new_help.rs:157",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "example2",
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: example2 at clap_bench/benches/04_new_help.rs:162",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "example3",
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: example3 at clap_bench/benches/04_new_help.rs:167",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "example4",
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: example4 at clap_bench/benches/04_new_help.rs:172",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "std::io::Cursor"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_bench/benches/05_ripgrep.rs:9:use std::io::Cursor;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "clap::Command"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_complete_fig/examples/fig_completion.rs:1:use clap::Command;",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

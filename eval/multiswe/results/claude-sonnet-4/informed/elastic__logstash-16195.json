@@ -1,0 +1,155 @@
+{
+  "vuln_id": "elastic__logstash-16195",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4232,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 8,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.67,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueReader.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueReader.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "pollNewSegments",
+          "file": "DeadLetterQueueReader.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for pollNewSegments",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "DeadLetterQueueReader.java",
+          "line_range": "95-108",
+          "content_description": "pollNewSegments method that handles ENTRY_CREATE events"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 184 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "DeadLetterQueueWriter.java",
+          "line": 73,
+          "content_description": "currentQueueSize field as LongAdder"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 73: static final String SEGMENT_FILE_PATTERN = \"%d.log\";",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getCurrentQueueSize",
+          "file": "DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getCurrentQueueSize",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "DeadLetterQueueWriter.java",
+          "line": 95,
+          "content_description": "getCurrentQueueSize method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 95: this.fileLock = FileLockFactory.obtainLock(queuePath, LOCK_FILE);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "writeEntry",
+          "file": "DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for writeEntry",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "DeadLetterQueueReader.java",
+          "line": 71,
+          "content_description": "WatchService registration for ENTRY_CREATE and ENTRY_DELETE events"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 71: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.WatchService",
+          "file": "DeadLetterQueueReader.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueReader.java:54:import java.nio.file.WatchService;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.StandardWatchEventKinds",
+          "file": "DeadLetterQueueReader.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueReader.java:51:import java.nio.file.StandardWatchEventKinds;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.atomic.LongAdder",
+          "file": "DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/plugins/pipeline/PipelineBusTest.java:36:import java.util.concurrent.atomic.LongAdder;",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

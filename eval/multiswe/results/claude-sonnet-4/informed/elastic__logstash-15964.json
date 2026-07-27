@@ -1,0 +1,142 @@
+{
+  "vuln_id": "elastic__logstash-15964",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4128,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 7,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.58,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line": 84,
+          "content": "private ScheduledExecutorService flushScheduler;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 84: private final Path queuePath;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line": 103,
+          "content": "createFlushScheduler();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 103: cleanupTempFiles();",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "scheduledFlushCheck",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for scheduledFlushCheck",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "finalizeSegment",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (close, innerWriteEntry, flushCheck)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sealSegment",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.Executors",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java:49:import java.util.concurrent.Executors;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.ScheduledExecutorService",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java:50:import java.util.concurrent.ScheduledExecutorService;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.TimeUnit",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java:51:import java.util.concurrent.TimeUnit;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "implements": "Closeable"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "proper shutdown of flushScheduler in close method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

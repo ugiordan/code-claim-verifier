@@ -1,0 +1,185 @@
+{
+  "vuln_id": "cli__cli-9115",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3400,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 4,
+    "verification_rate": 0.37,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "changedFilesNames function",
+          "file": "pkg/cmd/pr/diff/diff.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/diff/diff.go",
+          "line": 185,
+          "content": "colorDiffLines function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 185: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "changedFilesNames",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (diffRun, Test_changedFileNames, NewCmdDiff)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/diff/diff.go",
+          "line": 127,
+          "content": "return changedFilesNames(opts.IO.Out, diff)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 127: if opts.NameOnly {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/diff/diff.go",
+          "line": 108,
+          "content": "cmd.Flags().BoolVar(&opts.NameOnly, \"name-only\", false, \"Display only names of changed files\")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 108: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "cmd/gh/main.go",
+            "root.NewCmdRoot()",
+            "pr diff command",
+            "diffRun()",
+            "changedFilesNames()"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: cmd/gh/main.go->root.NewCmdRoot(): NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fetchDiff",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (diffRun, NewCmdDiff, Test_diffRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/diff/diff.go",
+          "line": 115,
+          "content": "fetchDiff()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 115: openUrl := fmt.Sprintf(\"%s/files\", pr.URL)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sanitizedReader",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (diffRun, Test_sanitizedReader, NewCmdDiff)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/diff/diff.go",
+          "line": 120,
+          "content": "sanitizedReader()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 120: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "regexp",
+          "file": "pkg/cmd/pr/diff/diff.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "unicode",
+          "file": "pkg/cmd/pr/diff/diff.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "unicode/utf8",
+          "file": "pkg/cmd/pr/diff/diff.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "golang.org/x/text/transform",
+          "file": "pkg/cmd/pr/diff/diff.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "vuln_id": "ankidroid__Anki-Android-19509",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3345,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 4,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.6,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt",
+          "line": 492,
+          "content": "vulnerable code"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 492 out of range (file has 336 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getCurrentAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:265:    fun getCurrentAnkiDroidDirectory(context: Context): File =",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getDefaultAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:181:    fun getDefaultAnkiDroidDirectory(context: Context): File {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "initializeAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:81:    fun initializeAnkiDroidDirectory(dir: File) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "exception_handling",
+          "function": "initializeAnkiDroidDirectory",
+          "details": "StorageAccessException handling"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "directory_validation",
+          "function": "initializeAnkiDroidDirectory",
+          "details": "checks directory existence and write permissions"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

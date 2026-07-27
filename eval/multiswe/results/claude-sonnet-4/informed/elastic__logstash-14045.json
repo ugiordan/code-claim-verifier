@@ -1,0 +1,244 @@
+{
+  "vuln_id": "elastic__logstash-14045",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3710,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 20,
+    "verified": 15,
+    "refuted": 4,
+    "unverifiable": 1,
+    "verification_rate": 0.81,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "config/logstash.yml"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: config/logstash.yml",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: docker/data/logstash/env2yaml/env2yaml.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "line_range": "60-120",
+          "content": "valid_settings array"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 190 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "normalizeSetting",
+          "file": "docker/data/logstash/env2yaml/env2yaml.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: normalizeSetting at docker/data/logstash/env2yaml/env2yaml.go:49",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "normalizeSetting",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (main, runsAgainstRelease, downloadsDependenciesForGithub)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "line": "~140",
+          "content": "setting, err := normalizeSetting(key)"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "import": "errors"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:19:\t\"errors\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "import": "gopkg.in/yaml.v2"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:20:\t\"gopkg.in/yaml.v2\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "import": "io/ioutil"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:21:\t\"io/ioutil\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "import": "log"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:22:\t\"log\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "import": "os"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:23:\t\"os\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "docker/data/logstash/env2yaml/env2yaml.go",
+          "import": "strings"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:24:\t\"strings\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "setting",
+          "name": "api.auth.basic.password",
+          "file": "docker/data/logstash/env2yaml/env2yaml.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 3 matches found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/config/logstash.yml:166:# api.auth.basic.password: \"s3cUreP4$$w0rD\"",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "setting",
+          "name": "api.auth.basic.*",
+          "file": "docker/data/logstash/env2yaml/env2yaml.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 1 matches found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/config/logstash.yml:156:#             with `api.auth.basic.*` options below",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "validation",
+          "name": "password complexity validation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "import",
+          "name": "security-related imports"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "import",
+          "name": "complexity validation libraries"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "name": "password complexity validation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "name": "input sanitization for password fields"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "setting",
+          "name": "api.auth.basic.password",
+          "file": "config/logstash.yml"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 3 matches found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/config/logstash.yml:166:# api.auth.basic.password: \"s3cUreP4$$w0rD\"",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

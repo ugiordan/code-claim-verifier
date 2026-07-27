@@ -1,0 +1,88 @@
+{
+  "vuln_id": "clap-rs__clap-5527",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3345,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 5,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.81,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs",
+          "classification": "attribute parsing for derive macros"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=clap_derive/src/attrs.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "clap_derive/src/parse.rs",
+          "classification": "parsing logic for clap attributes"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=clap_derive/src/parse.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "clap_derive/src/lib.rs",
+          "classification": "main entry point for derive macros"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=clap_derive/src/lib.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "parse.rs",
+          "content": "#[arg(num_args = 2..)]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 183 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parser",
+          "file": "lib.rs",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: parser at clap_derive/src/lib.rs:47",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry": "#[derive(Parser)]",
+          "triggers": "parser() in lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/.github/workflows/release-notes.py:13:    parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

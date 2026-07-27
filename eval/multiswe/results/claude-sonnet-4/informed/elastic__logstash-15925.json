@@ -1,0 +1,135 @@
+{
+  "vuln_id": "elastic__logstash-15925",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3112,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 9,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.73,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "tools/ingest-converter/src/test/java/org/logstash/ingest/*Test.java",
+          "classification": "test"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=tools/ingest-converter/src/test/java/org/logstash/ingest/*Test.java, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "provided files",
+          "import": "java.util.*",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/config/ir/IRHelpers.java:45:import java.util.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "provided files",
+          "import": "java.io.*",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/cases/CustomTestCase.java:28:import java.io.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "provided files",
+          "import": "java.net.*",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of java.net.* found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "provided files",
+          "import": "org.apache.commons.io.IOUtils",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/test/java/org/logstash/ingest/IngestTest.java:29:import org.apache.commons.io.IOUtils;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "import",
+          "pattern": "netty"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "function",
+          "name": "DirectArena.newUnpooledChunk"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "config/jvm.options",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: config/jvm.options",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "code",
+          "description": "Netty allocator initialization code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "code",
+          "description": "network input handlers"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

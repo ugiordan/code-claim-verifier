@@ -1,0 +1,77 @@
+{
+  "vuln_id": "clap-rs__clap-4408",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2327,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 4,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.77,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/builder/command.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/builder/command.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "src/builder/command.rs",
+          "classification": "Contains the Command struct that handles help generation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=src/builder/command.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Command::new",
+          "file": "src/builder/command.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/builder/command.rs:122:    pub fn new<S: Into<String>>(name: S) -> Self {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/builder/command.rs",
+          "line": 150,
+          "content": ".arg(\n    Arg::new(\"help\")\n        .long(\"help\")\n        .action(ArgAction::Help)\n        .help(\"Print help information\")\n        .global(true)\n        .generated(),\n)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 150: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "help text",
+          "file": "src/builder/command.rs",
+          "default_behavior": "Print help information"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'help text' found in 6 locations.",
+        "method": "default_value"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

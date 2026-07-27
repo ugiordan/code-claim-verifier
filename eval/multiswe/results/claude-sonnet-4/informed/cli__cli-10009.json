@@ -1,0 +1,181 @@
+{
+  "vuln_id": "cli__cli-10009",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3807,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 9,
+    "refuted": 2,
+    "unverifiable": 3,
+    "verification_rate": 0.82,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/download/zip.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/run/download/zip.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "filepathDescendsFrom",
+          "file": "pkg/cmd/run/download/zip.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: filepathDescendsFrom at pkg/cmd/run/download/zip.go:73",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/run/download/zip.go",
+          "line": 62,
+          "content": "!strings.HasPrefix(p, \"..\" + string(filepath.Separator))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 62: _, extractErr = io.Copy(df, f)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "extractZip",
+          "file": "pkg/cmd/run/download/zip.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: extractZip at pkg/cmd/run/download/zip.go:18",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/run/download/zip.go",
+          "line": 18,
+          "content": "extractZip"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 18: func extractZip(zr *zip.Reader, destDir string) error {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "filepathDescendsFrom",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (extractZip, Test_filepathDescendsFrom, downloadArtifact)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "runDownload",
+          "file": "download.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: runDownload at pkg/cmd/run/download/download.go:102",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "downloadArtifact",
+          "file": "http.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: downloadArtifact at pkg/cmd/run/download/http.go:28",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdDownload",
+          "file": "pkg/cmd/run/download/download.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdDownload at pkg/cmd/run/download/download.go:36",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "path/filepath",
+          "file": "pkg/cmd/run/download/zip.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "strings",
+          "file": "pkg/cmd/run/download/zip.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "archive/zip",
+          "file": "pkg/cmd/run/download/zip.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "filepath.Clean",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/attestation/inspect/options.go:25:\topts.BundlePath = filepath.Clean(opts.BundlePath)",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "runDownload",
+            "opts.Platform.Download",
+            "downloadArtifact",
+            "extractZip",
+            "filepathDescendsFrom"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: runDownload->opts.Platform.Download: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

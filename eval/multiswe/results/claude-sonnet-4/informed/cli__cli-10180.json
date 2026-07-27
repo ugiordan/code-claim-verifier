@@ -1,0 +1,171 @@
+{
+  "vuln_id": "cli__cli-10180",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3926,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 9,
+    "refuted": 3,
+    "unverifiable": 2,
+    "verification_rate": 0.72,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/httpmock/stub.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/httpmock/stub.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gen-docs/main.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gen-docs/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gen-docs/main_test.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gen-docs/main_test.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gh/main.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/gh/main_test.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main_test.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "context/context.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: context/context.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "FileResponse",
+          "file": "pkg/httpmock/stub.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: FileResponse at pkg/httpmock/stub.go:163",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/httpmock/stub.go",
+          "line_range": "145-151",
+          "content": "func FileResponse(filename string) Responder {\n\treturn func(req *http.Request) (*http.Response, error) {\n\t\tf, err := os.Open(filename)\n\t\tif err != nil {\n\t\t\treturn nil, err\n\t\t}\n\t\treturn httpResponse(200, req, f), nil\n\t}\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 242 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/gen-docs/main.go",
+          "line": 54,
+          "content": "if err := os.MkdirAll(*dir, 0755); err != nil {\n    return err\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 54: },",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.Open",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/config/stub.go:121:\t\tconfig, err := os.Open(filepath.Join(tempDir, \"config.yml\"))",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.MkdirAll",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (30 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:59:\tif err := os.MkdirAll(*dir, 0755); err != nil {",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "FileResponse",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 30 callers (TestIssueStatus, TestStatusRun, TestIssueList_nontty)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "os",
+          "file": "pkg/httpmock/stub.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "net/http",
+          "file": "pkg/httpmock/stub.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

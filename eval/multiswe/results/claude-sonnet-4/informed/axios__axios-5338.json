@@ -1,0 +1,113 @@
+{
+  "vuln_id": "axios__axios-5338",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3902,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.74,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "lib/helpers/buildURL.js",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: lib/helpers/buildURL.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/core/Axios.js",
+          "import": "buildURL",
+          "from": "../helpers/buildURL.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:4:import buildURL from '../helpers/buildURL.js';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/core/Axios.js",
+          "line": 3,
+          "content": "import buildURL from '../helpers/buildURL.js';"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 3: import utils from './../utils.js';",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "buildURL",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (getUri, xhrAdapter, httpAdapter)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/core/Axios.js",
+          "line": 142,
+          "content": "return buildURL(fullPath, config.params, config.paramsSerializer);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 142: promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getUri",
+          "file": "lib/core/Axios.js",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:148:  getUri(config) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mergeConfig",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (request, getUri, generateHTTPMethod)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "buildFullPath",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (getUri, xhrAdapter, httpAdapter)",
+        "method": "cymbal_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

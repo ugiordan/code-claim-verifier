@@ -1,0 +1,167 @@
+{
+  "vuln_id": "clap-rs__clap-4635",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3527,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 7,
+    "refuted": 4,
+    "unverifiable": 2,
+    "verification_rate": 0.63,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/parser/matches/arg_matches.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/parser/matches/arg_matches.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/parser/matches/matched_arg.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/parser/matches/matched_arg.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/_features.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/_features.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "function": "ArgMatches::get_occurrences",
+          "file": "arg_matches.rs"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "function": "ArgMatches::grouped_values_of",
+          "file": "arg_matches.rs"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ArgMatches::get_one",
+          "file": "arg_matches.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/parser/matches/arg_matches.rs:112:    pub fn get_one<T: Any + Clone + Send + Sync + 'static>(&self, id: &str) -> Option<&T> {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "arg_matches.rs",
+          "line": 95,
+          "content": "MatchesError::unwrap(&internal_id, self.try_get_one(id))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: /// ```rust",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ArgMatches::get_many",
+          "file": "arg_matches.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/parser/matches/arg_matches.rs:150:    pub fn get_many<T: Any + Clone + Send + Sync + 'static>(",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Cargo.toml",
+          "line": 47,
+          "content": "unstable-grouped"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 47: tag-name = \"v{{version}}\"",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/_features.rs",
+          "line": 25,
+          "content": "unstable-grouped"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 25: //! * **unstable-grouped**: Enable [`ArgMatches::grouped_values_of`](https://github.com/clap-rs/clap/issues/2924)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "indexmap::IndexMap",
+          "file": "arg_matches.rs",
+          "line": 8
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/parser/matches/arg_matches.rs:9:use indexmap::IndexMap;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "arg_matches.rs",
+          "line": 44,
+          "content": "#[cfg(debug_assertions)] pub(crate) valid_args: Vec<Id>,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 44: /// if let Some(c) = matches.get_one::<String>(\"cfg\") {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "arg_matches.rs",
+          "line": 47,
+          "content": "#[cfg(debug_assertions)] pub(crate) valid_subcommands: Vec<Id>,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 47: ///",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

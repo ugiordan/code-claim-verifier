@@ -1,0 +1,110 @@
+{
+  "vuln_id": "cli__cli-10158",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3824,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.75,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/repo/fork/fork.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "forkRun",
+          "file": "pkg/cmd/repo/fork/fork.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: forkRun at pkg/cmd/repo/fork/fork.go:145",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "line": 29,
+          "content": "IO *iostreams.IOStreams"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 29: Confirm(string, bool) (bool, error)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "line": 108,
+          "content": "promptOk := opts.IO.CanPrompt()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 108: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/fork/fork.go",
+          "line": 125,
+          "content": "return forkRun(opts)"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 125: return forkRun(opts)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "NewCmdFork"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdFork at pkg/cmd/repo/fork/fork.go:64",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "forkRun",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (NewCmdFork, TestRepoFork, TestNewCmdFork)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "NewCmdFork",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (TestNewCmdFork, NewCmdRepo, NewCmdRoot)",
+        "method": "cymbal_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

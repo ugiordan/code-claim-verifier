@@ -1,0 +1,162 @@
+{
+  "vuln_id": "elastic__logstash-13825",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3589,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 4,
+    "refuted": 3,
+    "unverifiable": 5,
+    "verification_rate": 0.54,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "vulnerable code is NOT directly present in the provided source code files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): logstash-core/src/main/java/org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+          "line": 174,
+          "content": "generateCode()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 174: return REDUNDANT_SEMICOLON.matcher(new Formatter().formatSource(",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "generateCode",
+          "file": "org/logstash/config/ir/compiler/ComputeStepSyntaxElement.java",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for generateCode",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "ComputeStepSyntaxElement.generateCode",
+            "com.google.googlejavaformat.java.Formatter.formatSource",
+            "com.google.googlejavaformat.java.JavaInput.<init>",
+            "com.google.googlejavaformat.java.JavaInput.buildToks"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ComputeStepSyntaxElement.generateCode->com.google.googlejavaformat.java.Formatter.formatSource: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "config/jvm.options",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: config/jvm.options",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "line": null,
+          "content": "11-:--add-opens=java.base/java.security=ALL-UNNAMED"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "line": null,
+          "content": "11-:--add-opens=java.base/java.io=ALL-UNNAMED"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "line": null,
+          "content": "11-:--add-opens=java.base/java.nio.channels=ALL-UNNAMED"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "line": null,
+          "content": "11-:--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "line": null,
+          "content": "11-:--add-opens=java.management/sun.management=ALL-UNNAMED"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "required --add-exports directive for the JDK compiler module is MISSING"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,235 @@
+{
+  "vuln_id": "elastic__logstash-14970",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3732,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 19,
+    "verified": 9,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.39,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "DeadLetterQueueWriter",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for DeadLetterQueueWriter",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 158,
+          "content": "constructor"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 179,
+          "content": "constructor"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "updateOldestSegmentReference",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for updateOldestSegmentReference",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 384,
+          "content": "updateOldestSegmentReference"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "readTimestampOfLastEventInSegment",
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for readTimestampOfLastEventInSegment",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 403,
+          "content": "readTimestampOfLastEventInSegment"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 111,
+          "content": "RecordIOReader.seekToOffset"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java",
+          "line_number": 101,
+          "content": "RecordIOReader.seekToBlock"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 348 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "DeadLetterQueueFactory.getWriter",
+            "DeadLetterQueueWriter.Builder.build",
+            "DeadLetterQueueWriter",
+            "updateOldestSegmentReference",
+            "readTimestampOfLastEventInSegment",
+            "RecordIOReader.seekToOffset"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: DeadLetterQueueFactory.getWriter->DeadLetterQueueWriter.Builder.build: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.channels.FileLock"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/FileLockFactoryTest.java:35:import java.nio.channels.FileLock;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:28:import java.nio.file.Files;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Path"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:29:import java.nio.file.Paths;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.common.io.RecordIOReader"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/io/DeadLetterQueueWriter.java:68:import static org.logstash.common.io.RecordIOReader.S",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.common.io.RecordIOWriter"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/common/io/RecordIOWriterTest.java:37:import static org.logstash.common.io.RecordIOWriter.BLOC",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "FileLockFactory.obtainLock",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (10 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/runner.rb:394:    @data_path_lock = FileLockFactory.obtainLock(java.nio.file",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cleanupTempFiles",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (DeadLetterQueueWriter, DLQWriterAdapter, NullDeadLetterQueueWriter)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "validation for minimum file size before attempting to read segments"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

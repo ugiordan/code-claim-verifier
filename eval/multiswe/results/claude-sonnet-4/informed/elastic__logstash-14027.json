@@ -1,0 +1,198 @@
+{
+  "vuln_id": "elastic__logstash-14027",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4357,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 10,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.58,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/ackedqueue/Page.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "internalReceive",
+          "file": "input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb:57:  def internalReceive(events)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "input.rb",
+          "line_range": "54-65",
+          "content": "internalReceive(events)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 81 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "stop",
+          "file": "input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/webserver.rb:158:    def stop(options={})",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "input.rb",
+          "line_range": "67-72",
+          "content": "stop()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 81 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write",
+          "file": "Page.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for write",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Page.java",
+          "line_range": "85-103",
+          "content": "write(byte[] bytes, long seqNum, int checkpointMaxWrites)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 302 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sendEvents",
+          "file": "PipelineBus.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for sendEvents",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.atomic.AtomicBoolean",
+          "file": "input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ext/JrubyAckedWriteClientExt.java:26:import java.util.concurrent.atomic.AtomicBoolean;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.plugins.pipeline.PipelineInput",
+          "file": "input.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.plugins.pipeline.PipelineInput found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.ackedqueue",
+          "file": "Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/benchmarks/src/main/java/org/logstash/benchmark/QueueWriteBenchmark.java:30:import org.logstash.ackedqueue.Queue;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.io.IOException",
+          "file": "Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/test/java/org/logstash/ingest/IngestTest.java:24:import java.io.IOException;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "exception_handling",
+          "location": "internalReceive() method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "unlisten",
+          "caller": "stop",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 20 callers (stop, subscribeUnsubscribe, activeListenerPreventsPrune)",
+        "method": "cymbal_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

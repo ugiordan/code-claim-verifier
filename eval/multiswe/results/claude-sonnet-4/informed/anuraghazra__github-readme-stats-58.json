@@ -1,0 +1,206 @@
+{
+  "vuln_id": "anuraghazra__github-readme-stats-58",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3946,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 8,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.55,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/utils.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/utils.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "request",
+          "file": "src/utils.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: request at src/utils.js:36",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/utils.js",
+          "line_range": "47-60",
+          "content": "function request(data) {\n  return new Promise((resolve, reject) => {\n    axios({\n      url: \"https://api.github.com/graphql\",\n      method: \"post\",\n      headers: {\n        Authorization: `bearer ${process.env.GITHUB_TOKEN}`,\n      },\n      data,\n    })\n      .then((response) => resolve(response))\n      .catch((error) => reject(error));\n  });\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 51 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/fetchStats.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/fetchStats.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "request",
+          "file": "src/fetchStats.js",
+          "line": 7,
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (fetchRepo, fetchStats)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/fetchRepo.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/fetchRepo.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "request",
+          "file": "src/fetchRepo.js",
+          "line": 3,
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (fetchRepo, fetchStats)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/index.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fetchStats",
+          "file": "api/index.js",
+          "line": 18,
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/pin.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/pin.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fetchRepo",
+          "file": "api/pin.js",
+          "line": 15,
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "endpoint": "/api/index.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "endpoint": "/api/pin.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/fetchStats.js",
+          "line_range": "50-53",
+          "content": "if (res.data.errors) {\n  console.log(res.data.errors);\n  throw Error(\"Could not fetch user\");\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 83 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "GET /api/index.js",
+            "fetchStats",
+            "request"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: GET /api/index.js->fetchStats: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "GET /api/pin.js",
+            "fetchRepo",
+            "request"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: GET /api/pin.js->fetchRepo: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "vuln_id": "iamkun__dayjs-1307",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3161,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 4,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.75,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/constant.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/constant.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/constant.js",
+          "line": 25,
+          "content": "export const REGEX_PARSE = /^(\\d{4})[-/]?(\\d{1,2})?[-/]?(\\d{0,2})[^0-9]*(\\d{1,2})?:?(\\d{1,2})?:?(\\d{1,2})?.?(\\d+)?$/"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 25: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input validation around the regex usage"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "fallback parsing mechanisms"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "sanitization of the regex results"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

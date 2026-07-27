@@ -1,0 +1,218 @@
+{
+  "vuln_id": "cli__cli-9307",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3539,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 17,
+    "verified": 7,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.31,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/export_pr.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/export_pr.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "api/export_pr.go",
+          "line": 144,
+          "content": "(*PullRequest).ExportData"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 144: data[f] = sf.Interface()",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "(*PullRequest).ExportData",
+          "file": "api/export_pr.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/api/export_pr.go:8:func (issue *Issue) ExportData(fields []string) map[string]interface{} {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "api/query_builder.go",
+          "line": 200,
+          "content": "\"stateReason\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 200: pageInfo{hasNextPage,endCursor}",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "api/query_builder.go",
+          "line": 203,
+          "content": "PullRequestFields includes all IssueFields"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 203: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "viewRun",
+          "file": "pkg/cmd/pr/view"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/ruleset/view/view.go:110:func viewRun(opts *ViewOptions) error {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/pr/view",
+          "line": 121,
+          "content": "viewRun"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: pkg/cmd/pr/view",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "(*jsonExporter).Write",
+          "file": "pkg/cmdutil"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/jsoncolor/jsoncolor.go:24:func Write(w io.Writer, r io.Reader, indent string) error {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmdutil",
+          "line": 205,
+          "content": "(*jsonExporter).Write"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: pkg/cmdutil",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "(*jsonExporter).exportData",
+          "file": "pkg/cmdutil"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for (*jsonExporter).exportData",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmdutil",
+          "line": 259,
+          "content": "(*jsonExporter).exportData"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: pkg/cmdutil",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmdutil",
+          "line": 239,
+          "content": "(*jsonExporter).exportData"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: pkg/cmdutil",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "viewRun",
+            "(*jsonExporter).Write",
+            "(*jsonExporter).exportData",
+            "(*PullRequest).ExportData"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: viewRun->(*jsonExporter).Write: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input sanitization",
+          "context": "reflection operations"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "null/zero value checks",
+          "context": "before reflection operations"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "error handling",
+          "context": "reflect.Value.Interface() call"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 4 matches found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:249:\t\t\tserver.sendError(fmt.Errorf(\"error handling chan",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "validation",
+          "context": "field availability before export"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

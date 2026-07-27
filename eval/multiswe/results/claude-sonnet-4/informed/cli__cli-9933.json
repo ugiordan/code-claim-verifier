@@ -1,0 +1,176 @@
+{
+  "vuln_id": "cli__cli-9933",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3828,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 8,
+    "refuted": 3,
+    "unverifiable": 3,
+    "verification_rate": 0.69,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/extension/manager.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/extension/command.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/extension/command.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "InstallLocal",
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/extension/manager.go:192:func (m *Manager) InstallLocal(dir string) error {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/extension/manager.go",
+          "line_start": 189,
+          "line_end": 196,
+          "content": "func (m *Manager) InstallLocal(dir string) error {\n\tname := filepath.Base(dir)\n\ttargetLink := filepath.Join(m.installDir(), name)\n\tif err := os.MkdirAll(filepath.Dir(targetLink), 0755); err != nil {\n\t\treturn err\n\t}\n\treturn makeSymlink(dir, targetLink)\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 780 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "list",
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/extension/manager.go:129:func (m *Manager) list(includeMetadata bool) ([]*Extension, error) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/extension/manager.go",
+          "line_start": 108,
+          "line_end": 157,
+          "content": "} else if isSymlink(f.Type()) {\n\tresults = append(results, &Extension{\n\t\tpath: filepath.Join(dir, f.Name(), f.Name()),\n\t\tkind: LocalKind,\n\t})\n} else {\n\t// the contents of a regular file point to a local extension on disk\n\tp, err := readPathFromFile(filepath.Join(dir, f.Name()))\n\tif err != nil {\n\t\treturn nil, err\n\t}\n\tresults = append(results, &Extension{\n\t\tpath: filepath.Join(p, f.Name()),\n\t\tkind: LocalKind,\n\t})\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 780 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Dispatch",
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/extension/manager.go:75:func (m *Manager) Dispatch(args []string, stdin io.Reader, stdout, stderr io.Writer) (bool, error) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/extension/manager.go",
+          "line_start": 74,
+          "line_end": 105,
+          "content": "Dispatch function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 780 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "os",
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "path/filepath",
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "os/exec",
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "validation that target executable exists after installation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "error handling for missing executables during installation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "documentation warning about local extension requirements"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

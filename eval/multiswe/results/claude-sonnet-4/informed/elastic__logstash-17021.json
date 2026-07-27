@@ -1,0 +1,142 @@
+{
+  "vuln_id": "elastic__logstash-17021",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4501,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 7,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.59,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "extract",
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for extract",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "line": 71,
+          "content": "((RubyString) data).split(context, delimiter, MINUS_ONE)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 71: * @param context ThreadContext",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "line": 80,
+          "content": "input.append(entities.shift(context))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 80: final int entitiesSize = ((RubyString) entities.first()).size();",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "line": 84,
+          "content": "entities.unshift(input.join(context))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 84: this.inputSize = inputSize + entitiesSize;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "import": "org.jruby.RubyArray"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java:24:import org.jruby.RubyArray;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "import": "org.jruby.RubyString"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java:27:import org.jruby.RubyString;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "import": "org.jruby.runtime.ThreadContext"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java:30:import org.jruby.runtime.ThreadContext;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java",
+          "import": "org.jruby.runtime.builtin.IRubyObject"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/common/BufferedTokenizerExt.java:31:import org.jruby.runtime.builtin.IRubyObject;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "encoding validation or preservation mechanisms"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization for character encoding consistency"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

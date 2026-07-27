@@ -1,0 +1,195 @@
+{
+  "vuln_id": "Kotlin__dataframe-967",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4154,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.75,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/dataTypes/IMG.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/dataTypes/IMG.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/html.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/html.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/jupyter/CellRenderer.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/jupyter/CellRenderer.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/dataTypes/IMG.kt",
+          "line": 15,
+          "content": "override fun toString(): String {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 15: val style = StringBuilder()",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/dataTypes/IMG.kt",
+          "line": 19,
+          "content": "return \"\"\"<img src=\"$src\" style=\"$style\"}/>\"\"\"}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 19: if (maxHeight != null) style.append(\"max-height:${maxHeight}px;\")",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "toString",
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/dataTypes/IMG.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/dataTypes/IMG.kt:14:    override fun toString(): String {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "tableJs",
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/html.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: tableJs at core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/html.kt:81",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "escapeForHtmlInJs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: escapeForHtmlInJs at core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/html.kt:604",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "escapeForHtmlInJs",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (html, colName, html)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "toHtmlData"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: toHtmlData at core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/html.kt:128",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "toHtmlData",
+            "tableJs",
+            "toString"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: toHtmlData->tableJs: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.net.URL"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/dataframe-openapi/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/DefaultReadOpenApiMethod.kt:21:import java.net.URL",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "toString",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (replaceLastWildcardWithIndex, plus, dataFrameOf)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "escapeForHtmlInJs function",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input validation",
+          "location": "IMG constructor"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "HTML sanitization library"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

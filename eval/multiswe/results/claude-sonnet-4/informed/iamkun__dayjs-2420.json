@@ -1,0 +1,134 @@
+{
+  "vuln_id": "iamkun__dayjs-2420",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3778,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.37,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/plugin/timezone/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/plugin/timezone/index.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "proto.tz",
+          "file": "src/plugin/timezone/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/src/plugin/timezone/index.js:123:      return d(input).tz(timezone)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/timezone/index.js",
+          "line": 98,
+          "content": "ins.$x.$timezone = timezone"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 98: const oldOffset = this.utcOffset()",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/timezone/index.js",
+          "line": 90,
+          "content": "const target = this.toDate().toLocaleString('en-US', { timeZone: timezone })"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 90: // If it's different, we're in a hole time.",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/timezone/index.js",
+          "line": 92,
+          "content": "let ins = d(target).$set(MS, this.$ms).utcOffset(localUtcOffset - diff, true)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 92: return [localTS - (Math.min(o2, o3) * 60 * 1000), Math.max(o2, o3)]",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/timezone/index.js",
+          "line": 97,
+          "content": "ins.$x.$timezone = timezone"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 97: proto.tz = function (timezone = defaultTimezone, keepLocalTime) {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "d.tz",
+          "file": "src/plugin/timezone/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/src/plugin/timezone/index.js:123:      return d(input).tz(timezone)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/plugin/timezone/index.js",
+          "import": "{ MIN, MS }",
+          "from": "../../constant"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of { MIN, MS } found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "../../constant"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "description": "locale preservation in timezone plugin"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

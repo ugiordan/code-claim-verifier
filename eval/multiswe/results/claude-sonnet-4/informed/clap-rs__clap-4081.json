@@ -1,0 +1,127 @@
+{
+  "vuln_id": "clap-rs__clap-4081",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3302,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 5,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.55,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_bench/benches/03_complex.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_bench/benches/03_complex.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_bench/benches/04_new_help.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_bench/benches/03_complex.rs",
+          "line": 32,
+          "content": ".value_names(&[\"one\", \"two\"])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 32: --multvalsmo <s> \"Tests multiple values, not mult occs\"",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_bench/benches/03_complex.rs",
+          "line": 35,
+          "content": ".value_names(&[\"one\", \"two\"])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 35: arg!(--maxvals3 <maxvals> ... \"Tests 3 max vals\").num_args(1..=3).required(false),",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_bench/benches/03_complex.rs",
+          "line": 108,
+          "content": ".value_names(&[\"one\", \"two\"])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 108: Arg::new(\"multvals\")",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_bench/benches/04_new_help.rs",
+          "line": 67,
+          "content": ".args(&[...])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 67: fn app_example4<'c>() -> Command<'c> {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "value_names",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 41 callers (build_from_builder, complex_app, value_name)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "args",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (build_cli, app_example3, parser_struct)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "clap",
+          "items": [
+            "arg",
+            "Arg",
+            "ArgAction",
+            "Command"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_complete_fig/examples/fig_completion.rs:1:use clap::Command;",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,117 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-2626",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3703,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 5,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.39,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "crates/core/main.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: crates/core/main.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "crates/core/main.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/ignore/examples/walk.rs:18:fn main() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Args::parse"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/glob.rs:720:    fn parse(&mut self) -> Result<(), Error> {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "try_main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for try_main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Args::parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "eprintln!",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/worker.rs:225:                            eprintln!(\"{}: {}\", path.display(), err);",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "process::exit",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "crates/core/main.rs",
+          "line_content": "eprintln!(\"{}\", err);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: crates/core/main.rs",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry_point": "main",
+          "file": "crates/core/main.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}
