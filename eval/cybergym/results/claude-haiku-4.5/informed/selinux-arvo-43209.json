@@ -5,11 +5,11 @@
   "reasoning_length": 6336,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
-    "verified": 11,
-    "refuted": 5,
+    "total_claims": 17,
+    "verified": 10,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.69,
+    "verification_rate": 0.59,
     "action": "FLAG",
     "claims": [
       {
@@ -35,6 +35,18 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "283-293",
+          "content": "Syslog calls with unsanitized user input"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 311 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
           "file": "policycoreutils/run_init/open_init_pty.c",
           "line": 289,
           "content": "Incomplete code (truncated in provided source)"
@@ -49,8 +61,7 @@
         "parameters": {
           "name": "setbool",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "start_line": 217,
-          "end_line": 310
+          "line_range": "217-310"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -62,8 +73,7 @@
         "parameters": {
           "name": "main",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "start_line": 32,
-          "end_line": 75
+          "line_range": "32-75"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -160,51 +170,13 @@
           "caller": "setbool",
           "callee": "syslog",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 287,
+          "lines": "287, 291",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, restorecon_sb, process_color)",
+        "evidence": "cymbal: 50 callers (main, restorecon_sb, send_response)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "caller": "setbool",
-          "callee": "syslog",
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 291,
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, restorecon_sb, process_color)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 72,
-          "content": "rc = setbool(argv, optind, argc);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 72: char *bool_list[1];",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 68,
-          "content": "rc = setbool(bool_list, 0, 1);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 68: we'll enforce the list syntax. If not we'll enforce the original",
-        "method": "file_read"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -219,6 +191,42 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: main->setbool: NOT FOUND",
         "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "237-246",
+          "content": "Basic parsing with strchr"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 311 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "247-256",
+          "content": "Value validation (only checks for specific strings)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 311 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "233-265",
+          "content": "Loop processes argv entries"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 311 lines)",
+        "method": "file_read"
       }
     ]
   },

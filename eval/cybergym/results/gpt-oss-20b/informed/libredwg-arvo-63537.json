@@ -5,10 +5,10 @@
   "reasoning_length": 6589,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
+    "total_claims": 20,
     "verified": 15,
     "refuted": 4,
-    "unverifiable": 0,
+    "unverifiable": 1,
     "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
@@ -81,10 +81,21 @@
         "method": "os.walk_fuzzy"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "testsuite.c",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): test/xmlsuite/testsuite.c",
+        "method": "os.walk_fuzzy"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "generatexml",
-          "file": "test/xmlsuite/helper.py",
+          "file": "helper.py",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -97,7 +108,7 @@
         "parameters": {
           "file": "helper.py",
           "line_range": "12-20",
-          "content_description": "for filename in glob.glob and os.system call"
+          "content_description": "os.system call with txttoxml.py"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -223,15 +234,16 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "description": "input sanitisation mitigations",
-          "expected": false
+          "file": "txttoxml",
+          "content_description": "if os.path.exists(DwgTxtFileName): check",
+          "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "error"
       }
     ]
   },

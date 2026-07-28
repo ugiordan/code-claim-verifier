@@ -5,11 +5,11 @@
   "reasoning_length": 4012,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 11,
-    "verified": 8,
-    "refuted": 3,
+    "total_claims": 10,
+    "verified": 6,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.64,
+    "verification_rate": 0.55,
     "action": "FLAG",
     "claims": [
       {
@@ -48,12 +48,23 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "sprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_input, allocate_output)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "ih264a_aligned_malloc",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (allocate_output, allocate_input, allocate_recon)",
+        "evidence": "cymbal: 6 callers (allocate_input, allocate_output, allocate_recon)",
         "method": "cymbal_callers"
       },
       {
@@ -64,19 +75,19 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 47 callers (allocate_output, allocate_input, allocate_recon)",
+        "evidence": "cymbal: 47 callers (allocate_input, allocate_output, allocate_recon)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "sprintf",
-          "expected": true
+          "type": "buffer_overflow_protection",
+          "exists": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_output, allocate_input)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -99,29 +110,6 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 310 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "DEFAULT_VALUE",
-        "parameters": {
-          "variable": "STRLENGTH",
-          "file": "test/encoder/input.c",
-          "default_behavior": "500"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.55,
-        "evidence": "Variable 'STRLENGTH' found in 3 locations.",
-        "method": "default_value"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "bounds_checking",
-          "context": "sprintf usage in allocate_input"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",

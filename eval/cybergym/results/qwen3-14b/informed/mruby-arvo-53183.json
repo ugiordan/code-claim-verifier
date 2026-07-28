@@ -5,12 +5,12 @@
   "reasoning_length": 5290,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 12,
-    "verified": 5,
-    "refuted": 7,
+    "total_claims": 11,
+    "verified": 6,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.43,
-    "action": "OVERRIDE",
+    "verification_rate": 0.55,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -22,28 +22,6 @@
         "confidence": 0.99,
         "evidence": "not found: mruby-sprintf/sprintf.c",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "mrbconf.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mrbconf.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "mruby.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/mruby.h",
-        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -101,45 +79,52 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "mrb_print",
+          "name": "mrb_sprintf",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "mrbconf.h",
-          "import": "MRB_INT32",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of MRB_INT32 found",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): include/mrbconf.h",
+        "method": "os.walk_fuzzy"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "mrbconf.h",
-          "import": "MRB_INT64",
+          "file": "mruby.h",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of MRB_INT64 found",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): include/mruby.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "explicit input sanitization in mruby-sprintf library",
-          "expected": false
+          "description": "explicit input sanitization in mruby-sprintf library"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "checks in mrb_sprintf function to validate mrb_int values"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

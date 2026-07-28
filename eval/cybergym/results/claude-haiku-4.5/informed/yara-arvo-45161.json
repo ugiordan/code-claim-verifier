@@ -5,11 +5,11 @@
   "reasoning_length": 5120,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 7,
+    "total_claims": 22,
+    "verified": 9,
     "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.33,
+    "verification_rate": 0.38,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -72,12 +72,12 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "tests/mapper.c",
-          "line_range": "75-77",
+          "line": 75,
           "content": "buf[i] = str[sizeof(str) - 2 - i];"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 96 lines)",
+        "evidence": "Line 75: buf = map_file(argv[2]);",
         "method": "file_read"
       },
       {
@@ -219,6 +219,28 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "item": "bounds checking on writes",
+          "file": "tests/mapper.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "error handling for mmap failures on small files",
+          "file": "tests/mapper.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "verification that mapped region is sufficient",
           "file": "tests/mapper.c"
         },
         "verdict": "VERIFIED",

@@ -5,11 +5,11 @@
   "reasoning_length": 5265,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 3,
-    "refuted": 12,
+    "total_claims": 16,
+    "verified": 6,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.2,
+    "verification_rate": 0.31,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -114,18 +114,6 @@
         "parameters": {
           "file": "HTMLparser.c",
           "line_range": "150-220",
-          "content": "static int htmlnamePush(htmlParserCtxtPtr ctxt, const xmlChar * value)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 6930 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_range": "150-220",
           "content": "size_t newSize = ctxt->nameMax * 2;"
         },
         "verdict": "REFUTED",
@@ -150,19 +138,7 @@
         "parameters": {
           "file": "HTMLparser.c",
           "line_range": "150-220",
-          "content": "if (tmp == NULL) { htmlErrMemory(ctxt, NULL); return (-1); }"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 6930 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_range": "150-220",
-          "content": "ctxt->nameTab[ctxt->nameNr] = value;"
+          "content": "return (-1);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -180,6 +156,39 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 6930 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "snprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, xmlEncodeEntitiesInternal(xmlDocPtr doc, const xmlChar *input, int attr), processPattern)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlRealloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, ConvertInput(const char *in, const char *encoding))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "htmlErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 29 callers (htmlnamePush, htmlNodeInfoPush, htmlNewInputStream)",
+        "method": "cymbal_callers"
       }
     ]
   },

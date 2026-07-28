@@ -5,11 +5,11 @@
   "reasoning_length": 16755,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
-    "verified": 6,
+    "total_claims": 29,
+    "verified": 10,
     "refuted": 19,
     "unverifiable": 0,
-    "verification_rate": 0.24,
+    "verification_rate": 0.27,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -245,6 +245,17 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "write_wav_extensible_header",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, decodeAACfile)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "write_wav_header",
           "expected": true
         },
@@ -256,12 +267,45 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "write_wav_extensible_header",
+          "name": "malloc",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, decodeAACfile)",
+        "evidence": "cymbal: 21 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, utf16_to_utf8(const wchar_t *input))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fseek",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (close_audio_file, parse, moovin)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fclose",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (close_audio_file, decodeAACfile, decodeMP4file)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 33 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, free_commandline_arguments_utf8)",
         "method": "cymbal_callers"
       }
     ]

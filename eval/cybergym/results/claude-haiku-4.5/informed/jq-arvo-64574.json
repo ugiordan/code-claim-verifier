@@ -9,7 +9,7 @@
     "verified": 19,
     "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.92,
+    "verification_rate": 0.94,
     "action": "BOOST",
     "claims": [
       {
@@ -26,7 +26,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_compile.c",
+          "path": "tests/jq_fuzz_compile.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -37,7 +37,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_load_file.c",
+          "path": "tests/jq_fuzz_load_file.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -48,7 +48,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_parse.c",
+          "path": "tests/jq_fuzz_parse.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -59,7 +59,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_parse_extended.c",
+          "path": "tests/jq_fuzz_parse_extended.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -70,7 +70,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "tests/jq_fuzz_parse_stream.c",
+          "path": "tests/jq_fuzz_parse_stream.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -81,7 +81,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "docs/build_manpage.py",
+          "path": "docs/build_manpage.py",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -92,7 +92,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "docs/build_mantests.py",
+          "path": "docs/build_mantests.py",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -103,7 +103,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "docs/build_website.py",
+          "path": "docs/build_website.py",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -114,7 +114,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "docs/validate_manual_schema.py",
+          "path": "docs/validate_manual_schema.py",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -125,7 +125,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "docs/public/js/manual-search.js",
+          "path": "docs/public/js/manual-search.js",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -136,7 +136,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "scripts/gen_utf8_tables.py",
+          "path": "scripts/gen_utf8_tables.py",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -147,7 +147,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "modules/oniguruma/test/test_back.c",
+          "path": "modules/oniguruma/test/test_back.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -156,48 +156,15 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
           "name": "decNumberToString",
-          "expected": false
+          "type": "function_call"
         },
         "verdict": "REFUTED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (main, main, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "jq.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_compile.c:5:#include \"jq.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "jv.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse_stream.c:5:#include \"jv.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "oniguruma.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/modules/oniguruma/CMakeLists.txt:178:#   * headers can be included by C code `#include <oniguruma.h>`",
-        "method": "grep_import"
+        "confidence": 0.6,
+        "evidence": "grep_absent: 11 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:622:  decNumberToString(&dec_double.number, literal);",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -240,8 +207,41 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (LLVMFuzzerTestOneInput, load_library, load_module_meta)",
+        "evidence": "cymbal: 9 callers (load_library, load_module_meta, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "jq.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_compile.c:5:#include \"jq.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "jv.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse_stream.c:5:#include \"jv.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "oniguruma.h",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/modules/oniguruma/CMakeLists.txt:178:#   * headers can be included by C code `#include <oniguruma.h>`",
+        "method": "grep_import"
       }
     ]
   },

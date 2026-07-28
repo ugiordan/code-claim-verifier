@@ -5,11 +5,11 @@
   "reasoning_length": 6383,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 26,
-    "refuted": 3,
+    "total_claims": 25,
+    "verified": 24,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.89,
+    "verification_rate": 0.97,
     "action": "BOOST",
     "claims": [
       {
@@ -36,8 +36,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_float_value",
-          "file": "impd_drc_user_config.c",
-          "expected": true
+          "file": "impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -48,8 +47,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_integer_value",
-          "file": "impd_drc_user_config.c",
-          "expected": true
+          "file": "impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -60,8 +58,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "ixheaace_read_drc_config_params",
-          "file": "impd_drc_user_config.c",
-          "expected": true
+          "file": "impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -91,7 +88,7 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "ixheaace_read_drc_config_params",
           "expected": true
@@ -100,6 +97,16 @@
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "ixheaace_testbench.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): test/encoder/ixheaace_testbench.c",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -258,8 +265,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "sanitisation_libraries",
-          "location": "external"
+          "type": "sanitisation_libraries"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -267,70 +273,16 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "MIN_macro",
-          "purpose": "limits DRC instructions"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
         "claim_type": "DEFAULT_VALUE",
         "parameters": {
           "variable": "return_value",
-          "file": "helper_functions",
+          "file": "impd_drc_user_config.c",
           "default_behavior": "0.0f or 0"
         },
         "verdict": "VERIFIED",
         "confidence": 0.55,
         "evidence": "Variable 'return_value' found in 6 locations.",
         "method": "default_value"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "ixheaace_testbench.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/encoder/ixheaace_testbench.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fopen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (FileWrapper_Open, ia_enhaacplus_enc_main_process, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "type": "user_supplied_file",
-          "description": "DRC configuration file"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No user_supplied_file entry point patterns found",
-        "method": "grep_entry_point"
       }
     ]
   },

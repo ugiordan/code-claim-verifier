@@ -5,11 +5,11 @@
   "reasoning_length": 6126,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 27,
+    "total_claims": 26,
     "verified": 11,
-    "refuted": 16,
+    "refuted": 15,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.36,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -104,6 +104,16 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "yara.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: yara.c",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "yara.c",
@@ -167,7 +177,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (args_print_usage, digest_to_ascii, ord_lookup(\n    char *dll,\n    uint16_t ord))",
+        "evidence": "cymbal: 7 callers (args_print_usage, digest_to_ascii, dotnet_parse_guid)",
         "method": "cymbal_callers"
       },
       {
@@ -178,7 +188,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
+        "evidence": "cymbal: 7 callers (args_parse, compile_files, define_external_variables)",
         "method": "cymbal_callers"
       },
       {
@@ -200,7 +210,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 47 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), yr_arena_write_string, yr_hash_table_lookup_raw_key(\n    YR_HASH_TABLE* table,\n    const void* key,\n    size",
+        "evidence": "cymbal: 47 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), yr_hash_table_lookup_raw_key(\n    YR_HASH_TABLE* table,\n    const void* key,\n    size_t key_length,\n    cons",
         "method": "cymbal_callers"
       },
       {
@@ -220,23 +230,11 @@
         "parameters": {
           "file": "yara.c",
           "line": 161,
-          "content": "hardcoded option definitions"
+          "content": "161-189"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 161: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "yara.c",
-          "line": 189,
-          "content": "hardcoded option definitions"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 189: OPT_INTEGER('l', \"max-rules\", &limit,",
         "method": "file_read"
       },
       {
@@ -302,24 +300,14 @@
           "chain": [
             "main",
             "args_parse",
-            "args_parse_option"
+            "args_parse_option",
+            "args_print_usage"
           ]
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "cymbal chain broken: main->args_parse: NOT FOUND",
         "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "args_print_usage",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (main, main)",
-        "method": "cymbal_callers"
       }
     ]
   },
@@ -348,24 +336,24 @@
         "gt_tier": "source"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

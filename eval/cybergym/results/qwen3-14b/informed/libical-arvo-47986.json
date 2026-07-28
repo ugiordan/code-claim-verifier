@@ -5,11 +5,11 @@
   "reasoning_length": 2940,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 18,
-    "verified": 13,
-    "refuted": 5,
-    "unverifiable": 0,
-    "verification_rate": 0.73,
+    "total_claims": 21,
+    "verified": 12,
+    "refuted": 8,
+    "unverifiable": 1,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -82,17 +82,6 @@
         "confidence": 0.8,
         "evidence": "path=.cmake-format.py, is_test=False, is_vendor=False",
         "method": "path_regex"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "libical/ical.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/main.c:7:#include <libical/ical.h>",
-        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -191,15 +180,59 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "main.c",
-          "content": "return 1"
+          "name": "create_new_component",
+          "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 17 lines)",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_components.c:21:   style is show in create_new_component()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_required_attendees",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_properties_and_parameters.c:15:void get_required_attendees(icalcomponen",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "update_attendees",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_properties_and_parameters.c:60:void update_attendees(icalcomponent* eve",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "#include <libical/ical.h>"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of #include <libical/ical.h> found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "function": "main",
+          "file": "main.c",
+          "default_behavior": "returns 1"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No variable specified",
+        "method": "default_value"
       }
     ]
   },

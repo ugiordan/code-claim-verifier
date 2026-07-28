@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 18,
-    "verified": 14,
-    "refuted": 4,
+    "verified": 12,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.76,
+    "verification_rate": 0.66,
     "action": "FLAG",
     "claims": [
       {
@@ -134,17 +134,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/ixheaace_testbench.c",
@@ -155,6 +144,34 @@
         "confidence": 0.95,
         "evidence": "Line 1: /******************************************************************************",
         "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "ixheaace_testbench.c",
+            "ixheaace_read_drc_config_params",
+            "impd_drc_get_integer_value"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "ixheaace_testbench.c",
+            "ixheaace_read_drc_config_params",
+            "impd_drc_get_float_value"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -192,17 +209,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "security libraries"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "mitigations"
+          "type": "security_mitigations"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

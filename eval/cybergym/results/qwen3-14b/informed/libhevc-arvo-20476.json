@@ -5,11 +5,11 @@
   "reasoning_length": 4867,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 12,
+    "total_claims": 19,
+    "verified": 13,
     "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.65,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -50,6 +50,26 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "exists (fuzzy match): fuzzer/hevc_dec_fuzzer.cpp",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "ihevc_typedefs.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): common/ihevc_typedefs.h",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "iv.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): common/iv.h",
         "method": "os.walk_fuzzy"
       },
       {
@@ -98,12 +118,44 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "ihevcd_cxa_api_function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ihevcd_cxa_api_function at decoder/ihevcd_api.c:3556",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
           "name": "decodeFrame",
           "file": "hevc_dec_fuzzer.cpp"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "No definition found for decodeFrame",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "iv_aligned_malloc",
+          "file": "iv.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for iv_aligned_malloc",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "iv_aligned_free",
+          "file": "iv.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for iv_aligned_free",
         "method": "grep_function_def"
       },
       {
@@ -119,10 +171,13 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "caller": "decodeFrame",
-          "callee": "ivd_api_function",
+          "function": "ivd_api_function",
+          "callers": [
+            "decodeHeader",
+            "decodeFrame"
+          ],
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -131,49 +186,19 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "import": "ihevc_typedefs.h"
+          "description": "input sanitization for num_long_term_ref_pics"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:52:#include \"ihevc_typedefs.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "iv.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:51:#include \"iv.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "iv_aligned_malloc"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for iv_aligned_malloc",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "iv_aligned_free"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: iv_aligned_free at fuzzer/hevc_dec_fuzzer.cpp:69",
-        "method": "cymbal_function"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input validation for num_long_term_ref_pics in decodeHeader method"
+          "description": "validation of input data in decodeHeader method"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -189,19 +214,6 @@
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "decodeHeader",
-            "ivd_api_function"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: decodeHeader->ivd_api_function: NOT FOUND",
-        "method": "cymbal_call_chain"
       }
     ]
   },

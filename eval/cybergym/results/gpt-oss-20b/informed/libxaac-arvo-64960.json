@@ -5,11 +5,11 @@
   "reasoning_length": 7076,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 32,
-    "verified": 27,
+    "total_claims": 31,
+    "verified": 26,
     "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.78,
+    "verification_rate": 0.77,
     "action": "FLAG",
     "claims": [
       {
@@ -48,7 +48,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "20-38",
-          "content": "impd_drc_get_float_value function definition"
+          "content": "impd_drc_get_float_value"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -71,7 +71,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "40-58",
-          "content": "impd_drc_get_integer_value function definition"
+          "content": "impd_drc_get_integer_value"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -94,7 +94,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "60-",
-          "content": "ixheaace_read_drc_config_params function definition"
+          "content": "ixheaace_read_drc_config_params"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -121,6 +121,17 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
@@ -258,8 +269,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "location": "impd_drc_get_float_value and impd_drc_get_integer_value"
+          "description": "input validation beyond skipping comment lines"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -269,8 +279,17 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "bounds_check",
-          "location": "line length validation"
+          "description": "colon existence check in helper functions"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds check on line length"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -296,7 +315,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (impd_drc_get_integer_value, ixheaacd_read_metadata_info, ixheaace_parse_config_param)",
+        "evidence": "cymbal: 8 callers (impd_drc_get_integer_value, ixheaacd_read_metadata_info, ixheaacd_set_config_param)",
         "method": "cymbal_callers"
       },
       {
@@ -335,36 +354,6 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: ixheaace_encode->ixheaace_read_drc_config_params: NOT FOUND",
         "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "ixheaace_testbench.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/encoder/ixheaace_testbench.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "impd_drc_api.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): encoder/drc_src/impd_drc_api.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "impd_drc_enc.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): encoder/drc_src/impd_drc_enc.c",
-        "method": "os.walk_fuzzy"
       }
     ]
   },

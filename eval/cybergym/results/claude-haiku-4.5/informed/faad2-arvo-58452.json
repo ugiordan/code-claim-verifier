@@ -5,11 +5,11 @@
   "reasoning_length": 4566,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 22,
-    "verified": 19,
-    "refuted": 3,
+    "total_claims": 24,
+    "verified": 20,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.84,
+    "verification_rate": 0.8,
     "action": "BOOST",
     "claims": [
       {
@@ -24,10 +24,20 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "name": "lt_update_state",
+          "type": "function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 5 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58452/src-vul/faad2/libfaad/lt_predict.h:55:void lt_update_state(int16_t *lt_pred_stat,",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "expected": true
+          "file": "aacDECdrop/audio.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -37,8 +47,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/audio.h",
-          "expected": true
+          "file": "aacDECdrop/audio.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -48,8 +57,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decode.c",
-          "expected": true
+          "file": "aacDECdrop/decode.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -59,8 +67,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decode.h",
-          "expected": true
+          "file": "aacDECdrop/decode.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -70,8 +77,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decthread.c",
-          "expected": true
+          "file": "aacDECdrop/decthread.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -81,8 +87,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decthread.h",
-          "expected": true
+          "file": "aacDECdrop/decthread.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -92,8 +97,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/main.c",
-          "expected": true
+          "file": "aacDECdrop/main.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -103,8 +107,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "neaacdec.h",
-          "expected": true
+          "file": "neaacdec.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -114,8 +117,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "mp4ff.h",
-          "expected": true
+          "file": "mp4ff.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -125,8 +127,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "faad.h",
-          "expected": true
+          "file": "faad.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -170,8 +171,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "WinMain",
-          "file": "main.c",
-          "expected": true
+          "file": "main.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -182,8 +182,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "decode_thread",
-          "file": "decthread.c",
-          "expected": true
+          "file": "decthread.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -194,13 +193,52 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "decodeAACfile",
-          "file": "decode.c",
-          "expected": true
+          "file": "decode.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: decodeAACfile at aacDECdrop/decode.c:160",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "WinMain",
+            "decthread_init",
+            "decode_thread",
+            "aac_decode",
+            "decodeAACfile",
+            "NeAACDecDecode",
+            "lt_update_state"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: WinMain->decthread_init: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "HandleDrag",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (WndProc)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "decthread_addfile",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (HandleDrag, WndProc)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -215,53 +253,26 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "HandleDrag",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: HandleDrag at aacDECdrop/main.c:252",
-        "method": "cymbal_function"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "decthread_addfile",
+          "name": "error_handler",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (HandleDrag, WndProc)",
+        "evidence": "cymbal: 5 callers (decodeAACfile, if, decodeMP4file)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "decthread_init",
+          "name": "NeAACDecGetErrorMessage",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: decthread_init at aacDECdrop/decthread.c:43",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "WinMain",
-            "decthread_init",
-            "decode_thread",
-            "decodeAACfile",
-            "NeAACDecDecode"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: WinMain->decthread_init: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (if, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
       }
     ]
   },

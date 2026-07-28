@@ -38,12 +38,23 @@
         "parameters": {
           "file": "test/encoder/input.c",
           "line_range": "160-200",
-          "content": "allocate_input function definition"
+          "content": "allocate_input function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 310 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_input, allocate_output)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -64,7 +75,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (allocate_output, allocate_recon, allocate_input)",
+        "evidence": "cymbal: 6 callers (allocate_input, allocate_output, allocate_recon)",
         "method": "cymbal_callers"
       },
       {
@@ -75,19 +86,19 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 47 callers (allocate_output, allocate_recon, allocate_input)",
+        "evidence": "cymbal: 47 callers (allocate_input, allocate_output, allocate_recon)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "sprintf",
-          "expected": true
+          "type": "mitigation",
+          "context": "buffer overflow in allocate_input"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_output, allocate_recon)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -143,17 +154,6 @@
         "confidence": 0.99,
         "evidence": "exists: test/encoder/app.h",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "mitigation",
-          "context": "buffer overflow protection in allocate_input"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       }
     ]
   },

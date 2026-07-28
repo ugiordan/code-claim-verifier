@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 30,
-    "verified": 19,
-    "refuted": 11,
+    "verified": 23,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.63,
+    "verification_rate": 0.68,
     "action": "FLAG",
     "claims": [
       {
@@ -47,7 +47,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/audio.c",
-          "line_range": "118-179",
+          "line_start": 118,
+          "line_end": 179,
           "content": "write_wav_header function definition"
         },
         "verdict": "REFUTED",
@@ -70,7 +71,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/audio.c",
-          "line_range": "181-268",
+          "line_start": 181,
+          "line_end": 268,
           "content": "write_wav_extensible_header function definition"
         },
         "verdict": "REFUTED",
@@ -93,7 +95,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/decode.c",
-          "line_range": "154-285",
+          "line_start": 154,
+          "line_end": 285,
           "content": "decodeAACfile function definition"
         },
         "verdict": "REFUTED",
@@ -105,7 +108,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "aacDECdrop/decode.c",
-          "line_range": "42-75",
+          "line_start": 42,
+          "line_end": 75,
           "content": "Buffer manipulation macros"
         },
         "verdict": "REFUTED",
@@ -117,79 +121,39 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "write_wav_header",
-          "caller": "open_audio_file",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "line": 78,
-          "content": "call to write_wav_header from open_audio_file"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 78: ",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "write_wav_header",
-          "caller": "close_audio_file",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "line": 108,
-          "content": "call to write_wav_header from close_audio_file"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 108: return write_audio_float(aufile, buf + offset*4, samples);",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "write_wav_extensible_header",
-          "caller": "open_audio_file",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 8 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, open_audio_file(char *in",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "line": 76,
-          "content": "call to write_wav_extensible_header from open_audio_file"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 76: aufile->sndfile = fopen(infile, \"wb\");",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "write_wav_extensible_header",
-          "caller": "close_audio_file",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -198,34 +162,29 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "line": 106,
-          "content": "call to write_wav_extensible_header from close_audio_file"
+          "name": "open_audio_file"
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 106: return write_audio_32bit(aufile, buf + offset*4, samples);",
-        "method": "file_read"
+        "confidence": 0.85,
+        "evidence": "No definition found for open_audio_file",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "decodeAACfile",
-          "caller": "aac_decode",
-          "expected": true
+          "name": "close_audio_file"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (aac_decode, faad_main, decode_thread)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: close_audio_file at frontend/audio.c:124",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "import": "faad.h"
+          "file": "faad.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -235,8 +194,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decode.c",
-          "import": "neaacdec.h"
+          "file": "neaacdec.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -246,8 +204,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decode.c",
-          "import": "mp4ff.h"
+          "file": "mp4ff.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -257,19 +214,47 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "import": "audio.h"
+          "file": "stdio.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58364/src-vul/faad2/aacDECdrop/audio.c:36:#include \"audio.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58364/src-vul/faad2/aacDECdrop/misc.h:14:#include <stdio.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/decode.c",
-          "import": "misc.h"
+          "file": "stdlib.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58364/src-vul/faad2/aacDECdrop/decode.c:32:#include <stdlib.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "math.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58364/src-vul/faad2/aacDECdrop/audio.c:34:#include <math.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "audio.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58364/src-vul/faad2/aacDECdrop/decode.c:37:#include \"audio.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "misc.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -279,12 +264,11 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "aacDECdrop/audio.c",
-          "import": "wave_out.h"
+          "file": "wave_out.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of wave_out.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-58364/src-vul/faad2/aacDECdrop/wave_out.c:12:#include \"wave_out.h\"",
         "method": "grep_import"
       },
       {
@@ -312,12 +296,13 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "main.c",
-          "line": 380,
-          "content": "HandleDrag function definition"
+          "line_start": 380,
+          "line_end": 380,
+          "content": "HandleDrag function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 380: {",
+        "evidence": "Line 0 out of range (file has 678 lines)",
         "method": "file_read"
       },
       {

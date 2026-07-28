@@ -5,12 +5,12 @@
   "reasoning_length": 6347,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 12,
-    "verified": 10,
-    "refuted": 2,
+    "total_claims": 13,
+    "verified": 9,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.84,
-    "action": "BOOST",
+    "verification_rate": 0.7,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -33,6 +33,17 @@
         "confidence": 0.95,
         "evidence": "cymbal: xmlAddID at valid.c:2619",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "tree.c",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -59,6 +70,39 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "xmlParseElement",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlParseElement at parser.c:9766",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "htmlParseElement",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlParseElement at HTMLparser.c:4298",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlParseAttList",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for xmlParseAttList",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
           "name": "xmlStrEqual",
           "expected": true
         },
@@ -79,37 +123,15 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "xmlAddIDSafe",
+          "name": "xmlFreeNode",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (xmlAddID, xmlNewPropInternal, xmlCopyPropInternal)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlAddIDSafe",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (xmlAddID, xmlNewPropInternal, xmlCopyPropInternal)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlAddIDSafe",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (xmlAddID, xmlNewPropInternal, xmlCopyPropInternal)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlFreeNode at tree.c:3727",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -136,17 +158,6 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: xmlParseAttList->xmlAddIDSafe: NOT FOUND",
         "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "classification": "contains functions related to parsing and managing element names and attributes"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=HTMLparser.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
       }
     ]
   },

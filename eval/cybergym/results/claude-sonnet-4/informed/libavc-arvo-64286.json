@@ -5,11 +5,11 @@
   "reasoning_length": 3667,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 13,
+    "total_claims": 19,
+    "verified": 12,
     "refuted": 5,
     "unverifiable": 2,
-    "verification_rate": 0.71,
+    "verification_rate": 0.68,
     "action": "FLAG",
     "claims": [
       {
@@ -151,7 +151,7 @@
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
           "type": "bounds_checking",
-          "description": "MAX() and MIN() macros for buffer counts"
+          "description": "Some bounds checking with MAX() and MIN() macros for buffer counts"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
@@ -162,7 +162,7 @@
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
           "type": "null_pointer_check",
-          "description": "Null pointer checks after allocation with codec_exit call"
+          "description": "Null pointer checks after allocation"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
@@ -214,25 +214,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "name": "codec_exit",
-          "expected": true
+          "function": "allocate_input",
+          "description": "part of the encoder test application called during encoder initialization"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 47 callers (allocate_input, allocate_output, allocate_recon)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "main.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/mvcdec/main.c",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-64286/src-vul/libavc/encoder/ih264e_process.c:533:                 * of signaling eof flag.",
+        "method": "grep_entry_point"
       }
     ]
   },

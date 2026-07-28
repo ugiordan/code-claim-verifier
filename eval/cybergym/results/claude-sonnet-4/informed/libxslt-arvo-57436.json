@@ -5,12 +5,12 @@
   "reasoning_length": 3680,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 25,
-    "verified": 22,
-    "refuted": 3,
+    "total_claims": 27,
+    "verified": 23,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.82,
-    "action": "BOOST",
+    "verification_rate": 0.77,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -195,6 +195,17 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlRealloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 38 callers (xsltSetAttrVTsegment, LIBXSLT_ATTR_FORMAT, xsltPointerListAddSize)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "libxslt",
@@ -248,6 +259,18 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57436/src-vul/libxslt/libxslt/keys.h:15:#include \"xsltInternals.h\"",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "attrvt.c",
+          "line_number": 150,
+          "content": "size_t size = sizeof(xsltAttrVT) + (avt->max_seg + MAX_AVT_SEG) * sizeof(void *);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 396 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "MITIGATION_EXISTS",

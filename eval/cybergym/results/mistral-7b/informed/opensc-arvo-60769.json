@@ -5,12 +5,12 @@
   "reasoning_length": 1160,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 9,
+    "total_claims": 10,
     "verified": 5,
-    "refuted": 4,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.54,
-    "action": "FLAG",
+    "verification_rate": 0.49,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -25,8 +25,7 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "MsiProcessMessage",
-          "expected": true
+          "name": "MsiProcessMessage"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -37,6 +36,19 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "MsiProcessMessage",
+          "caller": "MsiEngineMain",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MsiProcessMessage",
+          "caller": "MsiExecMain",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -47,8 +59,7 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "MsiEngineMain",
-          "expected": true
+          "name": "MsiEngineMain"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -58,8 +69,7 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "MsiExecMain",
-          "expected": true
+          "name": "MsiExecMain"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -69,7 +79,6 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
           "import": "wcautil.h",
           "expected": true
         },
@@ -81,7 +90,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "explicit input sanitization in the provided source code"
+          "item": "input sanitization",
+          "scope": "provided source code"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

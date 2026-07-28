@@ -5,11 +5,11 @@
   "reasoning_length": 5178,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 12,
-    "refuted": 6,
+    "total_claims": 16,
+    "verified": 11,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.61,
+    "verification_rate": 0.64,
     "action": "FLAG",
     "claims": [
       {
@@ -124,40 +124,17 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
-          "content": "argv[1] = strdup(\"-v\");"
+          "content": "mosquitto_fuzz_main(argc, argv);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 67 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
-          "content": "argv[2] = strdup(\"-c\");"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 67 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "mosquitto_fuzz_main",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (run_broker, run_broker(void *args), LLVMFuzzerTestOneInput)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "run_broker",
-          "caller": "LLVMFuzzerTestOneInput",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -166,47 +143,48 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "LLVMFuzzerTestOneInput",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
-        "evidence": "callers=yes (5 call sites)",
-        "method": "grep_callers"
+        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:93:extern \"C\" int LLVMFuzzerTestOneInput(const uint8",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fwrite",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 15 callers (copy_contents, LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "Python or C code when writing the config file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "LLVMFuzzerTestOneInput"
+          "function": "LLVMFuzzerTestOneInput",
+          "description": "fuzzing entry point"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/man/mqtt.7.xml:143:\t\tsometimes also known as the \"clean start\" flag. If clean session ",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "location": "broker_fuzz_test_config.cpp"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "function": "fwrite"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       }
     ]
   },

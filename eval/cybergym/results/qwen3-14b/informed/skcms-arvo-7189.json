@@ -5,11 +5,11 @@
   "reasoning_length": 3888,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 15,
-    "verified": 8,
+    "total_claims": 14,
+    "verified": 7,
     "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.48,
+    "verification_rate": 0.45,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -57,9 +57,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test_only.c",
-          "line_start": 10,
-          "line_end": 23,
-          "content": "bool load_file(const char* filename, void** buf, size_t* len) {\n    FILE* fp = fopen(filename, \"rb\");\n    expect(fp);\n\n    expect(fseek(fp, 0L, SEEK_END) == 0);\n    long size = ftell(fp);\n    expect(size > 0);\n    *len = (size_t)size;\n    rewind(fp);\n\n    *buf = malloc(*len);\n    expect(*buf);\n\n    size_t bytes_read = fread(*buf, 1, *len, fp);\n    expect(bytes_read == *len);\n}"
+          "line_range": "10-23",
+          "content": "bool load_file(const char* filename, void** buf, size_t* len) {"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -81,9 +80,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test_only.c",
-          "line_start": 35,
-          "line_end": 45,
-          "content": "bool load_file_fp(FILE* fp, void** buf, size_t* len) {\n    if (fseek(fp, 0L, SEEK_END) != 0) {\n        return false;\n    }\n    long size = ftell(fp);\n    if (size <= 0) {\n        return false;\n    }\n    ..."
+          "line_range": "35-45",
+          "content": "bool load_file_fp(FILE* fp, void** buf, size_t* len) {"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -106,9 +104,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "bench.c",
-          "line_start": 34,
-          "line_end": 35,
-          "content": "load_file(argc > 2 ? argv[2] : \"profiles/mobile/sRGB_parametric.icc\", &src_buf, &src_len);\nload_file(argc > 3 ? argv[3] : \"profiles/mobile/Display_P3_parametric.icc\", &dst_buf, &dst_len);"
+          "line_range": "34-35",
+          "content": "load_file(argc > 2 ? argv[2] : \"profiles/mobile/sRGB_parametric.icc\", &src_buf, &src_len);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -131,9 +128,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
-          "line_start": 34,
-          "line_end": 35,
-          "content": "if (!load_file(filename, &buf, &len)) {\n    fatal(\"Unable to load input file\");\n}"
+          "line_range": "34-35",
+          "content": "if (!load_file(filename, &buf, &len)) {"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -141,9 +137,21 @@
         "method": "file_read"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "bench.c and iccdump.c filename arguments"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "bench.c"
+          "file": "bench.c",
+          "type": "main_function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -153,34 +161,13 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "iccdump.c"
+          "file": "iccdump.c",
+          "type": "main_function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-7189/src-vul/skcms/src/ICCProfile.c:318:    // field/flag.",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "location": "bench.c and iccdump.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "function": "load_file"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       }
     ]
   },

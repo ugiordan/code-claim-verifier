@@ -5,22 +5,22 @@
   "reasoning_length": 5020,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 12,
-    "verified": 8,
-    "refuted": 4,
-    "unverifiable": 0,
-    "verification_rate": 0.63,
+    "total_claims": 14,
+    "verified": 9,
+    "refuted": 3,
+    "unverifiable": 2,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file_path": "maint/MultiStage2.py"
+          "file": "maint/MultiStage2.py"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: maint/MultiStage2.py",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -32,6 +32,18 @@
         "confidence": 0.95,
         "evidence": "cymbal: read_table at maint/MultiStage2.py:148",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "maint/MultiStage2.py",
+          "line_range": "60-100",
+          "content_description": "function reads and processes Unicode data files"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 557 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -48,8 +60,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "maint/MultiStage2.py",
-          "line_number": 34,
-          "content_type": "function_definition"
+          "line_range": "34-38",
+          "content_description": "function processes lines from CaseFolding.txt"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -60,13 +72,47 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "maint/MultiStage2.py",
-          "line_number": 60,
-          "content_type": "function_definition"
+          "line": "chardata[2]",
+          "line_range": "34-38"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "maint/MultiStage2.py",
+          "line": "m.group(1)",
+          "line_range": "84-86"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "read_table",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/pcre2-arvo-781/src-vul/pcre2/maint/MultiStage2.py:351:script = read_table('Unicode.tables/Scripts.txt', make_get_names(scr",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_other_case",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 557 lines)",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -102,28 +148,6 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "read_table",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/pcre2-arvo-781/src-vul/pcre2/maint/MultiStage2.py:351:script = read_table('Unicode.tables/Scripts.txt', make_get_names(scr",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "get_other_case",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization",
@@ -151,24 +175,24 @@
     "matched": 3,
     "results": [
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

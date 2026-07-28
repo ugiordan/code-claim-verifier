@@ -6,11 +6,11 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 15,
-    "verified": 10,
-    "refuted": 5,
+    "verified": 12,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.68,
-    "action": "FLAG",
+    "verification_rate": 0.81,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -142,7 +142,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "include/uapi/linux/if_link.h",
+          "file": "include/uapi/linux/bpf_common.h",
           "import": "<linux/netlink.h>"
         },
         "verdict": "REFUTED",
@@ -151,26 +151,38 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "file": "include/uapi/linux/bpf_common.h",
-          "line_content": "#define BPF_CLASS(code) ((code) & 0x07)"
+          "type": "executable_functions",
+          "files": [
+            "travis-ci/vmtest/vmlinux.h",
+            "include/uapi/linux/bpf.h",
+            "include/uapi/linux/bpf_common.h",
+            "include/uapi/linux/btf.h",
+            "include/uapi/linux/if_link.h"
+          ]
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 57 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "file": "include/uapi/linux/btf.h",
-          "line_content": "#define BTF_MAGIC 0xeB9F"
+          "type": "function_implementations",
+          "files": [
+            "travis-ci/vmtest/vmlinux.h",
+            "include/uapi/linux/bpf.h",
+            "include/uapi/linux/bpf_common.h",
+            "include/uapi/linux/btf.h",
+            "include/uapi/linux/if_link.h"
+          ]
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 188 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

@@ -5,12 +5,12 @@
   "reasoning_length": 7444,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 38,
-    "verified": 32,
-    "refuted": 6,
+    "total_claims": 44,
+    "verified": 39,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.72,
-    "action": "FLAG",
+    "verification_rate": 0.88,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -157,9 +157,49 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/ICCProfile.c",
+          "line": 120,
+          "content_type": "function_definition",
+          "function": "skcms_Parse"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 120: static bool read_tag_xyz(const skcms_ICCTag* tag, float* x, float* y, float* z) {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/Transform.c",
+          "line": 200,
+          "content_type": "function_definition",
+          "function": "skcms_Transform"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 200: #else",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/TransferFunction.c",
+          "line": 350,
+          "content_type": "function_definition",
+          "function": "skcms_ApproximateTransferFunction"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 350: skcms_TransferFunction fn_inv = { 0, 0, 0, 0, 0, 0, 0 };",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "skcms_Transform",
+          "file": "bench.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -171,28 +211,31 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "skcms_Parse",
+          "file": "iccdump.c",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, main)",
+        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, main, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "skcms_Parse",
+          "file": "tests.c",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, main)",
+        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, main, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "skcms_Transform",
+          "file": "tests.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -204,17 +247,19 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "skcms_Parse",
+          "file": "fuzz/fuzz_iccprofile_atf.c",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, main)",
+        "evidence": "cymbal: 13 callers (LLVMFuzzerTestOneInput, main, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "skcms_ApproximateTransferFunction",
+          "file": "fuzz/fuzz_iccprofile_atf.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -227,9 +272,10 @@
         "parameters": {
           "file": "bench.c",
           "line": 70,
-          "content": "skcms_Transform(src_pixels, src_fmt, &src_profile, dst_pixels, dst_fmt, &dst_profile, NPIXELS);"
+          "content_type": "function_call",
+          "function": "skcms_Transform"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 70: const int wrap = skcms_PixelFormat_BGRA_ffff+1;",
         "method": "file_read"
@@ -239,9 +285,10 @@
         "parameters": {
           "file": "iccdump.c",
           "line": 120,
-          "content": "skcms_Parse(buf, bytesRead, &profile);"
+          "content_type": "function_call",
+          "function": "skcms_Parse"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 120: static const char* colors[3] = { \"red\", \"green\", \"blue\" };",
         "method": "file_read"
@@ -251,9 +298,10 @@
         "parameters": {
           "file": "tests.c",
           "line": 30,
-          "content": "skcms_Parse(buf, sizeof(buf), &profile);"
+          "content_type": "function_call",
+          "function": "skcms_Parse"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 30: do {                                                                              \\",
         "method": "file_read"
@@ -263,9 +311,10 @@
         "parameters": {
           "file": "fuzz/fuzz_iccprofile_atf.c",
           "line": 12,
-          "content": "skcms_Parse(data, size, &p);"
+          "content_type": "function_call",
+          "function": "skcms_Parse"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 12: #include \"../skcms.h\"",
         "method": "file_read"
@@ -275,9 +324,10 @@
         "parameters": {
           "file": "fuzz/fuzz_iccprofile_atf.c",
           "line": 15,
-          "content": "skcms_ApproximateTransferFunction(&p, &tf, &max_error);"
+          "content_type": "function_call",
+          "function": "skcms_ApproximateTransferFunction"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 15: int LLVMFuzzerTestOneInput(const uint8_t* data, size_t size) {",
         "method": "file_read"
@@ -285,89 +335,111 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "stddef.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/skcms.h:13:#include <stddef.h>",
+        "evidence": "No import of stddef.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "stdint.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/skcms.h:14:#include <stdint.h>",
+        "evidence": "No import of stdint.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "stdbool.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/skcms.h:12:#include <stdbool.h>",
+        "evidence": "No import of stdbool.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "string.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:20:#include <string.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/src/ICCProfile.c:15:#include <string.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:19:#include <stdlib.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/src/ICCProfile.c:14:#include <stdlib.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "stdio.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:18:#include <stdio.h>",
+        "evidence": "No import of stdio.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "skcms library",
+          "file": "src/ICCProfile.c",
           "import": "math.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/tests.c:16:#include <math.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/src/ICCProfile.c:13:#include <math.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "demo programs",
+          "file": "bench.c",
+          "import": "skcms.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/bench.c:14:#include \"skcms.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "iccdump.c",
           "import": "skcms.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/iccdump.c:16:#include \"skcms.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tests.c",
+          "import": "skcms.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/tests.c:12:#include \"skcms.h\"",
         "method": "grep_import"
       },
       {
@@ -396,6 +468,17 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "skcms_Parse",
+          "file": "tests.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/skcms-arvo-6521/src-vul/skcms/src/ICCProfile.c:392:    // field/flag.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "skcms_Transform",
           "file": "tests.c"
         },
         "verdict": "VERIFIED",

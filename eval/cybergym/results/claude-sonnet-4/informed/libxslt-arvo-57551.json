@@ -5,12 +5,12 @@
   "reasoning_length": 4496,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
+    "total_claims": 24,
     "verified": 21,
-    "refuted": 4,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.78,
-    "action": "FLAG",
+    "verification_rate": 0.81,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -78,7 +78,7 @@
         "parameters": {
           "file": "libxslt/attrvt.c",
           "line_range": "150-170",
-          "content": "xsltSetAttrVTsegment function implementation"
+          "content": "static xsltAttrVTPtr xsltSetAttrVTsegment(xsltAttrVTPtr avt, void *val)"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -93,7 +93,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 38 callers (xsltSetAttrVTsegment, xsltCompMatchAdd, xsltPatPushState)",
+        "evidence": "cymbal: 38 callers (xsltSetAttrVTsegment, xsltAddStackElem, LIBXSLT_ATTR_FORMAT)",
         "method": "cymbal_callers"
       },
       {
@@ -112,7 +112,19 @@
         "parameters": {
           "file": "libxslt/attrvt.c",
           "line_range": "60-67",
-          "content": "struct _xsltAttrVT definition with flexible array member"
+          "content": "void *segments[];"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 396 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libxslt/attrvt.c",
+          "line_range": "60-67",
+          "content": "void *segments[1];"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -129,18 +141,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: xsltLoadDocument at libxslt/documents.c:284",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libxslt/documents.c",
-          "line_range": "280+",
-          "content": "xsltLoadDocument function implementation"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 438 lines)",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -161,7 +161,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (exsltNodeSetFunction, exsltDynMapFunction, exsltSaxonLineNumberFunction)",
+        "evidence": "cymbal: 50 callers (exsltNodeSetFunction, exsltSaxonLineNumberFunction, exsltDynMapFunction)",
         "method": "cymbal_callers"
       },
       {
@@ -207,16 +207,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "libxml2"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of libxml2 found",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "xmlMalloc",
@@ -224,7 +214,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xsltICUGenSortKey(void *coll, const xmlChar *str), xsltNewDocument, xsltNewStyleDocument)",
+        "evidence": "cymbal: 50 callers (xsltICUGenSortKey(void *coll, const xmlChar *str), xsltNewAttrVT, exsltFuncInit (xsltTransformContextPtr ctxt, const xmlChar *URI))",
         "method": "cymbal_callers"
       },
       {
@@ -235,7 +225,18 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xsltICUGenSortKey(void *coll, const xmlChar *str), exsltNodeSetFunction, exsltDynEvaluateFunction)",
+        "evidence": "cymbal: 50 callers (exsltNodeSetFunction, xsltICUGenSortKey(void *coll, const xmlChar *str), exsltSaxonExpressionFunction)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "memset",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xsltNewAttrVT, xsltSetAttrVTsegment, exsltFuncInit (xsltTransformContextPtr ctxt, const xmlChar *URI))",
         "method": "cymbal_callers"
       },
       {
@@ -247,17 +248,6 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxslt-arvo-57551/src-vul/libxslt/libxslt/namespaces.c:15:#include <string.h>",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "memset",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xsltNewDocument, xsltNewStyleDocument, exsltCryptoRc4EncryptFunction)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",

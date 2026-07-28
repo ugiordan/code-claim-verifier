@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 18,
-    "verified": 14,
-    "refuted": 4,
+    "verified": 15,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.77,
-    "action": "FLAG",
+    "verification_rate": 0.82,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -124,7 +124,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, check_suggestion)",
+        "evidence": "cymbal: 23 callers (LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput, inputEmphasis)",
         "method": "cymbal_callers"
       },
       {
@@ -194,7 +194,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_validation",
-          "description": "UTF-8 validation in my_strlen_utf8_c"
+          "description": "UTF-8 encoding validation"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -202,17 +202,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "file": "tools/brl_checks.c",
-          "line_start": 13,
-          "line_end": 20,
-          "content": "static int\nmy_strlen_utf8_c(char *s) {\n    int i = 0, j = 0;\n    while (s[i]) {\n        if ((s[i] & 0xc0) != 0x80) j++;\n        i++;\n    }\n    return j;\n}"
+          "type": "input_sanitization",
+          "description": "UTF-8 input validation in my_strlen_utf8_c"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 618 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

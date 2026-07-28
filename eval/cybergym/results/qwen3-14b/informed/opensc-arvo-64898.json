@@ -5,11 +5,11 @@
   "reasoning_length": 18556,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 17,
-    "refuted": 1,
+    "total_claims": 17,
+    "verified": 15,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.78,
+    "verification_rate": 0.71,
     "action": "FLAG",
     "claims": [
       {
@@ -21,46 +21,6 @@
         "confidence": 0.99,
         "evidence": "exists: win32/customactions.cpp",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "notify.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/ui/notify.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "strings.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/ui/strings.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "char_str_from_wchar.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/ui/char_str_from_wchar.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "wchar_from_char_str.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/ui/wchar_from_char_str.h",
-        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -81,6 +41,26 @@
         "confidence": 0.99,
         "evidence": "exists: src/ui/strings.c",
         "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "char_str_from_wchar.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): src/ui/char_str_from_wchar.h",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "wchar_from_char_str.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): src/ui/wchar_from_char_str.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -128,6 +108,17 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "strlcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, iasecc_sm_external_authentication)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "WideCharToMultiByte",
           "expected": true
         },
@@ -145,17 +136,6 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 1 callers (wchar_from_char_str(const char *in))",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strlcpy",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, sc_card_sm_check)",
         "method": "cymbal_callers"
       },
       {
@@ -188,7 +168,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (CardDeriveHashOrHMAC, HashDataWithBCrypt, DoTlsPrf)",
+        "evidence": "cymbal: 7 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), CardDeriveHashOrHMAC)",
         "method": "cymbal_callers"
       },
       {
@@ -201,6 +181,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (notify_shell, sc_notify, sc_notify_id)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/ui/strings.c",
+          "content": "text[3*SC_MAX_ATR_SIZE]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 322 lines)",
+        "method": "file_read"
       }
     ]
   },

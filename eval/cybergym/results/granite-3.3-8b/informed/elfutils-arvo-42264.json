@@ -5,11 +5,11 @@
   "reasoning_length": 2990,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 23,
-    "verified": 21,
-    "refuted": 2,
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.77,
+    "verification_rate": 0.57,
     "action": "FLAG",
     "claims": [
       {
@@ -73,7 +73,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (execute_cfi, dwarf_getaranges, dwarf_next_lines)",
+        "evidence": "cymbal: 50 callers (execute_cfi, dwarf_getaranges, get_table_for_offset (Dwarf *dbg, Dwarf_Word macoff,\n\t\t      const unsigned char *readp,\n\t\t      const unsigned char *const endp,\n\t\t      Dwarf_Die *",
         "method": "cymbal_callers"
       },
       {
@@ -106,7 +106,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (execute_cfi, __libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), dwarf_formblock)",
+        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formblock)",
         "method": "cymbal_callers"
       },
       {
@@ -123,12 +123,11 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "libdw/cfi.c",
-          "import": "dwarf.h"
+          "module": "dwarf.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/cfi.c:33:#include <dwarf.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/dwarf_diename.c:34:#include <dwarf.h>",
         "method": "grep_import"
       },
       {
@@ -143,21 +142,32 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "assert",
-          "expected": true
+          "type": "assertion",
+          "description": "uses assert to ensure CFI instructions are valid"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (hfa_type, pass_hfa, aarch64_return_value_location)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "error_handling",
+          "description": "returns DWARF_E_* error codes for failure conditions"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization",
-          "description": "comprehensive input sanitization on the program and end pointers"
+          "description": "comprehensive input sanitization on program and end pointers"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -165,112 +175,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 300,
-          "content_description": "advance_loc"
+          "function": "__libdw_frame_at_address",
+          "description": "part of public API for unwinding frame states"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 300: register_rule (regno, val_expression, offset);",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 330,
-          "content_description": "def_cfa"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 330: Dwarf_Frame *copy = duplicate_frame_state (fs, fs);",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 340,
-          "content_description": "def_cfa_register"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 340: case DW_CFA_restore_state:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 350,
-          "content_description": "def_cfa_offset"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 350: case DW_CFA_nop:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 370,
-          "content_description": "offset_extended"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 370: fs->regs[regno].rule = reg_register;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 380,
-          "content_description": "offset_extended_sf"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 380: fs->regs[regno].value = (regno - 16) * address_size;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 390,
-          "content_description": "val_offset"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 390: default:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 400,
-          "content_description": "val_offset_sf"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 400: else",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libdw/cfi.c",
-          "line": 410,
-          "content_description": "register"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 410: DW_CFA_set_loc (initial_location + address_range) instruction.\"",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-42264/src-vul/elfutils/libdw/dwarf_next_cfi.c:229:\t\tcase 'S':\t\t/* Skip signal-frame flag.  */",
+        "method": "grep_entry_point"
       }
     ]
   },

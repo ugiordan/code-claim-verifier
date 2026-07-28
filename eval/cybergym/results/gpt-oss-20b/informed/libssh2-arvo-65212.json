@@ -116,46 +116,9 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libssh2/kex.c",
-          "line_range": "200-240",
-          "content": "definition of `_libssh2_kex_agree_instr()`"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: libssh2/kex.c",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libssh2/session.c",
-          "line_range": "480-520",
-          "content": "call to `libssh2_kex_agree()` inside `libssh2_session_handshake()`"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: libssh2/session.c",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libssh2/ssh.c",
-          "line_range": "300-350",
-          "content": "call to `libssh2_session_handshake()` from the public API"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: libssh2/ssh.c",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "libssh2_kex_agree",
-          "caller": "libssh2_session_handshake",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -167,7 +130,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "_libssh2_kex_agree_instr",
-          "caller": "libssh2_kex_agree",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -185,6 +147,20 @@
         "confidence": 0.9,
         "evidence": "cymbal: 30 callers (main, main, main)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "libssh2_session_handshake",
+            "libssh2_kex_agree",
+            "_libssh2_kex_agree_instr"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: libssh2_session_handshake->libssh2_kex_agree: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -218,6 +194,30 @@
         "confidence": 0.8,
         "evidence": "No import of \"libssh2.h\" found",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libssh2/kex.c",
+          "line_number": 210,
+          "content": "_libssh2_kex_agree_instr"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: libssh2/kex.c",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libssh2/kex.c",
+          "line_number": 260,
+          "content": "libssh2_kex_agree"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: libssh2/kex.c",
+        "method": "file_read"
       }
     ]
   },

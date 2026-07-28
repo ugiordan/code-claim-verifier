@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 25,
-    "verified": 23,
-    "refuted": 2,
+    "verified": 25,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.86,
+    "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
       {
@@ -120,6 +120,7 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse",
+          "caller_file": "yara.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -131,6 +132,19 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_get_short_option",
+          "caller": "args_parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_parse, main, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "args_get_long_option",
+          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -142,6 +156,7 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
+          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -152,7 +167,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "stdio.h"
+          "import": "stdio.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -162,7 +177,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "stdlib.h"
+          "import": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -172,7 +187,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "string.h"
+          "import": "string.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -182,7 +197,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "yara.h"
+          "import": "yara.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -192,21 +207,21 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "threading.h"
+          "import": "threading.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of threading.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/libyara/include/yara/types.h:40:#include <yara/threading.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "common.h"
+          "import": "common.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of common.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-13956/src-vul/yara/yarac.c:50:#include \"common.h\"",
         "method": "grep_import"
       },
       {
@@ -222,7 +237,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input sanitization or validation mechanisms"
+          "type": "input_sanitization",
+          "location": "args_parse_option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -232,7 +248,11 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking on option names in args_get_short_option"
+          "type": "bounds_checking",
+          "functions": [
+            "args_get_short_option",
+            "args_get_long_option"
+          ]
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -242,7 +262,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking on option names in args_get_long_option"
+          "type": "integer_checks",
+          "function": "args_parse_option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -252,17 +273,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "checks on integer values in args_parse_option"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "null pointer dereference checks in args_parse_option"
+          "type": "null_pointer_checks",
+          "function": "args_parse_option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

@@ -5,12 +5,12 @@
   "reasoning_length": 18049,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 14,
-    "refuted": 1,
+    "total_claims": 16,
+    "verified": 13,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.8,
-    "action": "BOOST",
+    "verification_rate": 0.76,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -63,6 +63,36 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "common/compat_strlcpy.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): src/common/compat_strlcpy.h",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "WideCharToMultiByte"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for WideCharToMultiByte",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MultiByteToWideChar"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for MultiByteToWideChar",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "create_invisible_window"
@@ -70,26 +100,6 @@
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: create_invisible_window at src/ui/invisible_window.h:23",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "AddNotificationIcon"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: AddNotificationIcon at src/ui/notify.c:131",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "notify_shell"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: notify_shell at src/ui/notify.c:235",
         "method": "cymbal_function"
       },
       {
@@ -104,6 +114,16 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "AddNotificationIcon"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: AddNotificationIcon at src/ui/notify.c:131",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "Shell_NotifyIcon",
@@ -115,26 +135,14 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "WideCharToMultiByte",
-          "expected": true
+          "name": "notify_shell"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (char_str_from_wchar(const WCHAR *in))",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "MultiByteToWideChar",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (wchar_from_char_str(const char *in))",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: notify_shell at src/ui/notify.c:235",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -150,8 +158,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "notify.c",
-          "import": "compat_strlcpy.h"
+          "file": "src/ui/notify.c",
+          "import": "common/compat_strlcpy.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -161,7 +169,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "notify.c",
+          "file": "src/ui/notify.c",
           "content": "strlcpy(nid.szInfoTitle, title, ARRAYSIZE(nid.szInfoTitle));"
         },
         "verdict": "REFUTED",

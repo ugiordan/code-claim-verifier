@@ -5,12 +5,12 @@
   "reasoning_length": 3593,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 18,
-    "refuted": 2,
+    "total_claims": 22,
+    "verified": 16,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.85,
-    "action": "BOOST",
+    "verification_rate": 0.69,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -109,36 +109,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "sys/mman.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-exception.c:33:#include <sys/mman.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "yara.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-alignment.c:31:#include <yara.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "stdio.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-alignment.c:30:#include <stdio.h>",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "main",
@@ -183,6 +153,36 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "sys/mman.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-exception.c:33:#include <sys/mman.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "yara.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-alignment.c:31:#include <yara.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "stdio.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-alignment.c:30:#include <stdio.h>",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "main",
@@ -205,26 +205,56 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "function": "basic_tests",
-          "file": "tests/test-arena.c"
+          "chain": [
+            "main",
+            "map_file"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/libyara/modules/pe/pe_utils.c:1125:      sprintf(name, \"DllRegisterServer\");",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->map_file: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "function": "advanced_tests",
-          "file": "tests/test-arena.c"
+          "chain": [
+            "test_disabled_rules",
+            "yr_compiler_add_string"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/libyara/modules/pe/pe_utils.c:1125:      sprintf(name, \"DllRegisterServer\");",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: test_disabled_rules->yr_compiler_add_string: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "basic_tests",
+            "yr_arena_allocate_memory"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: basic_tests->yr_arena_allocate_memory: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "advanced_tests",
+            "yr_arena_allocate_memory"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: advanced_tests->yr_arena_allocate_memory: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

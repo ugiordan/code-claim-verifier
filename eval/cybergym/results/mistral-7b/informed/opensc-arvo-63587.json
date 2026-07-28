@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 11,
-    "verified": 5,
-    "refuted": 6,
+    "verified": 4,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.44,
+    "verification_rate": 0.36,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -90,16 +90,14 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "caller": "MdInstall",
-          "callee": "MdRegisterMinidriver",
-          "expected": true
+          "file": "win32/actions.cpp"
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "confidence": 0.99,
+        "evidence": "not found: win32/actions.cpp",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -113,24 +111,30 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "win32/actions.cpp"
+          "caller": "MdInstall",
+          "callee": "MdRegisterMinidriver",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: win32/actions.cpp",
-        "method": "os.path.isfile"
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "function": "MdRegisterMinidriver"
+          "chain": [
+            "MdInstall",
+            "MdRegisterMinidriver",
+            "MdRegisterCard"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63587/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: MdInstall->MdRegisterMinidriver: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

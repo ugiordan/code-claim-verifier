@@ -5,13 +5,23 @@
   "reasoning_length": 17526,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 19,
-    "refuted": 1,
+    "total_claims": 25,
+    "verified": 20,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.81,
-    "action": "BOOST",
+    "verification_rate": 0.66,
+    "action": "FLAG",
     "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "audio.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
@@ -42,7 +52,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: write_wav_header at aacDECdrop/audio.c:133",
+        "evidence": "cymbal: write_wav_header at frontend/audio.c:142",
         "method": "cymbal_function"
       },
       {
@@ -53,7 +63,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: write_wav_extensible_header at aacDECdrop/audio.c:197",
+        "evidence": "cymbal: write_wav_extensible_header at frontend/audio.c:206",
         "method": "cymbal_function"
       },
       {
@@ -64,7 +74,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: write_audio_file at aacDECdrop/audio.c:96",
+        "evidence": "cymbal: write_audio_file at frontend/audio.c:104",
         "method": "cymbal_function"
       },
       {
@@ -75,8 +85,18 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: close_audio_file at aacDECdrop/audio.c:116",
+        "evidence": "cymbal: close_audio_file at frontend/audio.c:124",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "decode.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -125,6 +145,17 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "open_audio_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "malloc",
           "expected": true
         },
@@ -132,6 +163,16 @@
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (decthread_addfile, LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "main.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -220,6 +261,16 @@
         "confidence": 0.9,
         "evidence": "cymbal: 7 callers (LLVMFuzzerTestOneInput, decodeAACfile, decodeAACfile)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "decthread.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_CALLED",

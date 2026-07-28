@@ -5,11 +5,11 @@
   "reasoning_length": 4510,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
+    "total_claims": 28,
     "verified": 23,
-    "refuted": 2,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.9,
+    "verification_rate": 0.8,
     "action": "BOOST",
     "claims": [
       {
@@ -96,7 +96,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (gids_create_file, sc_get_cache_dir, sc_card_sm_check)",
+        "evidence": "cymbal: 50 callers (gids_create_file, sc_card_sm_check, sc_get_cache_dir)",
         "method": "cymbal_callers"
       },
       {
@@ -118,7 +118,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (md_get_config_str(PCARD_DATA pCardData, enum ui_str id), ShowContextMenu, sc_notify_id)",
+        "evidence": "cymbal: 9 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
         "method": "cymbal_callers"
       },
       {
@@ -133,18 +133,72 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "sc_notify",
+            "notify_shell"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify->notify_shell: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "sc_notify_id",
+            "ui_get_str"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "sc_notify_id",
+            "notify_shell"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify_id->notify_shell: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "sc_notify_init",
+            "AddNotificationIcon"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify_init->AddNotificationIcon: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "windows.h"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53631/src-vul/opensc/win32/customactions.cpp:35:#include <windows.h>",
+        "evidence": "No import of windows.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "shellapi.h"
         },
         "verdict": "VERIFIED",
@@ -155,6 +209,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "shlwapi.h"
         },
         "verdict": "VERIFIED",
@@ -165,6 +220,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "commctrl.h"
         },
         "verdict": "VERIFIED",
@@ -175,6 +231,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "common/compat_strlcpy.h"
         },
         "verdict": "VERIFIED",
@@ -185,6 +242,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "invisible_window.h"
         },
         "verdict": "VERIFIED",
@@ -195,6 +253,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "wchar_from_char_str.h"
         },
         "verdict": "VERIFIED",
@@ -205,6 +264,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "src/ui/notify.c",
           "import": "notify.h"
         },
         "verdict": "VERIFIED",
@@ -253,30 +313,14 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "chain": [
-            "sc_notify_id",
-            "ui_get_str"
-          ]
+          "function": "sc_notify_id"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "sc_notify_id",
-            "notify_shell"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: sc_notify_id->notify_shell: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-53631/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
+        "method": "grep_entry_point"
       }
     ]
   },

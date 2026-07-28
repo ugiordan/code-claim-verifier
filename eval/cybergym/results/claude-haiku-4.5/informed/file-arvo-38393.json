@@ -5,12 +5,12 @@
   "reasoning_length": 4215,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
-    "verified": 9,
-    "refuted": 12,
+    "total_claims": 22,
+    "verified": 12,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.44,
-    "action": "OVERRIDE",
+    "verification_rate": 0.55,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -37,18 +37,6 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
-          "line": 217,
-          "content": "def setparam(self, param, value):"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 217: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "python/magic.py",
           "line": 221,
           "content": "return _set"
         },
@@ -67,18 +55,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: getparam at python/magic.py:251",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "python/magic.py",
-          "line": 207,
-          "content": "def getparam(self, param):"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 207: Returns 0 on success and -1 on failure.",
-        "method": "file_read"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -124,35 +100,35 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "Magic.file",
+          "name": "file",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (detect_from_filename, test_detect_from_filename)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "Magic.buffer",
+          "name": "buffer",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (detect_from_content, test_detect_from_content, thread_function)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "Magic.load",
+          "name": "load",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (__init__)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -236,12 +212,49 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input validation in setparam method"
+          "type": "input_validation",
+          "location": "setparam method"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example.py",
+          "line": 6,
+          "content": "tp = ms.file(\"/bin/ls\")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 6: ms.load()",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example.py",
+          "line": 13,
+          "content": "tp = ms.buffer(buf)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 13: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "example.py",
+          "line": 4,
+          "content": "ms.load()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 4: ",
+        "method": "file_read"
       }
     ]
   },

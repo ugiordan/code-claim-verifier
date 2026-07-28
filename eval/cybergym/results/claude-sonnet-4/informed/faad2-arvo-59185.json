@@ -5,11 +5,11 @@
   "reasoning_length": 3701,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
-    "refuted": 6,
+    "total_claims": 22,
+    "verified": 14,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.66,
+    "verification_rate": 0.62,
     "action": "FLAG",
     "claims": [
       {
@@ -187,6 +187,46 @@
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (decodeAACfile, decodeMP4file, faad_main)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fill_buffer",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (advance_buffer, lookforheader, adts_parse)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "fill_buffer",
+            "advance_buffer"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->fill_buffer: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "adts_parse",
+            "fill_buffer",
+            "advance_buffer"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->adts_parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",

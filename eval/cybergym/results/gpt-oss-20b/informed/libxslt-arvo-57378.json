@@ -5,11 +5,11 @@
   "reasoning_length": 4877,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
+    "total_claims": 16,
     "verified": 12,
-    "refuted": 5,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.66,
+    "verification_rate": 0.72,
     "action": "FLAG",
     "claims": [
       {
@@ -66,30 +66,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libxslt/keys.c",
-          "line_number": 210,
-          "content": "lookup->name = name;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 935 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libxslt/keys.c",
-          "line_number": 210,
-          "content": "lookup->value = value;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 935 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "xmlMalloc",
@@ -99,6 +75,16 @@
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (xsltICUGenSortKey(void *coll, const xmlChar *str), xsltNewDocument, xsltNewStyleDocument)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "NULL check after xmlMalloc call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -180,7 +166,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "NULL check after xmlMalloc"
+          "description": "mitigation for allocation failure in xsltKeyFunction"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -188,14 +174,18 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "description": "defensive programming for allocation failure"
+          "chain": [
+            "xmlXPathEval",
+            "xmlXPathFunction",
+            "xsltKeyFunction"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xmlXPathEval->xmlXPathFunction: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

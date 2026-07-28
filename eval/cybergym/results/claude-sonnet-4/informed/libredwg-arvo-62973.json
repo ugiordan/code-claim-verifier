@@ -5,12 +5,12 @@
   "reasoning_length": 4454,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
+    "total_claims": 23,
     "verified": 18,
-    "refuted": 3,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.86,
-    "action": "BOOST",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -187,10 +187,32 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "spointprepare2",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (add_text, add_mtext, xml_dwg)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.system",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/common.c",
-          "import": "libxml/tree.h"
+          "module": "libxml/tree.h",
+          "file": "test/xmlsuite/common.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -200,8 +222,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/common.c",
-          "import": "libxml/parser.h"
+          "module": "libxml/parser.h",
+          "file": "test/xmlsuite/common.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -211,32 +233,34 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "import": "os"
+          "module": "dwg.h",
+          "file": "test/xmlsuite/common.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of dwg.h found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "dwg_api.h",
+          "file": "test/xmlsuite/common.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of dwg_api.h found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "os",
+          "file": "test/xmlsuite/check.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/test/xmlsuite/check.py:3:import os",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "dwg.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/test/xmlsuite/testsuite.c:23:#include \"dwg.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "dwg_api.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/test/xmlsuite/testsuite.c:24:#include \"dwg_api.h\"",
         "method": "grep_import"
       }
     ]

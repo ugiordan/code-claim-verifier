@@ -5,11 +5,11 @@
   "reasoning_length": 3887,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 9,
-    "refuted": 7,
+    "total_claims": 19,
+    "verified": 13,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.57,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -33,6 +33,16 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "impd_drc_user_config.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): test/encoder/impd_drc_user_config.h",
+        "method": "os.walk_fuzzy"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_float_value",
@@ -41,6 +51,39 @@
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: impd_drc_get_float_value at test/encoder/impd_drc_user_config.c:37",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "impd_drc_get_integer_value",
+          "file": "test/encoder/impd_drc_user_config.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: impd_drc_get_integer_value at test/encoder/impd_drc_user_config.c:58",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "file": "test/encoder/impd_drc_user_config.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ia_enhaacplus_enc_wav_header_decode",
+          "file": "test/encoder/ixheaace_testbench.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ia_enhaacplus_enc_wav_header_decode at test/encoder/ixheaace_testbench.c:78",
         "method": "cymbal_function"
       },
       {
@@ -80,17 +123,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "file": "test/encoder/impd_drc_user_config.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: impd_drc_get_integer_value at test/encoder/impd_drc_user_config.c:58",
-        "method": "cymbal_function"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
@@ -103,36 +135,61 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "file": "test/encoder/impd_drc_user_config.c"
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 64,
+          "content": "c++;"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
-        "method": "cymbal_function"
+        "evidence": "Line 64: if (retval) {",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "ia_enhaacplus_enc_wav_header_decode",
-          "file": "test/encoder/ixheaace_testbench.c"
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 65,
+          "content": "i++;"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "cymbal: ia_enhaacplus_enc_wav_header_decode at test/encoder/ixheaace_testbench.c:78",
-        "method": "cymbal_function"
+        "evidence": "Line 65: pCHAR8 c = line;",
+        "method": "file_read"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "impd_drc_user_config.h"
+          "file": "test/encoder/impd_drc_user_config.c",
+          "import": "stdio.h"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/encoder/impd_drc_user_config.h",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-62274/src-vul/libxaac/test/encoder/impd_drc_user_config.c:21:#include <stdio.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "import": "stdlib.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-62274/src-vul/libxaac/test/encoder/impd_drc_user_config.c:22:#include <stdlib.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "import": "string.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-62274/src-vul/libxaac/test/encoder/impd_drc_user_config.c:23:#include <string.h>",
+        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -146,37 +203,15 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "import": "#include <stdio.h>"
+          "name": "ixheaace_read_drc_config_params",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of #include <stdio.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "import": "#include <stdlib.h>"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of #include <stdlib.h> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "import": "#include <string.h>"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of #include <string.h> found",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "DEFAULT_VALUE",

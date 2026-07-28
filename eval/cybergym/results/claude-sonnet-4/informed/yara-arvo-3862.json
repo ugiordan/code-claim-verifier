@@ -5,11 +5,11 @@
   "reasoning_length": 5387,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
-    "verified": 9,
-    "refuted": 7,
+    "total_claims": 15,
+    "verified": 7,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.43,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -94,6 +94,7 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
+          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -106,9 +107,9 @@
         "parameters": {
           "file": "args.c",
           "line": 189,
-          "content": "args_parse_option"
+          "content_contains": "args_parse_option"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 189: ",
         "method": "file_read"
@@ -118,9 +119,9 @@
         "parameters": {
           "file": "args.c",
           "line": 205,
-          "content": "args_parse_option"
+          "content_contains": "args_parse_option"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 205: {",
         "method": "file_read"
@@ -140,6 +141,7 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse",
+          "caller": "main",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -148,48 +150,37 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "strtol",
-          "expected": true
+          "file": "yara.c",
+          "content_contains": "static char* tags[MAX_ARGS_TAG + 1];"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (args_parse_option, _yr_object_lookup(\n    YR_OBJECT* object,\n    int flags,\n    const char* pattern,\n    va_list args), args_parse)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1253 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "strchr",
-          "expected": true
+          "file": "yara.c",
+          "content_contains": "static char* identifiers[MAX_ARGS_IDENTIFIER + 1];"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1253 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "strstr",
-          "expected": true
+          "file": "yara.c",
+          "content_contains": "static char* ext_vars[MAX_ARGS_EXT_VAR + 1];"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), test_disabled_rules, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strlen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 47 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), yr_arena_write_string, yr_hash_table_lookup_raw_key(\n    YR_HASH_TABLE* table,\n    const void* key,\n    size",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1253 lines)",
+        "method": "file_read"
       }
     ]
   },

@@ -5,68 +5,18 @@
   "reasoning_length": 15817,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 13,
-    "refuted": 2,
+    "total_claims": 20,
+    "verified": 8,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.73,
-    "action": "FLAG",
+    "verification_rate": 0.29,
+    "action": "OVERRIDE",
     "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "libdw/cfi.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: libdw/cfi.c",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "cfi.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): libdw/cfi.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "cie.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): libdw/cie.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "dwarf.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): libdw/dwarf.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "dwarf_abbrev_hash.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): libdw/dwarf_abbrev_hash.c",
-        "method": "os.walk_fuzzy"
-      },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "execute_cfi",
-          "file": "cfi.c"
+          "file": "libdw/cfi.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -76,8 +26,52 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "cfi.c",
-          "content": "case DW_CFA_advance_loc1: operand = *program++;"
+          "file": "libdw/cfi.c",
+          "content": "operand = *program++;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "while (program < end)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "program+2 <= end"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "program+4 <= end"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "program+8 <= end"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -103,8 +97,41 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formblock)",
+        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formsdata)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "get_uleb128(operand, program, end);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "reg >= INT32_MAX / sizeof((*pfs)->regs[0])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "size = offsetof (Dwarf_Frame, regs[reg + 1]);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -131,7 +158,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "intern_new_cie"
+          "name": "intern_new_cie",
+          "file": "libdw/cie.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -142,7 +170,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "duplicate_frame_state",
-          "file": "cfi.c"
+          "file": "libdw/cfi.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -152,8 +180,19 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "cfi.c",
+          "file": "libdw/cfi.c",
           "content": "size = offsetof (Dwarf_Frame, regs[original->nregs]);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "fs->regs[regno].rule = reg_##r_rule;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -170,12 +209,41 @@
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (execute_cfi, dwarf_formsdata, dwarf_formudata)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "result = DWARF_E_INVALID_CFI"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "eu_static_assert (reg_unspecified == 0"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 1,
+    "matched": 2,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

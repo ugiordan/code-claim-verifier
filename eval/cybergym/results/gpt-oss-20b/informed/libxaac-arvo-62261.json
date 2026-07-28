@@ -5,11 +5,11 @@
   "reasoning_length": 6279,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 25,
-    "refuted": 4,
+    "total_claims": 34,
+    "verified": 31,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.87,
+    "verification_rate": 0.85,
     "action": "BOOST",
     "claims": [
       {
@@ -299,6 +299,50 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fgets",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (ixheaacd_read_metadata_info, impd_drc_get_float_value, impd_drc_get_integer_value)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atof",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_float_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atoi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaace_parse_config_param)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strtol",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_integer_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "bounds_checking",
@@ -310,26 +354,46 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "colon_check",
+          "location": "helper functions"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_check_before_parsing",
+          "location": "helper functions"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
           "type": "count_clamping",
-          "location": "public routine"
+          "variables": [
+            "drc_instructions_uni_drc_count",
+            "gain_set_channels",
+            "num_drc_channel_groups"
+          ],
+          "constants": [
+            "MAX_DRC_INSTRUCTIONS_COUNT",
+            "MAX_CHANNEL_COUNT",
+            "MAX_CHANNEL_GROUP_COUNT"
+          ]
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
         "evidence": "File not found: ",
         "method": "file_read"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "ixheaace_read_drc_config_params",
-          "caller": "ixheaace_testbench.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
       }
     ]
   },

@@ -5,11 +5,11 @@
   "reasoning_length": 3517,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 16,
-    "refuted": 4,
+    "total_claims": 21,
+    "verified": 15,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.78,
+    "verification_rate": 0.66,
     "action": "FLAG",
     "claims": [
       {
@@ -48,10 +48,9 @@
         "parameters": {
           "file": "aacDECdrop/audio.c",
           "line": 18,
-          "content_type": "function_definition",
-          "function": "open_audio_file"
+          "content": "open_audio_file function"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 18: **",
         "method": "file_read"
@@ -72,10 +71,9 @@
         "parameters": {
           "file": "aacDECdrop/decode.c",
           "line": 122,
-          "content_type": "function_definition",
-          "function": "decodeAACfile"
+          "content": "decodeAACfile function"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 122: \".au\",",
         "method": "file_read"
@@ -84,7 +82,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "open_audio_file",
-          "caller": "decodeAACfile",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -96,13 +93,22 @@
         "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "decodeAACfile",
-          "caller": "aac_decode",
-          "file": "decthread.c",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (aac_decode, faad_main, decode_thread)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "aac_decode",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (decode_thread)",
         "method": "cymbal_callers"
       },
       {
@@ -130,8 +136,6 @@
         "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "decthread_addfile",
-          "caller": "HandleDrag",
-          "file": "main.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -170,8 +174,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "stdio.h",
-          "function": "fopen"
+          "module": "stdio.h",
+          "import": "fopen"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -181,8 +185,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "neaacdec.h",
-          "function": "NeAACDecOpen"
+          "module": "neaacdec.h",
+          "import": "NeAACDecOpen"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -192,8 +196,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "neaacdec.h",
-          "function": "NeAACDecDecode"
+          "module": "neaacdec.h",
+          "import": "NeAACDecDecode"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -204,8 +208,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization",
-          "function": "open_audio_file",
-          "parameter": "infile"
+          "location": "open_audio_file"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -216,7 +219,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "path_traversal_checks",
-          "function": "open_audio_file"
+          "location": "open_audio_file"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -227,7 +230,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "output_path_restrictions",
-          "function": "open_audio_file"
+          "location": "open_audio_file"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -237,9 +240,8 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "main.c",
-          "type": "GUI",
-          "function": "HandleDrag"
+          "function": "main.c",
+          "type": "GUI"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,

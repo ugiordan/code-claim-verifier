@@ -5,12 +5,12 @@
   "reasoning_length": 3282,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 25,
-    "verified": 14,
+    "total_claims": 27,
+    "verified": 17,
     "refuted": 10,
-    "unverifiable": 1,
-    "verification_rate": 0.5,
-    "action": "OVERRIDE",
+    "unverifiable": 0,
+    "verification_rate": 0.59,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -221,15 +221,26 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ctypes.cdll.LoadLibrary",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/magic.py:21:    return ctypes.cdll.LoadLibrary(find_library('magic'))",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
-          "line": "16",
+          "line": 16,
           "content_description": "ctypes.cdll.LoadLibrary() call"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 16: def _init():",
         "method": "file_read"
       },
       {
@@ -260,7 +271,7 @@
         "parameters": {
           "file": "python/magic.py",
           "line_range": "140-148",
-          "content_description": "__tobytes() helper function"
+          "content_description": "__tobytes() helper method"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -270,35 +281,43 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "_file",
+          "name": "magic.open",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (file, detect_from_filename)",
-        "method": "cymbal_callers"
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-38393/src-vul/file/python/example.py:5:ms = magic.open(magic.NONE)",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "_buffer",
-          "expected": true
+          "description": "input validation in file() method"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (buffer, detect_from_content)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "_descriptor",
-          "expected": true
+          "description": "size limits or content validation in buffer() method"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (descriptor, detect_from_fobj)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "validation in descriptor() method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

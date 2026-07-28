@@ -5,12 +5,12 @@
   "reasoning_length": 7076,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 33,
-    "verified": 30,
-    "refuted": 3,
+    "total_claims": 31,
+    "verified": 26,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.85,
-    "action": "BOOST",
+    "verification_rate": 0.77,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -48,7 +48,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "20-38",
-          "content": "impd_drc_get_float_value"
+          "content": "impd_drc_get_float_value function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -71,7 +71,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "40-58",
-          "content": "impd_drc_get_integer_value"
+          "content": "impd_drc_get_integer_value function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -94,7 +94,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "60-",
-          "content": "ixheaace_read_drc_config_params"
+          "content": "ixheaace_read_drc_config_params function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -105,7 +105,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "impd_drc_get_float_value",
-          "caller": "ixheaace_read_drc_config_params",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -117,7 +116,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "impd_drc_get_integer_value",
-          "caller": "ixheaace_read_drc_config_params",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -260,8 +258,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "location": "impd_drc_get_float_value"
+          "description": "input validation beyond simple comment skipping"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -271,8 +268,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "location": "impd_drc_get_integer_value"
+          "description": "colon existence check in helper functions"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -282,19 +278,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "bounds_check",
-          "location": "impd_drc_get_float_value"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "bounds_check",
-          "location": "impd_drc_get_integer_value"
+          "description": "bounds check on line length"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -320,7 +304,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaace_parse_config_param)",
+        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaacd_set_config_param)",
         "method": "cymbal_callers"
       },
       {
@@ -346,34 +330,30 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "file": "ixheaace_testbench.c"
+          "chain": [
+            "ixheaace_init",
+            "ixheaace_read_drc_config_params"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/encoder/ixheaace_testbench.c",
-        "method": "os.walk_fuzzy"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_init->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "file": "impd_drc_api.c"
+          "chain": [
+            "ixheaace_encode",
+            "ixheaace_read_drc_config_params"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): encoder/drc_src/impd_drc_api.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "impd_drc_enc.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): encoder/drc_src/impd_drc_enc.c",
-        "method": "os.walk_fuzzy"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_encode->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

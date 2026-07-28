@@ -5,11 +5,11 @@
   "reasoning_length": 5971,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 8,
-    "refuted": 10,
+    "total_claims": 16,
+    "verified": 7,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.35,
+    "verification_rate": 0.32,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -58,7 +58,7 @@
         "parameters": {
           "file": "fuzzer/avc_dec_fuzzer.cpp",
           "line_range": "265-295",
-          "content": "void Codec::allocFrame() { size_t sizes[4] = {0}; size_t num_bufs = 0;"
+          "content": "void Codec::allocFrame() { size_t sizes[4] = {0}; size_t num_bufs = 0; mOutBufHandle.u4_num_bufs = num_bufs; for (int i = 0; i < num_bufs; i++) { mOutBufHandle.u4_min_out_buf_size[i] = sizes[i]; mOutBufHandle.pu1_bufs[i] = (UWORD8 *)iv_aligned_malloc(NULL, 16, sizes[i]); } }"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -189,26 +189,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (isvc_memset_2d_neon, ih264_intra_pred_chroma_8x8_mode_dc, ih264_memset)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "getNumViews"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: getNumViews at fuzzer/mvc_dec_fuzzer.cpp:94",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "getOutBuf"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for getOutBuf",
-        "method": "grep_function_def"
       }
     ]
   },

@@ -5,11 +5,11 @@
   "reasoning_length": 6383,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 27,
-    "verified": 27,
-    "refuted": 0,
-    "unverifiable": 0,
-    "verification_rate": 0.98,
+    "total_claims": 28,
+    "verified": 25,
+    "refuted": 1,
+    "unverifiable": 2,
+    "verification_rate": 0.96,
     "action": "BOOST",
     "claims": [
       {
@@ -68,7 +68,8 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "impd_drc_get_float_value",
+          "caller": "ixheaace_read_drc_config_params",
+          "callee": "impd_drc_get_float_value",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -79,23 +80,13 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "impd_drc_get_integer_value",
+          "caller": "ixheaace_read_drc_config_params",
+          "callee": "impd_drc_get_integer_value",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
@@ -107,6 +98,18 @@
         "confidence": 0.9,
         "evidence": "exists (fuzzy match): test/encoder/ixheaace_testbench.c",
         "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "ixheaace_testbench.c",
+          "callee": "ixheaace_read_drc_config_params",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -273,25 +276,37 @@
       {
         "claim_type": "DEFAULT_VALUE",
         "parameters": {
-          "variable": "return value",
-          "file": "impd_drc_user_config.c",
-          "default_behavior": "0.0f or 0"
+          "function": "impd_drc_get_float_value",
+          "default_value": "0.0f",
+          "condition": "fgets fails"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.55,
-        "evidence": "Variable 'return value' found in 2 locations.",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No variable specified",
         "method": "default_value"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "DEFAULT_VALUE",
         "parameters": {
-          "name": "fopen",
-          "expected": true
+          "function": "impd_drc_get_integer_value",
+          "default_value": "0",
+          "condition": "fgets fails"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (FileWrapper_Open, main, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No variable specified",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "ixheaace_testbench.c",
+          "content": "FILE *fp = fopen(DRC_CONFIG_FILE, \"r\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1577 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",

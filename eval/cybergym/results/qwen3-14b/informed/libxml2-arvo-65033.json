@@ -6,51 +6,51 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 19,
-    "verified": 17,
-    "refuted": 2,
+    "verified": 12,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.82,
-    "action": "BOOST",
+    "verification_rate": 0.53,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "HTMLparser.c"
+          "filename": "HTMLparser.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: HTMLparser.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "HTMLtree.c"
+          "filename": "HTMLtree.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: HTMLtree.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "SAX.c"
+          "filename": "SAX.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: SAX.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "SAX2.c"
+          "filename": "SAX2.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: SAX2.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -104,7 +104,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, processPattern)",
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, processPattern, processXPath)",
         "method": "cymbal_callers"
       },
       {
@@ -176,8 +176,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "function": "htmlnamePush"
+          "item": "bounds checking",
+          "context": "htmlnamePush input value"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -187,8 +187,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "function": "htmlNodeInfoPush"
+          "item": "input validation",
+          "context": "htmlNodeInfoPush value parameter"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -198,8 +198,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "bounds_checking",
-          "function": "htmlnamePush"
+          "item": "input sanitization",
+          "context": "htmlnamePush and htmlNodeInfoPush value parameter"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -209,47 +209,19 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "encoding_validation",
-          "function": "htmlSetMetaEncoding"
+          "item": "validation",
+          "context": "htmlSetMetaEncoding encoding string"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
+        "evidence": "grep_absent: 753 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-65033/src-vul/libxml2/xmlregexp.c:5: * the variety of validation/schemas mechanisms now available in",
         "method": "grep_absent"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 6,
+    "matched": 4,
     "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
@@ -262,6 +234,20 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
         "gt_tier": "source"
       }
     ]

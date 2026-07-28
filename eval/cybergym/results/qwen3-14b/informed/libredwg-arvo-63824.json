@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 26,
-    "verified": 20,
-    "refuted": 6,
+    "verified": 19,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.75,
+    "verification_rate": 0.69,
     "action": "FLAG",
     "claims": [
       {
@@ -121,7 +121,7 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "common_entity_attrs",
           "expected": true
@@ -132,7 +132,7 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "common_entity_attrs",
           "expected": true
@@ -154,28 +154,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "add_line",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (xml_dwg, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "add_circle",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (xml_dwg, main)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "add_line",
@@ -198,15 +176,26 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "function": "xml_dwg",
-          "description": "entry point for processing DWG files"
+          "name": "add_line",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (xml_dwg, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "add_circle",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (xml_dwg, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -217,6 +206,17 @@
         "confidence": 0.99,
         "evidence": "Path traversal detected",
         "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.system",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -232,6 +232,26 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
+          "filename": "dwg.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "dwg_api.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
           "filename": "helper.py"
         },
         "verdict": "REFUTED",
@@ -240,32 +260,9 @@
         "method": "path_check"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "dwg.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/testsuite.c:23:#include \"dwg.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "dwg_api.h",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/test/xmlsuite/testsuite.c:24:#include \"dwg_api.h\"",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "type_checks",
-          "description": "No explicit type checks"
+          "description": "explicit type checks"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -275,8 +272,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "description": "No input validation"
+          "description": "input validation"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -284,14 +280,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "filename": "test-data"
+          "name": "testsuite",
+          "type": "executable"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63824/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
+        "method": "grep_entry_point"
       }
     ]
   },

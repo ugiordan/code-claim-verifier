@@ -5,11 +5,11 @@
   "reasoning_length": 6613,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 12,
-    "verified": 10,
-    "refuted": 2,
+    "total_claims": 14,
+    "verified": 11,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.69,
+    "verification_rate": 0.62,
     "action": "FLAG",
     "claims": [
       {
@@ -36,24 +36,24 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/xmlsuite/check.py",
-          "line": 33,
+          "line_number": 33,
           "content": "os.system(\"./testsuite \" + path_to_dwg + \"/\""
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 33: # Now execute testsuite.c on all the DWG files found and create a separate directory structure",
+        "evidence": "Line 0 out of range (file has 104 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/xmlsuite/helper.py",
-          "line": 28,
+          "line_number": 28,
           "content": "os.system (me + \" \" + srcdir + \"/txttoxml.py \" + filename + \" \""
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 28: # This beats \u2018sys.argv[0]\u2019, which is not guaranteed to be set.",
+        "evidence": "Line 0 out of range (file has 173 lines)",
         "method": "file_read"
       },
       {
@@ -66,6 +66,17 @@
         "confidence": 0.95,
         "evidence": "cymbal: generatexml at test/xmlsuite/helper.py:27",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.system",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63483/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -110,6 +121,20 @@
         "confidence": 0.65,
         "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63483/src-vul/libredwg/test/xmlsuite/helper.py:27:def generatexml(dwgdir):",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "check.py",
+            "generatexml",
+            "os.system"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: check.py->generatexml: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "ABSENCE",

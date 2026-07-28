@@ -5,11 +5,11 @@
   "reasoning_length": 4980,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 36,
-    "verified": 33,
+    "total_claims": 37,
+    "verified": 34,
     "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.91,
+    "verification_rate": 0.9,
     "action": "BOOST",
     "claims": [
       {
@@ -296,7 +296,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
+        "evidence": "cymbal: 50 callers (xmlC14NVisibleNsStackAdd, xmlBufGrowInternal, xmlBufResize)",
         "method": "cymbal_callers"
       },
       {
@@ -388,10 +388,21 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "snprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, xmlCatalogGetSystem(const xmlChar *sysID), xmlCatalogGetPublic(const xmlChar *pubID))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "mitigation": "snprintf with size limits",
-          "expected": true
+          "type": "buffer_overflow_protection",
+          "mechanism": "snprintf with size limits"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
@@ -401,8 +412,8 @@
       {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "mitigation": "xmlRealloc calls checked",
-          "expected": true
+          "type": "memory_allocation_checks",
+          "mechanism": "xmlRealloc calls checked"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,

@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 13,
-    "verified": 10,
-    "refuted": 3,
+    "verified": 9,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.74,
+    "verification_rate": 0.66,
     "action": "FLAG",
     "claims": [
       {
@@ -38,7 +38,7 @@
         "parameters": {
           "file": "testbed/testcms2.c",
           "line_range": "200-220",
-          "content": "definition of `FatalErrorQuit`"
+          "content_description": "definition of FatalErrorQuit"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -50,7 +50,7 @@
         "parameters": {
           "file": "testbed/testcms2.c",
           "line_number": "~210",
-          "content": "FatalErrorQuit function definition"
+          "content_description": "FatalErrorQuit function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -87,7 +87,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (main, CheckProfileZOO, InitUtils)",
+        "evidence": "cymbal: 23 callers (main, CheckAlphaDetect, main)",
         "method": "cymbal_callers"
       },
       {
@@ -132,28 +132,30 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "Die"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: Die at testbed/testcms2.c:48",
-        "method": "cymbal_function"
-      },
-      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
             "ResetFatalError",
             "cmsSetLogErrorHandler",
+            "FatalErrorQuit"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ResetFatalError->cmsSetLogErrorHandler: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
             "FatalErrorQuit",
             "Die"
           ]
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "cymbal chain broken: ResetFatalError->cmsSetLogErrorHandler: NOT FOUND",
+        "evidence": "cymbal chain broken: FatalErrorQuit->Die: NOT FOUND",
         "method": "cymbal_call_chain"
       }
     ]

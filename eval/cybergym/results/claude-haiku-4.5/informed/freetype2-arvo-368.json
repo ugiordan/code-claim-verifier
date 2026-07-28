@@ -5,63 +5,13 @@
   "reasoning_length": 3361,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 17,
-    "verified": 14,
-    "refuted": 3,
+    "total_claims": 15,
+    "verified": 10,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.86,
-    "action": "BOOST",
+    "verification_rate": 0.68,
+    "action": "FLAG",
     "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "devel/ft2build.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: devel/ft2build.h",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "devel/ftoption.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: devel/ftoption.h",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "include/ft2build.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: include/ft2build.h",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "include/freetype/freetype.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: include/freetype/freetype.h",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "include/freetype/ftadvanc.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: include/freetype/ftadvanc.h",
-        "method": "os.path.isfile"
-      },
       {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
@@ -120,7 +70,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "FT_Get_Advance"
+          "name": "FT_Get_Advance",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -130,7 +81,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "FT_Get_Advances"
+          "name": "FT_Get_Advances",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -141,21 +93,23 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "include/freetype/freetype.h",
-          "import": "ft2build.h"
+          "import": "<ft2build.h>",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-368/src-vul/freetype2/include/freetype/freetype.h:27:#error \"  #include <ft2build.h>\"",
+        "evidence": "No import of <ft2build.h> found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "freetype/config/ftheader.h"
+          "import": "<freetype/config/ftheader.h>",
+          "expected": true
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-368/src-vul/freetype2/devel/ft2build.h:35:#include <freetype/config/ftheader.h>",
+        "evidence": "No import of <freetype/config/ftheader.h> found",
         "method": "grep_import"
       },
       {
@@ -192,40 +146,45 @@
         "confidence": 0.7,
         "evidence": "File not found: ftadvanc.h",
         "method": "file_read"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "FT_CONFIG_OPTION_ENVIRONMENT_PROPERTIES",
+          "description": "allows controlled feature enabling"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "Flag 'FT_CONFIG_OPTION_ENVIRONMENT_PROPERTIES' found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/freetype2-arvo-368/src-vul/freetype2/devel/ftoption.h:105:#define FT_CONFIG_OPTION_ENVIRONMENT_PRO",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "function_implementations",
+          "description": "No function implementations with executable code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "main_function",
+          "description": "No main() function or entry point is shown"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 5,
+    "matched": 1,
     "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

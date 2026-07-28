@@ -5,11 +5,11 @@
   "reasoning_length": 4179,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 5,
-    "refuted": 8,
+    "total_claims": 16,
+    "verified": 10,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.18,
+    "verification_rate": 0.34,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -60,18 +60,6 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "filename": "jpegdecoderhelper.cpp",
-          "line_number": 280,
-          "content": "!memcmp(marker->data, kXmpNameSpace, sizeof(kX"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "filename": "jpegdecoderhelper.cpp",
           "line_number": 180,
           "content": "pos += marker->original_length;"
         },
@@ -81,38 +69,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "filename": "jpegdecoderhelper.cpp",
-          "line_number": 190,
-          "content": "!memcmp(marker->data, kExifIdCode, sizeof(kExifIdCode))"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "JpegDecoderHelper::decode",
+          "name": "memcmp",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libultrahdr-arvo-63314/src-vul/libultrahdr/jpegdecoderhelper.cpp:215:bool JpegDecoderHelper::decode(const void* image, int",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "JpegDecoderHelper::decompressImage",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for JpegDecoderHelper::decompressImage",
-        "method": "grep_function_def"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -133,7 +98,73 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 19 callers (UltraHdrEncFuzzer::fillP010Buffer, UltraHdrEncFuzzer::fill420Buffer, JpegEncoderHelper::compressYuv)",
+        "evidence": "cymbal: 19 callers (JpegEncoderHelper::compressYuv, JpegEncoderHelper::compressY, DataStruct::write)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "JpegDecoderHelper::decompressImage",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libultrahdr-arvo-63314/src-vul/libultrahdr/include/ultrahdr/jpegdecoderhelper.h:69:     * decompressImage().",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "decode",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (JpegDecoderHelper::decompressImage, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "JpegDecoderHelper::decode",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (1 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "extractEXIF",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (JpegR::appendGainMap)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "libjpeg",
+          "type": "library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "jpeg_read_header",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
         "method": "cymbal_callers"
       },
       {

@@ -5,11 +5,11 @@
   "reasoning_length": 7195,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 35,
-    "verified": 14,
+    "total_claims": 30,
+    "verified": 9,
     "refuted": 21,
     "unverifiable": 0,
-    "verification_rate": 0.25,
+    "verification_rate": 0.22,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -185,56 +185,23 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "os.getenv",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/helper.py:29:\tme = os.getenv (\"PYTHON\")",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.path.dirname",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/check.py:7:srcdir = os.path.dirname(__file__)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.getcwd",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/check.py:8:sys.path.append(os.getcwd())",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.chdir",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/helper.py:34:\tos.chdir(dwgdir)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "glob.glob",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/helper.py:35:\tfor filename in glob.glob (\"*/*.txt\"):",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.system",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
         "method": "grep_call_site"
       },
       {
@@ -251,7 +218,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "check.py",
+          "file": "test/xmlsuite/check.py",
           "line_number": 27,
           "content": "generatexml(path_to_dwg)"
         },
@@ -369,34 +336,12 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sys.exit",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/newxml.py:11:\tsys.exit(\"File not found \" + DwgTxtFileName)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.path.exists",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-54625/src-vul/libredwg/test/xmlsuite/check.py:26:\t\t\tif not os.path.exists(outdir + \"/\" + dir):",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
             "check.py",
             "generatexml",
-            "helper.py"
+            "os.system"
           ]
         },
         "verdict": "REFUTED",
@@ -409,13 +354,12 @@
         "parameters": {
           "chain": [
             "helper.py",
-            "os.system",
             "txttoxml.py"
           ]
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "cymbal chain broken: helper.py->os.system: NOT FOUND",
+        "evidence": "cymbal chain broken: helper.py->txttoxml.py: NOT FOUND",
         "method": "cymbal_call_chain"
       }
     ]

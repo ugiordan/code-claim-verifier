@@ -5,33 +5,33 @@
   "reasoning_length": 1485,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 6,
+    "total_claims": 8,
+    "verified": 7,
     "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.73,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "bench.c"
+          "file": "bench.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: bench.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "skcms_Transform",
-          "filename": "skcms.c"
+          "file": "skcms.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: skcms_Transform at src/Transform.c:1094",
-        "method": "cymbal_function"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for skcms_Transform",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -59,7 +59,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "main",
-          "filename": "bench.c"
+          "file": "bench.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -69,7 +69,17 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input sanitization or mitigations"
+          "type": "input_sanitization"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigations"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -80,7 +90,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "main",
-          "filename": "bench.c"
+          "file": "bench.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -90,7 +100,22 @@
     ]
   },
   "gt_comparison": {
-    "matched": 0,
-    "results": []
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
   }
 }

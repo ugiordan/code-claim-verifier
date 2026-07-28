@@ -5,11 +5,11 @@
   "reasoning_length": 5389,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 33,
+    "total_claims": 35,
     "verified": 24,
-    "refuted": 7,
-    "unverifiable": 2,
-    "verification_rate": 0.74,
+    "refuted": 11,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
     "action": "FLAG",
     "claims": [
       {
@@ -77,7 +77,7 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "tools/plistutil.c",
-          "line_range": "165-220",
+          "line_number": 165,
           "content": "plist_entire = (char *) malloc(sizeof(char) * (filestats.st_size + 1));"
         },
         "verdict": "REFUTED",
@@ -89,8 +89,20 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/plist_test.c",
-          "line_range": "60-62",
+          "line_number": 60,
           "content": "plist_xml = (char *) malloc(sizeof(char) * (size_in + 1));"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 131 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_test.c",
+          "line_number": 61,
+          "content": "fread(plist_xml, sizeof(char), size_in, iplist);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -142,6 +154,61 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "tools/plistutil.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "test/plist_btest.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "test/plist_cmp.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "test/plist_jtest.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "test/plist_test.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "fopen",
@@ -171,7 +238,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (byte_array_new(size_t initial), hash_table_new(hash_func_t hash_func, compare_func_t compare_func, free_func_t free_func), hash_table_insert)",
+        "evidence": "cymbal: 50 callers (base64decode(const char *buf, size_t *size), byte_array_new(size_t initial), stat)",
         "method": "cymbal_callers"
       },
       {
@@ -299,80 +366,42 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "tools/plistutil.c",
-          "line": "210",
+          "line_number": 210,
           "content": "if (filestats.st_size < 8) {"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 325 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "tools/plistutil.c",
-          "line": "155",
+          "line_number": 155,
           "content": "if (read_size < 8) {"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 325 lines)",
         "method": "file_read"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "function": "main",
-          "file": "tools/plistutil.c"
+          "chain": [
+            "main",
+            "parse_arguments",
+            "fopen",
+            "fstat",
+            "malloc",
+            "fread"
+          ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "main",
-          "file": "test/plist_btest.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "main",
-          "file": "test/plist_cmp.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "main",
-          "file": "test/plist_jtest.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "main",
-          "file": "test/plist_test.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->parse_arguments: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

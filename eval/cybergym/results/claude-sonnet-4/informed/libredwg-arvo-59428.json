@@ -5,12 +5,12 @@
   "reasoning_length": 4181,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 28,
-    "verified": 20,
-    "refuted": 8,
+    "total_claims": 27,
+    "verified": 25,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.66,
-    "action": "FLAG",
+    "verification_rate": 0.9,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -133,23 +133,11 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "line": 35,
-          "content": "os.system"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 35: for file in os.listdir(os.path.join(path_to_dwg, dir)):",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
           "file": "test/xmlsuite/common.c",
           "line": 25,
-          "content": "spointprepare"
+          "content_includes": "spointprepare"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 25: {",
         "method": "file_read"
@@ -159,9 +147,9 @@
         "parameters": {
           "file": "test/xmlsuite/common.c",
           "line": 53,
-          "content": "doubletochar"
+          "content_includes": "doubletochar"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 53: int n;",
         "method": "file_read"
@@ -171,9 +159,9 @@
         "parameters": {
           "file": "test/xmlsuite/common.c",
           "line": 79,
-          "content": "inttochar"
+          "content_includes": "inttochar"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 79: /* Allocate memory for the string */",
         "method": "file_read"
@@ -183,9 +171,9 @@
         "parameters": {
           "file": "test/xmlsuite/common.c",
           "line": 107,
-          "content": "spointprepare2"
+          "content_includes": "spointprepare2"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 107: ",
         "method": "file_read"
@@ -195,12 +183,35 @@
         "parameters": {
           "file": "test/xmlsuite/common.c",
           "line": 133,
-          "content": "doubletohex"
+          "content_includes": "doubletohex"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 133: /* allocate memory for the string */",
         "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/xmlsuite/check.py",
+          "line": 35,
+          "content_includes": "os.system"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 35: for file in os.listdir(os.path.join(path_to_dwg, dir)):",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "malloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (load_dwg, main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -212,28 +223,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 24 callers (load_dwg, ATTRIBUTE_MALLOC\nhtmlescape (const char *restrict src, const int cp), ATTRIBUTE_MALLOC\nhtmlwescape (BITCODE_TU wstr))",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "malloc",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, load_dwg, enforce_null_termination)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.system",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-59428/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -282,8 +271,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "libxml/tree.h",
-          "file": "test/xmlsuite/common.c"
+          "file": "test/xmlsuite/common.c",
+          "import": "libxml/tree.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -293,8 +282,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "libxml/parser.h",
-          "file": "test/xmlsuite/common.c"
+          "file": "test/xmlsuite/common.c",
+          "import": "libxml/parser.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -304,8 +293,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "os",
-          "file": "test/xmlsuite/check.py"
+          "file": "test/xmlsuite/check.py",
+          "import": "os"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -315,8 +304,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "sys",
-          "file": "test/xmlsuite/check.py"
+          "file": "test/xmlsuite/check.py",
+          "import": "sys"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,

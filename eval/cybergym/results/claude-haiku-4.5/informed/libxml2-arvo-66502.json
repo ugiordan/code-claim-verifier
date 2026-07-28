@@ -5,11 +5,11 @@
   "reasoning_length": 4632,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 22,
-    "verified": 8,
-    "refuted": 14,
+    "total_claims": 27,
+    "verified": 11,
+    "refuted": 16,
     "unverifiable": 0,
-    "verification_rate": 0.32,
+    "verification_rate": 0.37,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -196,7 +196,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 25 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlEncodeEntitiesInternal(xmlDocPtr doc, const xmlChar *input, int attr), xmlShellGrep)",
+        "evidence": "cymbal: 25 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlShellGrep, xmlEncodeEntitiesInternal(xmlDocPtr doc, const xmlChar *input, int attr))",
         "method": "cymbal_callers"
       },
       {
@@ -207,7 +207,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, main, processPattern)",
+        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, processPattern)",
         "method": "cymbal_callers"
       },
       {
@@ -218,7 +218,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 34 callers (main, htmlSetMetaEncoding, main)",
+        "evidence": "cymbal: 34 callers (main, main, main)",
         "method": "cymbal_callers"
       },
       {
@@ -229,28 +229,91 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 24 callers (parseDoc, htmlSetMetaEncoding, main)",
+        "evidence": "cymbal: 24 callers (main, parseDoc, htmlSetMetaEncoding)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "function": "htmlParseDocument"
+          "type": "bounds_checking",
+          "function": "snprintf",
+          "file": "HTMLtree.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66502/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Line 0 out of range",
+        "method": "file_read"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
+          "type": "null_check",
+          "pattern": "if (doc == NULL)",
+          "file": "HTMLtree.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.75,
+        "evidence": "Pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66502/src-vul/libxml2/HTMLtree.c:51:    if (doc == NULL)",
+        "method": "grep_mitigation"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "type_check",
+          "pattern": "cur->type == XML_ELEMENT_NODE",
+          "file": "HTMLtree.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.75,
+        "evidence": "Pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66502/src-vul/libxml2/HTMLtree.c:59:\tif ((cur->type == XML_ELEMENT_NODE) && (cur->name != NULL)) {",
+        "method": "grep_mitigation"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "length_validation",
+          "parameter": "encoding",
           "function": "htmlSetMetaEncoding"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66502/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
-        "method": "grep_entry_point"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_checking",
+          "operation": "pointer arithmetic",
+          "function": "htmlGetMetaEncoding"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "validation",
+          "operation": "pointer increment",
+          "function": "htmlGetMetaEncoding"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 749 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66502/src-vul/libxml2/xmlregexp.c:5: * the variety of validation/schemas mechanisms now available in",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "sanitization",
+          "target": "meta tag content"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

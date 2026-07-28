@@ -5,11 +5,11 @@
   "reasoning_length": 6122,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 9,
+    "total_claims": 17,
+    "verified": 12,
     "refuted": 5,
-    "unverifiable": 4,
-    "verification_rate": 0.64,
+    "unverifiable": 0,
+    "verification_rate": 0.59,
     "action": "FLAG",
     "claims": [
       {
@@ -54,6 +54,18 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 48,
+          "content": "fgets(line, sizeof(line), fp)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 48: while (line[i] != ':') {",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_integer_value",
@@ -74,18 +86,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "line": 48,
-          "content": "retval = fgets(line, sizeof(line), fp);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 48: while (line[i] != ':') {",
-        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -112,40 +112,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/ixheaace_testbench.c",
-          "line": 1,
-          "content": "DRC_CONFIG_FILE \"impd_drc_config_params.txt\""
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 1: /******************************************************************************",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -160,53 +126,77 @@
         "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "function": "fgets",
+          "name": "ixheaace_read_drc_config_params",
           "expected": true
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "function": "atof",
-          "expected": true
+          "file": "test/encoder/ixheaace_testbench.c",
+          "line": 1,
+          "content": "DRC_CONFIG_FILE \"impd_drc_config_params.txt\""
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 1: /******************************************************************************",
+        "method": "file_read"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "function": "atoi",
+          "name": "fgets",
           "expected": true
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (ixheaacd_read_metadata_info, impd_drc_get_float_value, impd_drc_get_integer_value)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "function": "strtol",
+          "name": "atof",
           "expected": true
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_float_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atoi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaace_parse_config_param)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strtol",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_integer_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking mitigations"
+          "type": "bounds_checking",
+          "context": "buffer operations"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

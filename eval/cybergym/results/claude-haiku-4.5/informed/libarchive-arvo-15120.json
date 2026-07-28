@@ -5,12 +5,12 @@
   "reasoning_length": 5719,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 24,
-    "refuted": 5,
+    "total_claims": 32,
+    "verified": 25,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.82,
-    "action": "BOOST",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -275,7 +275,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (bsdcat_next, bsdcat_read_to_stdout, extract)",
+        "evidence": "cymbal: 50 callers (bsdcat_next, bsdcat_read_to_stdout, create)",
         "method": "cymbal_callers"
       },
       {
@@ -301,19 +301,15 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "main",
-            "bsdcat_getopt",
-            "bsdcat_next",
-            "bsdcat_read_to_stdout"
-          ]
+          "name": "bsdcat_getopt",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->bsdcat_getopt: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -324,6 +320,45 @@
         "confidence": 0.9,
         "evidence": "exists (fuzzy match): cat/cmdline.c",
         "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "bsdcat_getopt"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->bsdcat_getopt: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "bsdcat_next"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->bsdcat_next: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "bsdcat_read_to_stdout"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->bsdcat_read_to_stdout: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "HAS_CALLERS",

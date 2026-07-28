@@ -5,12 +5,12 @@
   "reasoning_length": 16545,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 11,
-    "refuted": 9,
+    "total_claims": 16,
+    "verified": 16,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.47,
-    "action": "OVERRIDE",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -34,48 +34,15 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "setsebool.c",
-          "content": "value_ptr = strchr(list[i], '=')"
+          "name": "strchr",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 311 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "setsebool.c",
-          "content": "*value_ptr = '\\0'"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 311 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "setsebool.c",
-          "content": "value_ptr--"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 311 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "setsebool.c",
-          "content": "*value_ptr = '='"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 311 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (selinux_boolean_sub(const char *name), bool_open, security_get_initial_context_raw)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -89,54 +56,48 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "content": "len = strlen(argv[optind]) + strlen(argv[optind + 1]) + 2"
+          "name": "strlen",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, sidtab_hash, security_canonicalize_context_raw)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "content": "bool_list[0] = malloc(len)"
+          "name": "malloc",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (queue_info, queue_node, avc_malloc(size_t size))",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "content": "snprintf(bool_list[0], len, \"%s=%s\", argv[optind], argv[optind + 1])"
+          "name": "snprintf",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (display_policycaps, sidtab_sid_stats, security_canonicalize_context_raw)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "content": "value_ptr++"
+          "name": "calloc",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "SELboolean *vallist = calloc(boolcnt, sizeof(SELboolean))"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (check_booleans, boolean_t, avc_t)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -167,7 +128,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (avc_netlink_open, fgetxattr_wrapper, fsetxattr_wrapper)",
+        "evidence": "cymbal: 23 callers (avc_netlink_open, fsetxattr_wrapper, fgetxattr_wrapper)",
         "method": "cymbal_callers"
       },
       {

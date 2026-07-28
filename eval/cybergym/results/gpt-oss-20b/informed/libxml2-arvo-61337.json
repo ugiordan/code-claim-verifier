@@ -5,11 +5,11 @@
   "reasoning_length": 2165,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 28,
+    "total_claims": 29,
     "verified": 27,
-    "refuted": 1,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.96,
+    "verification_rate": 0.92,
     "action": "BOOST",
     "claims": [
       {
@@ -34,14 +34,15 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "htmlSetMetaEncoding",
           "file": "libxml/HTMLtree.h"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/libxml/HTMLtree.h",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-61337/src-vul/libxml2/HTMLtree.c:162:htmlSetMetaEncoding(htmlDocPtr doc, const xmlChar *encoding) {",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -205,7 +206,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 39 callers (htmlGetMetaEncoding(htmlDocPtr doc), htmlSetMetaEncoding, htmlIsBooleanAttr)",
+        "evidence": "cymbal: 39 callers (xmlAddEntity, htmlGetMetaEncoding(htmlDocPtr doc), htmlSetMetaEncoding)",
         "method": "cymbal_callers"
       },
       {
@@ -227,7 +228,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, xmlSAX2StartElement)",
+        "evidence": "cymbal: 50 callers (main, xmlDumpXMLCatalogNode, xmlDumpXMLCatalog)",
         "method": "cymbal_callers"
       },
       {
@@ -282,7 +283,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (htmlSetMetaEncoding, xmlDumpXMLCatalogNode, xmlParseCRNG_innerNameClass)",
+        "evidence": "cymbal: 23 callers (xmlDumpXMLCatalogNode, htmlSetMetaEncoding, xmlParseCRNG_innerNameClass)",
         "method": "cymbal_callers"
       },
       {
@@ -305,6 +306,17 @@
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "if (encoding != NULL) { snprintf(...); }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1201 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "ENTRY_POINT",

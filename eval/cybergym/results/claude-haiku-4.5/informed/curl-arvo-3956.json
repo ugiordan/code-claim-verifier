@@ -5,29 +5,18 @@
   "reasoning_length": 5456,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 9,
+    "total_claims": 11,
     "verified": 7,
-    "refuted": 2,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.77,
+    "verification_rate": 0.61,
     "action": "FLAG",
     "claims": [
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "vulnerable code",
-          "scope": "provided source materials"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
       {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "CMake/CurlTests.c",
-          "classification": "Build system tests"
+          "classification": "build system tests"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -38,7 +27,7 @@
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "include/curl/curl.h",
-          "classification": "Public API header"
+          "classification": "public API header"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -49,7 +38,7 @@
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "include/curl/curlver.h",
-          "classification": "Version information"
+          "classification": "version information"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -60,7 +49,7 @@
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "include/curl/easy.h",
-          "classification": "Easy interface declarations"
+          "classification": "easy interface declarations"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -71,7 +60,7 @@
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "include/curl/mprintf.h",
-          "classification": "Printf implementation"
+          "classification": "printf implementation"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -83,7 +72,7 @@
         "parameters": {
           "name": "curl_easy_perform",
           "file": "include/curl/easy.h",
-          "line": 18
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -91,11 +80,23 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "include/curl/easy.h",
+          "line": 18,
+          "content": "CURL_EXTERN CURLcode curl_easy_perform(CURL *curl);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 18: * furnished to do so, under the terms of the COPYING file.",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "curl_easy_setopt",
           "file": "include/curl/easy.h",
-          "line": 17
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
@@ -103,16 +104,39 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "include/curl/easy.h",
+          "line": 17,
+          "content": "CURL_EXTERN CURLcode curl_easy_setopt(CURL *curl, CURLoption option, ...);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 17: * copies of the Software, and permit persons to whom the Software is",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "curl_easy_init",
           "file": "include/curl/easy.h",
-          "line": 16
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "No definition found for curl_easy_init",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable code",
+          "scope": "provided source materials"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

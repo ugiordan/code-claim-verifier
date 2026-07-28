@@ -5,12 +5,12 @@
   "reasoning_length": 3391,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 29,
-    "verified": 27,
-    "refuted": 2,
+    "total_claims": 33,
+    "verified": 26,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.89,
-    "action": "BOOST",
+    "verification_rate": 0.75,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -127,17 +127,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (main, stand_alone, stand_alone)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "authenticate_user",
-          "file": "run_init.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-64849/src-vul/selinux/policycoreutils/run_init/run_init.c:228: * authenticate_user()",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -274,9 +263,74 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "setbool"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->setbool: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "authenticate_user",
+            "authenticate_via_pam"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: authenticate_user->authenticate_via_pam: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "authenticate_user",
+            "authenticate_via_shadow_passwd"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: authenticate_user->authenticate_via_shadow_passwd: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "sepol_ppfile_to_module_package"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->sepol_ppfile_to_module_package: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "sepol_module_package_to_cil"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->sepol_module_package_to_cil: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "main",
+          "function": "main",
           "file": "setsebool.c"
         },
         "verdict": "VERIFIED",
@@ -287,7 +341,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "main",
+          "function": "main",
           "file": "run_init.c"
         },
         "verdict": "VERIFIED",
@@ -298,7 +352,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "main",
+          "function": "main",
           "file": "pp.c"
         },
         "verdict": "VERIFIED",
@@ -309,7 +363,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "main",
+          "function": "main",
           "file": "load_policy.c"
         },
         "verdict": "VERIFIED",

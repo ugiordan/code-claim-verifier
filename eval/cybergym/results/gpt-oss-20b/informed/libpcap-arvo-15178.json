@@ -9,24 +9,24 @@
     "verified": 11,
     "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.63,
+    "verification_rate": 0.64,
     "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c"
+          "file": "bpf_filter.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: bpf_filter.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "pcap_filter_with_aux_data",
-          "expected": true
+          "file": "bpf_filter.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -36,13 +36,13 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "line_range": "70-1200",
-          "content_description": "pcap_filter_with_aux_data function definition"
+          "content": "pcap_filter_with_aux_data function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range (file has 537 lines)",
         "method": "file_read"
       },
       {
@@ -60,39 +60,39 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "pcap_filter",
-          "expected": true
+          "file": "pcap.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: pcap_filter at bpf_filter.c:381",
-        "method": "cymbal_function"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for pcap_filter",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "import": "pcap-int.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/savefile.c:47:#include \"pcap-int.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:58:#include <pcap-int.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "import": "pcap-types.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/savefile.c:35:#include <pcap-types.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:46:#include \"pcap-types.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "import": "extract.h"
         },
         "verdict": "VERIFIED",
@@ -103,34 +103,34 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "import": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/savefile.c:44:#include <stdlib.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:60:#include <stdlib.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "import": "sys/types.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap/pcap.h:80:  #include <sys/types.h>\t/* u_int, u_char etc. */",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:54:#include <sys/types.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "filename": "bpf_filter.c",
+          "file": "bpf_filter.c",
           "import": "sys/time.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/pcap/pcap.h:84:  #include <sys/time.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libpcap-arvo-15178/src-vul/libpcap/bpf_filter.c:55:#include <sys/time.h>",
         "method": "grep_import"
       },
       {
@@ -181,29 +181,44 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "filename": "bpf_filter.c",
-          "content_description": "BPF_JMP|BPF_JA case with pc += (bpf_int32)pc->k"
+          "file": "bpf_filter.c",
+          "content": "case BPF_JMP|BPF_JA: pc += (bpf_int32)pc->k; continue;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range (file has 537 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "filename": "bpf_filter.c",
-          "content_description": "conditional jump cases with pc += offset calculation"
+          "file": "bpf_filter.c",
+          "content": "pc += (A > pc->k) ? pc->jt : pc->jf;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "File not found: ",
+        "evidence": "Line 0 out of range (file has 537 lines)",
         "method": "file_read"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 0,
-    "results": []
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
   }
 }

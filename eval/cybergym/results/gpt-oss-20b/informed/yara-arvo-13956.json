@@ -5,11 +5,11 @@
   "reasoning_length": 17681,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 32,
+    "total_claims": 31,
     "verified": 20,
-    "refuted": 12,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.5,
+    "verification_rate": 0.52,
     "action": "FLAG",
     "claims": [
       {
@@ -152,7 +152,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (args_print_usage, ord_lookup(\n    char *dll,\n    uint16_t ord), digest_to_ascii)",
+        "evidence": "cymbal: 9 callers (args_print_usage, digest_to_ascii, dotnet_parse_guid)",
         "method": "cymbal_callers"
       },
       {
@@ -308,14 +308,25 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strchr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "args.c",
-          "content": "*(bool*)opt->value = true;"
+          "file": "common.h",
+          "content": "*colon = '\\0';"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 293 lines)",
+        "evidence": "Line 0 out of range (file has 137 lines)",
         "method": "file_read"
       },
       {
@@ -339,28 +350,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 39 callers (args_parse, yy_fatal_error, assert_clear_all)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strchr",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (compile_files, args_parse, define_external_variables)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "common.h",
-          "content": "*colon = '\\0';"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 137 lines)",
-        "method": "file_read"
       }
     ]
   },

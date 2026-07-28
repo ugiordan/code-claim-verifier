@@ -5,11 +5,11 @@
   "reasoning_length": 3653,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 26,
-    "verified": 15,
+    "total_claims": 23,
+    "verified": 12,
     "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.43,
+    "verification_rate": 0.44,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -43,28 +43,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "tiny_gltf.h",
-          "import": "stb_image.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/tiny_gltf.h:1558:#include \"stb_image.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "stbi_load",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test_runner.py"
@@ -83,6 +61,17 @@
         "confidence": 0.99,
         "evidence": "exists: examples/build-gltf/create_triangle_gltf.cpp",
         "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tiny_gltf.h",
+          "import": "stb_image.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/tiny_gltf.h:1558:#include \"stb_image.h\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -162,49 +151,6 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fopen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 42 callers (outfile, stbi_write_hdr, stbi_write_png)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "stbi__fopen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 10 callers (stbi_load(char const *filename, int *x, int *y, int *comp, int req_comp), stbi_loadf(char const *filename, int *x, int *y, int *comp, int req_comp), stbi_is_hdr)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "stbi_load",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (LoadTexture, LoadObj)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "path sanitization in stbi_load"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "LoadImageFromFile",
@@ -213,6 +159,28 @@
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "No definition found for LoadImageFromFile",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LoadImage",
+          "file": "tiny_gltf.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for LoadImage",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LoadModel",
+          "file": "tiny_gltf.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for LoadModel",
         "method": "grep_function_def"
       },
       {
@@ -238,17 +206,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "LoadImage",
-          "file": "tiny_gltf.h"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LoadImage",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "LoadImageFromFile",
@@ -258,17 +215,6 @@
         "confidence": 0.65,
         "evidence": "No call sites (0 matches). ",
         "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "LoadModel",
-          "file": "tiny_gltf.h"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for LoadModel",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -295,6 +241,26 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: LoadModel->LoadImage: NOT FOUND",
         "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "path sanitization in stbi_load"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "test_runner.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/examples/common/imgui/imgui.h:750:    ImGuiNavFlags_EnableKeyboard    = 1 << 0,   // Mas",
+        "method": "grep_entry_point"
       }
     ]
   },

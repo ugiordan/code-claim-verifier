@@ -9,7 +9,7 @@
     "verified": 13,
     "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.79,
     "action": "FLAG",
     "claims": [
       {
@@ -53,17 +53,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "num_long_term_pics parsing code",
-          "scope": "provided files"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "ivd_api_function",
@@ -95,43 +84,67 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "LLVMFuzzerTestOneInput",
+            "Codec::decodeHeader",
+            "ivd_api_function"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: LLVMFuzzerTestOneInput->Codec::decodeHeader: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "provided code",
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "import": "ihevcd_cxa.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:53:#include \"ihevcd_cxa.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:31:#include \"ihevcd_cxa.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "provided code",
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "import": "iv.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:51:#include \"iv.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:32:#include \"iv.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "provided code",
+          "file": "fuzzer/hevc_dec_fuzzer.cpp",
           "import": "ivd.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:52:#include \"ivd.h\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/fuzzer/hevc_dec_fuzzer.cpp:33:#include \"ivd.h\"",
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "setParams",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (Codec::decodeHeader, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "input validation checks for num_long_term_pics",
-          "scope": "provided code"
+          "description": "input validation checks for num_long_term_pics"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -141,8 +154,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "bounds checking before array allocations",
-          "scope": "provided code"
+          "description": "bounds checking before array allocations"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -152,23 +164,12 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "overflow detection in size calculations",
-          "scope": "provided code"
+          "description": "overflow detection in size calculations"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "setParams"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for setParams",
-        "method": "grep_function_def"
       }
     ]
   },

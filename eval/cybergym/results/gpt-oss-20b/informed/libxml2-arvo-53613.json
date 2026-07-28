@@ -5,11 +5,11 @@
   "reasoning_length": 16437,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 27,
-    "verified": 21,
-    "refuted": 6,
+    "total_claims": 29,
+    "verified": 20,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.65,
     "action": "FLAG",
     "claims": [
       {
@@ -65,6 +65,16 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "content": "if nameTab==NULL then error"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "htmlGetMetaEncoding"
@@ -105,6 +115,16 @@
         "confidence": 0.85,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-53613/src-vul/libxml2/SAX2.c:231:xmlSAX2GetSystemId(void *ctx)",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "SAX2.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -167,20 +187,9 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlStrEqual",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlC14NIsXmlNs, xmlExcC14NProcessNamespacesAxis)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "content": "if (encoding != NULL) { encoding += 8; }"
+          "content": "if (encoding != NULL) { encoding += 8; } else { ... }"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -190,7 +199,7 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "content": "while ((*encoding == ' ') || (*encoding == '\\t')) encoding++;"
+          "content": "if (encoding != NULL) { while ((*encoding == ' ') || (*encoding == '\\t')) encoding++; }"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -205,7 +214,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 38 callers (main, main, htmlSetMetaEncoding)",
+        "evidence": "cymbal: 38 callers (main, htmlSetMetaEncoding, main)",
         "method": "cymbal_callers"
       },
       {
@@ -216,7 +225,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, xmlDumpXMLCatalogNode)",
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, main, xmlSAX2StartElement)",
         "method": "cymbal_callers"
       },
       {
@@ -238,7 +247,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 24 callers (main, htmlSetMetaEncoding, parseDoc)",
+        "evidence": "cymbal: 24 callers (htmlSetMetaEncoding, main, parseDoc)",
         "method": "cymbal_callers"
       },
       {
@@ -273,6 +282,16 @@
         "confidence": 0.9,
         "evidence": "cymbal: 23 callers (htmlSetMetaEncoding, xmlDumpXMLCatalogNode, xmlParseCRNG_innerNameClass)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "SAX.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",

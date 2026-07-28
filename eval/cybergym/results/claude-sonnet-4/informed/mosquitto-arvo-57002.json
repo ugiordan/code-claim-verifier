@@ -5,11 +5,11 @@
   "reasoning_length": 3211,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 7,
+    "total_claims": 17,
+    "verified": 8,
     "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.42,
+    "verification_rate": 0.44,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -47,8 +47,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
-          "line_start": 45,
-          "line_end": 60
+          "line_range": "45-60",
+          "content_description": "LLVMFuzzerTestOneInput function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -70,8 +70,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "fuzzing/broker/broker_fuzz_test_config.cpp",
-          "line_start": 28,
-          "line_end": 42
+          "line_range": "28-42",
+          "content_description": "run_broker function"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -86,19 +86,8 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (run_broker, run_broker(void *args), LLVMFuzzerTestOneInput)",
+        "evidence": "cymbal: 3 callers (run_broker(void *args), run_broker, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "function_definition",
-          "name": "mosquitto_fuzz_main"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 5 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/fuzzing/broker/broker_fuzz.cpp:35:extern \"C\" int mosquitto_fuzz_main(int argc, char",
-        "method": "grep_absent"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -173,11 +162,33 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization",
-          "context": "configuration fuzzing code"
+          "location": "LLVMFuzzerTestOneInput"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_checking",
+          "location": "configuration fuzzing code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "validation",
+          "location": "configuration format"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 1 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-57002/src-vul/mosquitto/ChangeLog.txt:1663:- Perform utf-8 validation on incoming will, subscription and un",
         "method": "grep_absent"
       },
       {

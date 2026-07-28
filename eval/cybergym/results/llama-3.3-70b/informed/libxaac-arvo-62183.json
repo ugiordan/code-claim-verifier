@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 28,
-    "verified": 27,
-    "refuted": 1,
+    "verified": 26,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.9,
+    "verification_rate": 0.87,
     "action": "BOOST",
     "claims": [
       {
@@ -36,7 +36,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_float_value",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -47,7 +47,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_integer_value",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -58,23 +58,12 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "ixheaace_read_drc_config_params",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: ixheaace_read_drc_config_params at fuzzer/xaac_enc_fuzzer.cpp:49",
+        "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "file": "impd_drc_user_config.c",
-          "classification": "contains function definitions"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=impd_drc_user_config.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -86,6 +75,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "file": "test/encoder/impd_drc_user_config.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ixheaace_read_drc_config_params",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -278,7 +278,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization",
-          "location": "impd_drc_get_float_value and impd_drc_get_integer_value functions"
+          "file": "test/encoder/impd_drc_user_config.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -321,7 +321,7 @@
     ]
   },
   "gt_comparison": {
-    "matched": 2,
+    "matched": 5,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -335,6 +335,27 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

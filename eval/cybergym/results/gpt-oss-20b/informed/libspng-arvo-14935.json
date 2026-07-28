@@ -5,12 +5,12 @@
   "reasoning_length": 811,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 6,
+    "total_claims": 8,
     "verified": 6,
-    "refuted": 0,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 1.0,
-    "action": "BOOST",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -43,6 +43,28 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_decoded_image_size",
+          "file": "spng.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: spng_decoded_image_size at spng.c:2038",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "spng_decode_image",
+          "file": "spng.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: spng_decode_image at spng.c:1257",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "spng.c",
@@ -54,29 +76,31 @@
         "method": "path_regex"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "name": "spng_decoded_image_size"
+          "file": "tests/test_spng.h",
+          "classification": "test harness"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: spng_decoded_image_size at spng.c:2038",
-        "method": "cymbal_function"
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=tests/test_spng.h, is_test=True, is_vendor=False",
+        "method": "path_regex"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "name": "spng_decode_image"
+          "file": "tests/testsuite.c",
+          "classification": "test harness"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: spng_decode_image at spng.c:1257",
-        "method": "cymbal_function"
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=tests/testsuite.c, is_test=True, is_vendor=False",
+        "method": "path_regex"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 3,
+    "matched": 4,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -97,6 +121,13 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

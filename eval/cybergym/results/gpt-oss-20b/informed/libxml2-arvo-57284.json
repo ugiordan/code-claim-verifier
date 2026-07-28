@@ -5,12 +5,12 @@
   "reasoning_length": 17401,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 13,
-    "refuted": 7,
+    "total_claims": 19,
+    "verified": 17,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.64,
-    "action": "FLAG",
+    "verification_rate": 0.84,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -33,34 +33,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "content": "snprintf(newcontent, sizeof(newcontent), \"text/html; charset=%s\", (char *)encoding)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "htmlnamePush"
+          "name": "snprintf",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: htmlnamePush at HTMLparser.c:154",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "size_t newSize = ctxt->nameMax * 2"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, processPattern, processXPath)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -86,12 +67,32 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "SAX2.c"
+          "file": "SAX2.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: SAX2.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "htmlnamePush"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: htmlnamePush at HTMLparser.c:154",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "content": "size_t newSize = ctxt->nameMax * 2;"
         },
         "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -113,16 +114,6 @@
         "confidence": 0.85,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-57284/src-vul/libxml2/SAX2.c:231:xmlSAX2GetSystemId(void *ctx)",
         "method": "grep_function_def"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "ctxt->input->filename"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -152,7 +143,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlC14NIsXmlNs, xmlExcC14NProcessNamespacesAxis)",
+        "evidence": "cymbal: 50 callers (xmlC14NIsXmlNs, xmlExcC14NProcessNamespacesAxis, xmlC14NFixupBaseAttr)",
         "method": "cymbal_callers"
       },
       {
@@ -168,12 +159,12 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "filename": "SAX.c"
+          "file": "SAX.c"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: SAX.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -184,16 +175,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: initxmlDefaultSAXHandler at SAX.c:41",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "content": "hdlr->initialized = 1"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: ",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -216,11 +197,37 @@
         "confidence": 0.9,
         "evidence": "cymbal: 24 callers (main, parseDoc, htmlSetMetaEncoding)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlRealloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
+        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 0,
-    "results": []
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
   }
 }

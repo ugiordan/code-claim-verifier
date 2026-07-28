@@ -5,11 +5,11 @@
   "reasoning_length": 14135,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 29,
-    "refuted": 0,
+    "total_claims": 28,
+    "verified": 27,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.85,
+    "verification_rate": 0.82,
     "action": "BOOST",
     "claims": [
       {
@@ -178,56 +178,23 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "strlen",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (ndbm_open_dir_file, dbm_open (char *file, int flags, int mode), instream_string_create)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "calloc",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 18 callers (dbm_open (char *file, int flags, int mode), _gdbm_file_extend, push_avail_block)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "gdbm_open",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 23 callers (dbm_open (char *file, int flags, int mode), main, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "free",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (dbm_close, dbm_firstkey, dbm_nextkey)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "gdbm_fetch",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 12 callers (dbm_fetch, gdbm_export_to_file, _gdbm_dump_ascii)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "__gdbm_error_to_ndbm",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (dbm_store, dbm_fetch, dbm_delete)",
         "method": "cymbal_callers"
       },
       {
@@ -266,12 +233,23 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "dbm_delete",
+          "name": "calloc",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (delete, main)",
+        "evidence": "cymbal: 18 callers (dbm_open (char *file, int flags, int mode), _gdbm_file_extend, push_avail_block)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "gdbm_open",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (dbm_open (char *file, int flags, int mode), main, main)",
         "method": "cymbal_callers"
       },
       {
@@ -310,13 +288,24 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "ndbm_open_dir_file",
+          "name": "dbm_delete",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (dbm_open (char *file, int flags, int mode))",
+        "evidence": "cymbal: 2 callers (delete, main)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "delete.c",
+          "content": "int delete(datum key) { return dbm_delete(_gdbm_file, key); }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 30 lines)",
+        "method": "file_read"
       }
     ]
   },

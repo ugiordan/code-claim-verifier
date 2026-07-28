@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 19,
-    "verified": 11,
+    "verified": 12,
     "refuted": 7,
-    "unverifiable": 1,
-    "verification_rate": 0.52,
-    "action": "FLAG",
+    "unverifiable": 0,
+    "verification_rate": 0.49,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -106,7 +106,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "char_str_from_wchar",
-          "file": "src/ui/char_str_from_wchar.h"
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -117,7 +117,7 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "wchar_from_char_str",
-          "file": "src/ui/wchar_from_char_str.h"
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -143,7 +143,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), CardDeriveHashOrHMAC)",
+        "evidence": "cymbal: 7 callers (CardDeriveHashOrHMAC, HashDataWithBCrypt, DoTlsPrf)",
         "method": "cymbal_callers"
       },
       {
@@ -193,6 +193,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "win32/customactions.cpp",
           "import": "strsafe.h"
         },
         "verdict": "VERIFIED",
@@ -203,18 +204,18 @@
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "function": "char_str_from_wchar",
+          "name": "char_str_from_wchar",
           "expected": true
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No function name specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (1 call sites)",
         "method": "grep_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "function": "wchar_from_char_str",
+          "name": "wchar_from_char_str",
           "expected": true
         },
         "verdict": "VERIFIED",

@@ -5,12 +5,12 @@
   "reasoning_length": 2025,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 9,
-    "verified": 8,
-    "refuted": 1,
+    "total_claims": 11,
+    "verified": 9,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.71,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -43,6 +43,17 @@
         "confidence": 0.65,
         "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-65418/src-vul/libavc/fuzzer/avc_dec_fuzzer.cpp:296:IV_API_CALL_STATUS_T Codec::decodeFrame(const uint8_t *data",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "avc_dec_fuzzer.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for main",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -85,6 +96,17 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "posix_memalign",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (mvcd_aligned_malloc(void *pv_ctxt, WORD32 alignment, WORD32 i4_size), iv_aligned_malloc(void *ctxt, WORD32 alignment, WORD32 size), mvcd_aligned_malloc(void *pv_ctxt, WORD32 alignm",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_sanitization"
@@ -97,8 +119,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "main",
-          "file": "avc_dec_fuzzer.cpp"
+          "function": "main"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

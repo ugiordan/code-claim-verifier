@@ -6,11 +6,11 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 17,
-    "verified": 9,
-    "refuted": 8,
-    "unverifiable": 0,
-    "verification_rate": 0.48,
-    "action": "OVERRIDE",
+    "verified": 8,
+    "refuted": 5,
+    "unverifiable": 4,
+    "verification_rate": 0.54,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -86,7 +86,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (md_get_config_str(PCARD_DATA pCardData, enum ui_str id), ShowContextMenu, sc_notify_id)",
+        "evidence": "cymbal: 7 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
         "method": "cymbal_callers"
       },
       {
@@ -103,45 +103,45 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "sc_bin_to_hex",
+          "function": "sc_bin_to_hex",
           "source": "libopensc/internal.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of sc_bin_to_hex found",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "strlcpy",
+          "function": "strlcpy",
           "source": "common/compat_strlcpy.h"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-63163/src-vul/opensc/src/ui/notify.c:69:#include \"common/compat_strlcpy.h\"",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "scconf_block",
+          "function": "scconf_block",
           "source": "libopensc/internal.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of scconf_block found",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "scconf_get_str",
+          "function": "scconf_get_str",
           "source": "libopensc/internal.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of scconf_get_str found",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
         "method": "grep_import"
       },
       {
@@ -152,7 +152,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, iasecc_sm_external_authentication)",
+        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, sc_card_sm_check)",
         "method": "cymbal_callers"
       },
       {
@@ -174,19 +174,19 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (coolkey_cuid_to_string(coolkey_cuid_t *cuid), parse_dir_record, match_atr_table)",
+        "evidence": "cymbal: 50 callers (coolkey_cuid_to_string(coolkey_cuid_t *cuid), match_atr_table, parse_dir_record)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "sc_notify_id",
-          "expected": true
+          "type": "input_validation",
+          "context": "atr->value and atr->len parameters"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (sc_pkcs15_verify_pin_with_session_pin, notify_daemon, main)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "CALL_CHAIN",

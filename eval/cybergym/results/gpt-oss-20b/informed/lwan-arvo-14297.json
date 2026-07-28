@@ -5,11 +5,11 @@
   "reasoning_length": 5287,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
-    "verified": 11,
-    "refuted": 5,
+    "total_claims": 20,
+    "verified": 14,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.66,
+    "verification_rate": 0.54,
     "action": "FLAG",
     "claims": [
       {
@@ -38,7 +38,7 @@
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
           "line": 30,
-          "content": "output_append()"
+          "content": "output_append() function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -46,32 +46,20 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "output_append",
-          "expected": true
+          "name": "main",
+          "file": "src/bin/tools/mimegen.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "output_append",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (main)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/bin/tools/mimegen.c:137",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "output_append",
-          "caller": "main",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -84,22 +72,12 @@
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
           "line": 70,
-          "content": "output_append()"
+          "content": "main() calls output_append()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 70: return strcmp(*exta, *extb);",
         "method": "file_read"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "No other source file calls output_append"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -135,9 +113,87 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "malloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (compress_output(const struct output *output, size_t *outlen), main, base64_encode(const unsigned char *src, size_t len, size_t *out_len))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "realloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (output_append, grow_buffer_if_needed, realpathat2(int dirfd, char *dirfdpath, const char *name, char *resolved,\n        struct stat *st))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (lwan_array_reset, coro_lwan_array_free, print_help)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strlen",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (parse_args, output_append, hash_str_crc32)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "memcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (parse_args, output_append, hash_str_crc32)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strcmp",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 25 callers (compare_ext, abort_on_open_directories, compare_mime_entry)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "compress_output",
+          "file": "src/bin/tools/mimegen.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for compress_output",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "No mitigation for overflow in output_append"
+          "type": "mitigation",
+          "description": "overflow mitigation in output_append"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -147,7 +203,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "output_append does not check realloc result beyond NULL"
+          "type": "check",
+          "description": "realloc result check beyond NULL case"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -157,7 +214,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "capacity field never updated after realloc"
+          "type": "update",
+          "description": "capacity field update after realloc"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -165,36 +223,33 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "src/bin/tools/mimegen.c",
-          "classification": "build-time helper"
+          "name": "fgets",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=src/bin/tools/mimegen.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "mimegen not linked into main server binary"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 2,
+    "matched": 3,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
         "gt_tier": "source"
       },
       {

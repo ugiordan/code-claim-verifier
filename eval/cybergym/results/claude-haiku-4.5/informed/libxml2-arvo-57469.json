@@ -5,11 +5,11 @@
   "reasoning_length": 4230,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 28,
-    "verified": 23,
-    "refuted": 5,
+    "total_claims": 23,
+    "verified": 21,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.81,
+    "verification_rate": 0.88,
     "action": "BOOST",
     "claims": [
       {
@@ -57,16 +57,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: htmlSetMetaEncoding at HTMLtree.c:161",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "HTMLtree.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): include/libxml/HTMLtree.h",
-        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -219,7 +209,18 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 24 callers (parseDoc, main, htmlSetMetaEncoding)",
+        "evidence": "cymbal: 24 callers (main, parseDoc, htmlSetMetaEncoding)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlStrstr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlEncodeEntitiesInternal(xmlDocPtr doc, const xmlChar *input, int attr), xmlShellGrep)",
         "method": "cymbal_callers"
       },
       {
@@ -234,81 +235,14 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "type": "snprintf_usage",
-          "description": "snprintf() is used instead of sprintf()"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "null_terminator",
-          "description": "Null terminator explicitly set"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "input_validation",
-          "description": "checks for NULL encoding and html encoding"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "length_validation",
-          "description": "No length validation of encoding parameter before use"
+          "file": "HTMLtree.h"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "dynamic_allocation",
-          "description": "No dynamic allocation for variable-length encodings"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "error_handling",
-          "description": "No error handling for truncated strings"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "htmlSetMetaEncoding",
-          "accessibility": "public"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-57469/src-vul/libxml2/xmlschemas.c:5385:    /* TODO: Remove the flag. */",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): include/libxml/HTMLtree.h",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -320,6 +254,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 17 callers (htmlSaveFileFormat, htmlNodeDumpOutputInternal, xmlDocContentDumpOutput)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "htmlSetMetaEncoding",
+          "accessibility": "public"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-57469/src-vul/libxml2/xmlschemas.c:5385:    /* TODO: Remove the flag. */",
+        "method": "grep_entry_point"
       }
     ]
   },

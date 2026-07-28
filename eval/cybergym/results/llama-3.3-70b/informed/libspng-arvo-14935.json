@@ -5,9 +5,9 @@
   "reasoning_length": 3780,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 16,
-    "refuted": 4,
+    "total_claims": 17,
+    "verified": 14,
+    "refuted": 3,
     "unverifiable": 0,
     "verification_rate": 0.83,
     "action": "BOOST",
@@ -152,16 +152,6 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "string.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libspng-arvo-14935/src-vul/libspng/tests/test_png.h:9:#include <string.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
           "import": "math.h"
         },
         "verdict": "VERIFIED",
@@ -180,16 +170,18 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "caller": "tests/testsuite.c",
-          "callee": "decode_and_compare",
-          "expected": true
+          "chain": [
+            "decode_and_compare",
+            "getimage_libspng",
+            "spng_decode_image"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (main)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: decode_and_compare->getimage_libspng: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -200,26 +192,6 @@
         "confidence": 0.99,
         "evidence": "exists: tests/testsuite.c",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "getimage_libspng"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "decode_and_compare"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
       }
     ]
   },

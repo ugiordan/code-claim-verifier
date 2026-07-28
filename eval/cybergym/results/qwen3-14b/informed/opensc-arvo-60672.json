@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 27,
-    "verified": 23,
-    "refuted": 4,
+    "verified": 21,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.72,
+    "verification_rate": 0.68,
     "action": "FLAG",
     "claims": [
       {
@@ -65,15 +65,14 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "notify.c",
-          "classification": "contains notify_shell function"
+          "filename": "notify.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=notify.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -97,15 +96,34 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "strings.c",
-          "classification": "contains get_inserted_text function"
+          "filename": "strings.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sc_notify"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=strings.c, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify at src/ui/notify.c:282",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sc_notify_id"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -206,8 +224,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "wcautil.h",
-          "expected": true
+          "module": "wcautil.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -217,8 +234,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "shlwapi.h",
-          "expected": true
+          "module": "shlwapi.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -259,7 +275,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "sc_notify_init"
+          "name": "sc_notify_init"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -269,27 +285,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "sc_notify_close"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "sc_notify"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60672/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "sc_notify_id"
+          "name": "sc_notify_close"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

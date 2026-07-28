@@ -5,11 +5,11 @@
   "reasoning_length": 6039,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 24,
-    "verified": 19,
+    "total_claims": 29,
+    "verified": 24,
     "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.78,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
@@ -38,7 +38,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "18-34",
-          "content": "impd_drc_get_float_value function"
+          "content_description": "impd_drc_get_float_value function that parses a float value from a line in a configuration file"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -61,7 +61,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "36-63",
-          "content": "impd_drc_get_integer_value function"
+          "content_description": "impd_drc_get_integer_value function that parses an integer value from a line in a configuration file"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -84,7 +84,7 @@
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
           "line_range": "65-220",
-          "content": "ixheaace_read_drc_config_params function"
+          "content_description": "ixheaace_read_drc_config_params function that reads and processes DRC configuration parameters from a file"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -107,7 +107,7 @@
         "parameters": {
           "file": "test/encoder/ixheaace_testbench.c",
           "line_range": "140-145",
-          "content": "ixheaace_read_drc_config_params call"
+          "content_description": "call to ixheaace_read_drc_config_params with file pointer and configuration parameters"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -115,14 +115,70 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "test/encoder/ixheaace_testbench.c"
+          "name": "impd_drc_get_float_value",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/encoder/ixheaace_testbench.c",
-        "method": "os.path.isfile"
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "impd_drc_get_integer_value",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atof",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_float_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atoi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaace_parse_config_param)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strtol",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_integer_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fgets",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (ixheaacd_read_metadata_info, impd_drc_get_float_value, impd_drc_get_integer_value)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -235,32 +291,32 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "impd_drc_get_float_value",
-          "expected": true
+          "type": "input_validation",
+          "location": "impd_drc_get_float_value and impd_drc_get_integer_value functions"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation",
-          "location": "impd_drc_get_float_value and impd_drc_get_integer_value"
+          "type": "error_handling",
+          "location": "fgets calls"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "bounds_checking",
+          "location": "fixed-size buffer usage"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -281,7 +337,7 @@
     ]
   },
   "gt_comparison": {
-    "matched": 5,
+    "matched": 4,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -309,13 +365,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
         "gt_tier": "source"
       }
     ]

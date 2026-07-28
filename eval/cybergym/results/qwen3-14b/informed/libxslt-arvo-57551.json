@@ -5,9 +5,9 @@
   "reasoning_length": 5452,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
+    "total_claims": 18,
     "verified": 14,
-    "refuted": 3,
+    "refuted": 4,
     "unverifiable": 0,
     "verification_rate": 0.77,
     "action": "FLAG",
@@ -98,17 +98,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "xsltCompileAttr",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 11 callers (xsltParseSequenceConstructor, xsltParseTemplateContent, xsltParseStylesheetAttributeSet)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "xsltLoadDocument",
@@ -118,6 +107,19 @@
         "confidence": 0.9,
         "evidence": "cymbal: 2 callers (xsltDocumentFunctionLoadDocument, xsltDocumentFunction)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "xsltLoadDocument",
+            "xsltDocDefaultLoaderFunc"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xsltLoadDocument->xsltDocDefaultLoaderFunc: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -131,14 +133,37 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltCheckRead"
+          "name": "xmlXPathCompile",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltTransformError",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: xsltCheckRead at libxslt/security.c:418",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (exsltNodeSetFunction, exsltSaxonLineNumberFunction, exsltDynMapFunction)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltCheckRead",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (xsltLoadDocument, xsltLoadStyleDocument, xsltParseStylesheetImport)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -170,19 +195,6 @@
         "confidence": 0.85,
         "evidence": "No definition found for xsltFreeAttrVTList",
         "method": "grep_function_def"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "xsltLoadDocument",
-            "xsltDocDefaultLoaderFunc"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: xsltLoadDocument->xsltDocDefaultLoaderFunc: NOT FOUND",
-        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "ENTRY_POINT",

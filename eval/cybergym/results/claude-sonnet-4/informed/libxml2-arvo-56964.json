@@ -5,12 +5,12 @@
   "reasoning_length": 3640,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 10,
-    "refuted": 10,
+    "total_claims": 21,
+    "verified": 13,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.47,
-    "action": "OVERRIDE",
+    "verification_rate": 0.55,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -145,33 +145,42 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "HTMLparser.c",
-          "line_range": "147-170",
-          "content": "if (ctxt->nameNr >= ctxt->nameMax) { size_t newSize = ctxt->nameMax * 2; const xmlChar **tmp; tmp = xmlRealloc((xmlChar **) ctxt->nameTab, newSize * sizeof(ctxt->nameTab[0])); if (tmp == NULL) { htmlErrMemory(ctxt, NULL); return (-1); } ctxt->nameTab = tmp; ctxt->nameMax = newSize; }"
+          "name": "xmlRealloc",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7311 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "HTMLtree.c",
-          "line_range": "154-310",
-          "content": "snprintf(newcontent, sizeof(newcontent), \"text/html; charset=%s\", (char *)encoding);"
+          "name": "htmlErrMemory",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1201 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 35 callers (htmlnamePush, htmlNodeInfoPush, htmlNewInputStream)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "snprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, processPattern, processXPath)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/xmlmemory.h"
+          "module": "libxml/xmlmemory.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -181,7 +190,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/tree.h"
+          "module": "libxml/tree.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -191,7 +200,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "libxml/parser.h"
+          "module": "libxml/parser.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -201,7 +210,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "string.h"
+          "module": "string.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -211,7 +220,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "stdlib.h"
+          "module": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -221,7 +230,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "ctype.h"
+          "module": "ctype.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,

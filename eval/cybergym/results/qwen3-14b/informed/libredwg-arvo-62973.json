@@ -121,17 +121,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "DEPENDENCY_TYPE",
-        "parameters": {
-          "name": "libxml2",
-          "type": "library"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "CMakeLists.txt: not found (transitive?)",
-        "method": "manifest_parse"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "test/xmlsuite/common.c",
@@ -166,13 +155,23 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "check.py",
-          "triggers": "test/xmlsuite/testsuite.c"
+          "file": "check.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/src/dwg_api.c:16991:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "check.py",
+          "content": "os.system(\"./testsuite \" + path_to_dwg + \"/\" + dir + \"/\" + file + \" \" + outdir + \"/\" + dir + \"/\" + dwg_xmlfile + \" 2> /dev/null\")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 104 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",

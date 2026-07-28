@@ -5,12 +5,12 @@
   "reasoning_length": 2289,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 15,
-    "verified": 9,
-    "refuted": 6,
+    "total_claims": 13,
+    "verified": 12,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.55,
-    "action": "FLAG",
+    "verification_rate": 0.84,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_CLASSIFICATION",
@@ -46,48 +46,48 @@
         "method": "path_regex"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "ExceptionsTest.cpp",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/librawspeed/test/ExceptionsTest.cpp",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "EndiannessTest.cpp",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/librawspeed/io/EndiannessTest.cpp",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "coverity_model.cpp",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): .ci/coverity_model.cpp",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "RawSpeed.cpp",
+          "classification": "utility functions"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=RawSpeed.cpp, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "gtest/gtest.h",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): test/librawspeed/test/RawSpeed.cpp",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3257/src-vul/librawspeed/test/librawspeed/test/ExceptionsTest.cpp:32:#include <gtest/gtest.h>                      // for Message, Test",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "stdexcept",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3257/src-vul/librawspeed/test/librawspeed/test/ExceptionsTest.cpp:34:#include <stdexcept>                          // for runtime_error",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "string",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-3257/src-vul/librawspeed/test/librawspeed/test/ExceptionsTest.cpp:35:#include <string>                             // for string",
+        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -123,59 +123,37 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "import": "<gtest/gtest.h>",
-          "expected": true
+          "item": "user input processing",
+          "scope": "provided code"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <gtest/gtest.h> found",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "import": "<stdexcept>",
-          "expected": true
+          "item": "input sanitization",
+          "scope": "provided code"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <stdexcept> found",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "import": "<string>",
-          "expected": true
+          "item": "entry point reachability",
+          "scope": "provided code"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of <string> found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ThrowRSE",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ThrowRSE",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ThrowCME",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ThrowCME",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

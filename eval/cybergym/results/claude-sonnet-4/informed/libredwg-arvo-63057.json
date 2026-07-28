@@ -5,11 +5,11 @@
   "reasoning_length": 3698,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 32,
-    "verified": 30,
-    "refuted": 2,
+    "total_claims": 33,
+    "verified": 33,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.94,
+    "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
       {
@@ -200,7 +200,7 @@
         "parameters": {
           "file": "test/xmlsuite/testsuite.c",
           "line": 134,
-          "content_type": "macro_call",
+          "content_type": "macro_usage",
           "macro": "newXMLProp"
         },
         "verdict": "VERIFIED",
@@ -213,8 +213,7 @@
         "parameters": {
           "file": "test/xmlsuite/testsuite.c",
           "line": 200,
-          "content_type": "function_call",
-          "function": "spointprepare"
+          "content_type": "function_call"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -225,22 +224,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/xmlsuite/testsuite.c",
-          "line": 203,
-          "content_type": "function_call",
-          "function": "spointprepare"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 203: xmlChar *buf, *dtostring;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/xmlsuite/testsuite.c",
           "line": 225,
-          "content_type": "function_call",
-          "function": "spointprepare"
+          "content_type": "function_call"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -250,23 +235,9 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "test/xmlsuite/testsuite.c",
-          "line": 228,
-          "content_type": "function_call",
-          "function": "doubletochar"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 228: * @params xmlNodePtr rootnode The root node of the XML Document",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
           "file": "test/xmlsuite/check.py",
           "line": 35,
-          "content_type": "system_call",
-          "call": "os.system"
+          "content_type": "system_call"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -276,7 +247,8 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "spointprepare",
+          "caller": "add_line",
+          "callee": "spointprepare",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -287,7 +259,20 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "doubletochar",
+          "caller": "add_circle",
+          "callee": "spointprepare",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 20 callers (common_entity_attrs, add_line, add_circle)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "add_circle",
+          "callee": "doubletochar",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -298,7 +283,8 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "doubletohex",
+          "caller": "common_entity_attrs",
+          "callee": "doubletohex",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -309,7 +295,20 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "inttochar",
+          "caller": "common_entity_attrs",
+          "callee": "doubletochar",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 20 callers (common_entity_attrs, add_circle, add_helix)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "common_entity_attrs",
+          "callee": "inttochar",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -364,24 +363,35 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/common.c",
+          "file": "test/xmlsuite/testsuite.c",
           "import": "string.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of string.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/xmlsuite/testsuite.c:21:#include <string.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/common.c",
+          "file": "test/xmlsuite/testsuite.c",
           "import": "stdlib.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of stdlib.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/test/xmlsuite/testsuite.c:22:#include <stdlib.h>",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "test/xmlsuite/check.py",
+          "entry_type": "script"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63057/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 15,
-    "verified": 11,
-    "refuted": 4,
+    "verified": 10,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.63,
+    "verification_rate": 0.58,
     "action": "FLAG",
     "claims": [
       {
@@ -144,7 +144,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formblock)",
+        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formsdata)",
         "method": "cymbal_callers"
       },
       {
@@ -159,16 +159,17 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "function": "execute_cfi",
-          "reachable": true,
-          "path": "via __libdw_frame_at_address"
+          "chain": [
+            "__libdw_frame_at_address",
+            "execute_cfi"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-56179/src-vul/elfutils/libdw/dwarf_next_cfi.c:244:\t\t/* Skip signal-frame flag.  */",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: __libdw_frame_at_address->execute_cfi: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

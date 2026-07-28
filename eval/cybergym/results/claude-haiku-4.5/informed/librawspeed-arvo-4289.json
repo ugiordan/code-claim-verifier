@@ -5,11 +5,11 @@
   "reasoning_length": 2969,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 27,
-    "verified": 18,
-    "refuted": 9,
+    "total_claims": 29,
+    "verified": 17,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.65,
+    "verification_rate": 0.57,
     "action": "FLAG",
     "claims": [
       {
@@ -66,9 +66,9 @@
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": ".ci/coverity_model.cpp",
-          "classification": "modeling"
+          "classification": "test"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
         "evidence": "path=.ci/coverity_model.cpp, is_test=False, is_vendor=False",
         "method": "path_regex"
@@ -202,7 +202,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 38 callers (copyPixels, RawImageData::expandBorder, ArwDecoder::SonyDecrypt)",
+        "evidence": "cymbal: 38 callers (copyPixels, ArwDecoder::SonyDecrypt, ArwDecoder::GetWB)",
         "method": "cymbal_callers"
       },
       {
@@ -287,10 +287,32 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/librawspeed/io/EndiannessTest.h",
+          "content": "ushort16Values[]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 500 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/librawspeed/io/EndiannessTest.h",
+          "content": "uint32Values[]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 500 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "main functions",
-          "scope": "these files"
+          "item": "main function",
+          "scope": "provided files"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

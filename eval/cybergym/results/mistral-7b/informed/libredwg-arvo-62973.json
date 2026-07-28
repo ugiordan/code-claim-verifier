@@ -5,12 +5,12 @@
   "reasoning_length": 2341,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 11,
-    "refuted": 0,
+    "total_claims": 17,
+    "verified": 12,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.95,
-    "action": "BOOST",
+    "verification_rate": 0.63,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -92,12 +92,53 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "CHK_ENTITY_3RD",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (api_process, api_process, api_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "spointprepare",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 20 callers (common_entity_attrs, add_line, add_circle)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "api_process",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (print_api, output_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "testsuite.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/src/dwg_api.c:16991:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
+        "method": "grep_entry_point"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_validation",
-          "functions": [
-            "spointprepare"
-          ]
+          "context": "spointprepare function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -108,9 +149,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_validation",
-          "functions": [
-            "api_process"
-          ]
+          "context": "api_process function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -121,7 +160,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "mitigations",
-          "description": "input sanitization mechanisms"
+          "context": "buffer overflow protection"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -129,20 +168,37 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "files": [
-            "testsuite.c"
-          ],
-          "reachable_functions": [
-            "spointprepare",
-            "api_process"
-          ]
+          "name": "libxml2",
+          "type": "library"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-62973/src-vul/libredwg/src/dwg_api.c:16991:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
-        "method": "grep_entry_point"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "dwg",
+          "type": "library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "dwg_api",
+          "type": "library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
       }
     ]
   },

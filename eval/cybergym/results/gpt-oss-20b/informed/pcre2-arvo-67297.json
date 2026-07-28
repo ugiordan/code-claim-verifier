@@ -5,12 +5,12 @@
   "reasoning_length": 2897,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 26,
-    "verified": 15,
-    "refuted": 11,
-    "unverifiable": 0,
-    "verification_rate": 0.54,
-    "action": "FLAG",
+    "total_claims": 23,
+    "verified": 12,
+    "refuted": 10,
+    "unverifiable": 1,
+    "verification_rate": 0.47,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FUNCTION_CALLED",
@@ -83,6 +83,17 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "re.sub",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (6 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/pcre2-arvo-67297/src-vul/pcre2/maint/GenerateCommon.py:133:      line = re.sub(r'#.*', '', line)",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "maint/GenerateTest26.py",
@@ -117,6 +128,29 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 188 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "GenerateCommon",
+          "function": "open_output",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/pcre2-arvo-67297/src-vul/pcre2/maint/GenerateUcpHeader.py:16:from GenerateCommon import \\",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "function": "open_output",
+          "file": "GenerateCommon.py"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -155,75 +189,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "open_output",
-          "from": "GenerateCommon",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of open_output found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "open_output",
-          "file": "GenerateCommon.py",
-          "expected": false
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: open_output at maint/GenerateCommon.py:287",
-        "method": "cymbal_function"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "getbpropslist",
           "file": "GenerateCommon.py",
-          "expected": true
+          "line_range": "32-70"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: getbpropslist at maint/GenerateCommon.py:121",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "collect_property_names",
-          "file": "GenerateCommon.py",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: collect_property_names at maint/GenerateCommon.py:163",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "reorder_scripts",
-          "file": "GenerateCommon.py",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: reorder_scripts at maint/GenerateCommon.py:224",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "write_both",
-          "file": "GenerateTest26.py",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: write_both at maint/GenerateTest26.py:17",
         "method": "cymbal_function"
       },
       {
@@ -238,6 +212,18 @@
         "method": "grep_call_site"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "collect_property_names",
+          "file": "GenerateCommon.py",
+          "line_range": "72-104"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: collect_property_names at maint/GenerateCommon.py:163",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "collect_property_names",
@@ -247,6 +233,18 @@
         "confidence": 0.65,
         "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/pcre2-arvo-67297/src-vul/pcre2/maint/GenerateCommon.py:214:collect_property_names()",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "reorder_scripts",
+          "file": "GenerateCommon.py",
+          "line_range": "106-120"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: reorder_scripts at maint/GenerateCommon.py:224",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -260,6 +258,18 @@
         "method": "grep_call_site"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write_both",
+          "file": "GenerateTest26.py",
+          "line_range": "20-24"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: write_both at maint/GenerateTest26.py:17",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "write_both",
@@ -269,54 +279,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 1 callers (gen_script_tests)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "GenerateCommon.py",
-          "line": 73,
-          "content_type": "function call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 73: 'Po', 'Other punctuation',",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "GenerateCommon.py",
-          "line": 106,
-          "content_type": "function call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 106: # List of files from which the names of Boolean properties are obtained, along",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "GenerateCommon.py",
-          "line": 122,
-          "content_type": "function call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 122: bplist = []",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "GenerateTest26.py",
-          "line": 70,
-          "content_type": "function call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 70: if name != prev_name:",
-        "method": "file_read"
       }
     ]
   },

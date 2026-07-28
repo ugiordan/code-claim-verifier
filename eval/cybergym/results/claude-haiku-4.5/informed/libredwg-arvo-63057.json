@@ -5,12 +5,12 @@
   "reasoning_length": 5828,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
+    "total_claims": 20,
     "verified": 16,
-    "refuted": 2,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.87,
-    "action": "BOOST",
+    "verification_rate": 0.77,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -79,10 +79,34 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/xmlsuite/check.py",
-          "import": "os"
+          "line_number": 12,
+          "content": "generatexml(path_to_dwg)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 104 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/xmlsuite/check.py",
+          "line_number": 18,
+          "content": "os.listdir()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 104 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "os",
+          "file": "test/xmlsuite/check.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -92,8 +116,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "import": "sys"
+          "module": "sys",
+          "file": "test/xmlsuite/check.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -103,8 +127,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/check.py",
-          "import": "helper"
+          "module": "helper",
+          "file": "test/xmlsuite/check.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -114,8 +138,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
-          "import": "libxml2"
+          "module": "libxml2",
+          "file": "test/xmlsuite/helper.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -125,8 +149,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
-          "import": "re"
+          "module": "re",
+          "file": "test/xmlsuite/helper.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -136,8 +160,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
-          "import": "os"
+          "module": "os",
+          "file": "test/xmlsuite/helper.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -147,8 +171,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py",
-          "import": "glob"
+          "module": "glob",
+          "file": "test/xmlsuite/helper.py"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -178,7 +202,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "shell escaping"
+          "description": "shell escaping (e.g., `shlex.quote()`)"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -188,7 +212,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "use of safer alternatives like subprocess.run() with shell=False"
+          "description": "use of safer alternatives like `subprocess.run()` with `shell=False`"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

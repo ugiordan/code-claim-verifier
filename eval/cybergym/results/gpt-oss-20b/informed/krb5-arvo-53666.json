@@ -5,12 +5,12 @@
   "reasoning_length": 8420,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 26,
+    "total_claims": 20,
     "verified": 16,
-    "refuted": 10,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.47,
-    "action": "OVERRIDE",
+    "verification_rate": 0.85,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -107,23 +107,23 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "krb5_decode_ticket",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (LLVMFuzzerTestOneInput, kvno, show_credential)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "profile_parse_file",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (LLVMFuzzerTestOneInput, main, profile_update_file_data_locked)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "krb5_decode_ticket",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 11 callers (LLVMFuzzerTestOneInput, show_credential, kvno)",
         "method": "cymbal_callers"
       },
       {
@@ -145,7 +145,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (LLVMFuzzerTestOneInput, krcc_get_principal, read_principal)",
+        "evidence": "cymbal: 7 callers (LLVMFuzzerTestOneInput, read_principal, kcm_get_princ)",
         "method": "cymbal_callers"
       },
       {
@@ -156,7 +156,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 12 callers (LLVMFuzzerTestOneInput, krcc_next_cred, fcc_next_cred)",
+        "evidence": "cymbal: 12 callers (LLVMFuzzerTestOneInput, fcc_next_cred, kcmreq_get_cred_list)",
         "method": "cymbal_callers"
       },
       {
@@ -182,108 +182,42 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "krb5_chpw_message",
-          "file": "src/tests/misc/test_chpw_message.c"
+          "item": "krb5_chpw_message",
+          "context": "snippet"
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for krb5_chpw_message",
-        "method": "grep_function_def"
+        "confidence": 0.6,
+        "evidence": "grep_absent: 11 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/krb5-arvo-53666/src-vul/krb5/fuzzing/Fuzz_chpw.c:38:    krb5_chpw_message(context, &DataInput, &msg);",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "k5_json_decode",
-          "file": "src/util/support/t_json.c"
+          "item": "k5_json_decode",
+          "context": "snippet"
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for k5_json_decode",
-        "method": "grep_function_def"
+        "confidence": 0.6,
+        "evidence": "grep_absent: 27 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/krb5-arvo-53666/src-vul/krb5/fuzzing/Fuzz_json.c:36:    k5_json_decode((char *)DataFx, &v);",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "krb5_decode_ticket",
-          "file": "src/kdc/t_ndr.c"
+          "item": "krb5_decode_ticket",
+          "context": "snippet"
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for krb5_decode_ticket",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "krb5_unmarshal_credentials",
-          "file": "src/lib/krb5/ccache/t_marshal.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for krb5_unmarshal_credentials",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "k5_unmarshal_princ",
-          "file": "src/lib/krb5/ccache/t_marshal.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for k5_unmarshal_princ",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "k5_unmarshal_cred",
-          "file": "src/lib/krb5/ccache/t_marshal.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for k5_unmarshal_cred",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ndr_dec_delegation_info",
-          "file": "src/kdc/t_ndr.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ndr_dec_delegation_info",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "krb5_pac_parse",
-          "file": "src/lib/krb5/krb/t_pac.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for krb5_pac_parse",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "profile_parse_file",
-          "file": "src/util/profile/test_parse.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for profile_parse_file",
-        "method": "grep_function_def"
+        "confidence": 0.6,
+        "evidence": "grep_absent: 19 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/krb5-arvo-53666/src-vul/krb5/fuzzing/Fuzz_krb5.c:36:    ret = krb5_decode_ticket(&data_in, &ticket);",
+        "method": "grep_absent"
       },
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "krb5_chpw_message",
+          "function": "krb5_chpw_message",
           "expected": false
         },
         "verdict": "REFUTED",
@@ -294,50 +228,8 @@
     ]
   },
   "gt_comparison": {
-    "matched": 13,
+    "matched": 7,
     "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

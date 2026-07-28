@@ -5,11 +5,11 @@
   "reasoning_length": 5758,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
+    "total_claims": 19,
     "verified": 5,
-    "refuted": 8,
-    "unverifiable": 0,
-    "verification_rate": 0.43,
+    "refuted": 13,
+    "unverifiable": 1,
+    "verification_rate": 0.29,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -37,8 +37,80 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "args.c",
-          "line_number": 285,
-          "content": "char buffer[128];"
+          "line_number": 283,
+          "content": "void args_print_usage("
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 293 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "args.c",
+          "line_number": 291,
+          "content": "sprintf(buffer, \"  \")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 293 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "args.c",
+          "line_number": 294,
+          "content": "sprintf(buffer + len, \"-%c\", ...)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 293 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "args.c",
+          "line_number": 297,
+          "content": "sprintf(buffer + len, \"     \")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 293 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "args.c",
+          "line_number": 300,
+          "content": "sprintf(buffer + len, \",  \")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 293 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "args.c",
+          "line_number": 303,
+          "content": "sprintf(buffer + len, \"--%s\", options->long_name)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 293 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "args.c",
+          "line_number": 308,
+          "content": "sprintf(buffer + len, \"%s%s\", ..., options->type_help)"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -67,6 +139,20 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 293 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "args_parse",
+            "args_print_usage"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->args_parse: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -116,26 +202,12 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "file": "args.c",
-          "item": "<stdio.h>"
+          "missing": "<stdio.h> include"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 27 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-28253/src-vul/yara/tests/test-alignment.c:31:#include <stdio.h>",
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "args_parse",
-            "args_print_usage"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->args_parse: NOT FOUND",
-        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FILE_EXISTS",

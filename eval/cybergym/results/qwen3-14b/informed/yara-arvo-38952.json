@@ -5,11 +5,11 @@
   "reasoning_length": 17208,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 11,
-    "verified": 2,
+    "total_claims": 13,
+    "verified": 4,
     "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.13,
+    "verification_rate": 0.21,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -63,6 +63,17 @@
         "method": "path_check"
       },
       {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "filename": "blob.h",
+          "classification": "header file defining binary data arrays"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "map_file",
@@ -87,42 +98,53 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "mapper.c",
-          "content": "for (int i = 0; i < sizeof(str) - 1; i++)"
+          "content": "for (int i = 0; i < sizeof(str) - 1; i++)",
+          "context": "patch case loop"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 96 lines)",
+        "evidence": "File not found: ",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "mapper.c",
-          "content": "buf[i] = str[sizeof(str) - i - 2];"
+          "content": "buf[i] = str[sizeof(str) - i - 2];",
+          "context": "inside patch loop"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 96 lines)",
+        "evidence": "File not found: ",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "mapper.c",
-          "content": "char str[] = \"!dlrow ,olleH\";"
+          "content": "char str[] = \"!dlrow ,olleH\";",
+          "context": "string definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 96 lines)",
+        "evidence": "File not found: ",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "mmap",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (yr_filemap_map_fd, yr_process_fetch_memory_block_data(YR_MEMORY_BLOCK* block), map_file(char* path))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "DEFAULT_VALUE",
         "parameters": {
           "variable": "mmap_size",
           "file": "mapper.c",
-          "default_behavior": "4096"
+          "default_behavior": "4096 bytes"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,

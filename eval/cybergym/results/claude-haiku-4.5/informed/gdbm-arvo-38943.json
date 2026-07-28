@@ -5,11 +5,11 @@
   "reasoning_length": 6941,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 42,
-    "verified": 22,
-    "refuted": 20,
+    "total_claims": 39,
+    "verified": 18,
+    "refuted": 21,
     "unverifiable": 0,
-    "verification_rate": 0.48,
+    "verification_rate": 0.42,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -237,7 +237,7 @@
         "parameters": {
           "file": "compat/dbminit.c",
           "line": 42,
-          "content": "dbm_close (_gdbm_file);"
+          "content": "if (_gdbm_file != NULL) dbm_close (_gdbm_file);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -272,7 +272,7 @@
         "parameters": {
           "file": "compat/close.c",
           "line": 30,
-          "content": "dbm_close (_gdbm_file);"
+          "content": "if (_gdbm_file != NULL) { dbm_close (_gdbm_file); _gdbm_file = NULL; }"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -308,7 +308,7 @@
         "parameters": {
           "file": "compat/dbmopen.c",
           "line": 191,
-          "content": "gdbm_close (dbm->file);"
+          "content": "gdbm_close (dbm->file); free (dbm); dbm = NULL;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -318,12 +318,23 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "dbm_fetch",
+          "name": "gdbm_close",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (fetch, main, main)",
+        "evidence": "cymbal: 30 callers (dbm_close, dbm_open (char *file, int flags, int mode), main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "dbm_close",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (dbmclose, dbminit, main)",
         "method": "cymbal_callers"
       },
       {
@@ -339,17 +350,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "dbm_delete",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (delete, main)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "compat/delete.c",
@@ -360,17 +360,6 @@
         "confidence": 0.95,
         "evidence": "Line 30: }",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "dbm_firstkey",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (firstkey, main)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -385,17 +374,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "dbm_nextkey",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (nextkey, main)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "compat/seq.c",
@@ -406,17 +384,6 @@
         "confidence": 0.95,
         "evidence": "Line 37: nextkey (datum key)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "dbm_store",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (store, main)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",

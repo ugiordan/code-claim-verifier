@@ -5,8 +5,8 @@
   "reasoning_length": 7164,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 23,
-    "verified": 15,
+    "total_claims": 22,
+    "verified": 14,
     "refuted": 8,
     "unverifiable": 0,
     "verification_rate": 0.55,
@@ -104,8 +104,19 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (coolkey_cuid_to_string(coolkey_cuid_t *cuid), parse_dir_record, match_atr_table)",
+        "evidence": "cymbal: 50 callers (coolkey_cuid_to_string(coolkey_cuid_t *cuid), match_atr_table, parse_dir_record)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ui_get_str",
+          "file": "src/ui/strings.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ui_get_str",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -118,17 +129,6 @@
         "confidence": 0.95,
         "evidence": "Line 119: break;",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ui_get_str",
-          "file": "src/ui/strings.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ui_get_str",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -166,6 +166,17 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ui_get_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/ui/notify.c",
@@ -180,17 +191,6 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (md_get_config_str(PCARD_DATA pCardData, enum ui_str id), ShowContextMenu, sc_notify_id)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "notify_shell",
           "expected": true
         },
@@ -198,6 +198,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 5 callers (sc_notify, sc_notify_id, main)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sc_notify_id",
+          "file": "notify.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -239,42 +250,20 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "sc_notify_id",
-          "file": "src/ui/notify.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "get_inserted_text",
+          "name": "GetUserDefaultUILanguage",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (md_get_config_str(PCARD_DATA pCardData, enum ui_str id), ShowContextMenu, sc_notify_id)",
-        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 6,
+    "matched": 5,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -309,13 +298,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

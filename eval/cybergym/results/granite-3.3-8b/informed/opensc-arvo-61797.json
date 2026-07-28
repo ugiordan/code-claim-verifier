@@ -5,12 +5,12 @@
   "reasoning_length": 2545,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 14,
+    "total_claims": 15,
     "verified": 14,
-    "refuted": 0,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.84,
-    "action": "BOOST",
+    "verification_rate": 0.8,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "IMPORT_EXISTS",
@@ -152,7 +152,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), CardDeriveHashOrHMAC)",
+        "evidence": "cymbal: 7 callers (CardDeriveHashOrHMAC, HashDataWithBCrypt, DoTlsPrf)",
         "method": "cymbal_callers"
       },
       {
@@ -163,8 +163,19 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 10 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), md_dialog_perform_pin_operation)",
+        "evidence": "cymbal: 10 callers (md_dialog_perform_pin_operation, CardDeriveHashOrHMAC, HashDataWithBCrypt)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "error_checking",
+          "description": "Error checks are performed after calls to WideCharToMultiByte and MultiByteToWideChar"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

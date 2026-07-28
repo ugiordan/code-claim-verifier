@@ -5,11 +5,11 @@
   "reasoning_length": 7165,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 26,
-    "verified": 21,
-    "refuted": 5,
+    "total_claims": 31,
+    "verified": 18,
+    "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.76,
+    "verification_rate": 0.57,
     "action": "FLAG",
     "claims": [
       {
@@ -69,8 +69,32 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
+          "line": 1,
+          "content": "impd_drc_get_float_value"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 1: /******************************************************************************",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 32,
+          "content": "impd_drc_get_integer_value"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 32: #include \"impd_drc_gain_enc.h\"",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
           "line": 73,
-          "content": "function starts"
+          "content": "ixheaace_read_drc_config_params"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -97,6 +121,17 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
@@ -243,37 +278,70 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "fgets",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line_contains": "fgets(line, sizeof(line), fp)"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (ixheaacd_read_metadata_info, impd_drc_get_float_value, impd_drc_get_integer_value)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "strtol",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line_contains": "while ((line[0] == '#' || line[0] == '\\n') && (retval != NULL))"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (impd_drc_get_integer_value, ixheaace_read_drc_config_params)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "atoi",
-          "expected": true
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line_contains": "while (line[i] != ':') { c++; i++; }"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaace_parse_config_param)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line_contains": "strtol(c, NULL, 16)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line_contains": "atoi(c)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line_contains": "gain_set_channels = MIN(gain_set_channels, MAX_CHANNEL_COUNT);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -284,16 +352,6 @@
         "confidence": 0.65,
         "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "bounds check on i in colon search loop"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       }
     ]
   },

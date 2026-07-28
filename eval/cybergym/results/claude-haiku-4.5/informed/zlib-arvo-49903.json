@@ -5,12 +5,12 @@
   "reasoning_length": 5481,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 24,
-    "verified": 13,
-    "refuted": 11,
+    "total_claims": 28,
+    "verified": 12,
+    "refuted": 16,
     "unverifiable": 0,
-    "verification_rate": 0.54,
-    "action": "FLAG",
+    "verification_rate": 0.43,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -143,6 +143,18 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "adler32.c",
+          "line": 130,
+          "content": "adler32()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 130: return adler | (sum2 << 16);",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "adler32_combine_",
@@ -177,6 +189,18 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "adler32.c",
+          "line": 145,
+          "content": "adler32_combine()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 145: uLong adler2;",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "adler32_combine64",
@@ -198,6 +222,18 @@
         "confidence": 0.9,
         "evidence": "cymbal: 2 callers (adler32_combine, adler32_combine64)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "adler32.c",
+          "line": 152,
+          "content": "adler32_combine64()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 152: /* for negative len, return invalid adler32 as a clue for debugging */",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -223,21 +259,33 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "compress.c",
+          "line": 75,
+          "content": "compress()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 75: }",
+        "method": "file_read"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "crc32.c",
-          "import": "zutil.h"
+          "file": "zutil.h",
+          "imported_by": "multiple files"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/crc32.c:33:#include \"zutil.h\"      /* for STDC and FAR definitions */",
+        "evidence": "No import of zutil.h found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "crc32.c",
-          "import": "zlib.h"
+          "file": "zlib.h",
+          "imported_by": "multiple files"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -247,8 +295,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "crc32.c",
-          "import": "deflate.h"
+          "file": "deflate.h",
+          "imported_by": "multiple files"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -260,7 +308,7 @@
         "parameters": {
           "file": "adler32.c",
           "line": 12,
-          "content": "NMAX limit"
+          "content": "NMAX"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -282,8 +330,29 @@
     ]
   },
   "gt_comparison": {
-    "matched": 3,
+    "matched": 6,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

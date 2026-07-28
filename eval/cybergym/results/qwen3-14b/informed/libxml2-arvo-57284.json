@@ -5,52 +5,52 @@
   "reasoning_length": 5042,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 14,
-    "verified": 12,
-    "refuted": 2,
+    "total_claims": 16,
+    "verified": 8,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.78,
-    "action": "FLAG",
+    "verification_rate": 0.42,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "HTMLtree.c"
+          "filename": "HTMLtree.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: HTMLtree.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "HTMLparser.c"
+          "filename": "HTMLparser.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: HTMLparser.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "SAX.c"
+          "filename": "SAX.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: SAX.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "SAX2.c"
+          "filename": "SAX2.c"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: SAX2.c",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -93,7 +93,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, ConvertInput(const char *in, const char *encoding))",
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
         "method": "cymbal_callers"
       },
       {
@@ -137,14 +137,26 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (htmlGetMetaEncoding(htmlDocPtr doc), xmlC14NIsXmlNs, xmlExcC14NProcessNamespacesAxis)",
+        "evidence": "cymbal: 50 callers (xmlC14NIsXmlNs, xmlExcC14NProcessNamespacesAxis, xmlC14NFixupBaseAttr)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "buffer_overflow_protection",
+          "function": "htmlSetMetaEncoding"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_validation",
-          "function": "htmlSetMetaEncoding"
+          "function": "htmlSetMetaEncoding",
+          "parameter": "encoding"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -152,10 +164,22 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "error_handling",
+          "function": "htmlnamePush"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "bounds_checking",
-          "function": "htmlnamePush"
+          "function": "htmlnamePush",
+          "parameter": "value"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -165,41 +189,27 @@
     ]
   },
   "gt_comparison": {
-    "matched": 5,
+    "matched": 3,
     "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
       {
         "claim_type": "FUNCTION_EXISTS",
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
         "gt_tier": "source"
       }
     ]

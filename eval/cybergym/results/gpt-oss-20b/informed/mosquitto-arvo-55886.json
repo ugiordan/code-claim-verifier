@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 36,
-    "verified": 36,
-    "refuted": 0,
+    "verified": 35,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.87,
+    "verification_rate": 0.85,
     "action": "BOOST",
     "claims": [
       {
@@ -139,6 +139,17 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "test/mosq_test.py",
+          "classification": "test harness"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=test/mosq_test.py, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/mqtt5_opts.py"
@@ -159,6 +170,28 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strdup",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (broker__main, dump__client_chunk_process, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (on_subscribe, on_connect, load_stdin)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "broker_fuzz_test_config.cpp"
@@ -176,7 +209,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, cJSON_AddIntToObject(cJSON * const object, const char * const name, long long number), dynsec_client__create)",
+        "evidence": "cymbal: 50 callers (main, dynsec_client__create, dynsec_client__set_password)",
         "method": "cymbal_callers"
       },
       {
@@ -265,16 +298,6 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "on_message"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: on_message at test/lib/c/fuzzish.c:211",
-        "method": "cymbal_function"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "os.environ.get",
@@ -294,17 +317,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: start_broker at test/broker/16-cmd-args.py:9",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "getpid",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 15 callers (main, LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -368,17 +380,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: run_broker at fuzzing/broker/broker_fuzz_test_config.cpp:32",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strdup",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (broker__main, dump__client_chunk_process, main)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",

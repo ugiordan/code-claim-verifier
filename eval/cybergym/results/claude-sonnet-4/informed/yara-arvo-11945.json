@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 17,
-    "verified": 10,
-    "refuted": 7,
+    "verified": 6,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.46,
+    "verification_rate": 0.28,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -26,6 +26,16 @@
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "filename": "args.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "yara.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
@@ -80,6 +90,51 @@
         "method": "file_read"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "yara.c",
+          "line_range": "120-171",
+          "content": "options array definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1342 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "args.c",
+          "import": "stdio.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of stdio.h found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "args.c",
+          "import": "string.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:31:#include <string.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "args.c",
+          "import": "args.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:36:#include \"args.h\"",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "sprintf",
@@ -102,58 +157,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "stdio.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/tests/test-alignment.c:31:#include <stdio.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "string.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:31:#include <string.h>",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "args.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-11945/src-vul/yara/args.c:36:#include \"args.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "filename": "yara.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "yara.c",
-          "line_range": "120-171",
-          "content": "options array definition"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1342 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
           "description": "direct calls to args_print_usage in provided source files"
@@ -164,34 +167,37 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "input validation on string lengths"
+          "mitigation": "input validation on string lengths",
+          "exists": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "bounds checking in sprintf operations"
+          "mitigation": "bounds checking in sprintf operations",
+          "exists": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "use of safer alternatives like snprintf"
+          "mitigation": "use of safer alternatives like snprintf",
+          "exists": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

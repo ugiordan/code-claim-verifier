@@ -5,11 +5,11 @@
   "reasoning_length": 19802,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
+    "total_claims": 16,
     "verified": 13,
-    "refuted": 5,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.56,
+    "verification_rate": 0.71,
     "action": "FLAG",
     "claims": [
       {
@@ -29,9 +29,9 @@
           "name": "magic.detect_from_fobj",
           "file": "magic.py"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "No definition found for magic.detect_from_fobj",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:267:def detect_from_fobj(fobj):",
         "method": "grep_function_def"
       },
       {
@@ -86,8 +86,20 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (main, main, magic_set)",
+        "evidence": "cymbal: 4 callers (main, magic_set, main)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "flags",
+          "file": "magic.py",
+          "default_behavior": "magic.NONE constant"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'flags' found in 309 locations.",
+        "method": "default_value"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -97,7 +109,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (main, load(const char *magicfile, int flags))",
+        "evidence": "cymbal: 2 callers (load(const char *magicfile, int flags), main)",
         "method": "cymbal_callers"
       },
       {
@@ -134,39 +146,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "Magic.__tobytes",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:148:        return Magic.__tostr(_file(self._magic_t, Magic.__tobytes(filename",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ms.buffer",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/example.py:14:tp = ms.buffer(buf)",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "_buffer",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (buffer, detect_from_content)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "magic.py",
@@ -178,14 +157,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "apprentice.c"
+          "name": "magic.detect_from_filename",
+          "file": "magic.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/apprentice.c",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:257:def detect_from_filename(filename):",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -204,9 +184,9 @@
           "name": "magic.detect_from_content",
           "file": "magic.py"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "No definition found for magic.detect_from_content",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/magic.py:278:def detect_from_content(byte_content):",
         "method": "grep_function_def"
       }
     ]

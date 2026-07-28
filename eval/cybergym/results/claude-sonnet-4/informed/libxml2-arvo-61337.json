@@ -5,12 +5,12 @@
   "reasoning_length": 4067,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 8,
-    "refuted": 9,
+    "total_claims": 19,
+    "verified": 14,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.42,
-    "action": "OVERRIDE",
+    "verification_rate": 0.68,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -34,42 +34,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 147,
-          "content": "static int"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 148,
-          "content": "htmlnamePush(htmlParserCtxtPtr ctxt, const xmlChar * value)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 154,
-          "content": "size_t newSize = ctxt->nameMax * 2;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "htmlNodeInfoPush",
@@ -84,8 +48,44 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "HTMLparser.c",
-          "line_number": 194,
-          "content": "htmlNodeInfoPush"
+          "line": 154,
+          "content": "size_t newSize = ctxt->nameMax * 2;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 154: */",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLparser.c",
+          "line_range": "147-170",
+          "function": "htmlnamePush"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 7130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLparser.c",
+          "line_range": "194-217",
+          "function": "htmlNodeInfoPush"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 7130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLparser.c",
+          "line_range": "160-163",
+          "content": "NULL check after xmlRealloc()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -100,7 +100,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, ConvertInput(const char *in, const char *encoding))",
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
         "method": "cymbal_callers"
       },
       {
@@ -115,58 +115,20 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 160,
-          "content": "if (tmp == NULL) {"
+          "name": "xmlStrEqual",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 161,
-          "content": "htmlErrMemory(ctxt, NULL);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 162,
-          "content": "return (-1);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "HTMLparser.c",
-          "line_number": 163,
-          "content": "}"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 7130 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlC14NIsXmlNs, xmlExcC14NProcessNamespacesAxis, xmlC14NFixupBaseAttr)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "HTMLparser.c",
-          "import": "libxml/xmlmemory.h"
+          "module": "libxml/xmlmemory.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -176,8 +138,7 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "HTMLparser.c",
-          "import": "libxml/HTMLparser.h"
+          "module": "libxml/HTMLparser.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -187,24 +148,77 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "HTMLparser.c",
-          "import": "string.h"
+          "module": "string.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-61337/src-vul/libxml2/HTMLparser.c:13:#include <string.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-61337/src-vul/libxml2/rngparser.c:14:#include <string.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "HTMLparser.c",
-          "import": "stdlib.h"
+          "module": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-61337/src-vul/libxml2/HTMLparser.c:15:#include <stdlib.h>",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "htmlnamePush",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (htmlCheckImplied, htmlCheckParagraph, htmlParseStartTag)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function": "htmlNodeInfoPush",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (htmlParseElementInternal, htmlParseTryOrFinish, htmlParseContentInternal)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "integer overflow check",
+          "location": "before multiplication"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "maximum limit validation",
+          "location": "stack size"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "size validation",
+          "location": "before reallocation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

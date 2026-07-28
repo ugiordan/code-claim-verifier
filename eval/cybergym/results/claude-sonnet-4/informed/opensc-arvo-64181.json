@@ -5,11 +5,11 @@
   "reasoning_length": 3534,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 9,
-    "verified": 7,
-    "refuted": 2,
+    "total_claims": 10,
+    "verified": 6,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.78,
+    "verification_rate": 0.61,
     "action": "FLAG",
     "claims": [
       {
@@ -26,18 +26,6 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "win32/customactions.cpp",
-          "line": 73,
-          "content": "minidriver_registration[]"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 73: MD_REGISTRATION minidriver_registration[] = {",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "win32/customactions.cpp",
           "line": 89,
           "content": "{TEXT(\"Gnuk v1.0.x (OpenPGP v2.0)\"),      {0x3b,0xda,0x11,0xff,0x81,0xb1,0xfe,0x55,0x1f,0x03,0x00,0x31,0x84,0x"
         },
@@ -45,6 +33,18 @@
         "confidence": 0.95,
         "evidence": "Line 89: 10, {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0x00,0x00}},",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "minidriver_registration",
+          "file": "win32/customactions.cpp",
+          "line": 73
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for minidriver_registration",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -102,15 +102,27 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "CONFIG_FLAG",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "flag": "ENABLE_MINIDRIVER",
-          "value": "defined"
+          "type": "safe_string_functions",
+          "file": "win32/customactions.cpp"
         },
         "verdict": "REFUTED",
-        "confidence": 0.75,
-        "evidence": "Flag 'ENABLE_MINIDRIVER' found but not with value 'defined': /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64181/src-vul/opensc/win32/customactions.cpp:26:#ifdef ENABLE_MINIDRIVER",
-        "method": "config_flag"
+        "confidence": 0.7,
+        "evidence": "Line 0 out of range",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "conditional_compilation",
+          "file": "win32/customactions.cpp",
+          "flag": "ENABLE_MINIDRIVER"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Line 0 out of range",
+        "method": "file_read"
       }
     ]
   },

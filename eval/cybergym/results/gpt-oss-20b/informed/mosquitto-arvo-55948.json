@@ -5,11 +5,11 @@
   "reasoning_length": 17799,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 30,
-    "verified": 30,
-    "refuted": 0,
+    "total_claims": 35,
+    "verified": 34,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.84,
+    "verification_rate": 0.86,
     "action": "BOOST",
     "claims": [
       {
@@ -139,6 +139,17 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "test/mosq_test.py",
+          "classification": "test harness"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=test/mosq_test.py, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "test/mqtt5_opts.py"
@@ -159,6 +170,28 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strdup",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (broker__main, dump__client_chunk_process, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (on_subscribe, on_connect, load_stdin)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "broker_fuzz_test_config.cpp"
@@ -176,7 +209,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, cJSON_AddIntToObject(cJSON * const object, const char * const name, long long number), dynsec_client__create)",
+        "evidence": "cymbal: 50 callers (main, dynsec_client__create, dynsec_client__set_password)",
         "method": "cymbal_callers"
       },
       {
@@ -250,7 +283,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (do_test, do_test, do_test)",
+        "evidence": "cymbal: 50 callers (write_config, ctrl_cmd, do_test)",
         "method": "cymbal_callers"
       },
       {
@@ -276,14 +309,34 @@
         "method": "grep_call_site"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "start_broker"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: start_broker at test/broker/16-cmd-args.py:9",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "run_client"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: run_client at fuzzing/broker/broker_fuzz_initial_packet.cpp:34",
+        "method": "cymbal_function"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "getpid",
+          "name": "connect_retrying",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 15 callers (main, LLVMFuzzerTestOneInput, LLVMFuzzerTestOneInput)",
+        "evidence": "cymbal: 4 callers (run_client, run_client, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
@@ -298,26 +351,24 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "bytes.fromhex",
-          "expected": true
+          "name": "run_broker"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/mosquitto-arvo-55948/src-vul/mosquitto/fuzzing/generate_packet_corpora.py:52:                                f.write(bytes",
-        "method": "grep_call_site"
+        "confidence": 0.95,
+        "evidence": "cymbal: run_broker at fuzzing/broker/broker_fuzz_test_config.cpp:32",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "name": "strdup",
-          "expected": true
+          "file": "broker_fuzz.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (broker__main, dump__client_chunk_process, main)",
-        "method": "cymbal_callers"
+        "evidence": "exists (fuzzy match): fuzzing/broker/broker_fuzz.cpp",
+        "method": "os.walk_fuzzy"
       },
       {
         "claim_type": "IMPORT_EXISTS",

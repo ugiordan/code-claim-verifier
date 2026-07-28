@@ -5,12 +5,12 @@
   "reasoning_length": 3943,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 20,
-    "verified": 10,
-    "refuted": 10,
+    "total_claims": 14,
+    "verified": 13,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.49,
-    "action": "OVERRIDE",
+    "verification_rate": 0.89,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -80,111 +80,13 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
-          "content": "CHAR8 line[1024];"
+          "line_number": 25,
+          "content": "declaration of ixheaace_read_drc_config_params"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 336 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "while (line[i] != ':') {"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "c++;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "i++;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "gain_set_channels = impd_drc_get_integer_value(fp);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "gain_set_channels = MIN(gain_set_channels, MAX_CHANNEL_COUNT);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "for (ch = 0; ch < gain_set_channels; ch++) {"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "content": "pstr_drc_instructions_uni_drc->gain_set_index[ch] = impd_drc_get_integer_value(fp);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 336 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/ixheaace_testbench.c",
-          "content": "if (fread(wav_hdr, 1, 40, in_file) != 40) return 1;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1577 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "file": "test/encoder/impd_drc_user_config.h"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ixheaace_read_drc_config_params",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -228,6 +130,39 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61998/src-vul/libxaac/test/encoder/impd_drc_user_config.c:23:#include <string.h>",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fread",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (FileWrapper_Read, ia_enhaacplus_enc_fread, ia_enhaacplus_enc_wav_header_decode)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "impd_drc_get_integer_value",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MIN",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (ixheaacd_dec_execute, ixheaacd_peak_limiter_process_float, ixheaacd_peak_limiter_process)",
+        "method": "cymbal_callers"
       }
     ]
   },

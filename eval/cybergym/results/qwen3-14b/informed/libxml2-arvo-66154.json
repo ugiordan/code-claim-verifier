@@ -5,11 +5,11 @@
   "reasoning_length": 4396,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 23,
-    "verified": 21,
-    "refuted": 2,
+    "total_claims": 22,
+    "verified": 22,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.87,
+    "verification_rate": 0.93,
     "action": "BOOST",
     "claims": [
       {
@@ -94,7 +94,18 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, ConvertInput(const char *in, const char *encoding))",
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlRealloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
         "method": "cymbal_callers"
       },
       {
@@ -105,7 +116,7 @@
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (main, htmlSetMetaEncoding, processPattern)",
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, main, processPattern)",
         "method": "cymbal_callers"
       },
       {
@@ -214,32 +225,6 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "htmlParseDocument",
-            "htmlParseComment"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: htmlParseDocument->htmlParseComment: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "htmlReadFile",
-            "htmlParseComment"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: htmlReadFile->htmlParseComment: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
           "description": "input length validation in htmlnamePush"
@@ -252,7 +237,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking for NXT and CUR macros"
+          "description": "input sanitization in htmlnamePush"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

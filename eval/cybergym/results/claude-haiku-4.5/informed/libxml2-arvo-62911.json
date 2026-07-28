@@ -5,11 +5,11 @@
   "reasoning_length": 4660,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 23,
-    "verified": 17,
-    "refuted": 6,
+    "total_claims": 21,
+    "verified": 14,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.65,
+    "verification_rate": 0.59,
     "action": "FLAG",
     "claims": [
       {
@@ -176,7 +176,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "private/buf.h"
+          "module": "private/buf.h",
+          "import": "xmlRealloc"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -186,7 +187,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "stdlib.h"
+          "module": "stdlib.h",
+          "import": "snprintf"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -196,7 +198,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "entities.h"
+          "module": "entities.h",
+          "import": "xmlStrstr"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -204,49 +207,31 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "description": "input validation libraries"
+          "function": "htmlSetMetaEncoding",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (htmlSaveFileFormat, htmlNodeDumpOutputInternal, xmlDocContentDumpOutput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "htmlSetMetaEncoding",
+          "type": "public_api"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62911/src-vul/libxml2/xmlschemas.c:5251:    /* TODO: Remove the flag. */",
+        "method": "grep_entry_point"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "validation of encoding parameter length"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "integer overflow checks before multiplication"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "sanitization of user-supplied strings"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "maximum length enforcement on encoding names"
+          "type": "input_validation_libraries"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
