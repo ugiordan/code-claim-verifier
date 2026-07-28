@@ -465,7 +465,10 @@ def validate_negatives(claims: list[dict], source_root: str,
             patterns = IMPORT_PATTERNS.get(language, IMPORT_PATTERNS.get("unknown", []))
             found = False
             for pat_template in patterns:
-                pat = pat_template.format(module=re.escape(module))
+                try:
+                    pat = pat_template.format(module=re.escape(module), module_prefix=re.escape(module))
+                except KeyError:
+                    continue
                 if _grep_regex_in_tree(pat, source_root):
                     found = True
                     break
@@ -545,7 +548,7 @@ def run_generate_gt(candidates_path: str, base_dir: str,
                     retry_failed: bool = False) -> None:
     """Main entry point: generate ground truth for all verified candidates."""
     candidates = load_jsonl(candidates_path)
-    _SAVE_INTERVAL = 50
+    _SAVE_INTERVAL = 1
     gt_count = 0
 
     # Bug #2 fix: Reset FAILED candidates with failure_stage='generate_gt'

@@ -148,7 +148,7 @@ def run_clone(candidates_path: str, repos_dir: str) -> None:
     repos_dir = repos_dir.rstrip("/")
     candidates = load_jsonl(candidates_path)
     clone_count = 0
-    _SAVE_INTERVAL = 50
+    _SAVE_INTERVAL = 10
 
     for i, c in enumerate(candidates):
         status = c.get("status")
