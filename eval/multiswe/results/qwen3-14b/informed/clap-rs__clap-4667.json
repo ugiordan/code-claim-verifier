@@ -1,0 +1,110 @@
+{
+  "vuln_id": "clap-rs__clap-4667",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4357,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 2,
+    "refuted": 5,
+    "unverifiable": 1,
+    "verification_rate": 0.25,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap/src/error/format.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: clap/src/error/format.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap/src/error/format.rs",
+          "line_range": "70-85",
+          "description": "code that constructs the error message for subcommand suggestions"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: clap/src/error/format.rs",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap/src/error/format.rs",
+          "line_range": "440-460",
+          "description": "code that correctly pluralizes the verb (exists \u2192 exist) based on the number of subcommands"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: clap/src/error/format.rs",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "format_subcommand_suggestions",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for format_subcommand_suggestions",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "format_subcommand_suggestions function",
+          "scope": "clap_derive crate"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap/tests/builder/subcommands.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): tests/builder/subcommands.rs",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap/tests/builder/subcommands.rs",
+          "line": "123",
+          "description": "test case that intentionally expects incorrect grammar"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "exists": false,
+          "vulnerability": "grammar issue in subcommand error messages"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

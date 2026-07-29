@@ -1,0 +1,74 @@
+{
+  "vuln_id": "clap-rs__clap-4159",
+  "model": "granite-3.3-8b",
+  "condition": "informed",
+  "reasoning_length": 2366,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 2,
+    "refuted": 2,
+    "unverifiable": 1,
+    "verification_rate": 0.54,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "PACKAGE_VERSION",
+        "parameters": {
+          "package": "clap",
+          "version": "2.25.1"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No lockfile found containing clap",
+        "method": "lockfile_parse"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/builder/command.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/builder/command.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/attrs.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Command",
+          "file": "src/builder/command.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for Command",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Attrs",
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for Attrs",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

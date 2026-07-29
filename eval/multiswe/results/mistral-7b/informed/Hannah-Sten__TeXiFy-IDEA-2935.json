@@ -1,0 +1,75 @@
+{
+  "vuln_id": "Hannah-Sten__TeXiFy-IDEA-2935",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1848,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 4,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.75,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "src/nl/hannahsten/texifyidea/inspections/latex/codematurity/LatexPrimitiveStyleInspection.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "applyFix",
+          "class": "InspectionFix"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Hannah-Sten__TeXiFy-IDEA/src/nl/hannahsten/texifyidea/inspections/latex/probablebugs/LatexNonMatchingEnvironmentInspection.kt:76:        override fun ap",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "applyFix",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (fixFunction, replacementLength, applyFix)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "applyFix method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry_point": "Convert to LaTeX alternative command",
+          "leads_to": "applyFix method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/Hannah-Sten__TeXiFy-IDEA/.github/actions/insert-youtrack-link/node_modules/@types/node/trace_events.d.ts:58:     * any catego",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

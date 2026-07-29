@@ -1,0 +1,85 @@
+{
+  "vuln_id": "mui__material-ui-38544",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 2184,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 4,
+    "refuted": 1,
+    "unverifiable": 1,
+    "verification_rate": 0.8,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/Tabs/Tabs.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): packages/mui-material/src/Tabs/Tabs.js",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "useUtilityClasses",
+          "file": "src/Tabs/Tabs.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/packages/mui-base/src/TabUnstyled/TabUnstyled.tsx:15:const useUtilityClasses = (ownerState: { selected: boolean; disabled: boolean }) =",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "useUtilityClasses",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (HiddenCss, createContainer, createStack)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "unstable_ownerWindow",
+          "from": "@mui/utils"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of unstable_ownerWindow found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "what": "input sanitization for ownerState object in useUtilityClasses function"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "reachable": true,
+          "component": "Tabs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/.yarn/releases/yarn-1.22.19.js:3288:// All are flag-free, unless they were created above with a flag.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "vuln_id": "apache__dubbo-11781",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 7212,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 7,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.42,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URL.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: dubbo-common/src/main/java/org/apache/dubbo/common/URL.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "addParam",
+          "file": "URLStrParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for addParam",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseDecodedParams",
+          "file": "URLStrParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseDecodedParams",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseDecodedStr",
+          "file": "URLStrParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseDecodedStr",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "valueOf",
+          "file": "URL.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for valueOf",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "URLStrParser.parseDecodedStr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/test/java/org/apache/dubbo/common/URLStrParserTest.java:74:            assertThat(URLStrPar",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parseDecodedParams",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (parseDecodedStr, parseParams, valueOf)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "addParam",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 31 callers (parseDecodedParams, parseEncodedParams, process)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "URLStrParser.parseDecodedStr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (5 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/test/java/org/apache/dubbo/common/URLStrParserTest.java:74:            assertThat(URLStrPar",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "URL.valueOf",
+            "URLStrParser.parseDecodedStr",
+            "parseDecodedParams",
+            "addParam"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: URL.valueOf->URLStrParser.parseDecodedStr: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "URL.valueOf",
+          "config_property": "dubbo.registry.address"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/test/java/org/apache/dubbo/remoting/transport/codec/DeprecatedExchangeCod",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "vuln_id": "Kotlin__dataframe-1072",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 6146,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 19,
+    "verified": 11,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.48,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/StringExtensions.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/StringExtensions.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+          "line_range": "30-45",
+          "content": "public extension DataFrame<T>.renameToCamelCase()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 748 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+          "line_range": "30-45",
+          "content": "identical implementation"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 398 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/StringExtensions.kt",
+          "line_range": "12-28",
+          "content": "function toCamelCaseByDelimiters()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/StringExtensions.kt",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "DataFrame<T>.renameToCamelCase",
+          "file": "rename.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for DataFrame<T>.renameToCamelCase",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "RenameClause<T, C>.toCamelCase",
+          "file": "rename.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for RenameClause<T, C>.toCamelCase",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "toCamelCaseByDelimiters",
+          "file": "StringExtensions.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for toCamelCaseByDelimiters",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "toCamelCase",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (renameToCamelCase, renameToCamelCase, `nested df`)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "toCamelCaseByDelimiters",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (toCamelCase, from, toCamelCase)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "replaceFirstChar",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (toCamelCase, joinToCamelCaseString, capitalizedName)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "renameToCamelCase",
+            "toCamelCase",
+            "toCamelCaseByDelimiters"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: renameToCamelCase->toCamelCase: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "toCamelCaseByDelimiters",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (toCamelCase, from, toCamelCase)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.DELIMITED_STRING_REGEX",
+          "file": "rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt:21:import org.jetbrains.kotlinx.dataframe.impl.DE",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.DELIMITERS_REGEX",
+          "file": "rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/dataframe-openapi/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/utils.kt:6:import org.jetbrains.kotlinx.dataframe.impl.DELIMITERS",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.toCamelCaseByDelimiters",
+          "file": "rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/dataframe-openapi/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/utils.kt:7:import org.jetbrains.kotlinx.dataframe.impl.toCamelCas",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.columnName",
+          "file": "rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/toList.kt:12:import org.jetbrains.kotlinx.dataframe.im",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "sanitisation of column names before passing to toCamelCaseByDelimiters"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

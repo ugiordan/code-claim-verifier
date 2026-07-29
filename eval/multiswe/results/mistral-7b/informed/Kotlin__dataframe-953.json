@@ -1,0 +1,53 @@
+{
+  "vuln_id": "Kotlin__dataframe-953",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1510,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 3,
+    "verified": 2,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "ColumnAccessorImpl.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/columns/ColumnAccessorImpl.kt",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "resolveSingle",
+          "file": "ColumnAccessorImpl.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/DataFrameReceiver.kt:69:    override fun resolveSingle(con",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "ColumnAccessorImpl.kt",
+          "content": "error(\n    \"Cannot resolve column '${path.subList(0, i + 2).joinToString(\".\")}': \" +\n        \"Column '${path.subList(0, i + 1).joinToString(\".\")}' is not a column group.\"\n)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 47 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

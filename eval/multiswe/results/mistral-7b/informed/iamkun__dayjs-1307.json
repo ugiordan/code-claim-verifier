@@ -1,0 +1,64 @@
+{
+  "vuln_id": "iamkun__dayjs-1307",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 2011,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 4,
+    "verified": 1,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.32,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/browser.spec.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/browser.spec.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/browser.spec.js",
+          "import": "dayjs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of dayjs found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "dayjs.tz",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "test/browser.spec.js",
+          "type": "test"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No test entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "vuln_id": "elastic__logstash-14045",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 8669,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 2,
+    "refuted": 11,
+    "unverifiable": 2,
+    "verification_rate": 0.09,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/settings/PasswordSetting.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-core/src/main/java/org/logstash/settings/PasswordSetting.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/api/BasicAuth.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-core/src/main/java/org/logstash/api/BasicAuth.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/api/HttpApi.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-core/src/main/java/org/logstash/api/HttpApi.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "validate",
+          "class": "PasswordSetting"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for validate",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/settings/PasswordSetting.java",
+          "line_range": "45-60",
+          "content": "validate() method"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-core/src/main/java/org/logstash/settings/PasswordSetting.java",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/api/BasicAuth.java",
+          "line_range": "30-45",
+          "content": "Constructor"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-core/src/main/java/org/logstash/api/BasicAuth.java",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/api/HttpApi.java",
+          "line_range": "120-140",
+          "content": "start() method"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-core/src/main/java/org/logstash/api/HttpApi.java",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "start",
+          "class": "HttpApi"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for start",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "HttpApi.start",
+            "BasicAuth",
+            "PasswordSetting.validate"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: HttpApi.start->BasicAuth: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "validate",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (config_init, initialize, set)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "BasicAuth",
+          "caller": "HttpApi.start",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "api.auth.basic.enabled",
+          "value": "true"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Flag 'api.auth.basic.enabled' not found anywhere in repo",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "api.enabled",
+          "default_behavior": "conditional startup"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'api.enabled' found in 14 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "what": "complexity check",
+          "location": "PasswordSetting.validate"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "what": "password validation logic",
+          "location": "env2yaml.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

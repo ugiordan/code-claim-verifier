@@ -1,0 +1,178 @@
+{
+  "vuln_id": "elastic__logstash-13880",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 5451,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 7,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.49,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "bin/logstash.lib.sh"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: bin/logstash.lib.sh",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "bin/setup.bat"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: bin/setup.bat",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "setup_java",
+          "file": "bin/logstash.lib.sh"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: setup_java at bin/logstash.lib.sh:93",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bin/logstash.lib.sh",
+          "line_range": "120-130",
+          "content": "The `setup_java` function reads the `JDK_VERSION` file to print the bundled JDK version when `LS_JAVA_HOME` is set"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 194 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bin/setup.bat",
+          "line_range": "25-28",
+          "content": "The batch script reads the `JDK_VERSION` file to print the bundled JDK version when `LS_JAVA_HOME` is set"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 66 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy",
+          "line_range": "18-30",
+          "content": "The Gradle task `ExtractBundledJdkVersion` generates the `JDK_VERSION` file by parsing the `release` file in the bundled JDK"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 53 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bin/logstash.lib.sh",
+          "line_range": "120-130",
+          "content": "BUNDLED_JDK_VERSION=`cat JDK_VERSION`\necho \"WARNING: Logstash comes bundled with the recommended JDK(${BUNDLED_JDK_VERSION}), but is overridden by the version defined in LS_JAVA_HOME. Consider clearing LS_JAVA_HOME to use the bundled JDK.\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 194 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "bin/setup.bat",
+          "line_range": "25-28",
+          "content": "set /p BUNDLED_JDK_VERSION=<JDK_VERSION\necho \"WARNING: Logstash comes bundled with the recommended JDK(%BUNDLED_JDK_VERSION%), but is overridden by the version defined in LS_JAVA_HOME. Consider clearing LS_JAVA_HOME to use the bundled JDK.\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 66 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy",
+          "line_range": "18-30",
+          "content": "def groups = (sw.toString() =~ /^IMPLEMENTOR_VERSION=\\\"(.*)\\\"$/)\njdkVersionFile.write(groups[0][1])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 53 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ToolingUtils.jdkReleaseFilePath",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy",
+          "import": "org.gradle.api.DefaultTask"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy:3:import org.gradle.api.DefaultTask",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy",
+          "import": "org.gradle.api.tasks.TaskAction"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy:8:import org.gradle.api.tasks.TaskAction",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "JDK_VERSION file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

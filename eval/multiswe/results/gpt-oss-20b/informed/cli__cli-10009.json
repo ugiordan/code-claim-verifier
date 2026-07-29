@@ -1,0 +1,162 @@
+{
+  "vuln_id": "cli__cli-10009",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 36756,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 3,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.14,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "filepathDescendsFrom",
+          "file": "extractZip"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/download/zip.go:73:func filepathDescendsFrom(p, dir string) bool {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "extractZip"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: extractZip at pkg/cmd/run/download/zip.go:18",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "filepathDescendsFrom",
+          "content": "if dir == \".\" && !filepath.IsAbs(p) { return !strings.HasPrefix(p, \"..\"+string(filepath.Separator)) }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: filepathDescendsFrom",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "filepathDescendsFrom",
+          "content": "if !strings.HasSuffix(dir, string(filepath.Separator)) { dir += string(filepath.Separator) }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: filepathDescendsFrom",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "filepathDescendsFrom",
+          "content": "return strings.HasPrefix(p, dir)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: filepathDescendsFrom",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "content": "p = filepath.Join(destDir, filepath.FromSlash(zf.Name))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "download.go",
+          "content": "error downloading %s: %w"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 422 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "http.go",
+          "content": "error initializing temporary file"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 133 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "http.go",
+          "content": "error writing zip archive"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 133 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "http.go",
+          "content": "error extracting zip archive"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 133 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "zip.go",
+          "content": "error extracting %q: %w"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 83 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "destDir",
+          "file": "runDownload",
+          "default_behavior": "."
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'destDir' found in 10 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "content": "destDir = filepath.Join(destDir, a.Name)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

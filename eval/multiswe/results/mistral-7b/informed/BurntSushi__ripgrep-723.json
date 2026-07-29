@@ -1,0 +1,75 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-723",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1961,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 3,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.61,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/app.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/app.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "src/app.rs",
+          "classification": "main application logic"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=src/app.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "--fixed-width-line-numbers",
+          "value": "available"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Flag '--fixed-width-line-numbers' not found anywhere in repo",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input sanitization",
+          "context": "--fixed-width-line-numbers option"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry": "command-line interface",
+          "reachable": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

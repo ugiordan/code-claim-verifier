@@ -1,0 +1,208 @@
+{
+  "vuln_id": "elastic__logstash-14027",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 6489,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 17,
+    "verified": 9,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.49,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/ackedqueue/Page.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "internalReceive",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb:57:  def internalReceive(events)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+          "line_range": "43-51",
+          "content": "def internalReceive(events)\n  return false if !@running.get()\n\n  events.forEach do |event|\n    decorate(event)\n    @queue << event\n  end\n\n  true\nend"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 81 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for write",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java",
+          "line_range": "64-83",
+          "content": "public void write(byte[] bytes, long seqNum, int checkpointMaxWrites) throws IOException {\n  if (! this.writable) {\n    throw new IllegalStateException(...);\n  }\n\n  this.pageIO.write(bytes, seqNum); // May throw IOException\n  ...\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 302 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sendEvents",
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for sendEvents",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java",
+          "line_range": "50-70",
+          "content": "public void sendEvents(final PipelineOutput sender, final Collection<JrubyEventExtLibrary...> events, ...) {\n  ...\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 259 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "internalReceive",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (sendEvents, listenUnlistenUpdatesOutputReceivers, multi_receive)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Page.write",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/Queue.java:434:            this.headPage.write(data,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "PipelineBus.sendEvents",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+          "import": "org.logstash.plugins.pipeline.PipelineInput"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.plugins.pipeline.PipelineInput found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+          "import": "org.logstash.ackedqueue.Queue"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.ackedqueue.Queue found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "exception_handling",
+          "context": "IOException in Page.write"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "lock_release_mechanism",
+          "context": "pipeline reloads"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "retry_mechanism",
+          "context": "PQ writes"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

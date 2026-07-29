@@ -1,0 +1,147 @@
+{
+  "vuln_id": "fasterxml__jackson-core-1309",
+  "model": "granite-3.3-8b",
+  "condition": "informed",
+  "reasoning_length": 3394,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 4,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.34,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "looksLikeValidNumber",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for looksLikeValidNumber",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "looksLikeValidNumber",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (testLooksLikeValidNumber)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "isIntLike",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for isIntLike",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "isFloatLike",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for isFloatLike",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "isIntLike",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "isFloatLike",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "ch.randelshofer.fastdoubleparser.JavaDoubleParser",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java:3:import ch.randelshofer.fastdoubleparser.JavaDoubleParser;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "ch.randelshofer.fastdoubleparser.JavaFloatParser",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java:4:import ch.randelshofer.fastdoubleparser.JavaFloatParser;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JsonParser",
+            "isIntLike",
+            "looksLikeValidNumber"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JsonParser->isIntLike: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JsonParser",
+            "isFloatLike",
+            "looksLikeValidNumber"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JsonParser->isFloatLike: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

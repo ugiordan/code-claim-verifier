@@ -1,0 +1,66 @@
+{
+  "vuln_id": "clap-rs__clap-4032",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1637,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 4,
+    "verified": 1,
+    "refuted": 2,
+    "unverifiable": 1,
+    "verification_rate": 0.28,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "PACKAGE_VERSION",
+        "parameters": {
+          "package": "clap",
+          "version": "4.0.0",
+          "comparison": "gte"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No lockfile found containing clap",
+        "method": "lockfile_parse"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "default action for arguments",
+          "file": "clap library",
+          "default_behavior": "value_parser"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "Variable 'default action for arguments' not found in searched scope",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "clap",
+          "type": "library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "description": "command-line argument parsing via clap library"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/.github/workflows/release-notes.py:13:    parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

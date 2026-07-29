@@ -1,0 +1,143 @@
+{
+  "vuln_id": "elastic__logstash-15925",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 8159,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.2,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test files",
+          "import": "org.junit.*",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/log/LogstashConfigurationFactoryTest.java:34:import org.junit.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test files",
+          "import": "org.apache.commons.io.*",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.apache.commons.io.* found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test files",
+          "import": "io.netty.*",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of io.netty.* found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "Append",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:142:func main() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "Convert",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:142:func main() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "Date",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/docker/data/logstash/env2yaml/env2yaml.go:142:func main() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "initNettyAllocator",
+          "file": "org.logstash.core.NettyInitializer",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for initNettyAllocator",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "org.logstash.core.NettyInitializer",
+          "line": 12,
+          "content": "static { System.setProperty(\"io.netty.allocator.maxOrder\", \"9\"); }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: org.logstash.core.NettyInitializer",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "processor classes",
+          "line": 30,
+          "content": "public static void main(String[] args) { NettyBootstrap bootstrap = new NettyBootstrap(); \u2026 }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: processor classes",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "NettyBootstrap",
+            "NettyInitializer"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->NettyBootstrap: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

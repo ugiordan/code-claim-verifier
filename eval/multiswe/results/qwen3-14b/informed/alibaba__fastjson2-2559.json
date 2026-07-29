@@ -1,0 +1,134 @@
+{
+  "vuln_id": "alibaba__fastjson2-2559",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 3540,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 7,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.51,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "cast",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for cast",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "TypeUtils.cast",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/util/TypeUtilsTest.java:154:        assertSame(o, TypeUtils.c",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "TypeUtils.cast",
+          "caller": "ObjectReaderProvider.typeConverts",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/util/TypeUtilsTest.java:154:        assertSame(o, TypeUtils.c",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "TypeUtils.cast",
+          "caller": "JSONObject.toJavaObject",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/util/TypeUtilsTest.java:154:        assertSame(o, TypeUtils.c",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "Decimal128 to Double conversion in TypeUtils.cast"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "conversion path for org.bson.types.Decimal128 to Double in TypeUtils.cast"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "handleChannel",
+          "parameter": "String data"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JSON.parseObject",
+            "JSONObject.toJavaObject",
+            "TypeUtils.cast"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JSON.parseObject->JSONObject.toJavaObject: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+          "line": 1525,
+          "content_description": "location for proposed fix"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 1525 out of range (file has 995 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

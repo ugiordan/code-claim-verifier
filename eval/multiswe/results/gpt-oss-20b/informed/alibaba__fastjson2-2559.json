@@ -1,0 +1,143 @@
+{
+  "vuln_id": "alibaba__fastjson2-2559",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 5480,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.36,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "cast",
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for cast",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
+          "line": 1525,
+          "content": "if (typeConvert != null)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 1525 out of range (file has 995 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JSON.parseObject",
+            "ObjectReaderProvider.getObjectReader",
+            "ObjectReader.readObject",
+            "ObjectReaderImpl.readField",
+            "TypeUtils.cast"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JSON.parseObject->ObjectReaderProvider.getObjectReader: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JSONB.parse",
+            "ObjectReaderProvider.getObjectReader",
+            "ObjectReader.readObject",
+            "ObjectReaderImpl.readField",
+            "TypeUtils.cast"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JSONB.parse->ObjectReaderProvider.getObjectReader: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JSONObject.toJavaObject",
+            "ObjectReaderProvider.getObjectReader",
+            "ObjectReader.readObject",
+            "ObjectReaderImpl.readField",
+            "TypeUtils.cast"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JSONObject.toJavaObject->ObjectReaderProvider.getObjectReader: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "obj.getClass().getName()",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "special handling for Decimal128 in TypeUtils.cast"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "TypeConvert for Decimal128"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input validation or sanitization before the cast"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

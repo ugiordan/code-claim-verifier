@@ -1,0 +1,94 @@
+{
+  "vuln_id": "alibaba__fastjson2-2559",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1968,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 3,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.41,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "com.alibaba.fastjson2.util.TypeUtils.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: com.alibaba.fastjson2.util.TypeUtils.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "TypeUtils.cast",
+          "file": "com.alibaba.fastjson2.util.TypeUtils.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for TypeUtils.cast",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "TypeUtils.cast does not support casting org.bson.types.Decimal128 to Double"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "DUMPTest.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): core/src/test/java/com/alibaba/DUMPTest.java",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "Hessian2Test.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): core/src/test/java/com/alibaba/Hessian2Test.java",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "DUMPTest.java",
+          "classification": "test"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=DUMPTest.java, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "Hessian2Test.java",
+          "classification": "test"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=Hessian2Test.java, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

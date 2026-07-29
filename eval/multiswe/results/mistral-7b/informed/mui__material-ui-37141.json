@@ -1,0 +1,85 @@
+{
+  "vuln_id": "mui__material-ui-37141",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1749,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 5,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.7,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "demo.tsx"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: demo.tsx",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "handleChange",
+          "file": "demo.tsx"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/test/regressions/fixtures/Textarea/Textarea.js:9:  const handleChange = (event) => {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "handleChange",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (InputAdornments, InputAdornments, ControlledAccordions)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "@mui/material",
+          "imported_item": "Select"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/benchmark/server/scenarios/core.js:6:import ButtonBase from '@mui/material/ButtonBase';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit mitigation or input sanitization for the onChange callback"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "demo.tsx",
+          "description": "main component rendered in the application"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/.yarn/releases/yarn-1.22.19.js:3288:// All are flag-free, unless they were created above with a flag.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

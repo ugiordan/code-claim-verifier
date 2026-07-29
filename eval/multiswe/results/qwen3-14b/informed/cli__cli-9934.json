@@ -1,0 +1,151 @@
+{
+  "vuln_id": "cli__cli-9934",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4218,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 8,
+    "refuted": 3,
+    "unverifiable": 1,
+    "verification_rate": 0.71,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "internal/update/update.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: internal/update/update.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "CheckForUpdate",
+          "file": "internal/update/update.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: CheckForUpdate at internal/update/update.go:35",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "internal/update/update.go",
+          "line_range": "30-100",
+          "content_description": "CheckForUpdate function implementation"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 124 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/extension/manager.go",
+          "imported_module": "internal/update/update.go"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/extension/manager.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/extension/manager.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "github.com/hashicorp/go-version",
+          "usage": "version comparison"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "go.mod: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "gopkg.in/yaml.v3",
+          "usage": "reading/writing state files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "go.mod: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "net/http",
+          "usage": "query GitHub's API for release information"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "go.mod: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/internal/gh",
+          "usage": "GitHub repository operations"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "go.mod: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "environment variable check for extensions in CheckForUpdate",
+          "file": "internal/update/update.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "GH_NO_UPDATE_NOTIFIER application to extensions"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "CheckForUpdate",
+          "trigger": "extension execution via extension manager"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

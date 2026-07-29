@@ -1,0 +1,185 @@
+{
+  "vuln_id": "Kotlin__dataframe-1517",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4966,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 9,
+    "refuted": 5,
+    "unverifiable": 1,
+    "verification_rate": 0.63,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/insert.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/insert.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/insert.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/insert.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "DataFrame.insert",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for DataFrame.insert",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/insert.kt",
+          "line": 10,
+          "content": "DataFrame.insert(column: AnyCol): InsertClause<T>"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 10: import org.jetbrains.kotlinx.dataframe.impl.columnName",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "InsertClause.after",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for InsertClause.after",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/insert.kt",
+          "line": 54,
+          "content": "InsertClause.after(column: ColumnSelector<T, *>): DataFrame<T>"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 54: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "insertImpl",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: insertImpl at core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/insert.kt:22",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/insert.kt",
+          "line": 54,
+          "content": "insertImpl(df: DataFrame<T>?, columns: List<ColumnToInsert>, ...)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 54: // assert that new columns go directly under current column so they have longer paths",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "move",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (into, after, at)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "insertImpl",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (add, under, after)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.api.insertImpl"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/GroupByImpl.kt:28:import org.jetbrains.kotlinx.dataframe.i",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.columns.ColumnPath"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/aggregation/GroupByReceiverImpl.kt:11:import org.jetbrains",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.columns.tree.ReadonlyTreeNode"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/insert.kt:11:import org.jetbrains.kotlinx.dataframe.im",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/api/insert.kt",
+          "line": null,
+          "content": "check(invalidPath == null) { \"Can not insert column ... because column with this path already exists in DataFrame\" }"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "insert.before",
+          "context": "InsertClause"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

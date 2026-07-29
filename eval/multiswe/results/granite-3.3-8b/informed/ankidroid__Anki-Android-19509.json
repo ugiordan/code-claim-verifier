@@ -1,0 +1,84 @@
+{
+  "vuln_id": "ankidroid__Anki-Android-19509",
+  "model": "granite-3.3-8b",
+  "condition": "informed",
+  "reasoning_length": 2713,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 5,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.71,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "CollectionHelper.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "initializeAnkiDroidDirectory",
+          "file": "CollectionHelper.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:81:    fun initializeAnkiDroidDirectory(dir: File) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CollectionHelper.kt",
+          "content": "getExternalFilesDir(null)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 336 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getExternalFilesDir",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (externalFilesDir, fileUri, externalFilesFolder)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization or mitigation for getExternalFilesDir(null) function call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "description": "app initialization process calls initializeAnkiDroidDirectory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/test/java/com/ichi2/anki/HandlerUtilsTest.kt:36:    fun checkHandlerFunctionExecution()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

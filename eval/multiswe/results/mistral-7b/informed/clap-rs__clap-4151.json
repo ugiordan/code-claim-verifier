@@ -1,0 +1,76 @@
+{
+  "vuln_id": "clap-rs__clap-4151",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning_length": 1908,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 2,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.31,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "CHANGELOG.md"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: CHANGELOG.md",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CHANGELOG.md",
+          "content": "version 2.19.1"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 3641 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "clap",
+          "type": "external"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "mitigation": "dont_collapse_args_in_usage option",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "dont_collapse_args_in_usage",
+          "file": "clap library",
+          "default_behavior": "collapse args"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'dont_collapse_args_in_usage' found in 8 locations.",
+        "method": "default_value"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

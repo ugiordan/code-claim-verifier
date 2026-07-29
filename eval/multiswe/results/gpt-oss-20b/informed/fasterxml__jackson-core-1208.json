@@ -1,0 +1,188 @@
+{
+  "vuln_id": "fasterxml__jackson-core-1208",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 7954,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 7,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.38,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/sym/CharsToNameCanonicalizer.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/StreamReadConstraints.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "JsonFactory.java",
+          "line": 120,
+          "content": "private StreamReadConstraints _streamReadConstraints = StreamReadConstraints.DEFAULT;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 120: * is broken (like Android), or if there are retention issues due to",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "JsonFactory.java",
+          "line": 260,
+          "content": "public JsonFactory setStreamReadConstraints(StreamReadConstraints constraints)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 260: */",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "JsonFactory.java",
+          "line": 70,
+          "content": "protected final CharsToNameCanonicalizer _rootCharSymbols = CharsToNameCanonicalizer.createRoot(this);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 70: * Feature that determines whether JSON object field names are",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CharsToNameCanonicalizer.java",
+          "line": 90,
+          "content": "protected final int _maxNameLength;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 90: * intent has been 38 (with \"com.fasterxml.jackson.core.main.TestWithTonsaSymbols\");",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CharsToNameCanonicalizer.java",
+          "line": 200,
+          "content": "public static CharsToNameCanonicalizer createRoot(JsonFactory f)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 200: protected int _longestCollisionList;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "setStreamReadConstraints",
+          "file": "JsonFactory.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for setStreamReadConstraints",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "createRoot",
+          "file": "CharsToNameCanonicalizer.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for createRoot",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "CharsToNameCanonicalizer.createRoot",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/sym/TestSymbolsWithMediaItem.java:71:        CharsToName",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getStreamReadConstraints",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "maxNameLength",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (JSON_F_NAME_100, testOverride)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "_streamReadConstraints",
+          "file": "JsonFactory.java",
+          "default_behavior": "StreamReadConstraints.DEFAULT"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable '_streamReadConstraints' found in 39 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "internal method updates the root symbol table after construction"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

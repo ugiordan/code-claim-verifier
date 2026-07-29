@@ -1,0 +1,177 @@
+{
+  "vuln_id": "ankidroid__Anki-Android-19661",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 5192,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 8,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.48,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt",
+          "line_number": 218,
+          "content": "CollectionHelper.getDefaultAnkiDroidDirectory()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt",
+          "line_number": 231,
+          "content": "getExternalFilesDir"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt",
+          "line_number": 186,
+          "content": "getDefaultAnkiDroidDirectory()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getAppSpecificExternalAnkiDroidDirectory",
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:219:    private fun getAppSpecificExternalAnkiDroidDirectory(context:",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getDefaultAnkiDroidDirectory",
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:181:    fun getDefaultAnkiDroidDirectory(context: Context): File {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "context.getExternalFilesDir",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:220:        val externalFilesDir = cont",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getAppSpecificExternalAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (getDefaultAnkiDroidDirectory, storagePath, currentCollectionDirectory)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "AnkiDroidApp.onCreate",
+            "CollectionHelper.getDefaultAnkiDroidDirectory"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: AnkiDroidApp.onCreate->CollectionHelper.getDefaultAnkiDroidDirectory: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "AnkiDroidApp.onCreate",
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/test/java/com/ichi2/anki/HandlerUtilsTest.kt:36:    fun checkHandlerFunctionExecution()",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.ichi2.anki.exception.StorageAccessException"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/test/java/com/ichi2/anki/ThrowableFilterServiceTest.kt:21:import com.ichi2.anki.exception.StorageAccessException",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "null_check",
+          "function": "getAppSpecificExternalAnkiDroidDirectory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "fallback_logic",
+          "context": "external_storage"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

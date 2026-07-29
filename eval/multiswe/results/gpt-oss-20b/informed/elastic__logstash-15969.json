@@ -1,0 +1,199 @@
+{
+  "vuln_id": "elastic__logstash-15969",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 7592,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 0,
+    "refuted": 16,
+    "unverifiable": 0,
+    "verification_rate": 0.0,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/LogEventBuilder.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-core/src/main/java/org/logstash/LogEventBuilder.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/LogEvent.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-core/src/main/java/org/logstash/LogEvent.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-codec-json/lib/logstash/codecs/json.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-codec-json/lib/logstash/codecs/json.rb",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-output-elasticsearch/lib/logstash/outputs/elasticsearch/http_client/manticore_adapter.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: logstash-output-elasticsearch/lib/logstash/outputs/elasticsearch/http_client/manticore_adapter.rb",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LogEventBuilder.build",
+          "file": "logstash-core/src/main/java/org/logstash/LogEventBuilder.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for LogEventBuilder.build",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LogEvent.setFields",
+          "file": "logstash-core/src/main/java/org/logstash/LogEvent.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for LogEvent.setFields",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LogEventBuilder.setMessage",
+          "file": "logstash-core/src/main/java/org/logstash/LogEventBuilder.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for LogEventBuilder.setMessage",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-codec-json/lib/logstash/codecs/json.rb",
+          "line": 84,
+          "content_description": "adds a :message key to the event hash"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-codec-json/lib/logstash/codecs/json.rb",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-output-elasticsearch/lib/logstash/outputs/elasticsearch/http_client/manticore_adapter.rb",
+          "line": 104,
+          "content_description": "injects a :message key"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-output-elasticsearch/lib/logstash/outputs/elasticsearch/http_client/manticore_adapter.rb",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/LogEventBuilder.java",
+          "line": 200,
+          "content_description": "LogEventBuilder.build() method definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-core/src/main/java/org/logstash/LogEventBuilder.java",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/LogEvent.java",
+          "line": 120,
+          "content_description": "LogEvent.setFields(Map) method definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: logstash-core/src/main/java/org/logstash/LogEvent.java",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "event.setMessage",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "event.setFields",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "LogEventBuilder.setMessage",
+            "LogEventBuilder.build"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: LogEventBuilder.setMessage->LogEventBuilder.build: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LogEventBuilder.build",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LogEventBuilder.setMessage",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

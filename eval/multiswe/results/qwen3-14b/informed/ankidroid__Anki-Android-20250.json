@@ -1,0 +1,106 @@
+{
+  "vuln_id": "ankidroid__Anki-Android-20250",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4382,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 5,
+    "refuted": 2,
+    "unverifiable": 1,
+    "verification_rate": 0.69,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/NoteEditorFragment.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "onBackPressed",
+          "file": "NoteEditorFragment.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for onBackPressed",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "hasUnsavedChanges",
+          "file": "NoteEditorFragment.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/NoteEditorFragment.kt:1195:    fun hasUnsavedChanges(): Boolean {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "showDiscardChangesDialog",
+          "file": "NoteEditorFragment.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/widget/cardanalysis/CardAnalysisWidgetConfig.kt:204:    private fun showDiscardChangesDialog()",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "import com.ichi2.anki.dialogs.DiscardChangesDialog"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "hasUnsavedChanges",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (loadNoteEditorFragmentIfFragmented, closeCardEditorWithCheck, `edit note in filtered deck from reviewer - 15919`)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "showDiscardChangesDialog",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (handleOnBackPressed, onOptionsItemSelected, handleOnBackPressed)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "no explicit input sanitization or mitigation for newline characters in the comparison logic"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

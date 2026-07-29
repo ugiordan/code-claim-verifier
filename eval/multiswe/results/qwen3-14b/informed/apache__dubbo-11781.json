@@ -1,0 +1,151 @@
+{
+  "vuln_id": "apache__dubbo-11781",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4332,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 9,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.67,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file_path": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+          "classification": "source"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseDecodedParams",
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseDecodedParams",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseDecodedStr",
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseDecodedStr",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parseDecodedParams",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (parseDecodedStr, parseParams, valueOf)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+          "import": "org.apache.dubbo.common.url.component.ServiceConfigURL"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java:19:import org.apache.dubbo.common.url.component.ServiceConfigURL;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+          "import": "org.apache.dubbo.common.url.component.URLItemCache"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java:20:import org.apache.dubbo.common.url.component.URLItemCache;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+          "import": "org.apache.dubbo.common.utils.StringUtils.EMPTY_STRING"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java:27:import static org.apache.dubbo.common.utils.StringUtils.EMPTY_STRI",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+          "import": "org.apache.dubbo.common.utils.StringUtils.decodeHexByte"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java:28:import static org.apache.dubbo.common.utils.StringUtils.decodeHexB",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java",
+          "import": "org.apache.dubbo.common.utils.Utf8Utils.decodeUtf8"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-common/src/main/java/org/apache/dubbo/common/URLStrParser.java:29:import static org.apache.dubbo.common.utils.Utf8Utils.decodeUtf8;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit input sanitization or mitigation for empty parameter values"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "parseDecodedStr",
+          "context": "Dubbo service initialization when parsing registry addresses"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/test/java/org/apache/dubbo/remoting/transport/codec/DeprecatedExchangeCod",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

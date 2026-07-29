@@ -1,0 +1,187 @@
+{
+  "vuln_id": "mui__material-ui-36116",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 5783,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 9,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.52,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "packages/mui-base/src/AutocompleteUnstyled/AutocompleteUnstyled.tsx"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: packages/mui-base/src/AutocompleteUnstyled/AutocompleteUnstyled.tsx",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getOptionLabel",
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js:123:  let getOptionLabel = getOptionLabelProp;",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getTagProps",
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getTagProps",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "useAutocomplete",
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: useAutocomplete at packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js:77",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js",
+          "line": 473,
+          "content": "label: getOptionLabel(value[focusedTag]),"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 473: ? previousProps.value.every((val, i) => getOptionLabel(value[i]) === getOptionLabel(val))",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getOptionLabel",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (useAutocomplete, checkHighlightedOptionExists, defaultRenderOption)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getTagProps",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 16 callers (CustomTags, CustomTags, FixedTags)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "useAutocomplete",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (CustomizedHook, CustomizedHook, UseAutocomplete)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "AutocompleteUnstyled",
+            "useAutocomplete",
+            "getTagProps",
+            "getOptionLabel"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: AutocompleteUnstyled->useAutocomplete: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "packages/mui-base/src/AutocompleteUnstyled/AutocompleteUnstyled.tsx",
+          "import": "useAutocomplete"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/test/bundling/scripts/fixtureTemplateValues.js:253:import useAutocomplete_core__pathImport from '@mui/material/useAutocomplete';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js",
+          "import": "React"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of React found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "packages/mui-base/src/AutocompleteUnstyled/useAutocomplete.js",
+          "import": "@mui/utils"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of @mui/utils found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "guard for undefined option in getOptionLabel"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "validation of focusedTag before use"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "vuln_id": "cli__cli-9774",
+  "model": "mistral-7b",
+  "condition": "informed",
+  "reasoning": " To address the vulnerability, you need to modify the `Run` struct in the `pkg/cmd/run/shared/shared.go` file to include the `startedAt` and `completedAt` fields.\n\nFirst, update the `Run` struct definition:\n\n```go\ntype Run struct {\n\t// ... existing fields\n\tStartedAt      time.Time `json:\"run_started_at\"`\n\tCompletedAt    time.Time `json:\"run_completed_at\"`\n\t// ... existing fields\n}\n```\n\nNext, update the `ExportData` method to include the new fields:\n\n```go\nfunc (r *Run) ExportData(fields []string) map[string]interface{} {\n\t// ... existing code\n\tdata := map[string]interface{}{}\n\n\t// ... existing code to populate data\n\n\tif !r.CompletedAt.IsZero() {\n\t\tdata[\"completedAt\"] = r.CompletedAt\n\t}\n\tif !r.StartedAt.IsZero() {\n\t\tdata[\"startedAt\"] = r.StartedAt\n\t}\n\n\t// ... existing code to populate data\n\n\treturn data\n}\n```\n\nAfter making these changes, you should be able to retrieve the `startedAt` and `completedAt` fields when exporting workflow run job steps information.\n\nTo test the changes, you can run the application and check if the new fields are included in the output. If the changes are correct, you can commit them to the repository.\n\nAdditionally, consider updating the documentation and tests to reflect the changes made.",
+  "reasoning_length": 1234
+}

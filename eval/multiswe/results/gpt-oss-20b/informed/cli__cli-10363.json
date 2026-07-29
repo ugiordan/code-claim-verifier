@@ -1,0 +1,53 @@
+{
+  "vuln_id": "cli__cli-10363",
+  "model": "gpt-oss-20b",
+  "condition": "informed",
+  "reasoning_length": 35782,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 3,
+    "verified": 2,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.7,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "edit.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): pkg/cmd/codespace/edit.go",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cmdutil.NilBoolFlag",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (22 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/release/edit/edit.go:76:\tcmdutil.NilBoolFlag(cmd, &opts.Draft, \"draft\", \"\", \"Save the release as a draft",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cmdutil.BoolFlag",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

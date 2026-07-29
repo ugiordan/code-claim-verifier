@@ -1,0 +1,186 @@
+{
+  "vuln_id": "Kotlin__dataframe-1072",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4082,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 10,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.63,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/Utils.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/generated-sources/src/main/kotlin/org/jetbrains/kotlinx/dataframe/impl/Utils.kt",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "DataFrame<T>.renameToCamelCase",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for DataFrame<T>.renameToCamelCase",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "RenameClause<T, C>.toCamelCase",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for RenameClause<T, C>.toCamelCase",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+          "line": 50,
+          "content": "DataFrame<T>.renameToCamelCase()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 50: * Even [DataFrames][DataFrame] inside [FrameColumns][FrameColumn] are traversed recursively.",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "core/src/main/kotlin/org/jetbrains/kotlinx/dataframe/api/rename.kt",
+          "line": 74,
+          "content": "RenameClause<T, C>.toCamelCase()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 74: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "rename",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (from, into, asColumnGroup)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "update",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (fillNulls, fillNaNs, fillNA)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "toCamelCase",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (renameToCamelCase, renameToCamelCase, `nested df`)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "toCamelCaseByDelimiters",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (toCamelCase, from, toCamelCase)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "replaceFirstChar",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (toCamelCase, joinToCamelCaseString, capitalizedName)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.DELIMITERS_REGEX"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/dataframe-openapi/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/utils.kt:6:import org.jetbrains.kotlinx.dataframe.impl.DELIMITERS",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.jetbrains.kotlinx.dataframe.impl.toCamelCaseByDelimiters"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Kotlin__dataframe/dataframe-openapi/src/main/kotlin/org/jetbrains/kotlinx/dataframe/io/utils.kt:7:import org.jetbrains.kotlinx.dataframe.impl.toCamelCas",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "input sanitization",
+          "context": "column names before transformation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "DataFrame<T>.renameToCamelCase",
+            "RenameClause<T, C>.toCamelCase"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: DataFrame<T>.renameToCamelCase->RenameClause<T, C>.toCamelCase: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

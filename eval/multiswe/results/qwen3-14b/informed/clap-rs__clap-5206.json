@@ -1,0 +1,139 @@
+{
+  "vuln_id": "clap-rs__clap-5206",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 6411,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 4,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.39,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "examples/git.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: examples/git.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "examples/git-derive.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: examples/git-derive.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/attrs.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/git.rs",
+          "line_content": ".subcommand(Command::new(\"stash\")\n      .args_conflicts_with_subcommands(true)\n      .args(push_args())\n      .subcommand(Command::new(\"push\").args(push_args()))\n      .subcommand(Command::new(\"pop\").arg(arg!([STASH])))\n      .subcommand(Command::new(\"apply\").arg(arg!([STASH]))),\n  "
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 100 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/git-derive.rs",
+          "line_content": "#[derive(Debug, Args)]\n  #[clap(args_conflicts_with_subcommands = true)]\n  struct Stash {\n      #[clap(subcommand)]\n      command: Option<StashCommands>,\n      #[clap(flatten)]\n      push: StashPush,\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 97 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs",
+          "line_content": "match &*res.kind {\n      Kind::Subcommand(_) => abort!(res.kind.span(), \"subcommand is only allowed on fields\"),"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1208 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "examples/git.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at examples/git.rs:44",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/git.rs",
+          "line_content": "match matches.subcommand() {\n      Some((\"help\", sub_matches)) => {\n          let subcommand = sub_matches.get_one::<String>(\"SUBCOMMAND\").unwrap();\n          // Logic to print help for the specified subcommand\n      }\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 100 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/git.rs",
+          "line_content": "let matches = cli().get_matches();\n  match matches.subcommand() {\n      Some((\"help\", sub_matches)) => {\n          // Handle help subcommand\n      }\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 100 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "clap::Command::get_matches",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "clap::Command::subcommand",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "vuln_id": "iamkun__dayjs-1321",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 5033,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 7,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.58,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/plugin/customParseFormat/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/plugin/customParseFormat/index.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "addInput",
+          "file": "src/plugin/customParseFormat/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/src/plugin/customParseFormat/index.js:22:const addInput = function (property) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/customParseFormat/index.js",
+          "content": "const addInput = function (property) {\n    return function (input) {\n      this[property] = +input\n    }\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 246 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "makeParser",
+          "file": "src/plugin/customParseFormat/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: makeParser at src/plugin/customParseFormat/index.js:135",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/customParseFormat/index.js",
+          "content": "function makeParser(format) {\n    // ...\n    return function (input) {\n      const time = {}\n      for (let i = 0, start = 0; i < length; i += 1) {\n        const token = array[i]\n        if (typeof token === 'string') {\n          start += token.length\n        } else {\n          const { regex, parser } = token\n          const part = input.substr(start)\n          const match = regex.exec(part)\n          const value = match[0]\n          parser.call(time, value)\n          input = input.replace(value, '')\n        }\n      }\n      correctHours(time)\n      return time\n    }\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 246 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseFormattedInput",
+          "file": "src/plugin/customParseFormat/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: parseFormattedInput at src/plugin/customParseFormat/index.js:170",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/customParseFormat/index.js",
+          "content": "const parseFormattedInput = (input, format, utc) => {\n    try {\n      const parser = makeParser(format)\n      const {\n        year, month, day, hours, minutes, seconds, milliseconds, zone\n      } = parser(input)\n      // ...\n    }\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 246 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "makeParser",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (parseFormattedInput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parseFormattedInput",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "u",
+          "from": "../localizedFormat/utils"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/test/timezone.test.js:4:import utc from '../src/plugin/utc'",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input validation checks in the expressions object for date components like MM, DD, or YYYY"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "dayjs",
+            "customParseFormat",
+            "parseFormattedInput"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: dayjs->customParseFormat: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

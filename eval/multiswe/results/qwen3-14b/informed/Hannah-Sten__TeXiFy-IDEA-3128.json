@@ -1,0 +1,149 @@
+{
+  "vuln_id": "Hannah-Sten__TeXiFy-IDEA-3128",
+  "model": "qwen3-14b",
+  "condition": "informed",
+  "reasoning_length": 4861,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 6,
+    "refuted": 5,
+    "unverifiable": 1,
+    "verification_rate": 0.53,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file_path": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt",
+          "classification": "defines the LatexNonBreakingSpaceInspection class"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "inspectFile",
+          "file": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Hannah-Sten__TeXiFy-IDEA/src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt:56:    override fun inspe",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt",
+          "content": "val sibling = command.prevSibling\n    ?: command.parent?.prevSibling\n    ?: command.parentOfType(LatexNoMathContent::class)?.prevSibling\n    ?: continue\n\nif (sibling is PsiWhiteSpace) {\n    descriptors.add(\n        manager.createProblemDescriptor(\n            sibling,\n            \"Reference without a non-breaking space\",\n            WhitespaceReplacementFix(),\n            ProblemHighlightType.GENERIC_ERROR_OR_WARNING,\n            isOntheFly\n        )\n    )\n    continue\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "function_name": "inspectFile",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No function name specified",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.intellij.codeInspection.InspectionManager",
+          "file": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Hannah-Sten__TeXiFy-IDEA/src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt:3:import com.intellij.cod",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "nl.hannahsten.texifyidea.lang.commands.LatexGenericRegularCommand",
+          "file": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Hannah-Sten__TeXiFy-IDEA/src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt:13:import nl.hannahsten.t",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "nl.hannahsten.texifyidea.psi.LatexNoMathContent",
+          "file": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/Hannah-Sten__TeXiFy-IDEA/src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt:15:import nl.hannahsten.t",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "nl.hannahsten.texifyidea.util.CommandMagic",
+          "file": "src/nl/hannahsten/texifyidea/inspections/latex/typesetting/spacing/LatexNonBreakingSpaceInspection.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of nl.hannahsten.texifyidea.util.CommandMagic found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "description": "inspection skips certain commands like \\citet, \\cref that handle spacing internally"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "description": "cleveref package handling to avoid flagging redefined commands"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "no mitigation exists for cases where a reference is directly after punctuation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}
