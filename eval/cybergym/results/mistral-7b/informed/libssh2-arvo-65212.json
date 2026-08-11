@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 7,
-    "verified": 5,
-    "refuted": 2,
+    "verified": 4,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.74,
+    "verification_rate": 0.58,
     "action": "FLAG",
     "claims": [
       {
@@ -34,15 +34,18 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "_libssh2_kex_agree_instr",
-          "expected": true
+          "chain": [
+            "main",
+            "libssh2_session_handshake",
+            "_libssh2_kex_agree_instr"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (_libssh2_packet_add, kex_agree_hostkey, kex_agree_kex_hostkey)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->libssh2_session_handshake: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",

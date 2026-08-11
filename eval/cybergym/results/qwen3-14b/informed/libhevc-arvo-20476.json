@@ -5,11 +5,11 @@
   "reasoning_length": 4867,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
+    "total_claims": 20,
+    "verified": 14,
     "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.67,
+    "verification_rate": 0.63,
     "action": "FLAG",
     "claims": [
       {
@@ -53,26 +53,6 @@
         "method": "os.walk_fuzzy"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "ihevc_typedefs.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): common/ihevc_typedefs.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "iv.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): common/iv.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "hevc_dec_fuzzer.cpp",
@@ -97,13 +77,12 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "decodeHeader",
-          "file": "hevc_dec_fuzzer.cpp"
+          "name": "ihevcd_cxa_api_function"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for decodeHeader",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ihevcd_cxa_api_function at decoder/ihevcd_api.c:3556",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -118,18 +97,39 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "ihevcd_cxa_api_function"
+          "name": "decodeHeader"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for decodeHeader",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ivd_api_function",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: ihevcd_cxa_api_function at decoder/ihevcd_api.c:3556",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (Codec::createCodec, Codec::deleteCodec, Codec::resetCodec)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ivd_api_function",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (Codec::createCodec, Codec::deleteCodec, Codec::resetCodec)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "decodeFrame",
-          "file": "hevc_dec_fuzzer.cpp"
+          "name": "decodeFrame"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -137,10 +137,31 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "hevc_dec_fuzzer.cpp",
+          "import": "ihevc_typedefs.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/encoder/main.c:52:#include \"ihevc_typedefs.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "hevc_dec_fuzzer.cpp",
+          "import": "iv.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/test/decoder/main.c:51:#include \"iv.h\"",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "iv_aligned_malloc",
-          "file": "iv.h"
+          "name": "iv_aligned_malloc"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -150,40 +171,12 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "iv_aligned_free",
-          "file": "iv.h"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for iv_aligned_free",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "caller": "decodeHeader",
-          "callee": "ivd_api_function",
-          "expected": true
+          "name": "iv_aligned_free"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (Codec::createCodec, Codec::deleteCodec, Codec::resetCodec)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "function": "ivd_api_function",
-          "callers": [
-            "decodeHeader",
-            "decodeFrame"
-          ],
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (Codec::createCodec, Codec::deleteCodec, Codec::resetCodec)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: iv_aligned_free at fuzzer/hevc_dec_fuzzer.cpp:69",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "ABSENCE",
@@ -214,6 +207,19 @@
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "decodeHeader",
+            "ivd_api_function"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: decodeHeader->ivd_api_function: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

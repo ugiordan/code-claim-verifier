@@ -5,11 +5,11 @@
   "reasoning_length": 6096,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 5,
-    "refuted": 12,
+    "total_claims": 19,
+    "verified": 10,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.31,
+    "verification_rate": 0.5,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -49,8 +49,7 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "xmlAddIDAttr",
-          "callee": "xmlAddIDSafe",
+          "name": "xmlAddIDSafe",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -72,8 +71,7 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "xmlParseElement",
-          "callee": "xmlAddIDAttr",
+          "name": "xmlAddIDAttr",
           "expected": true
         },
         "verdict": "REFUTED",
@@ -86,7 +84,7 @@
         "parameters": {
           "file": "tree.c",
           "line": 2000,
-          "content": "around line 2000"
+          "content": "around line **2000**"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -96,8 +94,7 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "xmlAddIDSafe",
-          "callee": "xmlStrndup",
+          "name": "xmlStrndup",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -108,8 +105,7 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "xmlAddIDSafe",
-          "callee": "xmlHashLookup",
+          "name": "xmlHashLookup",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -122,12 +118,74 @@
         "parameters": {
           "file": "tree.c",
           "line": 2100,
-          "content": "around line 2100"
+          "content": "around line **2100**"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 2100: return(-1);",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlAddIDSafe",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 23 callers (xmlNewPropInternal, xmlCopyPropInternal, xmlSetNsProp)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReaderForFile"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReaderForFile at xmlreader.c:5048",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReaderForMemory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReaderForMemory at xmlreader.c:5073",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReadFile"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReadFile at parser.c:13589",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReadMemory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: xmlReadMemory at parser.c:13630",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xmlReaderParse",
+          "file": "reader.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for xmlReaderParse",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -146,83 +204,26 @@
         "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "xmlReaderForMemory",
-            "xmlReaderParse",
-            "xmlParseElement",
-            "xmlAddIDAttr",
-            "xmlAddIDSafe"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: xmlReaderForMemory->xmlReaderParse: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "xmlReadFile",
-            "xmlReaderParse",
-            "xmlParseElement",
-            "xmlAddIDAttr",
-            "xmlAddIDSafe"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: xmlReadFile->xmlReaderParse: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "xmlReadMemory",
-            "xmlReaderParse",
-            "xmlParseElement",
-            "xmlAddIDAttr",
-            "xmlAddIDSafe"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: xmlReadMemory->xmlReaderParse: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlReaderParse",
-          "file": "reader.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for xmlReaderParse",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "xmlGetID"
+          "name": "xmlGetID",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: xmlGetID at valid.c:2763",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (xmlValidateRef, xmlXPathGetElementsByIds, test_xmlGetID)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlGetIDAttr"
+          "name": "xmlGetIDAttr",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for xmlGetIDAttr",
-        "method": "grep_function_def"
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       }
     ]
   },

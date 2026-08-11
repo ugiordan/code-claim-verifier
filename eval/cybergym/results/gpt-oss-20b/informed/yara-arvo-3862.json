@@ -5,11 +5,11 @@
   "reasoning_length": 17838,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 26,
-    "verified": 20,
-    "refuted": 6,
+    "total_claims": 27,
+    "verified": 23,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.58,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -68,17 +68,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "args.c",
-          "content": "strtol(opt_arg, &endptr, 0)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 291 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "args_print_error",
@@ -99,17 +88,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 21 callers (args_print_error, compile_files, yy_fatal_error)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "args.c",
-          "content": "unknown option `%s`\\n"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 291 lines)",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -233,17 +211,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "threading.c",
-          "content": "/semaphore"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 168 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "file_queue_put",
@@ -297,11 +264,51 @@
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (file_queue_put, file_queue_get(), scan_dir)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "args.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: args.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "common.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: common.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "threading.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: threading.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "yara.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: yara.c",
+        "method": "os.path.isfile"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 10,
+    "matched": 11,
     "results": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -357,6 +364,13 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
         "gt_tier": "source"
       },
       {

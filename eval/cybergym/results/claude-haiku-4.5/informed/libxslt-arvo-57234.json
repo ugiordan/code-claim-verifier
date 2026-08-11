@@ -5,12 +5,12 @@
   "reasoning_length": 4373,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
+    "total_claims": 21,
     "verified": 14,
-    "refuted": 3,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.67,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -77,12 +77,12 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "libxslt/attrvt.c",
-          "line": 210,
-          "content": "attr->psvi = avt;"
+          "line_range": "155-170",
+          "content": "xsltSetAttrVTsegment function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 210: #endif",
+        "evidence": "Line 0 out of range (file has 396 lines)",
         "method": "file_read"
       },
       {
@@ -97,14 +97,38 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libxslt/attrvt.c",
+          "line": 210,
+          "content": "attr->psvi = avt;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 210: #endif",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltParseStylesheetAttributeSet",
+          "name": "xsltCompileAttr",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 5 callers (xsltParseTopLevelXSLTElem, xsltParseStylesheetTop, xsltParseXSLTStylesheetElemCore)",
+        "evidence": "cymbal: 11 callers (xsltParseSequenceConstructor, xsltParseTemplateContent, xsltParseStylesheetAttributeSet)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltCompileAttr",
+          "caller": "xsltParseStylesheetAttributeSet",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (xsltParseSequenceConstructor, xsltParseTemplateContent, xsltParseStylesheetAttributeSet)",
         "method": "cymbal_callers"
       },
       {
@@ -121,6 +145,17 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "xsltParseStylesheetAttributeSet",
+          "file": "libxslt/attributes.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for xsltParseStylesheetAttributeSet",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
           "name": "xsltMergeAttrSets",
           "file": "libxslt/attributes.c"
         },
@@ -130,14 +165,27 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libxslt/attributes.c",
+          "line_range": "310-340",
+          "content": "xsltMergeAttrSets function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1242 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xsltResolveAttrSet",
+          "name": "xsltMergeAttrSets",
+          "caller": "xsltResolveAttrSet",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (xsltResolveUseAttrSets, xsltResolveSASCallback, xsltResolveAttrSet)",
+        "evidence": "cymbal: 3 callers (xsltResolveUseAttrSets, xsltResolveAttrSet, xsltResolveSASCallback)",
         "method": "cymbal_callers"
       },
       {
@@ -163,26 +211,16 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "xsltNewAttrVT",
-          "expected": true
+          "file": "libxslt/attrvt.c",
+          "line_range": "200-280",
+          "content": "xsltCompileAttr function definition"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (xsltCompileAttr, xsltParseSequenceConstructor, xsltParseTemplateContent)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xsltSetAttrVTsegment",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (xsltCompileAttr, xsltParseSequenceConstructor, xsltParseTemplateContent)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 396 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -195,6 +233,17 @@
         "confidence": 0.95,
         "evidence": "Line 280: * within the XSLT transformation context",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltSetAttrVTsegment",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (xsltCompileAttr, xsltParseSequenceConstructor, xsltParseTemplateContent)",
+        "method": "cymbal_callers"
       }
     ]
   },

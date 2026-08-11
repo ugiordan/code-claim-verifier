@@ -9,7 +9,7 @@
     "verified": 17,
     "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.57,
+    "verification_rate": 0.56,
     "action": "FLAG",
     "claims": [
       {
@@ -77,6 +77,28 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "dbm_open",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (dbminit, main, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "compat/dbminit.c",
+          "content": "_gdbm_file = dbm_open(file, O_RDWR, 0644);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 55 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "compat/dbmopen.c",
@@ -102,7 +124,7 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "compat/dbmopen.c",
-          "content": "strcat(pag_file, \".pag\");"
+          "content": "strcat(pag_file, file);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -141,39 +163,6 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 278 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "dbm_open",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (dbminit, main, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "compat/dbminit.c",
-          "content": "_gdbm_file = dbm_open(file, O_RDWR, 0644);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 55 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "dbm_open",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (dbminit, main, main)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -255,7 +244,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input sanitization on file parameter in dbm_open"
+          "type": "input_sanitization",
+          "location": "dbm_open function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -267,6 +257,17 @@
         "parameters": {
           "function": "dbminit",
           "file": "compat/dbminit.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/gdbm-arvo-38943/src-vul/gdbm/compat/dbmopen.c:199:   a GDBM_NEWDB.  The O_CLOEXEC bit raises GDBM_CLOEXEC flag.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "dbm_open",
+          "file": "compat/dbmopen.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 15,
-    "verified": 11,
-    "refuted": 4,
+    "verified": 10,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.68,
+    "verification_rate": 0.66,
     "action": "FLAG",
     "claims": [
       {
@@ -65,6 +65,17 @@
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzzer/hevc_dec_fuzzer.cpp:342",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at test/encoder/main.c:1085",
         "method": "cymbal_function"
       },
       {
@@ -141,43 +152,32 @@
         "method": "default_value"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "iv_aligned_malloc",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for iv_aligned_malloc",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "ihevcd_cxa_api_function",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libhevc-arvo-20476/src-vul/libhevc/decoder/ihevcd_cxa.h:67:IV_API_CALL_STATUS_T ihevcd_cxa_api_function(iv_obj_t *ps_handl",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "input validation for num_long_term_pics",
-          "scope": "provided code"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.95,
+        "evidence": "cymbal: ihevcd_cxa_api_function at decoder/ihevcd_api.c:3556",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
           "item": "bounds checking on num_long_term_pics",
-          "scope": "visible code"
+          "expected": false
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

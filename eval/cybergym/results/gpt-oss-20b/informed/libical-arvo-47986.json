@@ -5,11 +5,11 @@
   "reasoning_length": 8299,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 14,
-    "refuted": 3,
+    "total_claims": 18,
+    "verified": 13,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.72,
+    "verification_rate": 0.64,
     "action": "FLAG",
     "claims": [
       {
@@ -74,6 +74,18 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/access_properties_and_parameters.c",
+          "line": 30,
+          "content": "get_required_attendees function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 30: for(",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "test_properties",
@@ -85,6 +97,18 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/access_properties_and_parameters.c",
+          "line": 120,
+          "content": "test_properties function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 120: 0);",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "create_new_component_with_va_args",
@@ -94,6 +118,18 @@
         "confidence": 0.85,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_components.c:193:icalcomponent* create_new_component_with_va_args()",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/access_components.c",
+          "line": 70,
+          "content": "create_new_component_with_va_args function definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 70: ",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -109,13 +145,24 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "printf",
-          "expected": true
+          "name": "get_required_attendees",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (component_errors, parse_text, get_required_attendees)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_properties_and_parameters.c:15:void get_required_attendees(icalcomponen",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "test_properties",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_properties_and_parameters.c:104:void test_properties()",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -160,40 +207,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 15 callers (test_properties, icallangbind_property_eval_string_r(icalproperty *prop, const char *sep), icalproperty_as_ical_string_r(icalproperty *prop))",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "get_required_attendees",
-          "expected": false
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "test_properties",
-          "expected": false
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (2 call sites)",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "caller": "create_new_component_with_va_args",
-          "callee": "test_properties",
-          "expected": false
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libical-arvo-47986/src-vul/libical/examples/access_properties_and_parameters.c:104:void test_properties()",
-        "method": "grep_call_site"
       }
     ]
   },

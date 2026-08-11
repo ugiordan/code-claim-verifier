@@ -5,11 +5,11 @@
   "reasoning_length": 6994,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
-    "verified": 8,
-    "refuted": 17,
+    "total_claims": 27,
+    "verified": 7,
+    "refuted": 20,
     "unverifiable": 0,
-    "verification_rate": 0.25,
+    "verification_rate": 0.21,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -188,17 +188,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "readU16",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (checkChecksum)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file_path": "tools/ttf-checksum.py",
@@ -209,6 +198,17 @@
         "confidence": 0.95,
         "evidence": "File not found: ",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "readU16",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (checkChecksum)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -259,15 +259,43 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "checkChecksum",
-          "expected": true
+          "chain": [
+            "main entry point",
+            "checkChecksum"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/ots-arvo-919/src-vul/ots/tools/ttf-checksum.py:44:    checkChecksum(file(sys.argv[1], 'r'))",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main entry point->checkChecksum: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "checkChecksum",
+            "readU16"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: checkChecksum->readU16: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "checkChecksum",
+            "readU32"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: checkChecksum->readU32: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",

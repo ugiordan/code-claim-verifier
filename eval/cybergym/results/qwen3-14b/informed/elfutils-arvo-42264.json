@@ -5,9 +5,9 @@
   "reasoning_length": 5653,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 20,
-    "verified": 11,
-    "refuted": 9,
+    "total_claims": 22,
+    "verified": 10,
+    "refuted": 12,
     "unverifiable": 0,
     "verification_rate": 0.46,
     "action": "OVERRIDE",
@@ -90,49 +90,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "libdw/cfi.c",
-          "content": "size = offsetof(Dwarf_Frame, regs[reg + 1]);"
+          "name": "__libdw_frame_at_address",
+          "file": "libdw/cfi.h"
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 530 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "get_uleb128",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formblock)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "get_sleb128",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (execute_cfi, dwarf_formsdata, dwarf_formudata)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "caller": "__libdw_frame_at_address",
-          "callee": "execute_cfi",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
-        "method": "cymbal_callers"
+        "confidence": 0.85,
+        "evidence": "No definition found for __libdw_frame_at_address",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -147,16 +113,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "caller": "register_rule",
-          "callee": "enough_registers",
-          "expected": true
+          "name": "register_rule",
+          "file": "libdw/cfi.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (execute_cfi, cie_cache_initial_state, __libdw_frame_at_address)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for register_rule",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -169,6 +134,66 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 530 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "__libdw_frame_at_address",
+          "callee": "execute_cfi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "register_rule",
+          "callee": "enough_registers",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (execute_cfi, cie_cache_initial_state, __libdw_frame_at_address)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "execute_cfi",
+          "callee": "register_rule",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (execute_cfi, cie_cache_initial_state, __libdw_frame_at_address)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "execute_cfi",
+          "callee": "get_uleb128",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (__libdw_find_attr (Dwarf_Die *die, unsigned int search_name,\n\t\t   unsigned int *codep, unsigned int *formp), execute_cfi, dwarf_formblock)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "execute_cfi",
+          "callee": "get_sleb128",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (execute_cfi, dwarf_formsdata, dwarf_formudata)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -193,32 +218,21 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "realloc",
-          "expected": true
+          "file": "libdw/cfi.c",
+          "content": "if (unlikely (reg >= INT32_MAX / sizeof ((*pfs)->regs[0])))"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 48 callers (xrealloc (void *p, size_t n), reallocarray (void *ptr, size_t nmemb, size_t size), enough_registers)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "memcpy",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (asm_addsleb128, asm_adduleb128, asm_addstrz)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 530 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "libdw/cfi.c",
-          "content": "if (unlikely (reg >= INT32_MAX / sizeof ((*pfs)->regs[0])))"
+          "content": "size = offsetof(Dwarf_Frame, regs[reg + 1]);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -237,12 +251,33 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: __libdw_frame_at_address->execute_cfi: NOT FOUND",
         "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "execute_cfi",
+            "register_rule",
+            "enough_registers"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: execute_cfi->register_rule: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 2,
+    "matched": 3,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

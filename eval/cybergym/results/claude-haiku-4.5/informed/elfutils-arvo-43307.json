@@ -5,12 +5,12 @@
   "reasoning_length": 6975,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
+    "total_claims": 18,
     "verified": 14,
-    "refuted": 3,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.82,
-    "action": "BOOST",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -107,7 +107,7 @@
         "parameters": {
           "file": "libdw/cfi.c",
           "line": 65,
-          "content_description": "check for reg >= INT32_MAX / sizeof((*pfs)->regs[0])"
+          "content_description": "reg >= INT32_MAX / sizeof((*pfs)->regs[0]) check"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -206,6 +206,21 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 530 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "dwarf_cfi_addrframe",
+            "__libdw_frame_at_address",
+            "execute_cfi",
+            "enough_registers"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: dwarf_cfi_addrframe->__libdw_frame_at_address: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

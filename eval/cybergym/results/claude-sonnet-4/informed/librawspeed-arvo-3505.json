@@ -5,11 +5,11 @@
   "reasoning_length": 3583,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 10,
+    "total_claims": 11,
     "verified": 4,
-    "refuted": 6,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.41,
+    "verification_rate": 0.38,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -32,18 +32,6 @@
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 134: }",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/utilities/identify/rawspeed-identify.cpp",
-          "line": 119,
-          "content": "return nullptr;"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 119: using rawspeed::RawParser;",
         "method": "file_read"
       },
       {
@@ -70,15 +58,16 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "find_cameras_xml",
-          "expected": true
+          "file": "src/utilities/identify/rawspeed-identify.cpp",
+          "line": 119,
+          "content": "return nullptr;"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (main)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 119: using rawspeed::RawParser;",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -91,6 +80,17 @@
         "confidence": 0.95,
         "evidence": "Line 140: }",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "find_cameras_xml",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -116,15 +116,28 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "rawspeed-identify",
-          "type": "command-line utility"
+          "chain": [
+            "main",
+            "find_cameras_xml"
+          ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No command-line utility entry point patterns found",
-        "method": "grep_entry_point"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->find_cameras_xml: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "description": "caller checks if camfile.empty()",
+          "location": "lines 141-144"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 10,
-    "verified": 10,
-    "refuted": 0,
+    "verified": 9,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 1.0,
+    "verification_rate": 0.88,
     "action": "BOOST",
     "claims": [
       {
@@ -44,7 +44,8 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "bpf_dump.c",
-          "import": "optimize.h"
+          "import": "optimize.h",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -80,15 +81,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "item": "callers of opt_cleanup",
-          "scope": "provided code"
+          "function": "opt_cleanup",
+          "expected": false
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (bpf_optimize, pcap_compile)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",

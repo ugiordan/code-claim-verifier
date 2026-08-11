@@ -5,11 +5,11 @@
   "reasoning_length": 4587,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 22,
-    "verified": 16,
-    "refuted": 6,
+    "total_claims": 24,
+    "verified": 21,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.65,
+    "verification_rate": 0.76,
     "action": "FLAG",
     "claims": [
       {
@@ -198,8 +198,38 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "import": "msiquery.h"
+          "import": "windows.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/win32/customactions.cpp:35:#include <windows.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "tchar.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/win32/customactions.cpp:36:#include <tchar.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "strsafe.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-64898/src-vul/opensc/win32/customactions.cpp:37:#include <strsafe.h>",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "msiquery.h",
+          "file": "win32/customactions.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -209,8 +239,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "win32/customactions.cpp",
-          "import": "wcautil.h"
+          "import": "wcautil.h",
+          "file": "win32/customactions.cpp"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -218,45 +248,26 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "type": "string_conversion",
-          "functions": [
-            "WideCharToMultiByte",
-            "MultiByteToWideChar"
-          ]
+          "name": "strlcpy",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, iasecc_sm_external_authentication)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "type": "string_copy",
-          "functions": [
-            "strlcpy"
-          ]
+          "name": "LocalFree",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "MITIGATION_EXISTS",
-        "parameters": {
-          "type": "memory_management",
-          "functions": [
-            "LocalAlloc",
-            "LocalFree"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (char_str_from_wchar(const WCHAR *in), wchar_from_char_str(const char *in), md_dialog_perform_pin_operation)",
+        "method": "cymbal_callers"
       }
     ]
   },

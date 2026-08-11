@@ -5,11 +5,11 @@
   "reasoning_length": 3886,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 34,
-    "verified": 23,
-    "refuted": 11,
+    "total_claims": 35,
+    "verified": 22,
+    "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.62,
+    "verification_rate": 0.57,
     "action": "FLAG",
     "claims": [
       {
@@ -247,6 +247,17 @@
         "method": "grep_call_site"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "magic.detect_from_content",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/file-arvo-1065/src-vul/file/python/tests.py:31:            result = magic.detect_from_content(fobj.read(4096))",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "ctypes",
@@ -305,12 +316,24 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "python/magic.py",
-          "line_range": "115-129",
-          "content_type": "method_definition"
+          "line": 137,
+          "content": "_file(self._magic_t, Magic.__tobytes(filename))"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 285 lines)",
+        "evidence": "Line 137: try:  # keep Python 2 compatibility",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "python/magic.py",
+          "line": 154,
+          "content": "_buffer(self._magic_t, buf, len(buf))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 154: flag is set. A call to errno() will return the numeric error code.",
         "method": "file_read"
       },
       {
@@ -334,6 +357,18 @@
         "confidence": 0.95,
         "evidence": "cymbal: __tostr at python/magic.py:120",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "python/magic.py",
+          "line_range": "115-129",
+          "content_type": "function_definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 285 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -367,30 +402,6 @@
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 285 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "python/magic.py",
-          "line": 137,
-          "content_type": "function_call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 137: try:  # keep Python 2 compatibility",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "python/magic.py",
-          "line": 154,
-          "content_type": "function_call"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 154: flag is set. A call to errno() will return the numeric error code.",
         "method": "file_read"
       }
     ]

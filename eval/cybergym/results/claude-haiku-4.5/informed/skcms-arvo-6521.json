@@ -5,11 +5,11 @@
   "reasoning_length": 6611,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 14,
-    "refuted": 5,
+    "total_claims": 22,
+    "verified": 11,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.69,
+    "verification_rate": 0.5,
     "action": "FLAG",
     "claims": [
       {
@@ -37,8 +37,20 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
-          "line_number": 130,
-          "content": "static void dump_curves_svg(const char* name, const skcms_Curve* curve) {"
+          "line_range": "130-180",
+          "content": "static void dump_curves_svg(const char* name, const skcms_Curve* curve)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 267 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "iccdump.c",
+          "line_range": "130-180",
+          "content": "char filename[256]; snprintf(filename, sizeof(filename), \"%s.svg\", name);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -60,8 +72,19 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
-          "line_number": 95,
-          "content": "static void dump_curve(const char* name, const skcms_Curve* curve, bool verbose) {"
+          "line": 95,
+          "content": "static void dump_curve(const char* name, const skcms_Curve* curve, bool verbose)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "iccdump.c",
+          "content": "char filename[32]; snprintf(filename, sizeof(filename), \"%s.csv\", name); FILE* fp = fopen(filename, \"wb\");"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -83,8 +106,19 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "iccdump.c",
-          "line_number": 30,
-          "content": "static void signature_to_string(uint32_t sig, char* str) {"
+          "line": 30,
+          "content": "static void signature_to_string(uint32_t sig, char* str)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 30: str[1] = (char)(sig >> 16);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "iccdump.c",
+          "content": "str[0] = (char)(sig >> 24); str[1] = (char)(sig >> 16); str[2] = (char)(sig >> 8); str[3] = (char)(sig >> 0); str[4] = 0;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -103,26 +137,16 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "dump_sig_field",
-          "file": "iccdump.c"
+          "file": "iccdump.c",
+          "line": 200,
+          "content": "main()"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "cymbal: dump_sig_field at iccdump.c:36",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "snprintf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (dump_curve, dump_curves_svg, main)",
-        "method": "cymbal_callers"
+        "evidence": "Line 200: dump_sig_field(\"PCS\", profile.pcs);",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -147,15 +171,68 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "fopen",
-          "expected": true
+          "file": "iccdump.c",
+          "line": 250,
+          "content": "Loop through profile.tag_count"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 250: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "dump_sig_field",
+          "file": "iccdump.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 12 callers (main, load_file, dump_curve)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: dump_sig_field at iccdump.c:36",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "skcms_Parse"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->skcms_Parse: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "skcms_GetTagByIndex",
+            "dump_curve"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->skcms_GetTagByIndex: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "skcms_GetTagByIndex",
+            "dump_curves_svg"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->skcms_GetTagByIndex: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -189,49 +266,11 @@
         "confidence": 0.9,
         "evidence": "cymbal: 2 callers (dump_sig_field, main)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "skcms_GetTagByIndex",
-            "dump_curve"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->skcms_GetTagByIndex: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "skcms_GetTagByIndex",
-            "dump_curves_svg"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->skcms_GetTagByIndex: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "skcms.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: skcms.h",
-        "method": "os.path.isfile"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 7,
+    "matched": 6,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -273,13 +312,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
         "gt_tier": "source"
       }
     ]

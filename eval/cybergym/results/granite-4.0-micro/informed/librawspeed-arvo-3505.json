@@ -1,0 +1,177 @@
+{
+  "vuln_id": "librawspeed-arvo-3505",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 1982,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 9,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.84,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "fuzz/librawspeed/parsers/main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: fuzz/librawspeed/parsers/main.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "fuzz/librawspeed/decoders/TiffDecoders/main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: fuzz/librawspeed/decoders/TiffDecoders/main.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "fuzz/rawspeed/main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: fuzz/rawspeed/main.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput",
+          "file": "fuzz/librawspeed/parsers/main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/librawspeed/parsers/main.cpp:67",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "LLVMFuzzerTestOneInput",
+          "file": "fuzz/librawspeed/decoders/TiffDecoders/main.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: LLVMFuzzerTestOneInput at fuzz/librawspeed/decoders/TiffDecoders/main.cpp:64",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "fuzz/rawspeed/main.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "main",
+          "callee": "LLVMFuzzerTestOneInput",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (process, main, UncompressedDecompressor::decode12BitRaw)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "main",
+          "callee": "LLVMFuzzerTestOneInput",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (process, main, UncompressedDecompressor::decode12BitRaw)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "context": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "context": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "LLVMFuzzerTestOneInput",
+          "reachable": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 5,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.95,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

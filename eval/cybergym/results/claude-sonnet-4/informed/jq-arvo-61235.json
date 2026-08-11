@@ -5,11 +5,11 @@
   "reasoning_length": 3410,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 38,
-    "verified": 25,
-    "refuted": 13,
+    "total_claims": 41,
+    "verified": 34,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.6,
+    "verification_rate": 0.79,
     "action": "FLAG",
     "claims": [
       {
@@ -58,9 +58,10 @@
         "parameters": {
           "file": "jq_fuzz_compile.c",
           "line": 15,
-          "content": "jq_compile"
+          "content_type": "function_call",
+          "function": "jq_compile"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 15: jq = jq_init();",
         "method": "file_read"
@@ -81,7 +82,8 @@
         "parameters": {
           "file": "jq_fuzz_load_file.c",
           "line": 18,
-          "content": "jv_load_file"
+          "content_type": "function_call",
+          "function": "jv_load_file"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -93,7 +95,8 @@
         "parameters": {
           "file": "jq_fuzz_load_file.c",
           "line": 20,
-          "content": "jv_load_file"
+          "content_type": "function_call",
+          "function": "jv_load_file"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -116,9 +119,10 @@
         "parameters": {
           "file": "jq_fuzz_parse.c",
           "line": 13,
-          "content": "jv_parse"
+          "content_type": "function_call",
+          "function": "jv_parse"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 13: // Fuzzer entrypoint",
         "method": "file_read"
@@ -342,9 +346,9 @@
         "parameters": {
           "file": "jq_fuzz_load_file.c",
           "line": 11,
-          "content": "/tmp/libfuzzer"
+          "content_type": "temp_file_creation"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 11: if (!fp) {",
         "method": "file_read"
@@ -354,9 +358,9 @@
         "parameters": {
           "file": "jq_fuzz_load_file.c",
           "line": 12,
-          "content": "/tmp/libfuzzer"
+          "content_type": "temp_file_creation"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 12: return 0;",
         "method": "file_read"
@@ -366,9 +370,9 @@
         "parameters": {
           "file": "jq_fuzz_load_file.c",
           "line": 13,
-          "content": "fopen"
+          "content_type": "fopen_call"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 13: }",
         "method": "file_read"
@@ -378,11 +382,47 @@
         "parameters": {
           "file": "jq_fuzz_load_file.c",
           "line": 16,
-          "content": "fuzzer data written"
+          "content_type": "data_write"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 16: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "jq_fuzz_compile.c",
+          "line": 8,
+          "content_type": "memory_allocation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 8: // Creat null-terminated string",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "jq_fuzz_compile.c",
+          "line": 9,
+          "content_type": "memory_allocation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 9: char *null_terminated = (char *)malloc(size + 1);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "jq_fuzz_compile.c",
+          "line": 10,
+          "content_type": "memory_allocation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 10: memcpy(null_terminated, (char *)data, size);",
         "method": "file_read"
       },
       {

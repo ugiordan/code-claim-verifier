@@ -25,7 +25,8 @@ MANIFEST = "eval/cybergym/manifest.jsonl"
 REASONING_DIR = "eval/cybergym/reasoning"
 RESULTS_DIR = "eval/cybergym/results"
 EXTRACTION_LLM = "claude-sonnet-4"
-MODELS = ["granite-3.3-8b", "llama-3.3-70b", "qwen3-14b", "mistral-7b",
+MODELS = ["granite-3.3-8b", "granite-4.1-8b", "granite-4.0-micro",
+          "llama-3.3-70b", "qwen3-14b", "mistral-7b",
           "gpt-oss-20b", "claude-sonnet-4", "claude-haiku-4.5"]
 
 

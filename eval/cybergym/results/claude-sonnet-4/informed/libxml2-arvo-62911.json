@@ -5,11 +5,11 @@
   "reasoning_length": 4008,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 11,
+    "total_claims": 20,
+    "verified": 13,
     "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.58,
+    "verification_rate": 0.6,
     "action": "FLAG",
     "claims": [
       {
@@ -146,7 +146,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "libxml/xmlmemory.h"
+          "file": "HTMLparser.c",
+          "import": "libxml/xmlmemory.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -156,7 +157,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "libxml/HTMLparser.h"
+          "file": "HTMLparser.c",
+          "import": "libxml/HTMLparser.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -166,27 +168,30 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "libxml/HTMLtree.h"
+          "file": "HTMLtree.c",
+          "import": "libxml/HTMLtree.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62911/src-vul/libxml2/HTMLparser.c:23:#include <libxml/HTMLtree.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62911/src-vul/libxml2/HTMLtree.c:20:#include <libxml/HTMLtree.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "string.h"
+          "file": "HTMLparser.c",
+          "import": "string.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62911/src-vul/libxml2/rngparser.c:14:#include <string.h>",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62911/src-vul/libxml2/HTMLparser.c:13:#include <string.h>",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "stdlib.h"
+          "file": "HTMLparser.c",
+          "import": "stdlib.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -196,12 +201,35 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "ctype.h"
+          "file": "HTMLparser.c",
+          "import": "ctype.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-62911/src-vul/libxml2/HTMLparser.c:14:#include <ctype.h>",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "snprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, processPattern, processXPath)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "htmlErrMemory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 29 callers (htmlnamePush, htmlNodeInfoPush, htmlNewInputStream)",
+        "method": "cymbal_callers"
       }
     ]
   },

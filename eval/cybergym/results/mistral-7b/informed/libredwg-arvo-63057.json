@@ -5,11 +5,11 @@
   "reasoning_length": 2340,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 17,
-    "verified": 12,
-    "refuted": 5,
-    "unverifiable": 0,
-    "verification_rate": 0.65,
+    "total_claims": 19,
+    "verified": 10,
+    "refuted": 8,
+    "unverifiable": 1,
+    "verification_rate": 0.54,
     "action": "FLAG",
     "claims": [
       {
@@ -48,10 +48,9 @@
         "parameters": {
           "file": "test/xmlsuite/common.c",
           "line": 31,
-          "content_type": "function_definition",
-          "function": "spointprepare"
+          "content": "function definition"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 31: n = sprintf ((char *)result, \"(%.4f %.4f %.4f)\", x, y, z);",
         "method": "file_read"
@@ -72,35 +71,24 @@
         "parameters": {
           "file": "test/unit-testing/3dline.c",
           "line": 12,
-          "content_type": "function_definition",
-          "function": "api_process"
+          "content": "function definition"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 12: dwg_ent__3dline *_3dline = dwg_object_to__3DLINE (obj);",
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "dwg_object_to__3DLINE",
-          "expected": true
+          "file": "test/unit-testing/3dline.c",
+          "line": "containing dwg_ent__3dline *_3dline = dwg_object_to__3DLINE (obj);",
+          "content": "dwg_ent__3dline *_3dline = dwg_object_to__3DLINE (obj);"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (api_process, print_api)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "CHK_ENTITY_3RD",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (api_process, api_process, api_process)",
-        "method": "cymbal_callers"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "",
+        "method": "file_read"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -137,8 +125,7 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "add_line",
-          "file": "testsuite.c"
+          "name": "add_line"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -170,6 +157,16 @@
         "method": "cymbal_call_chain"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "CHK_ENTITY_3RD"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for CHK_ENTITY_3RD",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -185,8 +182,30 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigation",
-          "description": "input sanitization mechanisms"
+          "type": "input validation",
+          "context": "spointprepare function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input validation",
+          "context": "api_process function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigations",
+          "context": "buffer overflow protection"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

@@ -5,11 +5,11 @@
   "reasoning_length": 5050,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
+    "total_claims": 18,
     "verified": 15,
-    "refuted": 1,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.9,
+    "verification_rate": 0.81,
     "action": "BOOST",
     "claims": [
       {
@@ -84,6 +84,18 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tools/spi-hdlc-adapter/spi-hdlc-adapter.c",
+          "line_range": "120-160",
+          "content": "signal handlers"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1996 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "module": "sys/ioctl.h"
@@ -156,25 +168,36 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "read",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (PlatSocketRxSignaled, platformUartProcess, platformUartProcess)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "explicit bounds checking for data copied into buffers"
+          "item": "bounds checking",
+          "context": "data copied into buffers"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sigaction",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/openthread-arvo-15971/src-vul/openthread/tools/spi-hdlc-adapter/spi-hdlc-adapter.c:1532:    sigaction(SIGSEGV, &sigact, (s",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at src/posix/client.c:43",
+        "method": "cymbal_function"
       }
     ]
   },

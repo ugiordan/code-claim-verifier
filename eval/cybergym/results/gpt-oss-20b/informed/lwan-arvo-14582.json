@@ -5,11 +5,11 @@
   "reasoning_length": 5287,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 13,
+    "total_claims": 20,
+    "verified": 14,
     "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.52,
+    "verification_rate": 0.56,
     "action": "FLAG",
     "claims": [
       {
@@ -203,8 +203,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "size_checks",
-          "description": "size checks on input MIME-type file"
+          "type": "check",
+          "description": "capacity field update after realloc"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -212,15 +212,26 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "fgets",
-          "expected": true
+          "type": "size_checks",
+          "description": "input size validation beyond fgets loop"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (main)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "src/bin/tools/mimegen.c",
+          "classification": "build-time helper"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=src/bin/tools/mimegen.c, is_test=False, is_vendor=False",
+        "method": "path_regex"
       }
     ]
   },

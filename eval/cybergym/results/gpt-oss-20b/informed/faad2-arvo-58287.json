@@ -5,11 +5,11 @@
   "reasoning_length": 15797,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 26,
+    "total_claims": 28,
     "verified": 15,
-    "refuted": 11,
+    "refuted": 13,
     "unverifiable": 0,
-    "verification_rate": 0.48,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -110,87 +110,21 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "NeAACDecDecode",
-          "expected": true
+          "file": "audio.c",
+          "content": "infile[0] == '-'"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (LLVMFuzzerTestOneInput, decodeAACfile, decodeMP4file)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "malloc",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (decthread_addfile, LLVMFuzzerTestOneInput, utf16_to_utf8(const wchar_t *input))",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "write_audio_file",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fwrite",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 24 callers (write_wav_header, write_wav_extensible_header, write_audio_16bit)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "strncmp",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (_getopt_internal, id3v2_tag, checkADTSForSeeking)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fseek",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 38 callers (close_audio_file, close_audio_file, seek_callback)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fread",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (read_callback, aac_decode, datain)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 494 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "audio.c",
-          "content": "infile[0] == '-'"
+          "content": "aufile->channelMask"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -245,6 +179,17 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "audio.c",
+          "content": "fwrite(header, sizeof(header), 1, aufile->sndfile);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 494 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "audio.c",
           "content": "header[68];"
         },
         "verdict": "REFUTED",
@@ -257,17 +202,6 @@
         "parameters": {
           "file": "decode.c",
           "content": "for(k=0; k < (FAAD_MIN_STREAMSIZE*MAX_CHANNELS - bytesconsumed); k++) buffer[k] = buffer[k + bytesconsumed];"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 566 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "decode.c",
-          "content": "write_audio_file(aufile, sample_buffer, frameInfo.samples, 0);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -295,6 +229,94 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 566 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "decode.c",
+          "content": "write_audio_file(aufile, sample_buffer, frameInfo.samples, 0);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 566 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "NeAACDecDecode",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (LLVMFuzzerTestOneInput, decodeAACfile, decodeMP4file)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "malloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (decthread_addfile, LLVMFuzzerTestOneInput, utf16_to_utf8(const wchar_t *input))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fwrite",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 24 callers (write_wav_header, write_wav_extensible_header, write_audio_16bit)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strncmp",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (_getopt_internal, id3v2_tag, checkADTSForSeeking)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fseek",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 38 callers (close_audio_file, close_audio_file, seek_callback)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "write_audio_file",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (decodeAACfile, decodeMP4file, decodeAACfile)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "aacChannelConfig2wavexChannelMask",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (decodeAACfile, decodeMP4file, print_channel_info)",
+        "method": "cymbal_callers"
       }
     ]
   },

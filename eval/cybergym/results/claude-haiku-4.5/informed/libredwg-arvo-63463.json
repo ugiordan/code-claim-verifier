@@ -5,11 +5,11 @@
   "reasoning_length": 5964,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 15,
-    "refuted": 4,
+    "total_claims": 22,
+    "verified": 17,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.76,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
@@ -170,7 +170,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_validation"
+          "description": "input validation"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -180,7 +180,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "shell_escaping"
+          "description": "shell escaping"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -190,7 +190,27 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "safer_alternatives"
+          "description": "safer alternatives like subprocess.run with shell=False"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "allowlist of valid characters for filenames"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "sanitization of directory names"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -207,6 +227,18 @@
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 1: #!/usr/bin/env python",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/xmlsuite/check.py",
+          "line": 10,
+          "content": "os.listdir()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 10: from helper import *",
         "method": "file_read"
       },
       {

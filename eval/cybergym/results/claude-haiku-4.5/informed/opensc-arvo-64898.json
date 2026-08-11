@@ -5,11 +5,11 @@
   "reasoning_length": 5045,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
-    "verified": 10,
-    "refuted": 11,
+    "total_claims": 22,
+    "verified": 12,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.41,
+    "verification_rate": 0.48,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -64,6 +64,17 @@
         "confidence": 0.95,
         "evidence": "Line 42: return p15card->card->reader->name;",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 41 callers (dnie_select_file, openct_add_reader, sc_pkcs15_serialize_guid)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -158,17 +169,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "AddNotificationIcon",
@@ -194,7 +194,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "<string.h>"
+          "file": "src/ui/strings.c",
+          "import": "<string.h>"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -204,7 +205,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "libopensc/internal.h"
+          "file": "src/ui/strings.c",
+          "import": "libopensc/internal.h"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -223,13 +225,24 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strlcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, iasecc_sm_external_authentication)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/ui/notify.c",
           "line": 181,
-          "content": "strlcpy"
+          "content_contains": "strlcpy"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 181: }",
         "method": "file_read"

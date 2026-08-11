@@ -5,11 +5,11 @@
   "reasoning_length": 3789,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 22,
-    "verified": 18,
-    "refuted": 4,
+    "total_claims": 21,
+    "verified": 16,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -147,17 +147,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "impd_drc_get_integer_value",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "test/encoder/impd_drc_user_config.c",
@@ -235,26 +224,32 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "MITIGATION_EXISTS",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "type": "bounds_checking",
-          "location": "ixheaace_read_drc_config_params"
+          "chain": [
+            "main",
+            "ixheaace_read_drc_config_params",
+            "impd_drc_get_float_value"
+          ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.7,
-        "evidence": "File not found: ",
-        "method": "file_read"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "type": "bounds_checking",
-          "location": "core parsing functions"
+          "chain": [
+            "main",
+            "ixheaace_read_drc_config_params",
+            "impd_drc_get_integer_value"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },

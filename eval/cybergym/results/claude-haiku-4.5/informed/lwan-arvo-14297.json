@@ -5,11 +5,11 @@
   "reasoning_length": 4463,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
+    "total_claims": 18,
     "verified": 7,
-    "refuted": 8,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.39,
+    "verification_rate": 0.33,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -81,6 +81,18 @@
         "method": "file_read"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/bin/tools/mimegen.c",
+          "line": 161,
+          "content": "compress_output()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 161: if (!ext_mime) {",
+        "method": "file_read"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "src/bin/tools/mimegen.c",
@@ -145,6 +157,30 @@
         "confidence": 0.9,
         "evidence": "cymbal: 12 callers (bin2hex, main, print_module_info)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "compress_output"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->compress_output: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "src/bin/tools/mimegen.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
       },
       {
         "claim_type": "ABSENCE",

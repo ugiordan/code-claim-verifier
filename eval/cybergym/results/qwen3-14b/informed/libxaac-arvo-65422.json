@@ -5,11 +5,11 @@
   "reasoning_length": 4689,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
+    "total_claims": 27,
     "verified": 19,
-    "refuted": 6,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.65,
+    "verification_rate": 0.61,
     "action": "FLAG",
     "claims": [
       {
@@ -174,6 +174,17 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/ixheaace_testbench.c",
+          "content": "DRC_CONFIG_FILE"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1577 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "DEFAULT_VALUE",
         "parameters": {
           "variable": "DRC_CONFIG_FILE",
@@ -233,7 +244,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_validation",
-          "context": "lines read from file"
+          "location": "impd_drc_get_float_value"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -244,7 +255,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "bounds_checking",
-          "context": "line buffer after parsing"
+          "location": "line buffer parsing"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -255,7 +266,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "error_handling",
-          "context": "malformed lines"
+          "location": "malformed lines"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -265,8 +276,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "sanitization",
-          "context": "input file content"
+          "type": "input_sanitization",
+          "location": "input file content"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -283,6 +294,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "ixheaace_testbench",
+          "file": "test/encoder/ixheaace_testbench.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 18,
-    "verified": 8,
-    "refuted": 10,
+    "verified": 9,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.38,
+    "verification_rate": 0.39,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -136,16 +136,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "src/ui/notify.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: src/ui/notify.h",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "src/ui/strings.c",
@@ -190,6 +180,17 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -204,23 +205,20 @@
         "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "chain": [
-            "sc_notify_id",
-            "ui_get_str",
-            "get_inserted_text"
-          ]
+          "function": "sc_notify_id",
+          "file": "src/ui/notify.h"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60971/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
+        "method": "grep_entry_point"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 4,
+    "matched": 3,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -234,13 +232,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
         "gt_tier": "source"
       },
       {

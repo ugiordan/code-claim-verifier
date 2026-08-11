@@ -5,8 +5,8 @@
   "reasoning_length": 3775,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 25,
-    "verified": 25,
+    "total_claims": 26,
+    "verified": 26,
     "refuted": 0,
     "unverifiable": 0,
     "verification_rate": 1.0,
@@ -120,7 +120,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse",
-          "caller_file": "yara.c",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -132,7 +131,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_get_short_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -144,7 +142,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_get_long_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -156,7 +153,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -237,8 +233,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_sanitization",
-          "location": "args_parse_option"
+          "description": "explicit input sanitization or validation mechanisms"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -248,11 +243,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "bounds_checking",
-          "functions": [
-            "args_get_short_option",
-            "args_get_long_option"
-          ]
+          "description": "bounds checking on option names in args_get_short_option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -262,8 +253,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "integer_checks",
-          "function": "args_parse_option"
+          "description": "bounds checking on option names in args_get_long_option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -273,8 +263,17 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "null_pointer_checks",
-          "function": "args_parse_option"
+          "description": "checks on integer values in args_parse_option"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "null pointer dereference checks in args_parse_option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

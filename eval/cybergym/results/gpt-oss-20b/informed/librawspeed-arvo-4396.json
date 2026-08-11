@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 10,
-    "verified": 4,
-    "refuted": 6,
+    "verified": 5,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.41,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -48,12 +48,12 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/utilities/identify/rawspeed-identify.cpp",
-          "line": 42,
+          "line": 55,
           "content": "return nullptr;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 42: #endif",
+        "evidence": "Line 55: if (stat(set_camfile, &statbuf)) {",
         "method": "file_read"
       },
       {
@@ -72,7 +72,7 @@
         "parameters": {
           "file": "src/utilities/identify/rawspeed-identify.cpp",
           "line": 73,
-          "content": "camfile.empty()"
+          "content": "if (camfile.empty())"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -83,24 +83,12 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/utilities/identify/rawspeed-identify.cpp",
-          "line": 73,
-          "content": "rawspeed::make_unique<CameraMetaData>(camfile.c_str());"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 73: if (stat(found_camfile.c_str(), &statbuf)) {",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/utilities/identify/rawspeed-identify.cpp",
-          "line": 30,
+          "line": 32,
           "content": "stat"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 30: #include <omp.h>",
+        "evidence": "Line 32: ",
         "method": "file_read"
       },
       {
@@ -125,6 +113,17 @@
         "confidence": 0.65,
         "evidence": "No any entry point patterns found",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "rawspeed::make_unique<CameraMetaData>",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/librawspeed-arvo-4396/src-vul/librawspeed/src/utilities/identify/rawspeed-identify.cpp:147:    meta = rawspeed::make_uniqu",
+        "method": "grep_call_site"
       }
     ]
   },

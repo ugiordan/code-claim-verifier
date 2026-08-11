@@ -5,11 +5,11 @@
   "reasoning_length": 1776,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
+    "total_claims": 19,
     "verified": 9,
-    "refuted": 7,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.61,
+    "verification_rate": 0.53,
     "action": "FLAG",
     "claims": [
       {
@@ -36,22 +36,23 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "test/xmlsuite/helper.py"
+          "file": "helper.py"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/xmlsuite/helper.py",
-        "method": "os.path.isfile"
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): test/xmlsuite/helper.py",
+        "method": "os.walk_fuzzy"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "test/xmlsuite/testsuite.c"
+          "name": "testsuite.c",
+          "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/xmlsuite/testsuite.c",
-        "method": "os.path.isfile"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -117,6 +118,16 @@
         "method": "path_regex"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/xmlsuite/testsuite.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/xmlsuite/testsuite.c",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "test/xmlsuite/testsuite.c",
@@ -126,6 +137,28 @@
         "confidence": 0.8,
         "evidence": "path=test/xmlsuite/testsuite.c, is_test=True, is_vendor=False",
         "method": "path_regex"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "libxml2",
+          "type": "library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "common.c",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FILE_EXISTS",

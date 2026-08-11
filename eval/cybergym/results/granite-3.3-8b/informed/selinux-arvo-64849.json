@@ -9,7 +9,7 @@
     "verified": 4,
     "refuted": 21,
     "unverifiable": 0,
-    "verification_rate": 0.17,
+    "verification_rate": 0.13,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -28,10 +28,10 @@
           "name": "setbool",
           "file": "setsebool.c"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: setbool at policycoreutils/setsebool/setsebool.c:221",
-        "method": "cymbal_function"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for setbool",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -40,9 +40,9 @@
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (main, stand_alone, stand_alone)",
-        "method": "cymbal_callers"
+        "confidence": 0.65,
+        "evidence": "Found call sites (4 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-64849/src-vul/selinux/policycoreutils/setsebool/setsebool.c:24:int setbool(char **list, size_t start, size_t ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -265,19 +265,6 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "main",
-            "setbool"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->setbool: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "main"
@@ -286,6 +273,19 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-64849/src-vul/selinux/python/semanage/test-semanage.py:239:class CheckTest(argparse.Action):",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "setbool"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: main->setbool: found setbool() call but not in main's body",
+        "method": "call_chain"
       }
     ]
   },

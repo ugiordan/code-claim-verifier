@@ -5,11 +5,11 @@
   "reasoning_length": 2801,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 31,
-    "verified": 25,
+    "total_claims": 32,
+    "verified": 26,
     "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.7,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
@@ -75,6 +75,41 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parse_tab",
+          "file": "annot-tsv.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parse_tab",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "parse_tab",
+          "callee": "cols_split",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (parse_tab_with_payload, parse_header, init_data)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "cols_append",
+          "callee": "cols_append",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (init_data, process_line, main)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "strdup",
@@ -94,28 +129,6 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (cram_stats_encoding, block_resize_exact, cram_index_load)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "parse_tab",
-          "file": "annot-tsv.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for parse_tab",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "cols_split",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 5 callers (parse_tab_with_payload, parse_header, init_data)",
         "method": "cymbal_callers"
       },
       {
@@ -295,15 +308,15 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "error",
-          "file": "annot-tsv.c"
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/htslib-arvo-65383/src-vul/htslib/annot-tsv.c:117:error(const char *format, ...)",
-        "method": "grep_function_def"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (main, HTS_FORMAT, nbp_add)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -330,7 +343,8 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "parse_tab",
+          "caller": "main",
+          "callee": "parse_tab",
           "expected": true
         },
         "verdict": "VERIFIED",

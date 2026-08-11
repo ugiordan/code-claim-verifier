@@ -5,12 +5,12 @@
   "reasoning_length": 4567,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 12,
-    "refuted": 7,
+    "total_claims": 17,
+    "verified": 14,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.49,
-    "action": "OVERRIDE",
+    "verification_rate": 0.65,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -52,54 +52,6 @@
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 113: {TEXT(\"OpenPGP card v1.x\"),               {0x3b,0xfa,0x13,0x00,0xff,0x81,0x31,0x80,0x45,0x00,0x31,0xc1,0x73,0xc0,0x01,0x00,0x00,0x90,0x00,0xb1},",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/char_str_from_wchar.h",
-          "line": 28,
-          "content": "static char *char_str_from_wchar(const WCHAR *in)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 28: if (!in)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/char_str_from_wchar.h",
-          "line": 37,
-          "content": "out = LocalAlloc(0, (sizeof *out) * out_len);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 37: return NULL;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/wchar_from_char_str.h",
-          "line": 20,
-          "content": "static WCHAR *wchar_from_char_str(const char *in)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 20: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/wchar_from_char_str.h",
-          "line": 37,
-          "content": "out = LocalAlloc(0, (sizeof *out) * out_len);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 37: out_len = MultiByteToWideChar(CP_UTF8, 0, in, -1, out, out_len);",
         "method": "file_read"
       },
       {
@@ -155,6 +107,17 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 1 callers (wchar_from_char_str(const char *in))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LocalFree",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (md_dialog_perform_pin_operation, CardDeriveHashOrHMAC, HashDataWithBCrypt)",
         "method": "cymbal_callers"
       },
       {
@@ -222,12 +185,29 @@
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (md_dialog_perform_pin_operation, CardAuthenticateEx, CardChangeAuthenticatorEx)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/ui/notify.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/ui/notify.c",
+        "method": "os.path.isfile"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 3,
+    "matched": 4,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

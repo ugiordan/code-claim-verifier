@@ -5,11 +5,11 @@
   "reasoning_length": 5387,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 7,
-    "refuted": 8,
+    "total_claims": 14,
+    "verified": 9,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.46,
+    "verification_rate": 0.49,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -94,7 +94,6 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "args_parse_option",
-          "caller": "args_parse",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -103,28 +102,15 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "args.c",
-          "line": 189,
-          "content_contains": "args_parse_option"
+          "name": "args_parse",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 189: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "args.c",
-          "line": 205,
-          "content_contains": "args_parse_option"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "Line 205: {",
-        "method": "file_read"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (main, main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -140,47 +126,46 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "args_parse",
-          "caller": "main",
+          "name": "strtol",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (main, main)",
+        "evidence": "cymbal: 3 callers (args_parse_option, _yr_object_lookup(\n    YR_OBJECT* object,\n    int flags,\n    const char* pattern,\n    va_list args), args_parse)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "yara.c",
-          "content_contains": "static char* tags[MAX_ARGS_TAG + 1];"
+          "name": "strchr",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1253 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (args_parse, compile_files, define_external_variables)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "yara.c",
-          "content_contains": "static char* identifiers[MAX_ARGS_IDENTIFIER + 1];"
+          "name": "strstr",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1253 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), test_disabled_rules, main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "yara.c",
-          "content_contains": "static char* ext_vars[MAX_ARGS_EXT_VAR + 1];"
+          "name": "strlen",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 1253 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (args_get_long_option(\n    args_option_t *options,\n    const char* arg), yr_hash_table_lookup_raw_key(\n    YR_HASH_TABLE* table,\n    const void* key,\n    size_t key_length,\n    cons",
+        "method": "cymbal_callers"
       }
     ]
   },

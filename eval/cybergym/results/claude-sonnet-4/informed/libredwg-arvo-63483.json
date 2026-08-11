@@ -5,8 +5,8 @@
   "reasoning_length": 3649,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 24,
-    "verified": 19,
+    "total_claims": 27,
+    "verified": 22,
     "refuted": 5,
     "unverifiable": 0,
     "verification_rate": 0.76,
@@ -263,14 +263,45 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "test/xmlsuite/check.py"
+          "name": "sprintf",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63483/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 22 callers (load_dwg, ATTRIBUTE_MALLOC\nhtmlescape (const char *restrict src, const Dwg_Codepage cp), ATTRIBUTE_MALLOC\nhtmlwescape (BITCODE_TU wstr))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "memory deallocation in common.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization for shell commands in check.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "bounds checking for buffer overflows"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

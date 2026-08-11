@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 17,
-    "verified": 12,
-    "refuted": 5,
+    "verified": 13,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.51,
+    "verification_rate": 0.56,
     "action": "FLAG",
     "claims": [
       {
@@ -35,6 +35,18 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line_range": "283-293",
+          "content": "Syslog calls with unsanitized user-controlled data"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 311 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
           "file": "policycoreutils/run_init/open_init_pty.c",
           "line": 289,
           "content": "Incomplete code (truncated), but potential issues with file descriptor handling"
@@ -49,8 +61,7 @@
         "parameters": {
           "name": "setbool",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "start_line": 217,
-          "end_line": 310
+          "line_range": "217-310"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -62,8 +73,7 @@
         "parameters": {
           "name": "main",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "start_line": 32,
-          "end_line": 75
+          "line_range": "32-75"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -128,6 +138,28 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "strchr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (selinux_boolean_sub(const char *name), bool_open, security_get_initial_context_raw)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (read_source_policy, read_binary_policy, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "strcmp",
           "expected": true
         },
@@ -148,28 +180,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "fprintf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (read_source_policy, read_binary_policy, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "getuid",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 18 callers (passwd, main, main)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -184,28 +194,16 @@
         "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
+          "function": "main",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 287,
-          "content": "syslog(LOG_NOTICE,"
+          "line": 32
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 287: \"The %s policy boolean was changed to %s by %s\",",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 291,
-          "content": "name, value_ptr, getuid());"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 291: \"The %s policy boolean was changed to %s by uid:%d\",",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/selinux-arvo-58085/src-vul/selinux/python/semanage/test-semanage.py:239:class CheckTest(argparse.Action):",
+        "method": "grep_entry_point"
       }
     ]
   },

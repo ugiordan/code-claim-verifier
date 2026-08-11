@@ -5,12 +5,12 @@
   "reasoning_length": 8108,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
+    "total_claims": 18,
     "verified": 12,
-    "refuted": 1,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.92,
-    "action": "BOOST",
+    "verification_rate": 0.63,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -116,38 +116,93 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "execute_cfi",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "__libdw_frame_at_address",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (dwarf_cfi_addrframe, handle_cfi, handle_address)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "libdw/cfi.c",
           "line_range": "57-85",
-          "content": "enough_registers function definition"
+          "content": "enough_registers"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 532 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "if (unlikely (reg >= INT32_MAX / sizeof ((*pfs)->regs[0])))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "size_t size = offsetof (Dwarf_Frame, regs[reg + 1]);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "bigger->nregs = reg + 1;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "#define register_rule(regno, r_rule, r_value)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libdw/cfi.c",
+          "content": "fs->regs[regno].rule = reg_##r_rule;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 532 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "enough_registers",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (execute_cfi, cie_cache_initial_state, __libdw_frame_at_address)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "realloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xrealloc (void *p, size_t n), reallocarray (void *ptr, size_t nmemb, size_t size), enough_registers)",
+        "method": "cymbal_callers"
       }
     ]
   },

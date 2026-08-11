@@ -1,0 +1,202 @@
+{
+  "vuln_id": "opensc-arvo-60616",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 2422,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 8,
+    "refuted": 8,
+    "unverifiable": 0,
+    "verification_rate": 0.41,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "win32/customactions.cpp"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: win32/customactions.cpp",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "AddNotificationIcon",
+          "file": "win32/customactions.cpp"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for AddNotificationIcon",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Shell_NotifyIcon",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (AddNotificationIcon, DeleteNotificationIcon, RestoreTooltip)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sc_notify_init"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: sc_notify_init at src/ui/notify.c:39",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "AddNotificationIcon",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (sc_notify_init, module_init, WinMain)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "CreateWindowEx",
+          "from": "windows.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of CreateWindowEx found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "WideCharToMultiByte",
+          "from": "windows.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of WideCharToMultiByte found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "MultiByteToWideChar",
+          "from": "windows.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of MultiByteToWideChar found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "Shell_NotifyIcon",
+          "from": "shlobj.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of Shell_NotifyIcon found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "Shell_NotifyIconEx",
+          "from": "shlobj.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of Shell_NotifyIconEx found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "LoadIconMetric",
+          "from": "winreg.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of LoadIconMetric found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "GetModuleFileName",
+          "from": "windows.h"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of GetModuleFileName found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "strlcpy",
+          "from": "common/compat_strlcpy.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60616/src-vul/opensc/src/ui/notify.c:69:#include \"common/compat_strlcpy.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LoadIconMetric",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (AddNotificationIcon, sc_notify_init)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization or mitigations for Shell_NotifyIcon function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "sc_notify_init",
+          "description": "called when OpenSC library is initialized"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/opensc-arvo-60616/src-vul/opensc/doc/tools/pkcs11-tool.1.xml:166:\t\t\t\t\t\t<para>Specify 'decrypt' key usage flag.</para>",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

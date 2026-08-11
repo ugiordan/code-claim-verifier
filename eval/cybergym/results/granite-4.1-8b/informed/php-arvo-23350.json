@@ -1,0 +1,171 @@
+{
+  "vuln_id": "php-arvo-23350",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 4951,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 7,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.58,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "Zend/zend.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: Zend/zend.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "Zend/zend_API.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: Zend/zend_API.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "zend_vspprintf",
+          "file": "Zend/zend.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_vspprintf at Zend/zend.c:172",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Zend/zend.c",
+          "line": 123,
+          "content": "ZEND_API size_t zend_vspprintf(char **pbuf, size_t max_len, const char *format, va_list ap) {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 123: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "zend_spprintf",
+          "file": "Zend/zend.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_spprintf at Zend/zend.c:200",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Zend/zend.c",
+          "line": 138,
+          "content": "ZEND_API size_t zend_spprintf(char **message, size_t max_len, const char *format, ...) {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 138: /* }}} */",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "zend_argument_error_variadic",
+          "file": "Zend/zend_API.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_argument_error_variadic at Zend/zend_API.c:254",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Zend/zend_API.c",
+          "line": 1230,
+          "content": "ZEND_API ZEND_COLD void ZEND_FASTCALL zend_argument_error_variadic(zend_class_entry *error_ce, uint32_t arg_num, const char *format, va_list va) {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 1230: EG(fake_scope) = zend_lookup_class(cname);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "zend_vspprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (zend_spprintf, zend_spprintf_unchecked, zend_error_va_list)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "zend_vspprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (zend_spprintf, zend_spprintf_unchecked, zend_error_va_list)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Zend/zend.c",
+          "line": 124,
+          "content": "if (!pbuf) { return 0; }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 124: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "Zend/zend.c",
+          "line": 128,
+          "content": "if (max_len && buf.len > max_len) { buf.len = max_len; }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 128: static ZEND_INI_MH(OnUpdateScriptEncoding) /* {{{ */",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

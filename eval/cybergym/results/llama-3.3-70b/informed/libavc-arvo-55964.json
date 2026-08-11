@@ -5,12 +5,12 @@
   "reasoning_length": 4619,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 52,
-    "verified": 49,
-    "refuted": 3,
+    "total_claims": 57,
+    "verified": 41,
+    "refuted": 16,
     "unverifiable": 0,
-    "verification_rate": 0.87,
-    "action": "BOOST",
+    "verification_rate": 0.68,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -99,28 +99,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "posix_memalign",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (mvcd_aligned_malloc(void *pv_ctxt, WORD32 alignment, WORD32 i4_size), iv_aligned_malloc(void *ctxt, WORD32 alignment, WORD32 size), iv_aligned_malloc(void *ctxt, WORD32 alignment, W",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "free",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 36 callers (mvcd_aligned_free, iv_aligned_free, iv_aligned_free)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "mvcd_print_usage",
@@ -152,6 +130,50 @@
         "confidence": 0.85,
         "evidence": "No definition found for ih264a_aligned_malloc",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "posix_memalign",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (mvcd_aligned_malloc(void *pv_ctxt, WORD32 alignment, WORD32 i4_size), iv_aligned_malloc(void *ctxt, WORD32 alignment, WORD32 size), iv_aligned_malloc(void *ctxt, WORD32 alignment, W",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "free",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 36 callers (mvcd_aligned_free, iv_aligned_free, iv_aligned_free)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fread",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 13 callers (read_pic_info, read_mb_info, read_input)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fwrite",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 21 callers (isvce_msv_dump_visualisation, dump_input, write_recon)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -209,124 +231,134 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "mvcd_aligned_malloc",
-          "caller": "mvcd_print_usage",
-          "expected": true
+          "chain": [
+            "mvcd_print_usage",
+            "mvcd_aligned_malloc"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: mvcd_print_usage->mvcd_aligned_malloc: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "mvcd_aligned_malloc",
-          "caller": "mvcd_get_argument",
-          "expected": true
+          "chain": [
+            "mvcd_get_argument",
+            "mvcd_aligned_malloc"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (Codec::allocFrame)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: mvcd_get_argument->mvcd_aligned_malloc: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "mvcd_aligned_free",
-          "caller": "mvcd_print_usage",
-          "expected": true
+          "chain": [
+            "mvcd_print_usage",
+            "mvcd_aligned_free"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (Codec::freeFrame)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: mvcd_print_usage->mvcd_aligned_free: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "mvcd_aligned_free",
-          "caller": "mvcd_get_argument",
-          "expected": true
+          "chain": [
+            "mvcd_get_argument",
+            "mvcd_aligned_free"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (Codec::freeFrame)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: mvcd_get_argument->mvcd_aligned_free: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "read_input",
-          "caller": "ih264e_ctl_getbufinfo_op_t",
-          "expected": true
+          "chain": [
+            "ih264e_ctl_getbufinfo_op_t",
+            "read_input"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ih264e_ctl_getbufinfo_op_t->read_input: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "read_input",
-          "caller": "ih264a_aligned_malloc",
-          "expected": true
+          "chain": [
+            "ih264a_aligned_malloc",
+            "read_input"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ih264a_aligned_malloc->read_input: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "dump_input",
-          "caller": "ih264e_ctl_getbufinfo_op_t",
-          "expected": true
+          "chain": [
+            "ih264e_ctl_getbufinfo_op_t",
+            "dump_input"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/encoder/input.c:175:IV_STATUS_T dump_input(FILE *fp, iv_raw_buf_t *ps_raw_buf)",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ih264e_ctl_getbufinfo_op_t->dump_input: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "dump_input",
-          "caller": "ih264a_aligned_malloc",
-          "expected": true
+          "chain": [
+            "ih264a_aligned_malloc",
+            "dump_input"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-55964/src-vul/libavc/test/encoder/input.c:175:IV_STATUS_T dump_input(FILE *fp, iv_raw_buf_t *ps_raw_buf)",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ih264a_aligned_malloc->dump_input: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "allocate_input",
-          "caller": "ih264e_ctl_getbufinfo_op_t",
-          "expected": true
+          "chain": [
+            "ih264e_ctl_getbufinfo_op_t",
+            "allocate_input"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ih264e_ctl_getbufinfo_op_t->allocate_input: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "name": "allocate_input",
-          "caller": "ih264a_aligned_malloc",
-          "expected": true
+          "chain": [
+            "ih264a_aligned_malloc",
+            "allocate_input"
+          ]
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (synchronous_encode, synchronous_encode, main)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ih264a_aligned_malloc->allocate_input: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -571,26 +603,54 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "fread",
-          "expected": true
+          "description": "mvcd_aligned_malloc checks return value of posix_memalign"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 13 callers (read_pic_info, read_mb_info, read_input)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "fwrite",
-          "expected": true
+          "description": "mvcd_aligned_free checks pv_buf parameter for null"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "description": "read_input and dump_input check return values of fread and fwrite"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "mvcd_get_argument does not validate name parameter"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 21 callers (isvce_msv_dump_visualisation, dump_input, write_recon)",
-        "method": "cymbal_callers"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "read_input and dump_input do not validate fp or ps_raw_buf parameters"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       }
     ]
   },

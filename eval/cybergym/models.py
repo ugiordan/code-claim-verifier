@@ -4,6 +4,8 @@ import logging
 import os
 from typing import Callable
 
+import httpx
+
 logger = logging.getLogger(__name__)
 
 LLMFunction = Callable[[str, str], str]
@@ -21,24 +23,41 @@ def make_anthropic(model: str = "claude-sonnet-4@20250514") -> LLMFunction:
         region = os.environ.get("CLOUD_ML_REGION", "us-east5")
         if region == "global":
             region = "us-east5"
-        client = anthropic.AnthropicVertex(project_id=project_id, region=region)
+        http_client = httpx.Client(
+            timeout=httpx.Timeout(120.0, connect=30.0, read=90.0, write=30.0),
+        )
+        client = anthropic.AnthropicVertex(
+            project_id=project_id, region=region,
+            timeout=httpx.Timeout(120.0, connect=30.0),
+            http_client=http_client,
+        )
     else:
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
             raise RuntimeError(
                 "ANTHROPIC_API_KEY not set. Export it or set CLAUDE_CODE_USE_VERTEX=1 for Vertex AI."
             )
-        client = anthropic.Anthropic(api_key=api_key)
+        client = anthropic.Anthropic(
+            api_key=api_key,
+            timeout=httpx.Timeout(120.0, connect=30.0),
+        )
 
     def call(system: str, user: str) -> str:
-        response = client.messages.create(
-            model=model, max_tokens=MAX_TOKENS, temperature=0,
-            system=system,
-            messages=[{"role": "user", "content": user}],
-        )
-        if not response.content:
-            raise RuntimeError("Empty response from Anthropic")
-        return response.content[0].text
+        for attempt in range(3):
+            try:
+                response = client.messages.create(
+                    model=model, max_tokens=MAX_TOKENS, temperature=0,
+                    system=system,
+                    messages=[{"role": "user", "content": user}],
+                )
+                if not response.content:
+                    raise RuntimeError("Empty response from Anthropic")
+                return response.content[0].text
+            except (httpx.TimeoutException, httpx.ReadTimeout) as e:
+                if attempt < 2:
+                    logger.warning("Timeout on attempt %d, retrying: %s", attempt + 1, e)
+                    continue
+                raise
 
     return call
 
@@ -215,6 +234,14 @@ MODEL_REGISTRY: dict[str, dict] = {
     "gpt-oss-20b": {
         "factory": "models-corp",
         "model": "openai/gpt-oss-20b",
+    },
+    "granite-4.1-8b": {
+        "factory": "models-corp",
+        "model": "ibm-granite/granite-4.1-8b",
+    },
+    "granite-4.0-micro": {
+        "factory": "models-corp",
+        "model": "ibm-granite/granite-4.0-micro",
     },
 }
 

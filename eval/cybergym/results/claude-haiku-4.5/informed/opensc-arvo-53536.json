@@ -5,11 +5,11 @@
   "reasoning_length": 4509,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 23,
-    "verified": 16,
-    "refuted": 7,
+    "total_claims": 27,
+    "verified": 19,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.61,
+    "verification_rate": 0.59,
     "action": "FLAG",
     "claims": [
       {
@@ -123,17 +123,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/ui/notify.c",
@@ -144,6 +133,17 @@
         "confidence": 0.95,
         "evidence": "Line 267: void sc_notify_init(void)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ui_get_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -211,6 +211,16 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "_sc_match_atr_block"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for _sc_match_atr_block",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "_sc_match_atr_block",
@@ -224,12 +234,21 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "sc_notify_init",
-          "file": "src/ui/notify.c"
+          "name": "sc_notify_init"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: sc_notify_init at src/ui/notify.c:39",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "AddNotificationIcon"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: AddNotificationIcon at src/ui/notify.c:131",
         "method": "cymbal_function"
       },
       {
@@ -268,11 +287,33 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
         "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "ui_get_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
+        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 5,
+    "matched": 4,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -300,13 +341,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

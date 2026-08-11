@@ -5,11 +5,11 @@
   "reasoning_length": 5337,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 18,
-    "verified": 13,
-    "refuted": 5,
+    "total_claims": 19,
+    "verified": 15,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.67,
+    "verification_rate": 0.74,
     "action": "FLAG",
     "claims": [
       {
@@ -78,7 +78,7 @@
         "parameters": {
           "file": "libxslt/attrvt.c",
           "line_range": "155-170",
-          "content": "xsltSetAttrVTsegment function definition"
+          "content": "static xsltAttrVTPtr\nxsltSetAttrVTsegment(xsltAttrVTPtr avt, void *val) {\n    if (avt->nb_seg >= avt->max_seg) {\n        size_t size = sizeof(xsltAttrVT) +\n                      (avt->max_seg + MAX_AVT_SEG) * sizeof(void *);\n\txsltAttrVTPtr tmp = (xsltAttrVTPtr) xmlRealloc(avt, size);\n\tif (tmp == NULL) {\n            xsltFreeAttrVT(avt);\n\t    return NULL;\n\t}\n        avt = tmp;\n\tmemset(&avt->segments[avt->nb_seg], 0, MAX_AVT_SEG*sizeof(void *));\n\tavt->max_seg += MAX_AVT_SEG;\n    }\n    avt->segments[avt->nb_seg++] = val;\n    return avt;\n}"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -101,7 +101,7 @@
         "parameters": {
           "file": "libxslt/attributes.c",
           "line_range": "280-310",
-          "content": "xsltMergeAttrSets function definition"
+          "content": "static void\nxsltMergeAttrSets(xsltAttrSetPtr set, xsltAttrSetPtr other) {\n    xsltAttrElemPtr cur;\n    xsltAttrElemPtr old = other->attrs;\n    int add;\n\n    while (old != NULL) {\n\tcur = set->attrs;\n\tadd = 1;\n\twhile (cur != NULL) {\n            xsltStylePreCompPtr curComp = cur->attr->psvi;\n            xsltStylePreCompPtr oldComp = old->attr->psvi;\n\n            if ((curComp->name == oldComp->name) &&\n                (curComp->ns == oldComp->ns)) {"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -124,7 +124,7 @@
         "parameters": {
           "file": "libxslt/attrvt.c",
           "line_range": "200-250",
-          "content": "xsltCompileAttr function definition"
+          "content": "avt = xsltNewAttrVT(style);\nif (avt == NULL)\n    return;\nattr->psvi = avt;\n// ... later in the function ...\nif ((avt = xsltSetAttrVTsegment(avt, (void *) ret)) == NULL)\n    goto error;"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -136,7 +136,7 @@
         "parameters": {
           "file": "libxslt/attrvt.c",
           "line_range": "220-240",
-          "content": "while loop with bounds check issue"
+          "content": "while (*cur != 0) {\n    if (*cur == '{') {\n        if (*(cur+1) == '{') {\t/* escaped '{' */\n            cur++;\n            ret = xmlStrncat(ret, str, cur - str);\n            cur++;\n            str = cur;\n            continue;\n        }"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -153,18 +153,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: xsltDocDefaultLoaderFunc at libxslt/documents.c:60",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "libxslt/documents.c",
-          "line_range": "60-100",
-          "content": "xsltDocDefaultLoaderFunc function definition"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 438 lines)",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -191,7 +179,29 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "memset",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xsltNewDocument, xsltNewStyleDocument, exsltFuncInit (xsltTransformContextPtr ctxt, const xmlChar *URI))",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "xsltNewAttrVT",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (xsltCompileAttr, xsltParseSequenceConstructor, xsltParseTemplateContent)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xsltSetAttrVTsegment",
           "expected": true
         },
         "verdict": "VERIFIED",

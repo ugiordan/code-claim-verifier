@@ -5,8 +5,8 @@
   "reasoning_length": 4399,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 8,
+    "total_claims": 18,
+    "verified": 9,
     "refuted": 5,
     "unverifiable": 4,
     "verification_rate": 0.54,
@@ -46,6 +46,18 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_inserted_text",
+          "caller": "ui_get_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "ui_get_str",
@@ -59,12 +71,13 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "get_inserted_text",
+          "name": "ui_get_str",
+          "caller": "sc_notify_id",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "evidence": "cymbal: 7 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
         "method": "cymbal_callers"
       },
       {
@@ -77,17 +90,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "ui_get_str",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (ShowContextMenu, sc_notify_id, md_get_config_str(PCARD_DATA pCardData, enum ui_str id))",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -145,15 +147,15 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "strlcpy",
-          "expected": true
+          "type": "safe_string_copy",
+          "function": "strlcpy"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (eoi_init, gids_create_file, sc_card_sm_check)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -181,7 +183,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "input_validation",
-          "context": "atr->value and atr->len parameters"
+          "target": "atr->value and atr->len parameters"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -189,18 +191,26 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "chain": [
-            "sc_notify_id",
-            "ui_get_str",
-            "get_inserted_text"
-          ]
+          "name": "sc_notify_id",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (sc_pkcs15_verify_pin_with_session_pin, notify_daemon, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
       }
     ]
   },

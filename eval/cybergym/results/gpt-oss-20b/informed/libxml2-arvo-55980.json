@@ -5,12 +5,12 @@
   "reasoning_length": 17977,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 15,
-    "refuted": 2,
+    "total_claims": 21,
+    "verified": 18,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.82,
-    "action": "BOOST",
+    "verification_rate": 0.78,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -33,6 +33,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (htmlSetMetaEncoding, processPattern, processXPath)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "snprintf(newcontent, sizeof(newcontent), \"text/html; charset=%s\", (char *)encoding);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1201 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -89,6 +100,26 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "SAX.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: SAX.c",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "SAX2.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: SAX2.c",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "htmlnamePush"
@@ -118,6 +149,17 @@
         "confidence": 0.95,
         "evidence": "cymbal: htmlNodeInfoPush at HTMLparser.c:212",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "xmlRealloc",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, ConvertInput(const char *in, const char *encoding))",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",

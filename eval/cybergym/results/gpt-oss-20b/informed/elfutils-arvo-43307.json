@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 37,
-    "verified": 31,
-    "refuted": 6,
+    "verified": 27,
+    "refuted": 10,
     "unverifiable": 0,
-    "verification_rate": 0.75,
+    "verification_rate": 0.64,
     "action": "FLAG",
     "claims": [
       {
@@ -94,8 +94,8 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "duplicate_frame_state",
           "caller": "execute_cfi",
+          "callee": "duplicate_frame_state",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -106,25 +106,13 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "enough_registers",
           "caller": "execute_cfi",
+          "callee": "enough_registers",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (execute_cfi, cie_cache_initial_state, __libdw_frame_at_address)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "execute_cfi",
-          "caller": "__libdw_frame_at_address",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
         "method": "cymbal_callers"
       },
       {
@@ -139,61 +127,66 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "__libdw_frame_at_address",
+          "caller": "__libdw_frame_at_address",
+          "callee": "execute_cfi",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (dwarf_cfi_addrframe, handle_cfi, handle_address)",
+        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "__libdw_frame_at_address",
-          "caller": "dwarf_getcfi",
-          "expected": true
+          "name": "dwarf_getcfi"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (dwarf_cfi_addrframe, handle_cfi, handle_address)",
-        "method": "cymbal_callers"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/dwarf_getcfi.c:38:dwarf_getcfi (Dwarf *dbg)",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "__libdw_frame_at_address",
-          "caller": "dwarf_next_cfi",
-          "expected": true
+          "name": "dwarf_next_cfi"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (dwarf_cfi_addrframe, handle_cfi, handle_address)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: dwarf_next_cfi at libdw/dwarf_next_cfi.c:39",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "__libdw_frame_at_address",
-          "caller": "dwarf_cfi_end",
-          "expected": true
+          "name": "dwarf_cfi_end"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (dwarf_cfi_addrframe, handle_cfi, handle_address)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: dwarf_cfi_end at libdw/dwarf_cfi_end.c:37",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "dwarf_cfi_addrframe"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: dwarf_cfi_addrframe at libdw/dwarf_cfi_addrframe.c:35",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "libdw/cfi.c",
-          "import": "dwarf.h"
+          "import": "<dwarf.h>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/cfi.c:33:#include <dwarf.h>",
+        "evidence": "No import of <dwarf.h> found",
         "method": "grep_import"
       },
       {
@@ -255,33 +248,33 @@
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "libdw/cfi.c",
-          "import": "assert.h"
+          "import": "<assert.h>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/cfi.c:39:#include <assert.h>",
+        "evidence": "No import of <assert.h> found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "libdw/cfi.c",
-          "import": "stdlib.h"
+          "import": "<stdlib.h>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/cfi.c:40:#include <stdlib.h>",
+        "evidence": "No import of <stdlib.h> found",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "libdw/cfi.c",
-          "import": "string.h"
+          "import": "<string.h>"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/cfi.c:41:#include <string.h>",
+        "evidence": "No import of <string.h> found",
         "method": "grep_import"
       },
       {
@@ -305,6 +298,17 @@
         "confidence": 0.9,
         "evidence": "cymbal: 48 callers (xrealloc (void *p, size_t n), reallocarray (void *ptr, size_t nmemb, size_t size), enough_registers)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "offsetof",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (101 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/dwarf_getmacros.c:90:enum { macinfo_data_size = offsetof (Dwarf_Macro_Op_Tabl",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -376,20 +380,9 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "size_t_overflow_check",
-          "function": "duplicate_frame_state"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
           "type": "bounds_check",
-          "variable": "original->nregs",
-          "function": "duplicate_frame_state"
+          "function": "duplicate_frame_state",
+          "variable": "original->nregs"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

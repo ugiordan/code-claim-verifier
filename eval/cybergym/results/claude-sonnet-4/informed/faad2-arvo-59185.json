@@ -5,12 +5,12 @@
   "reasoning_length": 3701,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 22,
-    "verified": 14,
-    "refuted": 8,
+    "total_claims": 41,
+    "verified": 40,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.62,
-    "action": "FLAG",
+    "verification_rate": 0.97,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -77,24 +77,13 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "frontend/audio.c",
-          "line": 44,
-          "content": "malloc(sizeof(audio_file))"
+          "line": 178,
+          "content_type": "function_start",
+          "function": "write_wav_extensible_header"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 44: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "frontend/audio.c",
-          "line": 75,
-          "content": "faad_fopen(infile, \"wb\")"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 75: if(infile[0] == '-')",
+        "evidence": "Line 178: *p++ = (unsigned char)(word32 >> 16);",
         "method": "file_read"
       },
       {
@@ -107,6 +96,67 @@
         "confidence": 0.85,
         "evidence": "No definition found for open_audio_file",
         "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 42,
+          "content_type": "function_start",
+          "function": "open_audio_file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 42: #include \"audio.h\"",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 44,
+          "content_type": "malloc_call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 44: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 67,
+          "content_type": "parameter_access"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 67: case FAAD_FMT_FLOAT:",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 68,
+          "content_type": "parameter_access"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 68: aufile->bits_per_sample = 32;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 75,
+          "content_type": "fopen_call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 75: if(infile[0] == '-')",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -123,12 +173,73 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "frontend/main.c",
-          "line": 115,
-          "content": "memmove()"
+          "line": 108,
+          "content_type": "function_start",
+          "function": "fill_buffer"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 108: {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 115,
+          "content_type": "memmove_call"
+        },
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 115: memmove((void*)b->buffer, (void*)(b->buffer + b->bytes_consumed),",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 120,
+          "content_type": "fread_call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 120: {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 121,
+          "content_type": "fread_call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 121: bread = fread((void*)(b->buffer + b->bytes_into_buffer), 1,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 131,
+          "content_type": "string_comparison"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 131: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 142,
+          "content_type": "string_comparison"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 142: if (b->bytes_into_buffer > 8)",
         "method": "file_read"
       },
       {
@@ -146,10 +257,23 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "frontend/main.c",
-          "line": 154,
-          "content": "min(bytes, b->bytes_into_buffer)"
+          "line": 152,
+          "content_type": "function_start",
+          "function": "advance_buffer"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 152: static void advance_buffer(aac_buffer *b, int bytes)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 154,
+          "content_type": "min_call"
+        },
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 154: while ((b->bytes_into_buffer > 0) && (bytes > 0))",
         "method": "file_read"
@@ -169,12 +293,49 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "frontend/main.c",
-          "line": 207,
-          "content": "b->buffer[0]"
+          "line": 194,
+          "content_type": "function_start",
+          "function": "adts_parse"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 194: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 207,
+          "content_type": "array_access"
+        },
+        "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "Line 207: fill_buffer(b);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 213,
+          "content_type": "bit_manipulation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 213: break;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/main.c",
+          "line": 218,
+          "content_type": "frame_length_calculation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 218: frame_length = ((((unsigned int)b->buffer[3] & 0x3)) << 11)",
         "method": "file_read"
       },
       {
@@ -191,6 +352,28 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "write_wav_header",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, decodeAACfile)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "write_wav_extensible_header",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (open_audio_file(char *infile, int samplerate, int channels,\n                            int outputFormat, int fileType, long channelMask), close_audio_file, decodeAACfile)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "fill_buffer",
           "expected": true
         },
@@ -200,33 +383,26 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "main",
-            "fill_buffer",
-            "advance_buffer"
-          ]
+          "name": "advance_buffer",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->fill_buffer: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (adts_parse, decodeAACfile, faad_main)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "main",
-            "adts_parse",
-            "fill_buffer",
-            "advance_buffer"
-          ]
+          "name": "adts_parse",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: main->adts_parse: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (decodeAACfile, faad_main)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -257,6 +433,54 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/faad2-arvo-59185/src-vul/faad2/frontend/mp4read.c:28:#include \"mp4read.h\"",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 62,
+          "content_type": "error_checking"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 62: break;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 65,
+          "content_type": "error_checking"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 65: break;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 77,
+          "content_type": "null_check"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 77: #ifdef _WIN32",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/audio.c",
+          "line": 81,
+          "content_type": "null_check"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 81: aufile->toStdio = 1;",
+        "method": "file_read"
       }
     ]
   },

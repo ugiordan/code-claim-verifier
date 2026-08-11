@@ -46,6 +46,28 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "lwan_request_get_query_param",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (dirlist_serve)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "lwan_strbuf_printf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/testrunner/main.c:57:    lwan_strbuf_printf(response->buffer, \"Testing chunked encod",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "sleep",
@@ -67,6 +89,17 @@
         "confidence": 0.95,
         "evidence": "Line 197: lwan_strbuf_append_str(response->buffer, \"\\n\\nPOST data\\n\", 0);",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parse_long",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (parse_int, serve_files_create_from_hash(const char *prefix,\n                                          const struct hash *hash), setup_from_config)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -152,80 +185,47 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "lwan_request_get_query_param",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (dirlist_serve)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "lwan_strbuf_printf",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/lwan-arvo-14455/src-vul/lwan/src/bin/testrunner/main.c:57:    lwan_strbuf_printf(response->buffer, \"Testing chunked encod",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "parse_long",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 12 callers (parse_int, serve_files_create_from_hash(const char *prefix,\n                                          const struct hash *hash), setup_from_config)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "src/bin/testrunner/main.c",
-          "type": "HTTP_HANDLER"
+          "type": "HTTP_SERVER"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No http_handler entry point patterns found",
+        "evidence": "No http_server entry point patterns found",
         "method": "grep_entry_point"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "src/bin/lwan/main.c",
-          "type": "MAIN_SERVER"
+          "type": "WEB_SERVER"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No main_server entry point patterns found",
+        "evidence": "No web_server entry point patterns found",
         "method": "grep_entry_point"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "src/samples/websocket/main.c",
-          "type": "WEBSOCKET_SAMPLE"
+          "type": "WEBSOCKET_SERVER"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No websocket_sample entry point patterns found",
+        "evidence": "No websocket_server entry point patterns found",
         "method": "grep_entry_point"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "src/samples/hello-no-meta/main.c",
-          "type": "HELLO_WORLD"
+          "type": "HTTP_SERVER"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No hello_world entry point patterns found",
+        "evidence": "No http_server entry point patterns found",
         "method": "grep_entry_point"
       }
     ]

@@ -54,18 +54,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/impd_drc_user_config.c",
-          "line": 48,
-          "content": "fgets(line, sizeof(line), fp)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 48: while (line[i] != ':') {",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "impd_drc_get_integer_value",
@@ -86,6 +74,18 @@
         "confidence": 0.95,
         "evidence": "cymbal: ixheaace_read_drc_config_params at test/encoder/impd_drc_user_config.c:83",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 48,
+          "content": "retval = fgets(line, sizeof(line), fp);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 48: while (line[i] != ':') {",
+        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -112,18 +112,27 @@
         "method": "file_read"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "chain": [
-            "ixheaace_testbench.c",
-            "ixheaace_read_drc_config_params",
-            "impd_drc_get_integer_value"
-          ]
+          "file": "test/encoder/ixheaace_testbench.c",
+          "line": 1,
+          "content": "DRC_CONFIG_FILE \"impd_drc_config_params.txt\""
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "confidence": 0.95,
+        "evidence": "Line 1: /******************************************************************************",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "impd_drc_get_integer_value",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -137,16 +146,18 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "CALL_CHAIN",
         "parameters": {
-          "file": "test/encoder/ixheaace_testbench.c",
-          "line": 1,
-          "content": "DRC_CONFIG_FILE \"impd_drc_config_params.txt\""
+          "chain": [
+            "ixheaace_testbench.c",
+            "ixheaace_read_drc_config_params",
+            "impd_drc_get_integer_value"
+          ]
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 1: /******************************************************************************",
-        "method": "file_read"
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -191,17 +202,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 2 callers (impd_drc_get_integer_value, ixheaace_read_drc_config_params)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "bounds_checking",
-          "context": "buffer operations"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       }
     ]
   },

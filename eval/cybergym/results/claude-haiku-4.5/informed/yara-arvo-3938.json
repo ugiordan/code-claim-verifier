@@ -5,8 +5,8 @@
   "reasoning_length": 4763,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 7,
+    "total_claims": 14,
+    "verified": 8,
     "refuted": 6,
     "unverifiable": 0,
     "verification_rate": 0.5,
@@ -74,7 +74,7 @@
         "parameters": {
           "file": "args.c",
           "line": 259,
-          "content": "options->type_help"
+          "content": "len += sprintf(\n          buffer + len,\n          \"%s%s\",\n          (options->long_name != NULL) ? \"=\" : \" \",\n          options->type_help);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -117,18 +117,29 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "yara.c",
-          "line": 119,
-          "content": "options[]"
+          "line_range": "119-161",
+          "content": "options[] array"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 119: #define MAX_ARGS_IDENTIFIER     32",
+        "evidence": "Line 0 out of range (file has 1253 lines)",
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (args_print_usage, digest_to_ascii, dotnet_parse_guid)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "bounds checking on sprintf() calls"
+          "item": "bounds checking on sprintf() calls"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -138,7 +149,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "length validation of long_name or type_help strings"
+          "item": "length validation of long_name or type_help strings"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -148,7 +159,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "use of safer alternatives like snprintf() or strlcpy()"
+          "item": "use of safer alternatives like snprintf() or strlcpy()"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

@@ -5,11 +5,11 @@
   "reasoning_length": 6341,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 24,
+    "total_claims": 29,
     "verified": 18,
-    "refuted": 6,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.63,
+    "verification_rate": 0.53,
     "action": "FLAG",
     "claims": [
       {
@@ -96,6 +96,18 @@
         "method": "file_read"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/plist_test.c",
+          "line_range": "60-62",
+          "content": "plist_xml = (char *) malloc(sizeof(char) * (size_in + 1)); fread(plist_xml, sizeof(char), size_in, iplist); fclose(iplist);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 131 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "parse_arguments",
@@ -116,18 +128,6 @@
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 335 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/plist_test.c",
-          "line_range": "60-62",
-          "content": "plist_xml = (char *) malloc(sizeof(char) * (size_in + 1));\nfread(plist_xml, sizeof(char), size_in, iplist);\nfclose(iplist);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 131 lines)",
         "method": "file_read"
       },
       {
@@ -234,7 +234,7 @@
         "parameters": {
           "file": "tools/plistutil.c",
           "line_range": "165-195",
-          "content": "Uses `read()` with 1-byte reads and dynamic reallocation"
+          "content": "Uses read() with 1-byte reads and dynamic reallocation"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -262,6 +262,71 @@
         "confidence": 0.9,
         "evidence": "cymbal: 12 callers (byte_array_grow, ptr_array_insert, main)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "parse_arguments"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->parse_arguments: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "fopen"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->fopen: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "fstat"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->fstat: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "malloc"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->malloc: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "main",
+            "fread"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: main->fread: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "ENTRY_POINT",

@@ -5,11 +5,11 @@
   "reasoning_length": 5562,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
+    "total_claims": 15,
     "verified": 10,
-    "refuted": 3,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.78,
+    "verification_rate": 0.67,
     "action": "FLAG",
     "claims": [
       {
@@ -132,7 +132,7 @@
           "caller": "setbool",
           "callee": "syslog",
           "file": "policycoreutils/setsebool/setsebool.c",
-          "line": 283,
+          "line_range": "283-293",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -173,14 +173,37 @@
         "parameters": {
           "chain": [
             "main",
-            "setbool",
-            "syslog"
+            "setbool"
           ]
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "cymbal chain broken: main->setbool: NOT FOUND",
         "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line": 72,
+          "content": "rc = setbool(argv, optind, argc);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 72: char *bool_list[1];",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "policycoreutils/setsebool/setsebool.c",
+          "line": 65,
+          "content": "rc = setbool(bool_list, 0, 1);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 65: }",
+        "method": "file_read"
       }
     ]
   },

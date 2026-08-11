@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 16,
-    "verified": 10,
-    "refuted": 6,
+    "verified": 7,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.34,
+    "verification_rate": 0.24,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -60,6 +60,18 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "filename": "jpegdecoderhelper.cpp",
+          "line_number": 280,
+          "content": "!memcmp(marker->data, kXmpNameSpace, sizeof(kX"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "jpegdecoderhelper.cpp",
           "line_number": 180,
           "content": "pos += marker->original_length;"
         },
@@ -69,37 +81,28 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "memcmp",
-          "expected": true
+          "filename": "jpegdecoderhelper.cpp",
+          "line_number": 190,
+          "content": "!memcmp(marker->data, kExifIdCode, sizeof(kExifIdCode))"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "memcmp",
-          "expected": true
+          "filename": "jpegdecoderhelper.cpp",
+          "line_number": 120,
+          "content": "memcpy(static_cast<void*>(mEXIFBuffer.data()), marker->data, len)"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 6 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "memcpy",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 19 callers (JpegEncoderHelper::compressYuv, JpegEncoderHelper::compressY, DataStruct::write)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -126,17 +129,6 @@
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "JpegDecoderHelper::decode",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (1 call sites)",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
           "name": "extractEXIF",
           "expected": true
         },
@@ -146,26 +138,15 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "DEPENDENCY_TYPE",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "libjpeg",
-          "type": "library"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "CMakeLists.txt: direct",
-        "method": "manifest_parse"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "jpeg_read_header",
+          "module": "libjpeg",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of libjpeg found",
+        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -187,6 +168,28 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 1 callers (jpegrerror_exit)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "memcmp",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (JpegDecoderHelper::extractEXIF, JpegDecoderHelper::decode, JpegDecoderHelper::getCompressedImageParameters)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "memcpy",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 19 callers (JpegEncoderHelper::compressYuv, JpegEncoderHelper::compressY, DataStruct::write)",
         "method": "cymbal_callers"
       }
     ]

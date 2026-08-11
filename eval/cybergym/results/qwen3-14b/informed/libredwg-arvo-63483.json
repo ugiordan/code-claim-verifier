@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 9,
-    "verified": 6,
-    "refuted": 3,
+    "verified": 7,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.52,
+    "verification_rate": 0.65,
     "action": "FLAG",
     "claims": [
       {
@@ -23,16 +23,26 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
           "file": "test/xmlsuite/check.py",
-          "line": 37,
-          "content": "os.system"
+          "classification": "Python script"
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 37: # filename of the XML File",
-        "method": "file_read"
+        "confidence": 0.8,
+        "evidence": "path=test/xmlsuite/check.py, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "os.system",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63483/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -45,17 +55,6 @@
         "confidence": 0.95,
         "evidence": "Line 37: # filename of the XML File",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "os.system",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63483/src-vul/libredwg/test/xmlsuite/check.py:41:\t\t\t\tos.system(\"./testsuite \" + path_to_dwg + \"/\"",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -93,7 +92,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input sanitization for dir, file, dwg_xmlfile variables before os.system call"
+          "description": "input sanitization for dir, file, and dwg_xmlfile variables before os.system call"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -101,14 +100,14 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "testsuite"
+          "description": "script executed as part of test suite"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: testsuite",
-        "method": "os.path.isfile"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libredwg-arvo-63483/src-vul/libredwg/src/dwg_api.c:16977:/** Sets _dwg_entity_TABLE::scale, DXF 41. and the internal scale_fl",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -5,11 +5,11 @@
   "reasoning_length": 6670,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 19,
-    "verified": 8,
-    "refuted": 11,
+    "total_claims": 21,
+    "verified": 9,
+    "refuted": 12,
     "unverifiable": 0,
-    "verification_rate": 0.37,
+    "verification_rate": 0.39,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -129,6 +129,17 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "libssh2_session_handshake",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 30 callers (main, main, main)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "_libssh2_kex_agree_instr",
           "expected": true
         },
@@ -199,8 +210,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "libssh2/kex.c",
-          "line_number": 210,
-          "content": "_libssh2_kex_agree_instr"
+          "line_range": "200-240",
+          "content_description": "definition of _libssh2_kex_agree_instr()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -210,13 +221,25 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "libssh2/kex.c",
-          "line_number": 260,
-          "content": "libssh2_kex_agree"
+          "file": "libssh2/session.c",
+          "line_range": "480-520",
+          "content_description": "call to libssh2_kex_agree() inside libssh2_session_handshake()"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "File not found: libssh2/kex.c",
+        "evidence": "File not found: libssh2/session.c",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libssh2/ssh.c",
+          "line_range": "300-350",
+          "content_description": "call to libssh2_session_handshake() from public API"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: libssh2/ssh.c",
         "method": "file_read"
       }
     ]

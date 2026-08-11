@@ -5,12 +5,12 @@
   "reasoning_length": 7703,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 42,
+    "total_claims": 38,
     "verified": 32,
-    "refuted": 10,
+    "refuted": 6,
     "unverifiable": 0,
-    "verification_rate": 0.73,
-    "action": "FLAG",
+    "verification_rate": 0.8,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -328,17 +328,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "xmlGenericError",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (docbEncodeEntities, docbParseDocument, docbFreeParserCtxt)",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "DOCBparser.c",
@@ -397,7 +386,7 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "htmlSetMetaEncoding",
-          "line_range": "100-150",
+          "line_number": 100,
           "content": "char newcontent[100];"
         },
         "verdict": "REFUTED",
@@ -409,8 +398,8 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "htmlSetMetaEncoding",
-          "line_range": "100-150",
-          "content": "snprintf(newcontent, sizeof(newcontent), \"text/html; charset=%s\", (char *)encoding);"
+          "line_number": 165,
+          "content": "return (xmlSAXParseMemoryWithData(sax, (const char *)cur, xmlStrlen((const xmlChar *) cur), 0,  userData));"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -418,56 +407,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "docbSAXParseDoc",
-          "line_range": "165-175",
-          "content": "return (xmlSAXParseMemoryWithData(sax, (const char *)cur, xmlStrlen((const xmlChar *) cur), 0,  userData));"
+          "name": "xmlGenericError",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "File not found: docbSAXParseDoc",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "docbParseDocument",
-            "xmlParseDocument"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: docbParseDocument->xmlParseDocument: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "docbParseChunk",
-            "xmlParseChunk"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: docbParseChunk->xmlParseChunk: NOT FOUND",
-        "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "docbSAXParseDoc",
-            "xmlSAXParseMemoryWithData",
-            "xmlStrlen"
-          ]
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: docbSAXParseDoc->xmlSAXParseMemoryWithData: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (docbEncodeEntities, docbParseDocument, docbFreeParserCtxt)",
+        "method": "cymbal_callers"
       }
     ]
   },

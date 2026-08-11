@@ -5,12 +5,12 @@
   "reasoning_length": 4455,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 13,
-    "verified": 11,
-    "refuted": 2,
+    "total_claims": 18,
+    "verified": 10,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.81,
-    "action": "BOOST",
+    "verification_rate": 0.52,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -46,6 +46,61 @@
         "method": "file_read"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "encoding = xmlStrstr(content, BAD_CAST\"charset=\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "if (encoding == NULL)\n    encoding = xmlStrstr(content, BAD_CAST\"Charset=\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "if (encoding == NULL)\n    encoding = xmlStrstr(content, BAD_CAST\"CHARSET=\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "if (encoding != NULL) {\n    encoding += 8;\n} else {\n    encoding = xmlStrstr(content, BAD_CAST\"charset =\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "return(encoding);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1130 lines)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "htmlSetMetaEncoding",
@@ -73,6 +128,17 @@
         "parameters": {
           "caller": "htmlSetMetaEncoding",
           "callee": "htmlGetMetaEncoding",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 26 callers (htmlDocDumpMemoryFormat, htmlDocDump, htmlSaveFile)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "htmlGetMetaEncoding",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -124,36 +190,27 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "htmlParseDocument",
+            "htmlGetMetaEncoding"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: htmlParseDocument->htmlGetMetaEncoding: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "htmlParseDocument",
-          "callee": "htmlGetMetaEncoding",
+          "name": "htmlReadFile",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 26 callers (htmlDocDumpMemoryFormat, htmlDocDump, htmlSaveFile)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "htmlReadFile"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: htmlReadFile at HTMLparser.c:6391",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "function": "htmlGetMetaEncoding",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 26 callers (htmlDocDumpMemoryFormat, htmlDocDump, htmlSaveFile)",
+        "evidence": "cymbal: 3 callers (if, test_htmlReadFile, test_HTMLparser)",
         "method": "cymbal_callers"
       }
     ]

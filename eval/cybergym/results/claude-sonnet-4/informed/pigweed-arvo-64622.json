@@ -5,11 +5,11 @@
   "reasoning_length": 3330,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
-    "verified": 7,
-    "refuted": 5,
+    "total_claims": 15,
+    "verified": 11,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.61,
+    "verification_rate": 0.76,
     "action": "FLAG",
     "claims": [
       {
@@ -35,11 +35,51 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "pw_kvs/public/pw_kvs/*.h"
+          "file": "pw_kvs/public/pw_kvs/alignment.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "not found: pw_kvs/public/pw_kvs/*.h",
+        "evidence": "exists: pw_kvs/public/pw_kvs/alignment.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pw_kvs/public/pw_kvs/checksum.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pw_kvs/public/pw_kvs/checksum.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pw_kvs/public/pw_kvs/crc16_checksum.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pw_kvs/public/pw_kvs/crc16_checksum.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pw_kvs/public/pw_kvs/fake_flash_memory.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pw_kvs/public/pw_kvs/fake_flash_memory.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pw_kvs/public/pw_kvs/flash_memory.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pw_kvs/public/pw_kvs/flash_memory.h",
         "method": "os.path.isfile"
       },
       {
@@ -65,15 +105,25 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "pathsToModuleNameMapper",
-          "expected": true
+          "name": "pathsToModuleNameMapper"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/pigweed-arvo-64622/src-vul/pigweed/jest.config.ts:25:  moduleNameMapper: pathsToModuleNameMapper(paths, { prefix: '<rootDir>/' }),",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "ts-jest",
+          "imported_item": "pathsToModuleNameMapper"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/pigweed-arvo-64622/src-vul/pigweed/jest.config.ts:15:import { pathsToModuleNameMapper } from 'ts-jest';",
+        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -87,60 +137,77 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "alignment.h"
+          "name": "AlignedWriter"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): pw_kvs/public/pw_kvs/alignment.h",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/pigweed-arvo-64622/src-vul/pigweed/pw_kvs/public/pw_kvs/alignment.h:36:  AlignedWriter(span<std::byte> buffer, size_t alignment_bytes, Output& writer)",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "checksum.h"
+          "name": ".IgnoreError",
+          "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): pw_kvs/public/pw_kvs/checksum.h",
-        "method": "os.walk_fuzzy"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "crc16_checksum.h"
+          "name": "PW_ASSERT",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "exists (fuzzy match): pw_kvs/public/pw_kvs/crc16_checksum.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "fake_flash_memory.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): pw_kvs/public/pw_kvs/fake_flash_memory.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "flash_memory.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): pw_kvs/public/pw_kvs/flash_memory.h",
-        "method": "os.walk_fuzzy"
+        "evidence": "cymbal: 50 callers (TEST, AssertBackendCompileTestsInC, BloatThisBinary)",
+        "method": "cymbal_callers"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 2,
+    "matched": 7,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

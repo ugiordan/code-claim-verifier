@@ -5,11 +5,11 @@
   "reasoning_length": 6279,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 29,
-    "verified": 26,
+    "total_claims": 32,
+    "verified": 29,
     "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.89,
+    "verification_rate": 0.84,
     "action": "BOOST",
     "claims": [
       {
@@ -92,7 +92,32 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "caller": "ixheaace_testbench.c",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ixheaace_read_drc_config_params",
+          "caller": "ixheaace_api.c",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
           "name": "impd_drc_get_integer_value",
+          "caller": "ixheaace_read_drc_config_params",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -104,33 +129,12 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "impd_drc_get_float_value",
+          "caller": "ixheaace_read_drc_config_params",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "ixheaace_read_drc_config_params",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process, LLVMFuzzerTestOneInput)",
         "method": "cymbal_callers"
       },
       {
@@ -299,19 +303,54 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "description": "bounds checking on line buffer in helper functions"
+          "name": "fgets",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (ixheaacd_read_metadata_info, impd_drc_get_float_value, impd_drc_get_integer_value)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atof",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_float_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "atoi",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (ixheaacd_read_metadata_info, impd_drc_get_integer_value, ixheaace_parse_config_param)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "strtol",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (impd_drc_get_integer_value, ixheaace_read_drc_config_params)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "check that value string is within bounds before calling atof/atoi/strtol"
+          "type": "bounds_checking",
+          "location": "helper functions"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -321,7 +360,17 @@
       {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "clamping of counts to maximum constants"
+          "type": "count_clamping",
+          "variables": [
+            "drc_instructions_uni_drc_count",
+            "gain_set_channels",
+            "num_drc_channel_groups"
+          ],
+          "constants": [
+            "MAX_DRC_INSTRUCTIONS_COUNT",
+            "MAX_CHANNEL_COUNT",
+            "MAX_CHANNEL_GROUP_COUNT"
+          ]
         },
         "verdict": "REFUTED",
         "confidence": 0.7,

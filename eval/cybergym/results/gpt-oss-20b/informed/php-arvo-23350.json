@@ -5,12 +5,12 @@
   "reasoning_length": 8667,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 24,
+    "total_claims": 26,
     "verified": 11,
-    "refuted": 13,
+    "refuted": 15,
     "unverifiable": 0,
-    "verification_rate": 0.51,
-    "action": "FLAG",
+    "verification_rate": 0.48,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -68,8 +68,8 @@
         "parameters": {
           "file": "Zend/zend_gc.c",
           "line": 350,
-          "content_type": "approximate_location",
-          "description": "zend_gc_remove function"
+          "content_type": "approximate_function_location",
+          "function": "zend_gc_remove"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -92,8 +92,8 @@
         "parameters": {
           "file": "Zend/zend_gc.c",
           "line": 200,
-          "content_type": "approximate_location",
-          "description": "zend_gc_scan function"
+          "content_type": "approximate_function_location",
+          "function": "zend_gc_scan"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -116,8 +116,8 @@
         "parameters": {
           "file": "Zend/zend_gc.c",
           "line": 120,
-          "content_type": "approximate_location",
-          "description": "zend_gc_get_gc function"
+          "content_type": "approximate_function_location",
+          "function": "zend_gc_get_gc"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -140,8 +140,8 @@
         "parameters": {
           "file": "Zend/zend_gc.c",
           "line": 400,
-          "content_type": "approximate_location",
-          "description": "zend_gc_remove_object function"
+          "content_type": "approximate_function_location",
+          "function": "zend_gc_remove_object"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -164,8 +164,8 @@
         "parameters": {
           "file": "Zend/zend_gc.c",
           "line": 420,
-          "content_type": "approximate_location",
-          "description": "zend_gc_remove_array function"
+          "content_type": "approximate_function_location",
+          "function": "zend_gc_remove_array"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -270,26 +270,44 @@
         "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "description": "GC stack protection in zend_gc_remove",
-          "context": "zend_gc_remove does not push objects onto GC stack before recursing"
+          "name": "zend_objects_free_object_storage"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for zend_objects_free_object_storage",
+        "method": "grep_function_def"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "description": "GC stack push in zend_gc_remove",
-          "context": "zend_gc_remove function lacks stack protection"
+          "name": "zend_hash_destroy"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_hash_destroy at Zend/zend_hash.c:1550",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "zend_destruct_object"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for zend_destruct_object",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "zend_execute"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: zend_execute at Zend/zend_vm_execute.h:56121",
+        "method": "cymbal_function"
       }
     ]
   },

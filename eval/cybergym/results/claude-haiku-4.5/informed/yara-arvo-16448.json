@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 24,
-    "verified": 16,
-    "refuted": 8,
+    "verified": 17,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.56,
+    "verification_rate": 0.58,
     "action": "FLAG",
     "claims": [
       {
@@ -84,16 +84,6 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "yara.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: yara.c",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
           "file": "args.h"
         },
         "verdict": "VERIFIED",
@@ -112,6 +102,16 @@
         "confidence": 0.95,
         "evidence": "Line 48: } args_error_type_t;",
         "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "yara.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: yara.c",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -237,19 +237,17 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "snprintf",
-          "context": "safe alternative to sprintf"
+          "item": "snprintf usage"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 53 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-16448/src-vul/yara/tests/test-rules.c:1444:  snprintf(",
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "length validation",
-          "context": "before sprintf calls"
+          "item": "length validation before sprintf calls"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -267,15 +265,15 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "item": "bounds checking",
-          "context": "on buffer"
+          "mitigation": "bounds checking",
+          "exists": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 6 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-16448/src-vul/yara/libyara/grammar.c:577:   by yylex, with out-of-bounds checking.  */",
-        "method": "grep_absent"
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

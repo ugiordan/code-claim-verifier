@@ -15,7 +15,7 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "third_party/openthread/src/ncp/spinel.c"
+          "path": "third_party/openthread/src/ncp/spinel.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
@@ -83,6 +83,7 @@
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "spinel_packed_uint_decode",
+          "caller": "spinel_datatype_vunpack_",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -137,18 +138,20 @@
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "third_party/openthread/src/ncp/spinel.c",
-          "line_contains": "require_action(data_len <= SPINEL_MAX_PACK_LENGTH, bail, (ret = -1, errno = EINVAL));"
+          "file": "spinel_datatype_vunpack_",
+          "content": "require_action(data_len <= SPINEL_MAX_PACK_LENGTH, bail, (ret = -1, errno = EINVAL));"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 2765 lines)",
+        "evidence": "File not found: spinel_datatype_vunpack_",
         "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "check on the number of continuation bytes or on the shift amount i"
+          "description": "check on the number of continuation bytes or on the shift amount i",
+          "file": "third_party/openthread/src/ncp/spinel.c",
+          "function": "spinel_packed_uint_decode"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

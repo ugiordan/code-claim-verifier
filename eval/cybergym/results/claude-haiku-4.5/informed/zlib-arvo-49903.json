@@ -6,10 +6,10 @@
   "reasoning_truncated": true,
   "ccv": {
     "total_claims": 28,
-    "verified": 12,
-    "refuted": 16,
+    "verified": 13,
+    "refuted": 15,
     "unverifiable": 0,
-    "verification_rate": 0.43,
+    "verification_rate": 0.46,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -177,16 +177,15 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "caller": "adler32_combine",
-          "callee": "adler32_combine_",
-          "expected": true
+          "name": "adler32_combine64",
+          "file": "adler32.c"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (adler32_combine, adler32_combine64)",
-        "method": "cymbal_callers"
+        "confidence": 0.95,
+        "evidence": "cymbal: adler32_combine64 at adler32.c:180",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -201,15 +200,28 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "adler32_combine64",
-          "file": "adler32.c"
+          "file": "adler32.c",
+          "line": 152,
+          "content": "adler32_combine64()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 152: /* for negative len, return invalid adler32 as a clue for debugging */",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "adler32_combine",
+          "callee": "adler32_combine_",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: adler32_combine64 at adler32.c:180",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (adler32_combine, adler32_combine64)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -224,18 +236,6 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "adler32.c",
-          "line": 152,
-          "content": "adler32_combine64()"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 152: /* for negative len, return invalid adler32 as a clue for debugging */",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "compress",
@@ -245,18 +245,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: compress at compress.c:68",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "caller": "compress",
-          "callee": "compress2",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (compress, test_compress)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -271,21 +259,33 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "compress",
+          "callee": "compress2",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (compress, test_compress)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "zutil.h",
-          "imported_by": "multiple files"
+          "file": "crc32.c",
+          "import": "zutil.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of zutil.h found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/zlib-arvo-49903/src-vul/zlib/crc32.c:33:#include \"zutil.h\"      /* for STDC and FAR definitions */",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "zlib.h",
-          "imported_by": "multiple files"
+          "file": "crc32.c",
+          "import": "zlib.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -295,8 +295,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "deflate.h",
-          "imported_by": "multiple files"
+          "file": "crc32.c",
+          "import": "deflate.h"
         },
         "verdict": "REFUTED",
         "confidence": 0.8,
@@ -330,29 +330,8 @@
     ]
   },
   "gt_comparison": {
-    "matched": 6,
+    "matched": 3,
     "results": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.99,
-        "gt_tier": "source"
-      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

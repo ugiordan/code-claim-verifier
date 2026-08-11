@@ -5,11 +5,11 @@
   "reasoning_length": 6394,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 38,
-    "verified": 16,
-    "refuted": 22,
+    "total_claims": 35,
+    "verified": 18,
+    "refuted": 17,
     "unverifiable": 0,
-    "verification_rate": 0.41,
+    "verification_rate": 0.48,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -236,25 +236,22 @@
         "method": "file_read"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "chain": [
-            "jq_compile",
-            "jq_parse",
-            "jv_parse"
-          ]
+          "name": "jq_compile",
+          "file": "jq.c"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "cymbal chain broken: jq_compile->jq_parse: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "evidence": "No definition found for jq_compile",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "jq.c",
           "line_range": "1400",
-          "content": "`jq_compile` \u2192 `jq_parse` \u2192 `jv_parse`"
+          "content": "The entry point for the fuzz tests"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -265,7 +262,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_compile",
-          "test_file": "tests/jq_fuzz_compile.c"
+          "file": "tests/jq_fuzz_compile.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -276,7 +273,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_parse",
-          "test_file": "tests/jq_fuzz_parse.c"
+          "file": "tests/jq_fuzz_parse.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -287,7 +284,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_parse",
-          "test_file": "tests/jq_fuzz_parse_extended.c"
+          "file": "tests/jq_fuzz_parse_extended.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -298,7 +295,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "function": "jq_parse",
-          "test_file": "tests/jq_fuzz_parse_stream.c"
+          "file": "tests/jq_fuzz_parse_stream.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -306,92 +303,59 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "CALL_CHAIN",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "chain": [
-            "jv_load_file",
-            "jv_parse",
-            "jv_print",
-            "decNumberToString"
-          ]
+          "name": "jv_parse",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: jv_load_file->jv_parse: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (f_tonumber, run_jq_tests, jv_test)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "jv_load_file",
+          "file": "tests/jq_fuzz_load_file.c"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/docs/build_website.py:14:parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "decNumber.c",
-          "import": "#include \"decNumber.h\""
+          "import": "decNumber.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of #include \"decNumber.h\" found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:202:#include \"decNumber/decNumber.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "jv.c",
-          "import": "#include \"decNumber.h\""
+          "import": "decNumber.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of #include \"decNumber.h\" found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/src/jv.c:202:#include \"decNumber/decNumber.h\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "file": "jq.c",
-          "import": "#include \"jv.h\""
+          "import": "jv.h"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of #include \"jv.h\" found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/jq-arvo-64574/src-vul/jq/tests/jq_fuzz_parse_stream.c:5:#include \"jv.h\"",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "decNumber.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/decNumber/decNumber.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "decNumber.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/decNumber/decNumber.h",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "jv.c"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): src/jv.c",
-        "method": "os.walk_fuzzy"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "jq.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: jq.c",
-        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",

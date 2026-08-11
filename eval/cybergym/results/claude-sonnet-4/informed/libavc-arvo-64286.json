@@ -6,10 +6,10 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 19,
-    "verified": 12,
-    "refuted": 5,
+    "verified": 13,
+    "refuted": 4,
     "unverifiable": 2,
-    "verification_rate": 0.68,
+    "verification_rate": 0.73,
     "action": "FLAG",
     "claims": [
       {
@@ -170,17 +170,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/input.c",
-          "content": "if(NULL == pu1_buf[0]) { CHAR ac_error[STRLENGTH]; sprintf(ac_error, \"Allocation failed for input buffer of size %d\\n\", pic_size); codec_exit(ac_error); }"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 310 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "integer_overflow_checks",
@@ -214,15 +203,26 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "function": "allocate_input",
-          "description": "part of the encoder test application called during encoder initialization"
+          "name": "codec_exit",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libavc-arvo-64286/src-vul/libavc/encoder/ih264e_process.c:533:                 * of signaling eof flag.",
-        "method": "grep_entry_point"
+        "confidence": 0.9,
+        "evidence": "cymbal: 47 callers (allocate_output, allocate_input, allocate_recon)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sprintf",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 34 callers (isvce_sub_pic_rc_ctxt_init, allocate_output, allocate_input)",
+        "method": "cymbal_callers"
       }
     ]
   },

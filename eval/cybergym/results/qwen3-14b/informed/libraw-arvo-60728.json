@@ -5,11 +5,11 @@
   "reasoning_length": 5455,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 17,
-    "verified": 13,
+    "total_claims": 16,
+    "verified": 12,
     "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.59,
+    "verification_rate": 0.6,
     "action": "FLAG",
     "claims": [
       {
@@ -86,20 +86,9 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "CameraMetaDataFromMem",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/libraw-arvo-60728/src-vul/libraw/RawSpeed3/rawspeed3_c_api/rawspeed3_capi.cpp:199:\t\texplicit CameraMetaDataFromMem(const c",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "pugixml"
+          "module": "pugixml"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -118,9 +107,31 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "rawspeed3_init function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "null_termination_check",
+          "location": "CameraMetaDataFromMem constructor"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
-          "file": "RawSpeed3/rawspeed3_c_api/rawspeed3_capi.cpp",
+          "file": "rawspeed3_capi.cpp",
           "content": "if(!cameradefs) return nullptr;"
         },
         "verdict": "REFUTED",
@@ -168,28 +179,6 @@
         "confidence": 0.9,
         "evidence": "cymbal: 2 callers (main, LibRaw::unpack)",
         "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "location": "rawspeed3_init function"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_sanitization",
-          "location": "CameraMetaDataFromMem constructor"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
       }
     ]
   },

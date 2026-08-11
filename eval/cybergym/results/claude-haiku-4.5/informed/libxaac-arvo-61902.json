@@ -5,11 +5,11 @@
   "reasoning_length": 7170,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 16,
+    "total_claims": 17,
     "verified": 9,
-    "refuted": 7,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.57,
+    "verification_rate": 0.53,
     "action": "FLAG",
     "claims": [
       {
@@ -112,6 +112,18 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/impd_drc_user_config.c",
+          "line": 74,
+          "content": "VOID ixheaace_read_drc_config_params"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 74: if (c[0] == '0' && c[1] == 'x') {",
+        "method": "file_read"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "impd_drc_get_integer_value",
@@ -132,6 +144,29 @@
         "confidence": 0.9,
         "evidence": "cymbal: 3 callers (ixheaace_read_drc_config_params, ixheaace_fuzzer_flag, ia_enhaacplus_enc_main_process)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "test/encoder/ixheaace_testbench.c",
+          "import": "impd_drc_user_config.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61902/src-vul/libxaac/test/encoder/ixheaace_testbench.c:31:#include \"impd_drc_user_config.h\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/encoder/ixheaace_testbench.c",
+          "line": 95,
+          "content": "DRC_CONFIG_FILE \"impd_drc_config_params.txt\""
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: if (wav_hdr[0] != 'R' && wav_hdr[1] != 'I' && wav_hdr[2] != 'F' && wav_hdr[3] != 'F') {",
+        "method": "file_read"
       },
       {
         "claim_type": "CALL_CHAIN",
@@ -160,29 +195,6 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: ixheaace_testbench.c->ixheaace_read_drc_config_params: NOT FOUND",
         "method": "cymbal_call_chain"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "test/encoder/ixheaace_testbench.c",
-          "import": "impd_drc_user_config.h"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/libxaac-arvo-61902/src-vul/libxaac/test/encoder/ixheaace_testbench.c:31:#include \"impd_drc_user_config.h\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/ixheaace_testbench.c",
-          "line": 95,
-          "content": "DRC_CONFIG_FILE \"impd_drc_config_params.txt\""
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 95: if (wav_hdr[0] != 'R' && wav_hdr[1] != 'I' && wav_hdr[2] != 'F' && wav_hdr[3] != 'F') {",
-        "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",

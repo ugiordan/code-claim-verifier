@@ -5,11 +5,11 @@
   "reasoning_length": 17480,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 15,
-    "verified": 14,
+    "total_claims": 14,
+    "verified": 13,
     "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.87,
+    "verification_rate": 0.89,
     "action": "BOOST",
     "claims": [
       {
@@ -44,28 +44,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "offsetof",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (91 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-alignment.c:60:        \"offsetof(\" #expr \", \" #subexpr \") = %zd ...\", \\",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "sizeof",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (446 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-alignment.c:44:    printf(\"sizeof(\" #expr \") = %zd ...\", sizeof(expr)); \\",
-        "method": "grep_call_site"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "path": "tests/test-api.c"
@@ -74,17 +52,6 @@
         "confidence": 0.99,
         "evidence": "exists: tests/test-api.c",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "function",
-          "name": "compile_rule"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 21 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-rules.c:3034:  if (compile_rule(",
-        "method": "grep_absent"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -125,6 +92,28 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 9 callers (basic_tests, advanced_tests, yyparse)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "name": "compile_rule",
+          "type": "function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 21 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/yara-arvo-45161/src-vul/yara/tests/test-rules.c:3034:  if (compile_rule(",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "compile_rule",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 15 callers (setup_rules, test_parallel_strings, test_disabled_rules)",
         "method": "cymbal_callers"
       },
       {

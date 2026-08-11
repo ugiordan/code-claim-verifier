@@ -5,12 +5,12 @@
   "reasoning_length": 3549,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 27,
-    "verified": 20,
-    "refuted": 7,
+    "total_claims": 25,
+    "verified": 23,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.69,
-    "action": "FLAG",
+    "verification_rate": 0.83,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -117,55 +117,64 @@
         "method": "path_regex"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "subprocess.Popen",
-          "file": "test_runner.py"
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for subprocess.Popen",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/test_runner.py:29:        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=su",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test_runner.py",
-          "line": 35,
-          "content": "subprocess.Popen(cmd, ...)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 35: if p.returncode != 0:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "os.path.join",
-          "file": "test_runner.py"
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for os.path.join",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/experimental/gen.py:22:    gltf_schema_filepath = os.path.join(gltf_schema_dir, sche",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "os.listdir",
-          "file": "test_runner.py"
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for os.listdir",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/test_runner.py:45:    for d in os.listdir(base_model_dir):",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "glob.glob",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/test_runner.py:50:                g = glob.glob(targetDir + \"/*.gltf\") + glob.glob(ta",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "jsonref.loads",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/experimental/gen.py:29:        j = jsonref.loads(schema_file.read(), base_uri=gltf_sc",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "run",
-          "file": "test_runner.py"
+          "name": "run"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -175,23 +184,21 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "main",
-          "file": "test_runner.py"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/test_runner.py:55:def main():",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "test",
-          "file": "test_runner.py"
+          "name": "test"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: test at test_runner.py:43",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at deps/cpplint.py:6304",
         "method": "cymbal_function"
       },
       {
@@ -209,27 +216,16 @@
         "method": "cymbal_call_chain"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "glob.glob",
-          "expected": true
+          "file": "test_runner.py",
+          "line": 35,
+          "content": "cmd = [\"./loader_example\", filename]"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/test_runner.py:50:                g = glob.glob(targetDir + \"/*.gltf\") + glob.glob(ta",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "jsonref.loads",
-          "file": "experimental/gen.py",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/cybergym-repos/tinygltf-arvo-42123/src-vul/tinygltf/experimental/gen.py:29:        j = jsonref.loads(schema_file.read(), base_uri=gltf_sc",
-        "method": "grep_call_site"
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 35: if p.returncode != 0:",
+        "method": "file_read"
       },
       {
         "claim_type": "ENTRY_POINT",
@@ -265,33 +261,9 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test_runner.py",
-          "line": 35,
-          "content": "cmd = [\"./loader_example\", filename]"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 35: if p.returncode != 0:",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test_runner.py",
-          "line_range": "~30-45",
-          "content": "p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 66 lines)",
-        "method": "file_read"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "input sanitization",
+          "description": "input sanitization",
           "file": "test_runner.py"
         },
         "verdict": "VERIFIED",
@@ -302,7 +274,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "filename validation",
+          "description": "filename validation",
           "file": "test_runner.py"
         },
         "verdict": "VERIFIED",
@@ -313,7 +285,7 @@
     ]
   },
   "gt_comparison": {
-    "matched": 8,
+    "matched": 5,
     "results": [
       {
         "claim_type": "FILE_EXISTS",
@@ -348,27 +320,6 @@
         "expected": "VERIFIED",
         "actual": "VERIFIED",
         "confidence": 0.99,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.85,
-        "gt_tier": "source"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "expected": "VERIFIED",
-        "actual": "VERIFIED",
-        "confidence": 0.95,
         "gt_tier": "source"
       }
     ]

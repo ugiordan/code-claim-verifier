@@ -5,12 +5,12 @@
   "reasoning_length": 3502,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 18,
-    "verified": 11,
-    "refuted": 2,
-    "unverifiable": 5,
-    "verification_rate": 0.81,
-    "action": "BOOST",
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.73,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -38,7 +38,7 @@
         "parameters": {
           "file": "test/encoder/input.c",
           "line_range": "234-285",
-          "content": "allocate_input function definition"
+          "content": "allocate_input() function definition"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -55,61 +55,6 @@
         "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 310 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/input.c",
-          "line": "luma_size = ps_app_ctxt->u4_wd * ps_app_ctxt->u4_ht;"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/input.c",
-          "line": "chroma_size = luma_size >> 1;"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/input.c",
-          "line": "pic_size = luma_size + chroma_size;"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/input.c",
-          "line": "num_mbs = ALIGN16(ps_app_ctxt->u4_max_wd) *  ALIGN16(ps_app_ctxt->u4_max_ht);"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "test/encoder/input.c",
-          "line": "num_mbs /= 256;"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "",
         "method": "file_read"
       },
       {
@@ -146,11 +91,21 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "app.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): test/encoder/app.h",
+        "method": "os.walk_fuzzy"
+      },
+      {
         "claim_type": "DEFAULT_VALUE",
         "parameters": {
           "variable": "DEFAULT_MAX_WD",
           "file": "app.h",
-          "default_behavior": "defined maximum width value"
+          "default_behavior": "maximum width value"
         },
         "verdict": "VERIFIED",
         "confidence": 0.55,
@@ -162,7 +117,7 @@
         "parameters": {
           "variable": "DEFAULT_MAX_HT",
           "file": "app.h",
-          "default_behavior": "defined maximum height value"
+          "default_behavior": "maximum height value"
         },
         "verdict": "VERIFIED",
         "confidence": 0.55,
@@ -181,10 +136,32 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "NULL pointer checks",
+          "location": "after allocation"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "bounds checking with MAX() and MIN() macros",
+          "location": "buffer counts"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "overflow detection",
-          "location": "before multiplication operations"
+          "location": "before multiplication"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -205,7 +182,7 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input sanitization",
+          "type": "sanitization",
           "location": "user-provided width/height values"
         },
         "verdict": "VERIFIED",

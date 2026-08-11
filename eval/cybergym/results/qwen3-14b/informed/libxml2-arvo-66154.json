@@ -5,11 +5,11 @@
   "reasoning_length": 4396,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 22,
-    "verified": 22,
-    "refuted": 0,
+    "total_claims": 16,
+    "verified": 15,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.93,
+    "verification_rate": 0.87,
     "action": "BOOST",
     "claims": [
       {
@@ -100,17 +100,6 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "xmlRealloc",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (xmlBufGrowInternal, xmlBufResize, xmlC14NVisibleNsStackAdd)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "snprintf",
           "expected": true
         },
@@ -128,50 +117,6 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 50 callers (xmlCtxtErrIO, xmlFatalErr, xmlErrAttributeDup)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "htmlnamePush",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 8 callers (htmlCheckImplied, htmlCheckParagraph, htmlParseStartTag)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "htmlNodeInfoPush",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (htmlParseElementInternal, htmlParseTryOrFinish, htmlParseContentInternal)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "htmlParseComment",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 11 callers (htmlParseContent, htmlParseContentInternal, htmlParseDocument)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "htmlSetMetaEncoding",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 17 callers (htmlSaveFileFormat, htmlNodeDumpOutputInternal, xmlDocContentDumpOutput)",
         "method": "cymbal_callers"
       },
       {
@@ -205,26 +150,6 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "htmlParseDocument"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66154/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
-        "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "htmlReadFile"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/libxml2-arvo-66154/src-vul/libxml2/HTMLparser.c:5756: * the @terminate flag. With the default SAX callbacks, the resulting",
-        "method": "grep_entry_point"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
           "description": "input length validation in htmlnamePush"
@@ -237,12 +162,23 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "input sanitization in htmlnamePush"
+          "description": "bounds checking in htmlParseComment"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "HTMLtree.c",
+          "content": "newcontent[100]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1126 lines)",
+        "method": "file_read"
       }
     ]
   },

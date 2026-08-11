@@ -5,12 +5,12 @@
   "reasoning_length": 5693,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 27,
-    "verified": 17,
-    "refuted": 10,
+    "total_claims": 28,
+    "verified": 14,
+    "refuted": 14,
     "unverifiable": 0,
-    "verification_rate": 0.57,
-    "action": "FLAG",
+    "verification_rate": 0.44,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -44,6 +44,29 @@
         "confidence": 0.95,
         "evidence": "Line 43: }",
         "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/ui/strings.c",
+          "line": 30,
+          "content": "static const char *get_inserted_text(struct sc_pkcs15_card *p15card, struct sc_atr *atr)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 30: };",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ui_get_str",
+          "file": "src/ui/strings.c"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ui_get_str",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -100,17 +123,6 @@
         "confidence": 0.99,
         "evidence": "exists: src/ui/notify.c",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "ui_get_str",
-          "file": "src/ui/strings.c"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for ui_get_str",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -185,7 +197,7 @@
         "parameters": {
           "file": "src/ui/notify.h",
           "line": 32,
-          "content": "        struct sc_pkcs15_card *p15card, enum ui_str id);"
+          "content": "struct sc_pkcs15_card *p15card, enum ui_str id);"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -274,9 +286,9 @@
         "parameters": {
           "file": "src/ui/notify.c",
           "line": 213,
-          "content_contains": "strlcpy"
+          "content": "strlcpy"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 213: HMENU hMenu;",
         "method": "file_read"
@@ -286,9 +298,9 @@
         "parameters": {
           "file": "src/ui/notify.c",
           "line": 216,
-          "content_contains": "strlcpy"
+          "content": "strlcpy"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 216: if (hMenu) {",
         "method": "file_read"
@@ -298,9 +310,9 @@
         "parameters": {
           "file": "src/ui/notify.c",
           "line": 220,
-          "content_contains": "strlcpy"
+          "content": "strlcpy"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.95,
         "evidence": "Line 220: SetForegroundWindow(hwnd);",
         "method": "file_read"

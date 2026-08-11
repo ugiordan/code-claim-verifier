@@ -6,11 +6,11 @@
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 12,
-    "verified": 10,
-    "refuted": 2,
+    "verified": 9,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.84,
-    "action": "BOOST",
+    "verification_rate": 0.74,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_CLASSIFICATION",
@@ -115,7 +115,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "capture_opts_cleanup"
+          "name": "capture_opts_cleanup",
+          "file": "capture_opts.c"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -123,32 +124,39 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "DEPENDENCY_TYPE",
         "parameters": {
-          "item": "buffer index not properly checked",
-          "scope": "provided files"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "item": "heap overflow",
-          "scope": "provided files"
+          "name": "glib",
+          "type": "external library"
         },
         "verdict": "REFUTED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: 1 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/wireshark-arvo-12745/src-vul/wireshark/epan/dissectors/packet-socks.c:26: *          causing heap overflow because of an i",
-        "method": "grep_absent"
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "wiretap",
+          "type": "external library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "CMakeLists.txt: direct",
+        "method": "manifest_parse"
       }
     ]
   },
   "gt_comparison": {
-    "matched": 1,
+    "matched": 2,
     "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "expected": "VERIFIED",

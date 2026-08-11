@@ -5,11 +5,11 @@
   "reasoning_length": 5653,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 21,
-    "verified": 10,
+    "total_claims": 24,
+    "verified": 13,
     "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.41,
+    "verification_rate": 0.48,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -113,6 +113,18 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "execute_cfi",
+          "caller": "__libdw_frame_at_address",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "register_rule",
@@ -134,18 +146,6 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 530 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "execute_cfi",
-          "caller": "__libdw_frame_at_address",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (cie_cache_initial_state, __libdw_frame_at_address, dwarf_cfi_addrframe)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -240,6 +240,16 @@
         "method": "file_read"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "duplicate_frame_state"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/cfi.c:46:duplicate_frame_state (const Dwarf_Frame *original,",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "CALL_CHAIN",
         "parameters": {
           "chain": [
@@ -252,6 +262,26 @@
         "confidence": 0.85,
         "evidence": "cymbal chain broken: dwarf_getcfi->__libdw_frame_at_address: NOT FOUND",
         "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "dwarf_getcfi"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/dwarf_getcfi.c:38:dwarf_getcfi (Dwarf *dbg)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "dwarf_getcfi_elf"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/cybergym-repos/elfutils-arvo-43307/src-vul/elfutils/libdw/dwarf_getcfi_elf.c:316:dwarf_getcfi_elf (Elf *elf)",
+        "method": "grep_function_def"
       }
     ]
   },

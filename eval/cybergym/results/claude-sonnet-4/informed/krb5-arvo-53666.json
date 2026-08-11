@@ -5,11 +5,11 @@
   "reasoning_length": 3855,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 34,
-    "verified": 24,
-    "refuted": 10,
+    "total_claims": 35,
+    "verified": 27,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.62,
+    "verification_rate": 0.68,
     "action": "FLAG",
     "claims": [
       {
@@ -123,7 +123,7 @@
         "parameters": {
           "file": "fuzzing/Fuzz_marshal.c",
           "line": 32,
-          "content": "unmarshalling functions"
+          "content": "Multiple unmarshalling functions"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
@@ -202,39 +202,6 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "k5_unmarshal_princ",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 7 callers (LLVMFuzzerTestOneInput, read_principal, kcm_get_princ)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "k5_unmarshal_cred",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 12 callers (LLVMFuzzerTestOneInput, fcc_next_cred, kcmreq_get_cred_list)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "krb5_unmarshal_credentials",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (LLVMFuzzerTestOneInput, main)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "ndr_dec_delegation_info",
           "expected": true
         },
@@ -263,6 +230,39 @@
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 4 callers (LLVMFuzzerTestOneInput, main, profile_update_file_data_locked)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "k5_unmarshal_princ",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (LLVMFuzzerTestOneInput, read_principal, kcm_get_princ)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "k5_unmarshal_cred",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (LLVMFuzzerTestOneInput, fcc_next_cred, kcmreq_get_cred_list)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "krb5_unmarshal_credentials",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (LLVMFuzzerTestOneInput, main)",
         "method": "cymbal_callers"
       },
       {
@@ -345,12 +345,45 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "item": "function definitions",
-          "context": "vulnerable functions in this codebase"
+          "item": "format validation",
+          "location": "input data"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "null-termination guarantees",
+          "location": "input"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "bounds checking",
+          "location": "parsing functions"
         },
         "verdict": "REFUTED",
         "confidence": 0.6,
-        "evidence": "grep_absent: 3 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/krb5-arvo-53666/src-vul/krb5/src/util/support/cache-addrinfo.h:96: * + Conditionally export/import the function definition",
+        "evidence": "grep_absent: 5 matches found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/krb5-arvo-53666/src-vul/krb5/src/lib/krb5/asn.1/asn1_encode.h:87:    /* For bounds checking only.  By starting with 2, we ",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "authentication barriers",
+          "location": "entry point"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
         "method": "grep_absent"
       },
       {
@@ -362,30 +395,6 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/cybergym-repos/krb5-arvo-53666/src-vul/krb5/doc/threads.txt:42:   // a flag.",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "fuzzing/Fuzz_marshal.c",
-          "line": 32,
-          "content": "Multiple unmarshalling functions called in sequence"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 32: krb5_creds cred, *alloc_cred;",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "fuzzing/Fuzz_profile.c",
-          "line": 27,
-          "content": "Writes fuzzer input to temporary file then parses"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 27: ",
-        "method": "file_read"
       }
     ]
   },

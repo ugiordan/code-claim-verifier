@@ -5,12 +5,12 @@
   "reasoning_length": 1371,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 5,
+    "total_claims": 7,
     "verified": 5,
-    "refuted": 0,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 1.0,
-    "action": "BOOST",
+    "verification_rate": 0.7,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -36,14 +36,36 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "xsltParseStylesheet",
-          "callee": "xsltParseStylesheetAttributeSet",
+          "name": "xsltParseStylesheetAttributeSet",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
         "evidence": "cymbal: 5 callers (xsltParseTopLevelXSLTElem, xsltParseStylesheetTop, xsltParseXSLTStylesheetElemCore)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "xsltParseStylesheet"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for xsltParseStylesheet",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "xsltParseStylesheet",
+            "xsltParseStylesheetAttributeSet"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: xsltParseStylesheet->xsltParseStylesheetAttributeSet: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "ABSENCE",

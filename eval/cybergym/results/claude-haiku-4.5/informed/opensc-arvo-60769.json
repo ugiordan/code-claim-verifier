@@ -5,11 +5,11 @@
   "reasoning_length": 5598,
   "reasoning_truncated": true,
   "ccv": {
-    "total_claims": 25,
+    "total_claims": 23,
     "verified": 12,
-    "refuted": 13,
+    "refuted": 11,
     "unverifiable": 0,
-    "verification_rate": 0.39,
+    "verification_rate": 0.43,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -46,30 +46,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/strings.c",
-          "line": 36,
-          "content": "static char text[3*SC_MAX_ATR_SIZE] = {0};"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 36: ",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/strings.c",
-          "line": 37,
-          "content": "const char prefix[] = \"ATR: \";"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 37: if (p15card && p15card->card",
-        "method": "file_read"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "strcpy",
@@ -103,6 +79,17 @@
         "method": "grep_function_def"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_inserted_text",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "src/ui/strings.c",
@@ -127,17 +114,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "get_inserted_text",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (ui_get_str(struct sc_context *ctx, struct sc_atr *atr,\n\t\tstruct sc_pkcs15_card *p15card, enum ui_str id))",
-        "method": "cymbal_callers"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "src/ui/notify.c"
@@ -157,18 +133,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: sc_notify_id at src/ui/notify.c:287",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/ui/notify.c",
-          "line": 234,
-          "content": "void sc_notify_id(struct sc_context *ctx, struct sc_atr *atr, struct sc_pkcs15_card *p15card, enum ui_str id)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 234: ",
-        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -295,6 +259,20 @@
         "confidence": 0.95,
         "evidence": "Line 195: case MD_PINPAD_DLG_EXPANDED:",
         "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "sc_notify_id",
+            "ui_get_str",
+            "get_inserted_text"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: sc_notify_id->ui_get_str: NOT FOUND",
+        "method": "cymbal_call_chain"
       }
     ]
   },
