@@ -1,0 +1,131 @@
+{
+  "vuln_id": "fasterxml__jackson-core-1309",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 1508,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 7,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.67,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseInt",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+          "class": "NumberInput"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseInt",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/test/java/perf/ConcurrencyReadTest.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/test/java/perf/ConcurrencyReadTest.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parseInt",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 16 callers (_parseIndex, parseLong, parseAsInt)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "test",
+          "file": "src/test/java/perf/ConcurrencyReadTest.java",
+          "class": "ConcurrencyReadTest"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for test",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+          "import": "ch.randelshofer.fastdoubleparser.JavaDoubleParser"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java:3:import ch.randelshofer.fastdoubleparser.JavaDoubleParser;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+          "import": "ch.randelshofer.fastdoubleparser.JavaFloatParser"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java:4:import ch.randelshofer.fastdoubleparser.JavaFloatParser;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/test/java/perf/ConcurrencyReadTest.java",
+          "import": "java.io.IOException"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/perf/ConcurrencyReadTest.java:3:import java.io.IOException;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/test/java/perf/ConcurrencyReadTest.java",
+          "import": "java.util.concurrent.atomic.AtomicInteger"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/perf/ConcurrencyReadTest.java:4:import java.util.concurrent.atomic.AtomicInteger;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry_point": "ConcurrencyReadTest",
+          "file": "src/test/java/perf/ConcurrencyReadTest.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

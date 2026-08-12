@@ -1,0 +1,152 @@
+{
+  "vuln_id": "cli__cli-9477",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 2839,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 11,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.92,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/issue/develop/develop.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/issue/develop/develop.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/queries_branch_issue_reference.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/queries_branch_issue_reference.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "developRunCreate",
+          "file": "pkg/cmd/issue/develop/develop.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: developRunCreate at pkg/cmd/issue/develop/develop.go:149",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "FindRepoBranchID",
+          "file": "api/queries_branch_issue_reference.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: FindRepoBranchID at api/queries_branch_issue_reference.go:112",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "RunE",
+          "callee": "developRunCreate",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (developRun, NewCmdDevelop, TestDevelopRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "RunE",
+          "file": "pkg/cmd/issue/develop/develop.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for RunE",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "developRunCreate",
+          "callee": "FindRepoBranchID",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (developRunCreate, developRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/issue/develop/develop.go",
+          "import": "github.com/cli/cli/v2/api"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/issue/develop/develop.go:9:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/issue/develop/develop.go",
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/issue/develop/develop.go:12:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/issue/develop/develop.go",
+          "import": "github.com/cli/cli/v2/pkg/cmdutil"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/issue/develop/develop.go:15:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "context": "developRunCreate function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "command": "gh issue develop"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

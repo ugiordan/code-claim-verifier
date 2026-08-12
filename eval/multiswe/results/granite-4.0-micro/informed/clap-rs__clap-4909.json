@@ -1,0 +1,162 @@
+{
+  "vuln_id": "clap-rs__clap-4909",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 1628,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 8,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.53,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/attrs.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "from_struct",
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: from_struct at clap_derive/src/attrs.rs:57",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/lib.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "from_struct",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (11 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_derive/src/derives/into_app.rs:33:    let attrs = Attrs::from_struct(",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "derive_parser",
+          "file": "clap_derive/src/lib.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for derive_parser",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "proc_macro",
+          "file": "clap_derive"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of proc_macro found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "proc_macro2",
+          "file": "clap_derive"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of proc_macro2 found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "quote",
+          "file": "clap_derive"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of quote found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "syn",
+          "file": "clap_derive"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/builder/arg.rs:496:    /// and requires that the `--` syntax be used to access it early.",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "std",
+          "file": "clap_derive"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/builder/debug_asserts.rs:438:                        s.push_str(&format!(\"  AppSettings::{} is required when AppSettings::{} is set.\\n",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "dependency": "clap",
+          "dependent": "clap_derive"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "context": "vulnerability"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry": "derive_parser",
+          "file": "clap_derive/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/.github/workflows/release-notes.py:13:    parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

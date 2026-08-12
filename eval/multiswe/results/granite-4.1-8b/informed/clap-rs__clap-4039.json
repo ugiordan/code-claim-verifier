@@ -1,0 +1,145 @@
+{
+  "vuln_id": "clap-rs__clap-4039",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 4368,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 10,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.82,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/builder/arg.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/builder/arg.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/parser/parser.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/parser/parser.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/builder/arg.rs",
+          "content": "pub(crate) settings: ArgFlags,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 4480 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "get_matches_with",
+          "file": "src/parser/parser.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: get_matches_with at src/parser/parser.rs:52",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/parser/parser.rs",
+          "content": "if arg_os.is_escape() { if matches!(&parse_state, ParseState::Opt(opt) | ParseState::Pos(opt) if self.cmd[opt].is_allow_hyphen_values_set()) { // ParseResult::MaybeHyphenValue, do nothing } else { debug!(\"Parser::get_matches_with: setting TrailingVals=true\"); trailing_values = true; matcher.start_trailing(); continue; } }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 1591 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_matches_with",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (parse_subcommand, _do_parse, get_matches_with)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Command::get_matches"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/tests/builder/propagate_globals.rs:23:fn get_matches(cmd: Command<'static>, argv: &'static str) -> ArgMatches {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Command::get_matches_from"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/builder/command.rs:605:    pub fn get_matches_from<I, T>(mut self, itr: I) -> ArgMatches",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Arg::allow_hyphen_values"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/builder/command.rs:1978:    pub fn allow_hyphen_values(self, yes: bool) -> Self {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "is_allow_hyphen_values_set"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: is_allow_hyphen_values_set at src/builder/arg.rs:3789",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "built-in mitigation for handling long arguments as values in the first positional position"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit input sanitization that would prevent the misuse of `AllowHyphenValues` for long arguments"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

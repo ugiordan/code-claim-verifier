@@ -1,0 +1,129 @@
+{
+  "vuln_id": "cli__cli-9433",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 3020,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 9,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.9,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/pr/create/create.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/shared/survey.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/pr/shared/survey.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ConfirmPRSubmission",
+          "file": "pkg/cmd/pr/shared/survey.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: ConfirmPRSubmission at pkg/cmd/pr/shared/survey.go:44",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "RunE",
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for RunE",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "RunE",
+          "callee": "ConfirmPRSubmission",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 15 callers (createRun, NewCmdCreate, Test_createRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/create/create.go",
+          "import": "github.com/cli/cli/v2/api"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:17:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/create/create.go",
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:22:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/create/create.go",
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:26:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/create/create.go",
+          "import": "github.com/cli/cli/v2/pkg/cmdutil"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:25:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "command": "gh pr create"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

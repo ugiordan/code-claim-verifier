@@ -1,0 +1,142 @@
+{
+  "vuln_id": "clap-rs__clap-5527",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 4201,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 6,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.47,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/attrs.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "from_struct",
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: from_struct at clap_derive/src/attrs.rs:57",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/derive.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: clap_derive/src/derive.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "derive_parser",
+          "file": "clap_derive/src/derive.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_derive/src/derives/parser.rs:28:pub fn derive_parser(input: &DeriveInput) -> TokenStream {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "derive_parser",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_derive/src/lib.rs:49:    derives::derive_parser(&input).into()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "proc_macro",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "quote",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "syn",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "mitigations or input sanitization",
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry": "#[derive(Parser)]"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/.github/workflows/release-notes.py:13:    parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "#[derive(Parser)]",
+            "derive_parser",
+            "Attrs"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: #[derive(Parser)]->derive_parser: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

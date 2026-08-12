@@ -1,0 +1,150 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-2295",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 4628,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 9,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.75,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "ignore/examples/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: ignore/examples/walk.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "ignore/examples/walk.rs",
+          "classification": "entry point"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=ignore/examples/walk.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "ignore/src/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: ignore/src/walk.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "WalkBuilder::build",
+          "file": "ignore/src/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/ignore/src/walk.rs:446:    pub fn build(&self) -> Walk {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "WalkBuilder::build_parallel",
+          "file": "ignore/src/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/ignore/src/walk.rs:482:    pub fn build_parallel(&self) -> WalkParallel {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "ignore/examples/walk.rs",
+          "content": "let walker = WalkBuilder::new(path).build();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 92 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "ignore/examples/walk.rs",
+          "content": "for result in walker { queue.push(Some(DirEntry::Y(result.unwrap()))); }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 92 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "ignore/examples/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at ignore/examples/walk.rs:18",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "main",
+          "file": "ignore/examples/walk.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "ignore::WalkBuilder",
+          "file": "ignore/examples/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/ignore/examples/walk.rs:15:use ignore::WalkBuilder;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "walkdir::WalkDir",
+          "file": "ignore/examples/walk.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/ignore/examples/walk.rs:16:use walkdir::WalkDir;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization or mitigation for ignore pattern propagation issue"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

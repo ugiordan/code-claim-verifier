@@ -1,0 +1,140 @@
+{
+  "vuln_id": "clap-rs__clap-4072",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 3989,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 8,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.73,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "CHANGELOG.md"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: CHANGELOG.md",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_bench/benches/05_ripgrep.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_bench/benches/05_ripgrep.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_bench/benches/06_rustup.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_bench/benches/06_rustup.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "CHANGELOG.md",
+          "classification": "documentation"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=CHANGELOG.md, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "clap_bench/benches/05_ripgrep.rs",
+          "classification": "benchmark"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=clap_bench/benches/05_ripgrep.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "clap_bench/benches/06_rustup.rs",
+          "classification": "benchmark"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=clap_bench/benches/06_rustup.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ArgMatches::get_many"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/src/parser/matches/arg_matches.rs:150:    pub fn get_many<T: Any + Clone + Send + Sync + 'static>(",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get_matches_from",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (parse_empty, parse_simple_with_flag, parse_simple_with_opt)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "clap_bench/benches/06_rustup.rs",
+          "content": "build_cli().get_matches_from(vec![\"rustup override add stable\"])"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 430 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "get_matches_from",
+            "get_many"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: get_matches_from->get_many: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "clap",
+          "type": "library"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

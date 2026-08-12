@@ -1,0 +1,129 @@
+{
+  "vuln_id": "mui__material-ui-39962",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 3978,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 5,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.51,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "packages/mui-system/src/borders.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: packages/mui-system/src/borders.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "packages/mui-system/src/styleFunctionSx/defaultSxConfig.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: packages/mui-system/src/styleFunctionSx/defaultSxConfig.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "borderTransform",
+          "file": "packages/mui-system/src/borders.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: borderTransform at packages/mui-system/src/borders.js:7",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "packages/mui-system/src/borders.js",
+          "content": "export function borderTransform(value) {\n    if (typeof value !== 'number') {\n      return value;\n    }\n\n    return `${value}px solid`;\n  }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 103 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "defaultSxConfig",
+          "file": "packages/mui-system/src/styleFunctionSx/defaultSxConfig.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/mui__material-ui/packages/mui-system/src/styleFunctionSx/defaultSxConfig.js:7:const defaultSxConfig = {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "packages/mui-system/src/styleFunctionSx/defaultSxConfig.js",
+          "content": "border: {\n      themeKey: 'borders',\n      transform: borderTransform,\n    },"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 306 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "packages/mui-system/src/styleFunctionSx/defaultSxConfig.js",
+          "content": "borderColor: {\n    themeKey: 'palette',\n  },"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 306 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "outlineColor property definition",
+          "file": "packages/mui-system/src/styleFunctionSx/defaultSxConfig.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "borderTransform",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "defaultSxConfig",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-454",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 3781,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.77,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/printer.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/printer.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "only_matching",
+          "file": "src/printer.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: only_matching at src/printer.rs:151",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/printer.rs",
+          "content": "pub fn only_matching(mut self, yes: bool) -> Printer<W> {\n    self.only_matching = yes;\n    self\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 849 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "termcolor",
+          "file": "src/printer.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/printer.rs:7:use termcolor::{Color, ColorSpec, ParseColorError, WriteColor};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "regex",
+          "file": "src/printer.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/printer.rs:6:use regex::bytes::{Regex, Replacer, Captures};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "pathutil",
+          "file": "src/printer.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/src/printer.rs:9:use pathutil::strip_prefix;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "only_matching",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (printer, run_parallel, run_one_thread)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "description": "ripgrep main entry point processes command-line arguments and configures Printer"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

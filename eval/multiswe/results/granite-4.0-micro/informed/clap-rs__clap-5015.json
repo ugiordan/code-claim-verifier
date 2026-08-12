@@ -1,0 +1,141 @@
+{
+  "vuln_id": "clap-rs__clap-5015",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 2468,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 5,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.46,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/attrs.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Attrs::from_struct",
+          "file": "clap_derive/src/attrs.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_derive/src/attrs.rs:57:    pub fn from_struct(",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "clap_derive/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: clap_derive/src/lib.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "derive_parser",
+          "file": "clap_derive/src/lib.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for derive_parser",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Attrs::from_struct",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 11 callers (gen_for_struct, gen_for_enum, gen_for_enum)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "derive_parser",
+            "Attrs::from_struct"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: derive_parser->Attrs::from_struct: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "proc_macro",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "proc_macro2",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "syn",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "quote",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Makefile: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry": "#[derive(Parser)]"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/.github/workflows/release-notes.py:13:    parser = argparse.ArgumentParser()",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

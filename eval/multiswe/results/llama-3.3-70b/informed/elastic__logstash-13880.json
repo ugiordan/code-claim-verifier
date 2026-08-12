@@ -1,0 +1,190 @@
+{
+  "vuln_id": "elastic__logstash-13880",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 2845,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.77,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "bin/logstash.lib.sh"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: bin/logstash.lib.sh",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "bin/setup.bat"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: bin/setup.bat",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ToolingUtils.groovy"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: buildSrc/src/main/groovy/org/logstash/gradle/tooling/ToolingUtils.groovy",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "setup_java",
+          "file": "bin/logstash.lib.sh"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: setup_java at bin/logstash.lib.sh:93",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ExtractBundledJdkVersion",
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ExtractBundledJdkVersion",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "setup_java",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 6 callers (setup, setup!, setup_services)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ExtractBundledJdkVersion",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "build.gradle"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: build.gradle",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.gradle.tooling",
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.gradle.tooling found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.gradle.api",
+          "file": "buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/buildSrc/src/main/groovy/org/logstash/gradle/tooling/ExtractBundledJdkVersion.groovy:3:import org.gradle.api.DefaultTask",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "de.undercouch.gradle.tasks.download",
+          "file": "build.gradle"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/build.gradle:41:import de.undercouch.gradle.tasks.download.Download",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.dorongold.task-tree",
+          "file": "build.gradle"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of com.dorongold.task-tree found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigations",
+          "description": "explicit mitigations or input sanitization measures"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "bin/logstash.lib.sh"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/locales/en.yml:221:          the empty string for the '-e' flag.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "build.gradle"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/locales/en.yml:221:          the empty string for the '-e' flag.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

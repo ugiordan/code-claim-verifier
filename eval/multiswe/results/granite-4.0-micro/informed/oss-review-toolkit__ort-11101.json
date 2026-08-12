@@ -1,0 +1,144 @@
+{
+  "vuln_id": "oss-review-toolkit__ort-11101",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 4000,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 10,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.9,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "SpdxExpression.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): utils/spdx/src/main/kotlin/SpdxExpression.kt",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "SpdxExpression.kt",
+          "package": "utils/spdx"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=SpdxExpression.kt, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "decompose",
+          "class": "SpdxExpression"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/oss-review-toolkit__ort/utils/ort/src/main/kotlin/DeclaredLicenseProcessor.kt:177:    fun decompose() = spdxExpression?.decompose().orEmpty()",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "licenses",
+          "class": "SpdxExpression"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/oss-review-toolkit__ort/utils/spdx/src/main/kotlin/SpdxExpression.kt:103:    fun licenses(): List<String> =",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "decompose",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (31 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/oss-review-toolkit__ort/cli-helper/src/main/kotlin/utils/Extensions.kt:194:                    finding.license.decompose(",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "licenses",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/oss-review-toolkit__ort/plugins/commands/upload-result-to-sw360/src/main/kotlin/UploadResultToSw360Command.kt:171:        ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "SpdxExpression.kt",
+          "import": "org.ossreviewtoolkit.utils.spdx.SpdxConstants"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/oss-review-toolkit__ort/evaluator/src/test/kotlin/PackageRuleTest.kt:32:import org.ossreviewtoolkit.utils.spdx.SpdxConstants",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "SpdxExpression.kt",
+          "import": "org.ossreviewtoolkit.utils.spdx.SpdxExpressionParser"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.ossreviewtoolkit.utils.spdx.SpdxExpressionParser found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "SpdxExpression.kt",
+          "import": "org.ossreviewtoolkit.utils.spdx.SpdxLicenseWithExceptionExpression"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/oss-review-toolkit__ort/plugins/scanners/scancode/src/main/kotlin/model/FileEntry.kt:28:import org.ossreviewtoolkit.utils.spdx.SpdxLicenseWithExceptionE",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "file": "SpdxExpression.kt"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "BazelModuleRegistryService",
+            "licenses",
+            "decompose"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.7,
+        "evidence": "Chain verified: BazelModuleRegistryService->licenses: found licenses() call but not in BazelModuleRegistryService's body; licenses->decompose: found decompose() call but not in licenses's body",
+        "method": "call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

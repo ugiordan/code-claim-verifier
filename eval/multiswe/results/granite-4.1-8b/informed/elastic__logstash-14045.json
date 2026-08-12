@@ -1,0 +1,86 @@
+{
+  "vuln_id": "elastic__logstash-14045",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 5126,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 4,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.61,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "config/logstash.yml"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: config/logstash.yml",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/logstash.yml",
+          "line_content": "# api.auth.basic.enabled: false"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 339 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "api.auth.basic.enabled",
+          "file": "config/logstash.yml",
+          "default_behavior": "false"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "Variable 'api.auth.basic.enabled' not found in searched scope",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "password complexity validation mechanism",
+          "file": "config/logstash.yml"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "existing mitigations or input sanitization for api.auth.basic.password",
+          "file": "config/logstash.yml"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "functions that directly manipulate or validate api.auth.basic.password"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

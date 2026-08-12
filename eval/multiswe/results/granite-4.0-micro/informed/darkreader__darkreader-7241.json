@@ -1,0 +1,110 @@
+{
+  "vuln_id": "darkreader__darkreader-7241",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 1996,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 5,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.66,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): src/generators/utils/parse.ts",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseSitesFixesConfig",
+          "file": "generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: parseSitesFixesConfig at src/generators/utils/parse.ts:21",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parseSitesFixesConfig",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 12 callers (parseDynamicThemeFixes, parseSiteFixConfig, parseInversionFixes)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "indexSitesFixesConfig",
+          "file": "generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: indexSitesFixesConfig at src/generators/utils/parse.ts:98",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "isURLMatched",
+          "from": "../../utils/url",
+          "file": "generators/utils/parse.ts"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of isURLMatched found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "parseArray",
+          "from": "../../utils/text",
+          "file": "generators/utils/parse.ts"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of parseArray found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "function": "parseSitesFixesConfig"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "generators/utils/parse.ts",
+          "function": "indexSitesFixesConfig"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

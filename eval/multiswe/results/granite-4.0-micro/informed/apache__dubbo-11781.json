@@ -1,0 +1,133 @@
+{
+  "vuln_id": "apache__dubbo-11781",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 1749,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 4,
+    "refuted": 3,
+    "unverifiable": 3,
+    "verification_rate": 0.54,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseDecodedParams",
+          "class": "URLStrParser"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseDecodedParams",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseDecodedStr",
+          "class": "URLStrParser"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseDecodedStr",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "parseDecodedStr",
+          "callee": "parseDecodedParams",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 7 callers (parseDecodedStr, parseParams, valueOf)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "importing_class": "URLStrParser",
+          "imported_class": "ServiceConfigURL"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "importing_class": "URLStrParser",
+          "imported_class": "URLItemCache"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "importing_class": "URLStrParser",
+          "imported_class": "TempBuf"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "function": "parseDecodedParams"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseURLBody",
+          "class": "URLStrParser"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseURLBody",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "caller": "parseURLBody",
+          "callee": "parseDecodedStr",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (valueOf, testDecoded, assertURLStrDecoder)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "parseDecodedStr",
+          "description": "main entry point for parsing the decoded URL string"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/apache__dubbo/dubbo-remoting/dubbo-remoting-api/src/test/java/org/apache/dubbo/remoting/transport/codec/DeprecatedExchangeCod",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

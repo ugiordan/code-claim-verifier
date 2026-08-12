@@ -1,0 +1,180 @@
+{
+  "vuln_id": "ankidroid__Anki-Android-19661",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 3874,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 9,
+    "refuted": 3,
+    "unverifiable": 3,
+    "verification_rate": 0.7,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/AnkiDroidApp.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "CollectionHelper.initializeAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/CollectionHelper.kt:81:    fun initializeAnkiDroidDirectory(dir: File) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "onCreate",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: onCreate at AnkiDroid/src/main/java/com/ichi2/anki/provider/CardContentProvider.kt:173",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "CollectionHelper.initializeAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/preferences/AdvancedSettingsFragment.kt:54:                ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "CollectionHelper.initializeAnkiDroidDirectory",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (3 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/main/java/com/ichi2/anki/preferences/AdvancedSettingsFragment.kt:54:                ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "CollectionHelper.initializeAnkiDroidDirectory",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (3 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "android.content.Context",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "com.ichi2.anki.exception.StorageAccessException",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import_statement": "com.ichi2.anki.CollectionHelper",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization or additional mitigation within CollectionHelper.initializeAnkiDroidDirectory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "AnkiDroidApp.onCreate",
+          "reachable": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/ankidroid__Anki-Android/AnkiDroid/src/test/java/com/ichi2/anki/HandlerUtilsTest.kt:36:    fun checkHandlerFunctionExecution()",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "checks to handle null values from getExternalFilesDir gracefully"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "fallback mechanisms for getExternalFilesDir null values"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "existing mitigations in the provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "vuln_id": "alibaba__fastjson2-2097",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 2774,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 7,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.6,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java",
+          "classification": "contains vulnerable code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ObjectReaderImplList",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ObjectReaderImplList",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ObjectReaderImplList",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/JSONTest.java:541:        new ObjectReaderImplList(MyList.cla",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "ObjectReaderImplList",
+          "import": "java.lang.reflect.ParameterizedType",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/codec/ReflectTypeTest.java:11:import java.lang.reflect.ParameterizedType;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "ObjectReaderImplList",
+          "import": "java.lang.reflect.Type",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson_perf/DaoyanPerf.java:9:import java.lang.reflect.Type;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "ObjectReaderImplList",
+          "import": "java.util.*",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/Hessian2Test.java:11:import java.util.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "specific mitigations or input sanitization mechanisms for handling the deserialization of ArrayList objects",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "description": "vulnerable code reachable through Fastjson2 deserialization process",
+          "reachable": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,160 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-2610",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 2168,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 8,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.62,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "globset/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: globset/src/lib.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: globset/src/glob.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "globset/src/benches/bench.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: globset/src/benches/bench.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MatchStrategy::new",
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/glob.rs:57:    pub fn new(pat: &Glob) -> MatchStrategy {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Glob::new",
+          "file": "globset/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/lib.rs:361:    fn new(pats: &[Glob]) -> Result<GlobSet, Error> {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "GlobSetBuilder::add",
+          "file": "globset/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/lib.rs:445:    pub fn add(&mut self, pat: Glob) -> &mut GlobSetBuilder {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MatchStrategy::new",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (new, compile_strategic_matcher)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "MatchStrategy::new",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (new, compile_strategic_matcher)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "regex",
+          "type": "crate"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "regex-syntax",
+          "type": "crate"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "name": "test",
+          "type": "crate"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit mitigations or input sanitization for the vulnerable code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "globset/src/lib.rs",
+          "description": "serves as the entry point for the package"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

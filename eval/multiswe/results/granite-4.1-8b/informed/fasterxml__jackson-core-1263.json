@@ -1,0 +1,196 @@
+{
+  "vuln_id": "fasterxml__jackson-core-1263",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 4040,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 12,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.58,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "pooledCount() method",
+          "location": "RecyclerPool interface"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "acquireAndLinkPooled",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for acquireAndLinkPooled",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "acquirePooled",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for acquirePooled",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "releasePooled",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for releasePooled",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "clear",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for clear",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "acquireAndLinkPooled",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (_getBufferRecycler, checkBufferRecyclerPoolImpl, _createContext)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "acquirePooled",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (acquireAndLinkPooled, _getBufferRecycler, checkBufferRecyclerPoolImpl)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "releasePooled",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (releaseToPool, close, testBufferRecyclerReuse)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "clear",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 37 callers (intern, reset, releaseBuffers)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "pooledCount",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.io.Serializable",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java:3:import java.io.Serializable;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.Deque",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java:4:import java.util.Deque;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.ArrayBlockingQueue",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java:6:import java.util.concurrent.ArrayBlockingQueue;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.ConcurrentLinkedDeque",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/util/RecyclerPool.java:7:import java.util.concurrent.ConcurrentLinkedDeque;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.atomic.AtomicReference",
+          "file": "RecyclerPool.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/json/async/AsyncConcurrencyTest.java:7:import java.util.concurrent.atomic.AtomicReferen",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

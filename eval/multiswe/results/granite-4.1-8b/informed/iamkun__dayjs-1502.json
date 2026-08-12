@@ -1,0 +1,88 @@
+{
+  "vuln_id": "iamkun__dayjs-1502",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 3382,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 4,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.64,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/locale/bg.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/locale/bg.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "src/locale/bg.js",
+          "classification": "Bulgarian locale for the `dayjs` library"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=src/locale/bg.js, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ordinal",
+          "file": "src/locale/bg.js",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ordinal",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/locale/bg.js",
+          "line": 34,
+          "content": "ordinal: n => `${n}.`,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 34: yy: '%d \u0433\u043e\u0434\u0438\u043d\u0438'",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "src/locale/bg.js",
+          "import": "dayjs",
+          "from": "dayjs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/src/locale/bg.js:2:import dayjs from 'dayjs'",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "mitigations or input sanitization mechanisms within the `bg.js` file for the `ordinal` function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "vuln_id": "clap-rs__clap-4081",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 4409,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.36,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "clap_bench/benches/03_complex.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "clap_bench/benches/04_new_help.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "03_complex.rs",
+          "content": ".arg(arg!([positional] \"tests positionals\"))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "03_complex.rs",
+          "content": ".arg(arg!([positional3] ... \"tests positionals with specific values\"))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "04_new_help.rs",
+          "content": ".arg(Arg::new(\"input\").index(1).required(true))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file_path": "04_new_help.rs",
+          "content": ".arg(Arg::new(\"input\").num_args(1..).action(ArgAction::Append).required(true))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "build_from_builder"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: build_from_builder at clap_bench/benches/03_complex.rs:48",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "build_help"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: build_help at clap_bench/benches/04_new_help.rs:6",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "clap",
+          "items": [
+            "arg",
+            "Arg",
+            "ArgAction",
+            "Command"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/clap-rs__clap/clap_complete_fig/examples/fig_completion.rs:1:use clap::Command;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit mitigations or input sanitization mechanisms"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

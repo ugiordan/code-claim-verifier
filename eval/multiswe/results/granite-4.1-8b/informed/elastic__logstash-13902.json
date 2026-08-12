@@ -1,0 +1,210 @@
+{
+  "vuln_id": "elastic__logstash-13902",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 5414,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 17,
+    "verified": 10,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.54,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+          "signature": "write(String fileName, Checkpoint checkpoint)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for write",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+          "signature": "write(String fileName, int pageNum, int firstUnackedPageNum, long firstUnackedSeqNum, long minSeqNum, int elementCount)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for write",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "write",
+          "caller": "FileCheckpointIO",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (transform_r, extract, compress)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.io.FileOutputStream",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:23:import java.io.FileOutputStream;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.ByteBuffer",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:25:import java.nio.ByteBuffer;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.channels.FileChannel",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:26:import java.nio.channels.FileChannel;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Files",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:27:import java.nio.file.Files;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Path",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:28:import java.nio.file.Path;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.StandardCopyOption",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:29:import java.nio.file.StandardCopyOption;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.apache.logging.log4j.Logger",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:33:import org.apache.logging.log4j.Logger;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.ackedqueue.Checkpoint",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:34:import org.logstash.ackedqueue.Checkpoint;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.ackedqueue.io.CheckpointIO",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.ackedqueue.io.CheckpointIO found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.zip.CRC32",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java:30:import java.util.zip.CRC32;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "description": "retry mechanism for atomic move operation",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Line 0 out of range",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+          "content": "Files.move(tmpPath, dirPath.resolve(fileName), StandardCopyOption.ATOMIC_MOVE);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 180 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/io/FileCheckpointIO.java",
+          "content": "Thread.sleep(500);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 180 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

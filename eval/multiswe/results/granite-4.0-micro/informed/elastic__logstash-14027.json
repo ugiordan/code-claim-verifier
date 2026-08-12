@@ -1,0 +1,110 @@
+{
+  "vuln_id": "elastic__logstash-14027",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 2699,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 5,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.63,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "internalReceive",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb:57:  def internalReceive(events)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "internalReceive",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (sendEvents, listenUnlistenUpdatesOutputReceivers, multi_receive)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "run",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb:41:  def run(queue)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.atomic.AtomicBoolean",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of java.util.concurrent.atomic.AtomicBoolean found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.concurrent.locks",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of java.util.concurrent.locks found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "description": "IOException handling for 'data to be written is bigger than page capacity'"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "run",
+            "internalReceive"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: run->internalReceive: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

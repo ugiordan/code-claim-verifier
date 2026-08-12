@@ -1,0 +1,183 @@
+{
+  "vuln_id": "elastic__logstash-13825",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 4123,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 15,
+    "verified": 5,
+    "refuted": 8,
+    "unverifiable": 2,
+    "verification_rate": 0.32,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "build.gradle"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: build.gradle",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "config/jvm.options"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: config/jvm.options",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseAndInjectEnvironment",
+          "file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for parseAndInjectEnvironment",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "handleJvmOptions",
+          "file": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for handleJvmOptions",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "parseAndInjectEnvironment",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (handleJvmOptions, main, test_LS_JAVA_OPTS_isUsedWhenNoJvmOptionsIsAvailable)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "handleJvmOptions",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, test_LS_JAVA_OPTS_isUsedWhenNoJvmOptionsIsAvailable, runsAgainstRelease)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "org.yaml:snakeyaml",
+          "version": "1.29"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No manifest found",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "com.google.googlejavaformat:google-java-format",
+          "version": "1.8"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No manifest found",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "content": "11-:--add-opens=java.base/java.security=ALL-UNNAMED"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 82 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "content": "11-:--add-opens=java.base/java.io=ALL-UNNAMED"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 82 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "content": "11-:--add-opens=java.base/java.nio.channels=ALL-UNNAMED"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 82 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "content": "11-:--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 82 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "config/jvm.options",
+          "content": "11-:--add-opens=java.management/sun.management=ALL-UNNAMED"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 82 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

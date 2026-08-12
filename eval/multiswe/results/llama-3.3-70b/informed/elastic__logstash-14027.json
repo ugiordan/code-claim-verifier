@@ -1,0 +1,239 @@
+{
+  "vuln_id": "elastic__logstash-14027",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 4434,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 20,
+    "verified": 14,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/ackedqueue/Page.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "internalReceive",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb:57:  def internalReceive(events)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "write",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for write",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "sendEvents",
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for sendEvents",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "multi_receive",
+          "file": "logstash-core/spec/logstash/plugins/builtin/pipeline_input_output_spec.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for multi_receive",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "internalReceive",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 5 callers (sendEvents, listenUnlistenUpdatesOutputReceivers, multi_receive)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "write",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (transform_r, extract, compress)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "sendEvents",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (multi_receive, sendingEmptyListToNowhereStillReturns, missingInputEventuallySucceeds)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.plugins.pipeline.PipelineInput",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.plugins.pipeline.PipelineInput found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.plugins.pipeline.PipelineBus",
+          "file": "logstash-core/lib/logstash/plugins/builtin/pipeline/input.rb"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of org.logstash.plugins.pipeline.PipelineBus found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.ackedqueue.io.PageIO",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/Page.java:29:import org.logstash.ackedqueue.io.PageIO;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.ackedqueue.io.CheckpointIO",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/ackedqueue/Page.java:28:import org.logstash.ackedqueue.io.CheckpointIO;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.RubyUtil",
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java:26:import org.logstash.RubyUtil;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.ext.JrubyEventExtLibrary",
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java:27:import org.logstash.ext.JrubyEventExtLibrary;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigations",
+          "context": "input sanitization"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "description": "page writability check",
+          "file": "logstash-core/src/main/java/org/logstash/ackedqueue/Page.java",
+          "function": "write"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Line 0 out of range",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "multi_receive",
+          "file": "logstash-core/spec/logstash/plugins/builtin/pipeline_input_output_spec.rb"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/locales/en.yml:221:          the empty string for the '-e' flag.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "sendEvents",
+          "file": "logstash-core/src/main/java/org/logstash/plugins/pipeline/PipelineBus.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/locales/en.yml:221:          the empty string for the '-e' flag.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

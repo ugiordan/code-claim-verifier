@@ -1,0 +1,149 @@
+{
+  "vuln_id": "fasterxml__jackson-core-1208",
+  "model": "granite-4.1-8b",
+  "condition": "informed",
+  "reasoning_length": 4637,
+  "reasoning_truncated": true,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 5,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.38,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "setStreamReadConstraints",
+          "class": "JsonFactory"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for setStreamReadConstraints",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "JsonFactory.java",
+          "line_range": "800-850",
+          "content": "setStreamReadConstraints method definition"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 2322 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "createParser",
+          "class": "JsonFactory"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for createParser",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "createRoot",
+          "class": "CharsToNameCanonicalizer"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for createRoot",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.StreamReadConstraints"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/testsupport/TestSupport.java:4:import com.fasterxml.jackson.core.StreamReadConstraints;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/TestVersions.java:4:import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.util.BufferRecycler"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/testsupport/TestSupport.java:8:import com.fasterxml.jackson.core.util.BufferRecycler;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.util.RecyclerPool"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/JDKSerializabilityTest.java:6:import com.fasterxml.jackson.core.util.RecyclerPool;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file_path": "ConcurrencyReadTest.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "direct call to setStreamReadConstraints in ConcurrencyReadTest"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "JsonFactory.createParser",
+            "CharsToNameCanonicalizer symbol table usage"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: JsonFactory.createParser->CharsToNameCanonicalizer symbol table usage: NOT FOUND",
+        "method": "cymbal_call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "vuln_id": "elastic__logstash-13825",
+  "model": "granite-4.0-micro",
+  "condition": "informed",
+  "reasoning_length": 1627,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 11,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.82,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "path": "logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: logstash-core/src/main/java/org/logstash/launchers/JvmOptionsParser.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "handleJvmOptions",
+          "class": "JvmOptionsParser"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for handleJvmOptions",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "handleJvmOptions",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 10 callers (main, test_LS_JAVA_OPTS_isUsedWhenNoJvmOptionsIsAvailable, runsAgainstRelease)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "main",
+          "class": "JvmOptionsParser"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: main at docker/data/logstash/env2yaml/env2yaml.go:142",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.util.JavaVersion",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/runner.rb:55:java_import 'org.logstash.util.JavaVersion'",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.io.*",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/benchmark-cli/src/main/java/org/logstash/benchmark/cli/cases/CustomTestCase.java:28:import java.io.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.charset.StandardCharsets",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/test/java/org/logstash/ingest/IngestTest.java:27:import java.nio.charset.StandardCharsets;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Files",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:28:import java.nio.file.Files;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Path",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:29:import java.nio.file.Paths;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.nio.file.Paths",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/tools/ingest-converter/src/main/java/org/logstash/ingest/JsUtil.java:29:import java.nio.file.Paths;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.*",
+          "file": "JvmOptionsParser.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/config/ir/IRHelpers.java:45:import java.util.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "context": "input sanitization"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 1 matches found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/x-pack/spec/modules/azure/samples/activity_log/service_health2.json:14:    \"eventProperties\": \"{\\\"author",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "method": "main",
+          "class": "JvmOptionsParser"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/locales/en.yml:221:          the empty string for the '-e' flag.",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}
