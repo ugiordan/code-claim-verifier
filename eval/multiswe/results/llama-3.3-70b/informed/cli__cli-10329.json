@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-10329",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2871,
+  "reasoning_length": 3681,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 10,
-    "refuted": 1,
+    "total_claims": 12,
+    "verified": 12,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.91,
+    "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
       {
@@ -23,28 +23,6 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "doQuery",
-          "file": "pkg/cmd/project/shared/queries/queries.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/project/shared/queries/queries.go:93:func (c *Client) doQuery(name string, query interface{}, variables map[string]interface{}) error {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "Mutate",
-          "file": "pkg/cmd/project/shared/queries/queries.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/project/shared/queries/queries.go:72:func (c *hostScopedClient) Mutate(queryName string, query interface{}, variables map[string]interf",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "FILE_EXISTS",
         "parameters": {
           "file": "cmd/gh/main.go"
@@ -55,31 +33,98 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "doQuery",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/project/shared/queries/queries.go:93:func (c *Client) doQuery(name string, query interface{}, variables map[string]interface{}) error {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "DetailedItems",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/project/shared/queries/queries.go:158:func (p Project) DetailedItems() map[string]interface{} {",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "doQuery",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (15 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 39 callers (ProjectItems, paginateAttributes, ProjectFields)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "doQuery",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 39 callers (ProjectItems, paginateAttributes, ProjectFields)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "HAS_CALLERS",
         "parameters": {
-          "name": "Mutate",
+          "name": "DetailedItems",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "callers=yes (51 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.9,
+        "evidence": "cymbal: 32 callers (runList, TestJSONProjectDetailedItems, TestJSONProjectItem_DraftIssue_ProjectV2ItemFieldIterationValue)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/api",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:17:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/internal/ghrepo",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:13:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/pkg/iostreams",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:17:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "cmd/gh/main.go"
+          "entry_point": "gh project item-edit",
+          "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -87,48 +132,15 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "pkg/cmd/project/shared/queries/queries.go",
-          "import": "github.com/cli/cli/v2/api"
+          "entry_point": "cmd/gh/main.go",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/project/shared/queries/queries.go:13:\t\"github.com/cli/cli/v2/api\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "pkg/cmd/project/shared/queries/queries.go",
-          "import": "github.com/cli/cli/v2/internal/ghrepo"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of github.com/cli/cli/v2/internal/ghrepo found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "pkg/cmd/project/shared/queries/queries.go",
-          "import": "github.com/cli/cli/v2/pkg/iostreams"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/project/shared/queries/queries.go:15:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "mitigation",
-          "description": "specific mitigations or input sanitization measures"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
       }
     ]
   },

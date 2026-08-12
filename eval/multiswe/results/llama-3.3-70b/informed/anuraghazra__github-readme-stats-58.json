@@ -2,24 +2,24 @@
   "vuln_id": "anuraghazra__github-readme-stats-58",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2670,
+  "reasoning_length": 3026,
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 16,
     "verified": 12,
     "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.8,
+    "verification_rate": 0.81,
     "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "src/fetchRepo.js"
+          "file": "src/utils.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "exists: src/fetchRepo.js",
+        "evidence": "exists: src/utils.js",
         "method": "os.path.isfile"
       },
       {
@@ -33,24 +33,14 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "request",
           "file": "src/utils.js"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: src/utils.js",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "fetchRepo",
-          "file": "src/fetchRepo.js"
-        },
-        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: fetchRepo at src/fetchRepo.js:3",
+        "evidence": "cymbal: request at src/utils.js:36",
         "method": "cymbal_function"
       },
       {
@@ -67,24 +57,65 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "request",
-          "file": "src/utils.js"
+          "name": "fetchRepo",
+          "file": "src/fetchRepo.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: request at src/utils.js:36",
+        "evidence": "cymbal: fetchRepo at src/fetchRepo.js:3",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/fetchRepo.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/fetchRepo.js",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "fetchRepo",
+          "name": "request",
           "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (fetchRepo, fetchStats)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "request",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (fetchRepo, fetchStats)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/index.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/pin.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/pin.js",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -100,13 +131,13 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "request",
+          "name": "fetchRepo",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (fetchRepo, fetchStats)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -120,42 +151,10 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "dotenv",
-          "file": "api/index.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/api/index.js:1:require(\"dotenv\").config();",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "dotenv",
-          "file": "api/pin.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/api/pin.js:1:require(\"dotenv\").config();",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "dotenv",
-          "file": "src/fetchStats.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/src/fetchStats.js:3:require(\"dotenv\").config();",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "existing mitigations or input sanitization measures to prevent rate limit from being exceeded"
+          "type": "mitigations",
+          "description": "input sanitization measures to prevent abuse of the GitHub API rate limit"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -166,7 +165,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "api/index.js",
-          "description": "handles requests to `/api/`"
+          "endpoint": "/api"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
@@ -177,7 +176,7 @@
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "api/pin.js",
-          "description": "handles requests to `/api/pin`"
+          "endpoint": "/api/pin"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,

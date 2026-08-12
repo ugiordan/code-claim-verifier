@@ -2,12 +2,12 @@
   "vuln_id": "axios__axios-5085",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3163,
+  "reasoning_length": 2780,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
-    "verified": 8,
-    "refuted": 4,
+    "total_claims": 11,
+    "verified": 6,
+    "refuted": 5,
     "unverifiable": 0,
     "verification_rate": 0.6,
     "action": "FLAG",
@@ -34,90 +34,15 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "lib/core/AxiosHeaders.js",
-          "content": "get: function(header, parser) {"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 274 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "normalizeHeader",
-          "expected": true
+          "name": "set",
+          "file": "lib/core/AxiosHeaders.js"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (setHeader, deleteHeader, defineAccessor)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "findKey",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (setHeader, deleteHeader, startHTTPServer)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "parseTokens",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "test/unit/core/AxiosHeaders.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: test/unit/core/AxiosHeaders.js",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "get",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (getContributors)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "lib/core/AxiosHeaders.js",
-          "import": "../utils.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/AxiosHeaders.js:3:import utils from '../utils.js';",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "description": "mitigations or input sanitization measures"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/AxiosHeaders.js:84:  headers && this.set(headers);",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "HAS_CALLERS",
@@ -125,20 +50,85 @@
           "name": "get",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (getContributors)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "class": "Axios"
+          "name": "set",
+          "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "lib/axios.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: lib/axios.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/core/AxiosHeaders.js",
+          "import": "utils",
+          "from": "../utils.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/AxiosHeaders.js:3:import utils from '../utils.js';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "normalizeHeader"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/dist/axios.js:1570:  function normalizeHeader(header) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "normalizeValue"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/dist/axios.js:1574:  function normalizeValue(value) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "input_sanitization",
+          "description": "trimming and lowercasing header names"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "input_sanitization",
+          "description": "normalizing header values"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       }
     ]
   },

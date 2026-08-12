@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-10072",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3550,
+  "reasoning_length": 3768,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 8,
-    "verified": 8,
-    "refuted": 0,
+    "total_claims": 11,
+    "verified": 10,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 1.0,
+    "verification_rate": 0.89,
     "action": "BOOST",
     "claims": [
       {
@@ -26,12 +26,23 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "mergeRun",
-          "file": "pkg/cmd/pr/merge/merge.go"
+          "file": "pkg/cmd/pr/merge/merge.go",
+          "expected": false
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
         "evidence": "cymbal: mergeRun at pkg/cmd/pr/merge/merge.go:517",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/merge/merge_run.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: pkg/cmd/pr/merge/merge_run.go",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -47,48 +58,73 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "pkg/cmd/pr/merge/merge.go",
           "import": "github.com/cli/cli/v2/api"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:17:\t\"github.com/cli/cli/v2/api\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/merge/merge.go:10:\t\"github.com/cli/cli/v2/api\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "pkg/cmd/pr/merge/merge.go",
           "import": "github.com/cli/cli/v2/internal/gh"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:12:\t\"github.com/cli/cli/v2/internal/gh\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/merge/merge.go:13:\t\"github.com/cli/cli/v2/internal/gh\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "file": "pkg/cmd/pr/merge/merge.go",
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/merge/merge.go:14:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/merge/merge.go",
+          "import": "github.com/cli/cli/v2/pkg/cmd/pr/shared"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/merge/merge.go:15:\t\"github.com/cli/cli/v2/pkg/cmd/pr/shared\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/pr/merge/merge.go",
           "import": "github.com/cli/cli/v2/pkg/cmdutil"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:15:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/merge/merge.go:16:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "cmdutil.MutuallyExclusive",
-          "expected": true
+          "file": "pkg/cmd/pr/merge/merge.go",
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (38 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/codespace/create.go:91:\t\t\treturn cmdutil.MutuallyExclusive(",
-        "method": "grep_call_site"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/merge/merge.go:17:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "gh pr merge"
+          "command": "gh pr merge"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

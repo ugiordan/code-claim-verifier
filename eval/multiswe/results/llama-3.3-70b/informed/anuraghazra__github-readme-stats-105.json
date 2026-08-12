@@ -2,14 +2,14 @@
   "vuln_id": "anuraghazra__github-readme-stats-105",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3962,
+  "reasoning_length": 2932,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 8,
-    "refuted": 6,
-    "unverifiable": 2,
-    "verification_rate": 0.67,
+    "total_claims": 17,
+    "verified": 10,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.65,
     "action": "FLAG",
     "claims": [
       {
@@ -75,28 +75,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "renderStatsCard",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=no (0 call sites)",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "renderRepoCard",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=no (0 call sites)",
-        "method": "grep_callers"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "renderStatsCard",
@@ -121,48 +99,79 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "axios"
+          "module": "axios"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/tests/fetchRepo.test.js:2:const axios = require(\"axios\");",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "dotenv"
+          "module": "dotenv"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/api/pin.js:1:require(\"dotenv\").config();",
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "kFormatter"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of kFormatter found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "isValidHexColor"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of isValidHexColor found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "encodeHTML"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of encodeHTML found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "isValidHexColor",
-          "file": "src/utils.js"
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: isValidHexColor at src/utils.js:30",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (renderRepoCard, renderStatsCard)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "encodeHTML",
-          "file": "src/utils.js"
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: encodeHTML at src/utils.js:18",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (renderRepoCard)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
+          "endpoint": "/api",
           "file": "api/index.js"
         },
         "verdict": "REFUTED",
@@ -173,6 +182,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
+          "endpoint": "/api/pin",
           "file": "api/pin.js"
         },
         "verdict": "REFUTED",

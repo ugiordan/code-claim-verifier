@@ -2,14 +2,14 @@
   "vuln_id": "expressjs__express-3495",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3671,
+  "reasoning_length": 2756,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 6,
-    "refuted": 5,
+    "total_claims": 15,
+    "verified": 11,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.51,
+    "verification_rate": 0.75,
     "action": "FLAG",
     "claims": [
       {
@@ -34,96 +34,140 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "name": "req.header",
-          "file": "lib/request.js"
+          "file": "test/Route.js"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:57: * Aliased as `req.header()`.",
-        "method": "grep_function_def"
+        "confidence": 0.99,
+        "evidence": "exists: test/Route.js",
+        "method": "os.path.isfile"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "lib/request.js",
-          "line_content": "req.get =\nreq.header = function header(name) {"
+          "file": "test/Router.js"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 521 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/Router.js",
+        "method": "os.path.isfile"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "lib/request.js",
-          "line_content": "if (!name) {\n    throw new TypeError('name argument is required to req.get');\n  }"
+          "name": "req.get",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 521 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "lib/request.js",
-          "line_content": "if (typeof name !== 'string') {\n    throw new TypeError('name must be a string to req.get');\n  }"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 521 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "lib/request.js",
-          "line_content": "var lc = name.toLowerCase();"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 521 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "lib/request.js",
-          "line_content": "switch (lc) {\n    case 'referer':\n    case 'referrer':\n      return this.headers.referrer\n        || this.headers.referer;\n    default:\n      return this.headers[lc];\n  }"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 521 lines)",
-        "method": "file_read"
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "http"
+          "file": "lib/request.js",
+          "import": "accepts"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/examples/view-constructor/github-view.js:5:var https = require('https');",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:16:var accepts = require('accepts');",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "module": "proxy-addr"
+          "file": "lib/request.js",
+          "import": "depd"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:24:var proxyaddr = require('proxy-addr');",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:17:var deprecate = require('depd')('express');",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "isIP"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:18:var isIP = require('net').isIP;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "typeis"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of typeis found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "http"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:20:var http = require('http');",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "fresh"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:21:var fresh = require('fresh');",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "parseRange"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of parseRange found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "parse"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/expressjs__express/lib/request.js:22:var parseRange = require('range-parser');",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/request.js",
+          "import": "proxyaddr"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of proxyaddr found",
         "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigation",
-          "description": "explicit mitigations or input sanitizations for the req.hostname property"
+          "type": "mitigations",
+          "context": "input sanitization"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

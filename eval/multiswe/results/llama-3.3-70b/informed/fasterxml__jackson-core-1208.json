@@ -2,25 +2,25 @@
   "vuln_id": "fasterxml__jackson-core-1208",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 4145,
-  "reasoning_truncated": true,
+  "reasoning_length": 4405,
+  "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 9,
-    "verified": 5,
+    "total_claims": 20,
+    "verified": 16,
     "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.5,
-    "action": "OVERRIDE",
+    "verification_rate": 0.76,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+          "file_path": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "exists: src/main/java/com/fasterxml/jackson/core/JsonFactory.java",
-        "method": "os.path.isfile"
+        "evidence": "Path traversal detected",
+        "method": "path_check"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -34,77 +34,203 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "createRoot",
-          "class": "CharsToNameCanonicalizer"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for createRoot",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "setStreamReadConstraints",
-          "expected": true
+          "expected": false
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.9,
         "evidence": "cymbal: 1 callers (testLegacyConstraintSettingTest)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "src/test/java/perf"
+          "name": "createParser",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (createParserWithMatch, createJsonParser, testAccessToParser)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.io.*",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:7:import java.io.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.lang.ref.SoftReference",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:8:import java.lang.ref.SoftReference;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.net.URL",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:9:import java.net.URL;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.ArrayList",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:10:import java.util.ArrayList;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.List",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:11:import java.util.List;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "java.util.Objects",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:12:import java.util.Objects;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.format.InputAccessor",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:14:import com.fasterxml.jackson.core.format.InputAccessor;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.format.MatchStrength",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:15:import com.fasterxml.jackson.core.format.MatchStrength;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.io.*",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:16:import com.fasterxml.jackson.core.io.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.json.*",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:17:import com.fasterxml.jackson.core.json.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.json.async.NonBlockingByteBufferJsonParser",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:18:import com.fasterxml.jackson.core.json.async.NonBlockingByteBufferJ",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.json.async.NonBlockingJsonParser",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:19:import com.fasterxml.jackson.core.json.async.NonBlockingJsonParser;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:20:import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:21:import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.fasterxml.jackson.core.util.*",
+          "file": "src/main/java/com/fasterxml/jackson/core/JsonFactory.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/JsonFactory.java:22:import com.fasterxml.jackson.core.util.*;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "function": "setStreamReadConstraints",
+          "class": "JsonFactory",
+          "accessibility": "public"
         },
         "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: src/test/java/perf",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.fasterxml.jackson.core.JsonFactory"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/write/FastDoubleObjectWriteTest.java:3:import com.fasterxml.jackson.core.JsonFactory;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/TestVersions.java:4:import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.fasterxml.jackson.core.StreamReadConstraints"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/testsupport/TestSupport.java:4:import com.fasterxml.jackson.core.StreamReadConstraints;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "CONFIG_FLAG",
-        "parameters": {
-          "flag": "CANONICALIZE_FIELD_NAMES",
-          "value": "configurable"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.75,
-        "evidence": "Flag 'CANONICALIZE_FIELD_NAMES' found but not with value 'configurable': /Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/test/java/com/fasterxml/jackson/core/json/JsonFacto",
-        "method": "config_flag"
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
       }
     ]
   },

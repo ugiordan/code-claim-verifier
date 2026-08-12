@@ -2,15 +2,15 @@
   "vuln_id": "anuraghazra__github-readme-stats-148",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 4179,
-  "reasoning_truncated": true,
+  "reasoning_length": 3815,
+  "reasoning_truncated": false,
   "ccv": {
     "total_claims": 10,
-    "verified": 4,
-    "refuted": 3,
-    "unverifiable": 3,
-    "verification_rate": 0.64,
-    "action": "FLAG",
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 2,
+    "verification_rate": 0.8,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -20,6 +20,16 @@
         "verdict": "VERIFIED",
         "confidence": 0.99,
         "evidence": "exists: src/fetchStats.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/index.js",
         "method": "os.path.isfile"
       },
       {
@@ -34,16 +44,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "api/index.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: api/index.js",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "fetchStats",
@@ -55,21 +55,32 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "endpoint": "/api"
+          "name": "request",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 2 callers (fetchRepo, fetchStats)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "calculateRank",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (fetchStats)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "source": "src/fetchStats.js",
-          "target": "src/utils.js",
-          "import_name": "request"
+          "source": "src/utils.js",
+          "imported": "request"
         },
         "verdict": "UNVERIFIABLE",
         "confidence": 0.0,
@@ -79,20 +90,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "source": "src/fetchStats.js",
-          "target": "src/calculateRank.js",
-          "import_name": "calculateRank"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "source": "src/fetchStats.js",
-          "target": "dotenv"
+          "source": "src/calculateRank.js",
+          "imported": "calculateRank"
         },
         "verdict": "UNVERIFIABLE",
         "confidence": 0.0,
@@ -102,8 +101,8 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "input_sanitization",
-          "location": "fetchStats function"
+          "type": "mitigation",
+          "description": "input sanitization for the vulnerability"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

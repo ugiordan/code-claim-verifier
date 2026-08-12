@@ -2,16 +2,26 @@
   "vuln_id": "cli__cli-9113",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3636,
+  "reasoning_length": 3451,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 14,
-    "verified": 10,
+    "total_claims": 15,
+    "verified": 14,
     "refuted": 1,
-    "unverifiable": 3,
-    "verification_rate": 0.91,
+    "unverifiable": 0,
+    "verification_rate": 0.94,
     "action": "BOOST",
     "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/watch/watch.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/run/watch/watch.go",
+        "method": "os.path.isfile"
+      },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
@@ -23,14 +33,15 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "watchRun",
           "file": "pkg/cmd/run/watch/watch.go"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: pkg/cmd/run/watch/watch.go",
-        "method": "os.path.isfile"
+        "confidence": 0.95,
+        "evidence": "cymbal: watchRun at pkg/cmd/run/watch/watch.go:86",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -46,24 +57,13 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "watchRun",
-          "file": "pkg/cmd/run/watch/watch.go"
+          "name": "GetRunsWithFilter",
+          "file": "pkg/cmd/run/shared/shared.go"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: watchRun at pkg/cmd/run/watch/watch.go:86",
+        "evidence": "cymbal: GetRunsWithFilter at pkg/cmd/run/shared/shared.go:315",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "watchRun",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (NewCmdWatch, TestWatchRun, NewCmdRun)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -77,9 +77,21 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "GetRunsWithFilter",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (runCancel, runRerun, watchRun)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "RunE"
+          "name": "RunE",
+          "file": "pkg/cmd/run/watch/watch.go"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -98,55 +110,56 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "package": "github.com/cli/cli/v2/api"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "package": "github.com/cli/cli/v2/internal/ghrepo"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "package": "github.com/cli/cli/v2/pkg/cmdutil"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "ABSENCE",
-        "parameters": {
-          "type": "input_validation",
-          "function": "GetRun"
+          "name": "watchRun",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (NewCmdWatch, TestWatchRun, NewCmdRun)",
+        "method": "cymbal_callers"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "type": "mitigations"
+          "name": "watchRun",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (NewCmdWatch, TestWatchRun, NewCmdRun)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/api"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:17:\t\"github.com/cli/cli/v2/api\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:13:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:17:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "ENTRY_POINT",

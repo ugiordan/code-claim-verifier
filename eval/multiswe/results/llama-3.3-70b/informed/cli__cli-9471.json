@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-9471",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3019,
+  "reasoning_length": 2489,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 10,
-    "verified": 10,
-    "refuted": 0,
+    "total_claims": 8,
+    "verified": 7,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 1.0,
+    "verification_rate": 0.88,
     "action": "BOOST",
     "claims": [
       {
@@ -44,15 +44,15 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "main",
-          "file": "cmd/gh/main.go"
+          "name": "DisplayURL",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: main at cmd/gh/main.go:45",
-        "method": "cymbal_function"
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (runBrowse, createRun, viewRun)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -68,56 +68,33 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "cmd/gh/main.go",
-          "import": "github.com/cli/cli/v2/internal/config"
+          "file": "cmd/gh",
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:19:\t\"github.com/cli/cli/v2/internal/config\"",
+        "evidence": "No import of github.com/cli/cli/v2/internal/ghrepo found",
         "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "cmd/gh/main.go",
-          "import": "github.com/cli/cli/v2/pkg/cmdutil"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:24:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "DisplayURL",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (runBrowse, createRun, viewRun)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "DisplayURL",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (runBrowse, createRun, viewRun)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "mitigations or input sanitization measures in the DisplayURL function"
+          "description": "mitigations or input sanitization measures"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "entry_point": "gh pr create -w"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
       }
     ]
   },

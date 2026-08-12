@@ -1,0 +1,75 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-2576",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 3690,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 5,
+    "verified": 1,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.21,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "new_regex",
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for new_regex",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "app.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): src/app.rs",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "regex",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "globset",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "clap",
+          "type": "dependency"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: direct",
+        "method": "manifest_parse"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

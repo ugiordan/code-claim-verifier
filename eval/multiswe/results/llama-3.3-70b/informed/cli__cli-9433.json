@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-9433",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3020,
+  "reasoning_length": 3429,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 10,
-    "verified": 9,
-    "refuted": 1,
+    "total_claims": 18,
+    "verified": 18,
+    "refuted": 0,
     "unverifiable": 0,
-    "verification_rate": 0.9,
+    "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
       {
@@ -35,6 +35,17 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
+          "name": "NewCmdCreate",
+          "file": "pkg/cmd/pr/create/create.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdCreate at pkg/cmd/pr/create/create.go:89",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
           "name": "ConfirmPRSubmission",
           "file": "pkg/cmd/pr/shared/survey.go"
         },
@@ -46,19 +57,51 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "RunE",
+          "name": "BodySurvey",
+          "file": "pkg/cmd/pr/shared/survey.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: BodySurvey at pkg/cmd/pr/shared/survey.go:85",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "TitleSurvey",
+          "file": "pkg/cmd/pr/shared/survey.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: TitleSurvey at pkg/cmd/pr/shared/survey.go:109",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "createRun",
           "file": "pkg/cmd/pr/create/create.go"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for RunE",
-        "method": "grep_function_def"
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: createRun at pkg/cmd/pr/create/create.go:242",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "NewCmdCreate",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 17 callers (NewCmdGist, TestNewCmdCreate, NewCmdIssue)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "RunE",
-          "callee": "ConfirmPRSubmission",
+          "name": "ConfirmPRSubmission",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -67,48 +110,86 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "BodySurvey",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 16 callers (createRun, createRun, NewCmdCreate)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "TitleSurvey",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 16 callers (createRun, createRun, NewCmdCreate)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "pkg/cmd/pr/create/create.go",
           "import": "github.com/cli/cli/v2/api"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:17:\t\"github.com/cli/cli/v2/api\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:17:\t\"github.com/cli/cli/v2/api\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "pkg/cmd/pr/create/create.go",
           "import": "github.com/cli/cli/v2/internal/ghrepo"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:22:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:13:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "pkg/cmd/pr/create/create.go",
-          "import": "github.com/cli/cli/v2/pkg/iostreams"
+          "import": "github.com/cli/cli/v2/internal/text"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:26:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/docs/man.go:13:\t\"github.com/cli/cli/v2/internal/text\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "pkg/cmd/pr/create/create.go",
           "import": "github.com/cli/cli/v2/pkg/cmdutil"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/pr/create/create.go:25:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:15:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:17:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "explicit mitigations or input sanitization measures"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",

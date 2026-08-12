@@ -2,14 +2,14 @@
   "vuln_id": "alibaba__fastjson2-2559",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2536,
+  "reasoning_length": 2748,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 6,
-    "verified": 4,
-    "refuted": 2,
+    "total_claims": 11,
+    "verified": 10,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.57,
+    "verification_rate": 0.69,
     "action": "FLAG",
     "claims": [
       {
@@ -26,7 +26,8 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "cast",
-          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java"
+          "class": "TypeUtils",
+          "signature": "public static <T> T cast(Object obj, Class<T> targetClass)"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -34,21 +35,10 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "core/src/main/java/com/alibaba/fastjson2/util/TypeUtils.java",
-          "line": 1525,
-          "content": "public static <T> T cast(Object obj, Class<T> targetClass)"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 1525 out of range (file has 995 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
           "name": "cast",
+          "class": "TypeUtils",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -57,9 +47,34 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "function": "cast",
+          "name": "cast",
+          "caller": "ObjectReaderImplInstant",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (toJavaObject, createInstance, diffHashSet)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cast",
+          "caller": "ObjectReader",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 50 callers (toJavaObject, createInstance, diffHashSet)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "cast",
+          "caller": "JSONFactory",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -70,13 +85,53 @@
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigations",
-          "description": "existing mitigations or input sanitization measures"
+          "type": "mitigation",
+          "description": "input sanitization measures to prevent class casting issue"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "method": "JSON.parseObject"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "method": "JSON.parse"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "class": "ObjectReader"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "class": "JSONFactory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
       }
     ]
   },

@@ -2,26 +2,16 @@
   "vuln_id": "elastic__logstash-14571",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 4211,
-  "reasoning_truncated": true,
+  "reasoning_length": 3991,
+  "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 5,
-    "refuted": 2,
+    "total_claims": 19,
+    "verified": 16,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.79,
     "action": "FLAG",
     "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "logstash-core/lib/logstash/agent.rb"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: logstash-core/lib/logstash/agent.rb",
-        "method": "os.path.isfile"
-      },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
@@ -35,56 +25,197 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "docs/static/monitoring/monitoring-apis.asciidoc"
+          "file": "logstash-core/lib/logstash/agent.rb"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "exists: docs/static/monitoring/monitoring-apis.asciidoc",
+        "evidence": "exists: logstash-core/lib/logstash/agent.rb",
         "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "configure_metrics_collectors",
-          "file": "logstash-core/lib/logstash/agent.rb"
+          "name": "AbstractPipelineExt",
+          "file": "AbstractPipelineExt.java"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for configure_metrics_collectors",
+        "evidence": "No definition found for AbstractPipelineExt",
         "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "initialize_agent_metrics",
-          "file": "logstash-core/lib/logstash/agent.rb"
+          "name": "LogStash::Agent",
+          "file": "agent.rb"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for initialize_agent_metrics",
+        "evidence": "No definition found for LogStash::Agent",
         "method": "grep_function_def"
       },
       {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "AbstractPipelineExt",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (JavaBasePipelineExt)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "AbstractPipelineExt",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (JavaBasePipelineExt)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "LogStash::Agent",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "logstash/instrument/collector",
-          "file": "logstash-core/lib/logstash/agent.rb"
+          "file": "AbstractPipelineExt.java",
+          "import": "org.logstash.instrument.metrics.AbstractMetricExt"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/agent.rb:20:require \"logstash/instrument/collector\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/compiler/JavaOutputDelegatorExt.java:39:import org.logstash.instrument.metrics.Abst",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "org.logstash.instrument.metrics",
-          "file": "logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java"
+          "file": "AbstractPipelineExt.java",
+          "import": "org.logstash.instrument.metrics.AbstractNamespacedMetricExt"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/execution/AbstractPipelineExt.java:62:import org.logstash.instrument.metrics.AbstractMetricEx",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/config/ir/compiler/PluginDelegatorTestCase.java:34:import org.logstash.instrument.metrics.Abs",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "AbstractPipelineExt.java",
+          "import": "org.logstash.config.ir.ConfigCompiler"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/plugins/factory/PluginFactoryExtTest.java:30:import org.logstash.config.ir.ConfigCompiler;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "AbstractPipelineExt.java",
+          "import": "org.logstash.config.ir.PipelineConfig"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/config/pipeline_config.rb:19:  java_import org.logstash.config.ir.PipelineConfig",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "AbstractPipelineExt.java",
+          "import": "org.logstash.config.ir.PipelineIR"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/plugins/factory/PluginFactoryExtTest.java:32:import org.logstash.config.ir.PipelineIR;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "agent.rb",
+          "import": "logstash/environment"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/spec/logstash/instrument/periodic_poller/jvm_spec.rb:21:require \"logstash/environment\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "agent.rb",
+          "import": "logstash/config/cpu_core_strategy"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/spec/logstash/config/cpu_core_strategy_spec.rb:19:require \"logstash/config/cpu_core_strategy\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "agent.rb",
+          "import": "logstash/instrument/collector"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/spec/logstash/util/wrapped_synchronous_queue_spec.rb:19:require \"logstash/instrument/collector\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "agent.rb",
+          "import": "logstash/instrument/periodic_pollers"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/lib/logstash/agent.rb:21:require \"logstash/instrument/periodic_pollers\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "agent.rb",
+          "import": "logstash/webserver"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/spec/logstash/webserver_spec.rb:18:require \"logstash/webserver\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "name": "logstash"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/locales/en.yml:221:          the empty string for the '-e' flag.",
+        "method": "grep_entry_point"
       }
     ]
   },

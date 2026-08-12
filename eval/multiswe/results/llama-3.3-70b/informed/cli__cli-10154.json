@@ -2,15 +2,15 @@
   "vuln_id": "cli__cli-10154",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3028,
+  "reasoning_length": 3343,
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 16,
-    "verified": 13,
-    "refuted": 3,
+    "verified": 14,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.8,
-    "action": "FLAG",
+    "verification_rate": 0.83,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -25,29 +25,6 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "deleteRun",
-          "file": "pkg/cmd/gist/delete/delete.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: deleteRun at pkg/cmd/gist/delete/delete.go:47",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "pkg/cmd/gist/delete/delete.go",
-          "line": 34,
-          "content": "deleteRun"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 34: Short: \"Delete a gist\",",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
           "name": "NewCmdDelete",
           "file": "pkg/cmd/gist/delete/delete.go"
         },
@@ -57,39 +34,37 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "pkg/cmd/gist/delete/delete.go",
-          "line": 14,
-          "content": "NewCmdDelete"
+          "name": "deleteRun",
+          "file": "pkg/cmd/gist/delete/delete.go"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "Line 14: \"github.com/spf13/cobra\"",
-        "method": "file_read"
+        "evidence": "cymbal: deleteRun at pkg/cmd/gist/delete/delete.go:47",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "NewCmdDelete",
+          "name": "deleteRun",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (NewCmdAlias, TestNewCmdDelete, NewCmdCache)",
+        "evidence": "cymbal: 46 callers (NewCmdDelete, TestDeleteRun, TestDeleteRun)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "file": "pkg/cmd/gist/delete/delete.go",
-          "line": 24,
-          "content": "RunE"
+          "name": "deleteRun",
+          "expected": false
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 24: ",
-        "method": "file_read"
+        "confidence": 0.9,
+        "evidence": "cymbal: 46 callers (NewCmdDelete, TestDeleteRun, TestDeleteRun)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -158,35 +133,57 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "name": "GetGist"
+          "description": "input sanitization or mitigation for the lack of prompting for a gist to delete or confirmation before deletion in the deleteRun function"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: GetGist at pkg/cmd/gist/shared/shared.go:43",
-        "method": "cymbal_function"
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "PromptGists",
+          "file": "shared"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/gist/shared/shared.go:179:func PromptGists(prompter prompter.Prompter, client *http.Client, host string, cs *iostreams.ColorScheme) (gi",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "PromptGists",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 35 callers (editRun, viewRun, TestPromptGists)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "PromptGists",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 35 callers (editRun, viewRun, TestPromptGists)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh gist delete",
-          "function": "deleteRun"
+          "entry_point": "gh gist delete"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "PromptGists"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: PromptGists at pkg/cmd/gist/shared/shared.go:179",
-        "method": "cymbal_function"
       }
     ]
   },

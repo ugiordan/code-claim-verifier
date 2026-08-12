@@ -2,14 +2,14 @@
   "vuln_id": "elastic__logstash-13997",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3033,
+  "reasoning_length": 3550,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 14,
-    "verified": 10,
-    "refuted": 4,
+    "total_claims": 10,
+    "verified": 7,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.69,
     "action": "FLAG",
     "claims": [
       {
@@ -33,14 +33,58 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.apache.logging.log4j.LogManager",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/benchmarks/src/main/java/org/logstash/benchmark/LogPerPipelineBenchmark.java:23:import org.apache.logging.log4j.LogManag",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.apache.logging.log4j.Logger",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/benchmarks/src/main/java/org/logstash/benchmark/LogPerPipelineBenchmark.java:24:import org.apache.logging.log4j.Logger;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.config.ir.compiler.EventCondition",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/CompiledPipeline.java:36:import org.logstash.config.ir.compiler.EventCondition;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "org.logstash.config.ir.CompiledPipeline",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/config/ir/EventConditionTest.java:43:import static org.logstash.config.ir.CompiledPipelineTes",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "EventCondition.Compiler.buildCondition",
-          "file": "EventCondition.java"
+          "name": "setupInputs",
+          "file": "CompiledPipeline.java"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for EventCondition.Compiler.buildCondition",
+        "evidence": "No definition found for setupInputs",
         "method": "grep_function_def"
       },
       {
@@ -55,101 +99,21 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "EventCondition.Compiler.buildCondition",
-          "expected": true
+          "name": "setupOutputs",
+          "file": "CompiledPipeline.java"
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "HAS_CALLERS",
-        "parameters": {
-          "name": "EventCondition.Compiler.buildCondition",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=no (0 call sites)",
-        "method": "grep_callers"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.jruby.Ruby"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/ValuefierTest.java:28:import org.jruby.RubyClass;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.jruby.RubyString"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/ValuefierTest.java:30:import org.jruby.RubyString;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.jruby.RubyRegexp"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/compiler/EventCondition.java:30:import org.jruby.RubyRegexp;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.logstash.config.ir.expression.BooleanExpression"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/test/java/org/logstash/config/ir/imperative/IfStatementTest.java:33:import org.logstash.config.ir.expression.Boolean",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.logstash.config.ir.expression.Eq"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/imperative/IfStatement.java:26:import org.logstash.config.ir.expression.*;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.logstash.config.ir.expression.RegexEq"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/src/main/java/org/logstash/config/ir/imperative/IfStatement.java:26:import org.logstash.config.ir.expression.*;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "org.logstash.secret.store.SecretStore"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/elastic__logstash/logstash-core/spec/logstash/util/secretstore_spec.rb:20:java_import \"org.logstash.secret.store.SecretStoreExt\"",
-        "method": "grep_import"
+        "confidence": 0.85,
+        "evidence": "No definition found for setupOutputs",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigations"
+          "type": "mitigations",
+          "description": "obvious mitigations or input sanitization mechanisms"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

@@ -2,11 +2,11 @@
   "vuln_id": "cli__cli-9491",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2193,
+  "reasoning_length": 2080,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
-    "verified": 12,
+    "total_claims": 15,
+    "verified": 15,
     "refuted": 0,
     "unverifiable": 0,
     "verification_rate": 1.0,
@@ -34,31 +34,22 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "syncRun",
-          "file": "pkg/cmd/repo/sync/sync.go"
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "line": 123,
+          "content_type": "function_definition",
+          "function": "syncLocalRepo"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: syncRun at pkg/cmd/repo/sync/sync.go:91",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "NewCmdSync"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: NewCmdSync at pkg/cmd/repo/sync/sync.go:36",
-        "method": "cymbal_function"
+        "evidence": "Line 123: remote = r.Name",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "syncLocalRepo",
-          "caller": "syncRun",
           "expected": true
         },
         "verdict": "VERIFIED",
@@ -67,10 +58,23 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "line": 93,
+          "content_type": "function_call",
+          "function": "syncLocalRepo"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 93: return syncLocalRepo(opts)",
+        "method": "file_read"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "github.com/cli/cli/v2/api",
-          "file": "pkg/cmd/repo/sync/sync.go"
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "import": "github.com/cli/cli/v2/api"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -80,8 +84,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "github.com/cli/cli/v2/context",
-          "file": "pkg/cmd/repo/sync/sync.go"
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "import": "github.com/cli/cli/v2/context"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -91,8 +95,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "github.com/cli/cli/v2/internal/ghrepo",
-          "file": "pkg/cmd/repo/sync/sync.go"
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -102,8 +106,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "github.com/cli/cli/v2/pkg/cmdutil",
-          "file": "pkg/cmd/repo/sync/sync.go"
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "import": "github.com/cli/cli/v2/pkg/cmdutil"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -113,8 +117,8 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "github.com/cli/cli/v2/pkg/iostreams",
-          "file": "pkg/cmd/repo/sync/sync.go"
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
@@ -125,7 +129,7 @@
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "mitigation",
-          "description": "input sanitization mechanisms"
+          "context": "input sanitization for repository name in syncLocalRepo function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -133,14 +137,51 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ghrepo.FromFullName",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (113 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/context/context.go:30:\t\tbaseOverride, err = ghrepo.FromFullName(base)",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "line": 134,
+          "content_type": "function_call",
+          "function": "ghrepo.FromFullName"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 134: opts.IO.StartProgressIndicator()",
+        "method": "file_read"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh repo sync"
+          "command": "gh repo sync",
+          "function": "syncLocalRepo"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/sync/sync.go",
+          "line": 173,
+          "content_type": "fmt.Fprintf_statement"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 173: apiClient := api.NewClientFromHTTP(httpClient)",
+        "method": "file_read"
       }
     ]
   },

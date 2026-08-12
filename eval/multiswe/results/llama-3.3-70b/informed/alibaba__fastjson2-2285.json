@@ -2,43 +2,31 @@
   "vuln_id": "alibaba__fastjson2-2285",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3351,
+  "reasoning_length": 3769,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 10,
-    "verified": 8,
+    "total_claims": 9,
+    "verified": 7,
     "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.73,
+    "verification_rate": 0.71,
     "action": "FLAG",
     "claims": [
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "ObjectWriterBaseModule",
-          "classification": "class"
+          "file": "core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=ObjectWriterBaseModule, is_test=False, is_vendor=False",
-        "method": "path_regex"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "file": "WriterAnnotationProcessor",
-          "classification": "inner class"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=WriterAnnotationProcessor, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterBaseModule.java",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "getBeanInfo",
-          "expected": true
+          "class": "WriterAnnotationProcessor"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
@@ -48,17 +36,56 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "getBeanInfo",
-          "class": "WriterAnnotationProcessor",
-          "expected": true
+          "name": "getAnnotationProcessor",
+          "class": "ObjectWriterBaseModule"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for getBeanInfo",
+        "evidence": "No definition found for getAnnotationProcessor",
         "method": "grep_function_def"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.alibaba.fastjson2.annotation.JSONType"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2_vo/LongValueField10.java:3:import com.alibaba.fastjson2.annotation.JSONType;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.alibaba.fastjson2.modules.ObjectWriterAnnotationProcessor"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterCreator.java:11:import com.alibaba.fastjson2.modules.ObjectWriterAnnotati",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.alibaba.fastjson2.modules.ObjectWriterModule"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterCreator.java:12:import com.alibaba.fastjson2.modules.ObjectWriterModule;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "com.alibaba.fastjson2.JSONWriter"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/Hessian2Test.java:4:import com.alibaba.fastjson2.JSONWriter;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "getBeanInfo",
           "expected": true
@@ -69,54 +96,10 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.alibaba.fastjson2.annotation.JSONType",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2_vo/LongValueField10.java:3:import com.alibaba.fastjson2.annotation.JSONType;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.alibaba.fastjson2.modules.ObjectWriterAnnotationProcessor",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterCreator.java:11:import com.alibaba.fastjson2.modules.ObjectWriterAnnotati",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.alibaba.fastjson2.modules.ObjectWriterModule",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/writer/ObjectWriterCreator.java:12:import com.alibaba.fastjson2.modules.ObjectWriterModule;",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "import": "com.alibaba.fastjson2.JSONWriter",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/Hessian2Test.java:4:import com.alibaba.fastjson2.JSONWriter;",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigations",
-          "context": "input sanitization"
+          "type": "mitigation",
+          "description": "input sanitization mechanisms"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

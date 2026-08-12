@@ -2,15 +2,15 @@
   "vuln_id": "cli__cli-9162",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3663,
+  "reasoning_length": 2825,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 17,
-    "verified": 13,
-    "refuted": 4,
+    "total_claims": 16,
+    "verified": 14,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.73,
-    "action": "FLAG",
+    "verification_rate": 0.86,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -122,6 +122,17 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/run/list/list.go",
+          "import": "github.com/spf13/cobra"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/list/list.go:15:\t\"github.com/spf13/cobra\"",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
           "type": "mitigation",
@@ -141,17 +152,6 @@
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "workflowShared.ResolveWorkflow",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/list/list.go:114:\t\tif workflow, err := workflowShared.ResolveWorkflow(",
-        "method": "grep_call_site"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -176,26 +176,15 @@
         "method": "file_read"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "pkg/cmd/run/list/list.go",
-          "content": "filters.WorkflowID = workflow.ID"
+          "name": "workflowShared.ResolveWorkflow",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 170 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "pkg/cmd/run/list/list.go",
-          "content": "filters.WorkflowName = workflow.Name"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 170 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/list/list.go:114:\t\tif workflow, err := workflowShared.ResolveWorkflow(",
+        "method": "grep_call_site"
       }
     ]
   },

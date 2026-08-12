@@ -2,11 +2,11 @@
   "vuln_id": "cli__cli-10009",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2801,
+  "reasoning_length": 3718,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 23,
-    "verified": 22,
+    "total_claims": 22,
+    "verified": 21,
     "refuted": 1,
     "unverifiable": 0,
     "verification_rate": 0.96,
@@ -56,17 +56,6 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "extractZip",
-          "file": "zip.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: extractZip at pkg/cmd/run/download/zip.go:18",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
           "name": "downloadArtifact",
           "file": "http.go"
         },
@@ -78,12 +67,12 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "NewCmdDownload",
-          "file": "download.go"
+          "name": "extractZip",
+          "file": "zip.go"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: NewCmdDownload at pkg/cmd/release/download/download.go:43",
+        "evidence": "cymbal: extractZip at pkg/cmd/run/download/zip.go:18",
         "method": "cymbal_function"
       },
       {
@@ -100,17 +89,6 @@
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "extractZip",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 3 callers (Test_extractZip, downloadArtifact, Download)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
           "name": "downloadArtifact",
           "expected": true
         },
@@ -120,24 +98,14 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "filepathDescendsFrom"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: filepathDescendsFrom at pkg/cmd/run/download/zip.go:73",
-        "method": "cymbal_function"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "filepathDescendsFrom",
+          "name": "extractZip",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 4 callers (Test_filepathDescendsFrom, extractZip, Test_extractZip)",
+        "evidence": "cymbal: 3 callers (Test_extractZip, downloadArtifact, Download)",
         "method": "cymbal_callers"
       },
       {
@@ -183,21 +151,21 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "archive/zip"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/shared/shared.go:4:\t\"archive/zip\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
           "import": "net/http"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/update/update.go:8:\t\"net/http\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "archive/zip"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/shared/shared.go:4:\t\"archive/zip\"",
         "method": "grep_import"
       },
       {
@@ -231,11 +199,32 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "filepathDescendsFrom",
+          "file": "zip.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: filepathDescendsFrom at pkg/cmd/run/download/zip.go:73",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "filepathDescendsFrom",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 4 callers (Test_filepathDescendsFrom, extractZip, Test_extractZip)",
+        "method": "cymbal_callers"
+      },
+      {
         "claim_type": "MITIGATION_EXISTS",
         "parameters": {
           "description": "path traversal check using filepathDescendsFrom function",
-          "file": "zip.go",
-          "function": "extractZip"
+          "file": "zip.go"
         },
         "verdict": "REFUTED",
         "confidence": 0.7,
@@ -245,7 +234,8 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh run download"
+          "command": "download",
+          "tool": "gh"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

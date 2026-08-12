@@ -2,15 +2,15 @@
   "vuln_id": "cli__cli-9863",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2664,
+  "reasoning_length": 3152,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 8,
-    "verified": 6,
-    "refuted": 1,
-    "unverifiable": 1,
-    "verification_rate": 0.86,
-    "action": "BOOST",
+    "total_claims": 12,
+    "verified": 5,
+    "refuted": 4,
+    "unverifiable": 3,
+    "verification_rate": 0.56,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -21,6 +21,17 @@
         "confidence": 0.99,
         "evidence": "exists: pkg/cmd/pr/create/create.go",
         "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "WithPrAndIssueQueryParams",
+          "file": "pkg/cmd/pr/shared/params.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: WithPrAndIssueQueryParams at pkg/cmd/pr/shared/params.go:14",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -35,13 +46,23 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "WithPrAndIssueQueryParams",
-          "file": "pkg/cmd/pr/shared/params.go"
+          "name": "CreateOptions"
         },
-        "verdict": "VERIFIED",
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for CreateOptions",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "CreateOptions",
+          "content": "Template field"
+        },
+        "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "cymbal: WithPrAndIssueQueryParams at pkg/cmd/pr/shared/params.go:14",
-        "method": "cymbal_function"
+        "evidence": "File not found: CreateOptions",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -57,12 +78,21 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "RunE",
-          "file": "create.go"
+          "name": "RunE"
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
         "evidence": "No definition found for RunE",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "CmdCreate"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for CmdCreate",
         "method": "grep_function_def"
       },
       {
@@ -76,22 +106,29 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "description": "mitigations or input sanitization for the --template flag"
+          "package": "github.com/cli/cli/v2/internal/ghrepo"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "github.com/cli/cli/v2/pkg/search"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh pr create",
-          "flags": [
-            "--web"
-          ]
+          "command": "gh pr create"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

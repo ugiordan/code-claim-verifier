@@ -2,15 +2,15 @@
   "vuln_id": "cli__cli-10078",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3114,
+  "reasoning_length": 4493,
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 13,
-    "verified": 11,
-    "refuted": 2,
+    "verified": 10,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.75,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -34,25 +34,40 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "cmd/gh/main.go"
+          "name": "findForBranch",
+          "file": "pkg/cmd/pr/shared/finder.go"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: cmd/gh/main.go",
-        "method": "os.path.isfile"
+        "confidence": 0.95,
+        "evidence": "cymbal: findForBranch at pkg/cmd/pr/shared/finder.go:306",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "Find",
+          "name": "findForBranch",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (isExtensionCommand, ValidAliasNameFunc, ValidAliasExpansionFunc)",
+        "evidence": "cymbal: 21 callers (Find, isExtensionCommand, ValidAliasNameFunc)",
         "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "gh pr view",
+            "Find",
+            "findForBranch"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: gh pr view->Find: NOT FOUND",
+        "method": "cymbal_call_chain"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -95,6 +110,17 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "findForBranch function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "entry_point": "gh pr view"
@@ -108,47 +134,23 @@
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "pkg/cmd/pr/shared/finder.go",
-          "line": 143,
-          "content": "if f.prNumber == 0 { ... }"
+          "content": "if f.prNumber == 0 {"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 143: ",
+        "evidence": "Line 0 out of range (file has 574 lines)",
         "method": "file_read"
       },
       {
         "claim_type": "LINE_CONTENT",
         "parameters": {
           "file": "pkg/cmd/pr/shared/finder.go",
-          "line": 155,
           "content": "pr, err = findForBranch(httpClient, f.repo, opts.BaseBranch, f.branchName, opts.States, fields.ToSlice())"
         },
         "verdict": "REFUTED",
         "confidence": 0.95,
-        "evidence": "Line 155: }",
+        "evidence": "Line 0 out of range (file has 574 lines)",
         "method": "file_read"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "findForBranch",
-          "file": "pkg/cmd/pr/shared/finder.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: findForBranch at pkg/cmd/pr/shared/finder.go:306",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "findForBranch",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 21 callers (Find, isExtensionCommand, ValidAliasNameFunc)",
-        "method": "cymbal_callers"
       }
     ]
   },

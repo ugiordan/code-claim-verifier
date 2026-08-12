@@ -2,14 +2,14 @@
   "vuln_id": "axios__axios-5661",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2574,
+  "reasoning_length": 2767,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 6,
-    "refuted": 1,
+    "total_claims": 9,
+    "verified": 7,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.86,
+    "verification_rate": 0.8,
     "action": "BOOST",
     "claims": [
       {
@@ -34,16 +34,6 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "lib/defaults/index.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: lib/defaults/index.js",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "isFormData",
@@ -57,33 +47,69 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "lib/core/transformData.js"
+          "file": "lib/defaults/index.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "exists: lib/core/transformData.js",
+        "evidence": "exists: lib/defaults/index.js",
         "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "transformRequest",
-          "file": "lib/core/transformData.js"
+          "file": "lib/defaults/index.js"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "No definition found for transformRequest",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/defaults/index.js:65:  transformRequest: [function transformRequest(data, headers) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "isFunction",
+          "file": "lib/utils.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/utils.js:49:    && isFunction(val.constructor.isBuffer) && val.constructor.isBuffer(val);",
         "method": "grep_function_def"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "mitigations or input sanitization"
+          "type": "mitigations",
+          "location": "isFormData function"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "transformRequest",
+            "isFormData"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "cymbal chain broken: transformRequest->isFormData: NOT FOUND",
+        "method": "cymbal_call_chain"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "transformRequest",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
       }
     ]
   },

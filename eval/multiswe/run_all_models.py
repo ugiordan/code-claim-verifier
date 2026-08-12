@@ -17,7 +17,7 @@ from eval.cybergym.verify import verify_one
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(message)s")
 
 MANIFEST = "eval/multiswe/manifest-full.jsonl"
-MODELS = ["qwen3-14b", "granite-4.0-micro"]
+MODELS = ["llama-3.3-70b"]
 
 
 def main():

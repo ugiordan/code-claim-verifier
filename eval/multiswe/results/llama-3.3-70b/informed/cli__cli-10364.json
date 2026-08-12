@@ -2,25 +2,25 @@
   "vuln_id": "cli__cli-10364",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3257,
+  "reasoning_length": 2644,
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 11,
-    "verified": 7,
-    "refuted": 4,
+    "verified": 10,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.58,
-    "action": "FLAG",
+    "verification_rate": 0.89,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file_path": "pkg/cmd/repo/rename/rename.go"
+          "file": "pkg/cmd/repo/rename/rename.go"
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.99,
-        "evidence": "Path traversal detected",
-        "method": "path_check"
+        "evidence": "exists: pkg/cmd/repo/rename/rename.go",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -29,9 +29,20 @@
           "file": "pkg/cmd/repo/rename/rename.go"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/rename/rename.go:89:func renameRun(opts *RenameOptions) error {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: renameRun at pkg/cmd/repo/rename/rename.go:89",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/cmd/repo/rename/rename.go",
+          "content": "newRepo, err := api.RenameRepo(apiClient, currRepo, newRepoName)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 172 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -40,48 +51,20 @@
           "file": "pkg/cmd/repo/rename/rename.go"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/rename/rename.go:37:func NewCmdRename(f *cmdutil.Factory, runf func(*RenameOptions) error) *cobra.Command {",
-        "method": "grep_function_def"
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdRename at pkg/cmd/repo/rename/rename.go:37",
+        "method": "cymbal_function"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "pkg/cmd/repo/rename/rename.go",
-          "line_number": 134,
-          "content_type": "function_definition",
-          "function_name": "renameRun"
+          "name": "renameRun",
+          "expected": true
         },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 172 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "pkg/cmd/repo/rename/rename.go",
-          "line_number": 44,
-          "content_type": "function_definition",
-          "function_name": "NewCmdRename"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 172 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "pkg/cmd/repo/rename/rename.go",
-          "line_number": 64,
-          "content_type": "function_definition",
-          "function_name": "RunE"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 172 lines)",
-        "method": "file_read"
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 8 callers (TestRenameRun, NewCmdRename, NewCmdRename)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -128,10 +111,20 @@
         "method": "grep_absent"
       },
       {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "api.RenameRepo",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/repo/fork/fork.go:229:\t\tforkedRepo, err = api.RenameRepo(apiClient, forkedRepo, opts.ForkName)",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh repo rename",
-          "reachable_code": "renameRun function"
+          "command": "gh repo rename"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-9240",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2881,
+  "reasoning_length": 2416,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 7,
-    "refuted": 0,
+    "total_claims": 13,
+    "verified": 12,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 1.0,
+    "verification_rate": 0.92,
     "action": "BOOST",
     "claims": [
       {
@@ -45,6 +45,17 @@
         "method": "cymbal_callers"
       },
       {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "RunE",
+          "file": "pkg/cmd/auth/status/status.go"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for RunE",
+        "method": "grep_function_def"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
           "import": "github.com/cli/cli/v2/api",
@@ -69,6 +80,28 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
+          "import": "github.com/cli/cli/v2/internal/gh",
+          "file": "pkg/cmd/auth/status/status.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/auth/status/status.go:15:\t\"github.com/cli/cli/v2/internal/gh\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/pkg/cmd/auth/shared",
+          "file": "pkg/cmd/auth/status/status.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/auth/status/status.go:16:\t\"github.com/cli/cli/v2/pkg/cmd/auth/shared\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
           "import": "github.com/cli/cli/v2/pkg/cmdutil",
           "file": "pkg/cmd/auth/status/status.go"
         },
@@ -78,9 +111,42 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/cli/cli/v2/pkg/iostreams",
+          "file": "pkg/cmd/auth/status/status.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/auth/status/status.go:18:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/spf13/cobra",
+          "file": "pkg/cmd/auth/status/status.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/auth/status/status.go:19:\t\"github.com/spf13/cobra\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "mitigation",
+          "description": "explicit mitigations or input sanitization measures"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "gh auth status"
+          "command": "gh auth status"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

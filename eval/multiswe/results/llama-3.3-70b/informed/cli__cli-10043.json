@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-10043",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3572,
+  "reasoning_length": 3269,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 15,
-    "verified": 9,
-    "refuted": 1,
-    "unverifiable": 5,
-    "verification_rate": 0.91,
+    "total_claims": 11,
+    "verified": 11,
+    "refuted": 0,
+    "unverifiable": 0,
+    "verification_rate": 1.0,
     "action": "BOOST",
     "claims": [
       {
@@ -21,17 +21,6 @@
         "confidence": 0.99,
         "evidence": "exists: pkg/cmd/run/shared/shared.go",
         "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "formatCodespacesForSelect",
-          "file": "pkg/cmd/run/shared/shared.go"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for formatCodespacesForSelect",
-        "method": "grep_function_def"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -46,17 +35,6 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "chooseCodespaceFromList",
-          "file": "pkg/cmd/codespace/common.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.95,
-        "evidence": "cymbal: chooseCodespaceFromList at pkg/cmd/codespace/common.go:92",
-        "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
           "name": "formatCodespacesForSelect",
           "file": "pkg/cmd/codespace/common.go"
         },
@@ -66,24 +44,14 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "cmd/gh/main.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: cmd/gh/main.go",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "mainRun",
-          "file": "cmd/gh/main.go"
+          "name": "chooseCodespaceFromList",
+          "file": "pkg/cmd/codespace/common.go"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: mainRun at cmd/gh/main.go:50",
+        "evidence": "cymbal: chooseCodespaceFromList at pkg/cmd/codespace/common.go:92",
         "method": "cymbal_function"
       },
       {
@@ -99,71 +67,62 @@
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "caller": "mainRun",
-          "callee": "chooseCodespaceFromList",
-          "expected": true
+          "name": "Title",
+          "file": "pkg/cmd/run/shared/shared.go"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 14 callers (chooseCodespace, Delete, StopCodespace)",
-        "method": "cymbal_callers"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/run/shared/shared.go:142:func (r Run) Title() string {",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/AlecAivazis/survey/v2"
+          "import": "github.com/AlecAivazis/survey/v2"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/prompter/prompter.go:7:\t\"github.com/AlecAivazis/survey/v2\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/internal/config"
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:13:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
         "method": "grep_import"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ABSENCE",
         "parameters": {
-          "package": "github.com/cli/cli/v2/internal/ghrepo"
+          "type": "mitigations",
+          "description": "input sanitization measures to prevent display of branch names in parentheses"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/pkg/cmdutil"
+          "file": "cmd/gh/main.go"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "package": "github.com/cli/cli/v2/pkg/iostreams"
-        },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
-        "method": "grep_import"
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/gh/main.go",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "function": "mainRun"
+          "file": "cmd/gh/main.go",
+          "description": "main entry point of the gh command-line tool"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

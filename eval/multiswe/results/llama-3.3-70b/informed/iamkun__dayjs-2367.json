@@ -2,15 +2,15 @@
   "vuln_id": "iamkun__dayjs-2367",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2801,
+  "reasoning_length": 2619,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 6,
-    "verified": 5,
-    "refuted": 1,
+    "total_claims": 7,
+    "verified": 4,
+    "refuted": 3,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.56,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -26,11 +26,22 @@
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "toISOString",
-          "class": "Duration"
+          "file": "src/plugin/duration/index.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/types/plugin/duration.d.ts:52:    toISOString(): string",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/src/plugin/duration/index.js:84:  toISOString() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "toJSON",
+          "file": "src/plugin/duration/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/src/plugin/duration/index.js:104:  toJSON() {",
         "method": "grep_function_def"
       },
       {
@@ -39,34 +50,33 @@
           "name": "toISOString",
           "expected": true
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 2 callers (toJSON, toJSON)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "toJSON",
-          "class": "Duration"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/iamkun__dayjs/types/plugin/duration.d.ts:50:    toJSON(): string",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "CALL_CHAIN",
-        "parameters": {
-          "chain": [
-            "toJSON",
-            "toISOString"
-          ]
+          "file": "src/plugin/duration/index.js",
+          "line_start": 144,
+          "line_end": 164
         },
         "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "cymbal chain broken: toJSON->toISOString: NOT FOUND",
-        "method": "cymbal_call_chain"
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 191 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/plugin/duration/index.js",
+          "content": "const S = seconds ? `${seconds}S` : ''"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 191 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",

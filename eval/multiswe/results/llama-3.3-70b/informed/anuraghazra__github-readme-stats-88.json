@@ -2,14 +2,14 @@
   "vuln_id": "anuraghazra__github-readme-stats-88",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3241,
+  "reasoning_length": 2778,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 6,
-    "verified": 2,
-    "refuted": 4,
+    "total_claims": 14,
+    "verified": 6,
+    "refuted": 8,
     "unverifiable": 0,
-    "verification_rate": 0.35,
+    "verification_rate": 0.47,
     "action": "OVERRIDE",
     "claims": [
       {
@@ -23,42 +23,130 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "api/index.js",
-          "content": "hide: JSON.parse(hide || \"[]\"),"
+          "file": "src/renderStatsCard.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/renderStatsCard.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "renderStatsCard",
+          "file": "src/renderStatsCard.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: renderStatsCard at src/renderStatsCard.js:22",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "renderStatsCard",
+          "expected": true
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 41 lines)",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "renderStatsCard",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "name": "fetchStats",
+          "file": "api/index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/api/index.js:3:const fetchStats = require(\"../src/fetchStats\");",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "name": "renderError",
+          "file": "api/index.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of renderError found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "name": "getStyles",
+          "file": "src/renderStatsCard.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/src/renderStatsCard.js:2:const getStyles = require(\"./getStyles\");",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "name": "kFormatter",
+          "file": "src/renderStatsCard.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of kFormatter found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "name": "isValidHexColor",
+          "file": "src/renderStatsCard.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of isValidHexColor found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "input_validation",
+          "description": "hide parameter parsed as JSON"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
         "method": "file_read"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "name": "JSON.parse",
-          "expected": true
+          "type": "input_validation",
+          "description": "color validation using isValidHexColor"
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "JSON.parse",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "mitigations or input sanitization for hide parameter"
+          "type": "validation",
+          "target": "username parameter"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,

@@ -1,0 +1,115 @@
+{
+  "vuln_id": "darkreader__darkreader-7241",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 3052,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.79,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/generators/utils/parse.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "indexSitesFixesConfig",
+          "file": "src/generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/darkreader__darkreader/src/generators/utils/parse.ts:98:export function indexSitesFixesConfig<T extends SiteProps>(text: string): SitePropsIndex<T> {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "parseSitesFixesConfig",
+          "file": "src/generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/darkreader__darkreader/src/generators/utils/parse.ts:21:export function parseSitesFixesConfig<T extends SiteProps>(text: string, options: SitesFixesPars",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "indexSitesFixesConfig",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "../../utils/url",
+          "imports": [
+            "isURLMatched",
+            "isFullyQualifiedDomain"
+          ],
+          "file": "src/generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/darkreader__darkreader/src/generators/utils/parse.ts:1:import {isURLMatched, isFullyQualifiedDomain} from '../../utils/url';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "../../utils/text",
+          "imports": [
+            "parseArray"
+          ],
+          "file": "src/generators/utils/parse.ts"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/darkreader__darkreader/src/generators/utils/parse.ts:2:import {parseArray} from '../../utils/text';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "function": "indexSitesFixesConfig"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "parseSitesFixesConfig",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "callers=no (0 call sites)",
+        "method": "grep_callers"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -2,26 +2,16 @@
   "vuln_id": "axios__axios-5919",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3992,
+  "reasoning_length": 3176,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 4,
-    "refuted": 3,
+    "total_claims": 13,
+    "verified": 6,
+    "refuted": 7,
     "unverifiable": 0,
-    "verification_rate": 0.66,
-    "action": "FLAG",
+    "verification_rate": 0.48,
+    "action": "OVERRIDE",
     "claims": [
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "lib/adapters/index.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: lib/adapters/index.js",
-        "method": "os.path.isfile"
-      },
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
@@ -44,15 +34,37 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "getDefaultAdapter",
-          "expected": true
+          "file": "lib/defaults/index.js",
+          "content": "function getDefaultAdapter() {"
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "callers=no (0 call sites)",
-        "method": "grep_callers"
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 185 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/defaults/index.js",
+          "content": "adapter = adapters.getAdapter('xhr');"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 185 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/defaults/index.js",
+          "content": "adapter = adapters.getAdapter('http');"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 185 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -64,6 +76,61 @@
         "confidence": 0.65,
         "evidence": "No call sites (0 matches). ",
         "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/defaults/index.js",
+          "content": "adapter: getDefaultAdapter(),"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 185 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "getDefaultAdapter",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "lib/axios.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: lib/axios.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "lib/axios.js",
+          "import": "defaults",
+          "from": "./defaults.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/axios.js:7:import defaults from './defaults/index.js';",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/axios.js",
+          "content": "const axios = createInstance(defaults);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 76 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -78,14 +145,14 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ENTRY_POINT",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "method": "axios.create"
+          "file": "lib/adapters/index.js"
         },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: lib/adapters/index.js",
+        "method": "os.path.isfile"
       }
     ]
   },

@@ -2,15 +2,15 @@
   "vuln_id": "axios__axios-5338",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3037,
+  "reasoning_length": 2657,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 16,
-    "verified": 13,
-    "refuted": 3,
+    "total_claims": 15,
+    "verified": 11,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.83,
-    "action": "BOOST",
+    "verification_rate": 0.71,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -35,18 +35,6 @@
         "method": "file_read"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "file": "lib/core/Axios.js",
-          "import": "buildURL",
-          "from": "../helpers/buildURL.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:4:import buildURL from '../helpers/buildURL.js';",
-        "method": "grep_import"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "buildURL",
@@ -58,15 +46,16 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "name": "getUri",
-          "file": "lib/core/Axios.js"
+          "file": "lib/core/Axios.js",
+          "import": "buildURL",
+          "from": "../helpers/buildURL.js"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:148:  getUri(config) {",
-        "method": "grep_function_def"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:4:import buildURL from '../helpers/buildURL.js';",
+        "method": "grep_import"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -82,24 +71,46 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "request",
+          "name": "getUri",
           "file": "lib/core/Axios.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:33:   * @param {String|Object} configOrUrl The config specific for this request (merged with this.defaults)",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/core/Axios.js:148:  getUri(config) {",
         "method": "grep_function_def"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "LINE_CONTENT",
         "parameters": {
-          "name": "getUri",
-          "expected": true
+          "file": "lib/core/Axios.js",
+          "content": "config = mergeConfig(this.defaults, config);"
         },
         "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No call sites (0 matches). ",
-        "method": "grep_call_site"
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 188 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/core/Axios.js",
+          "content": "const fullPath = buildFullPath(config.baseURL, config.url);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 188 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/core/Axios.js",
+          "content": "return buildURL(fullPath, config.params, config.paramsSerializer);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 188 lines)",
+        "method": "file_read"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -157,37 +168,15 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "transformRequest",
-          "file": "lib/defaults/index.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/axios__axios/lib/defaults/index.js:65:  transformRequest: [function transformRequest(data, headers) {",
-        "method": "grep_function_def"
-      },
-      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigation",
-          "context": "buildURL function"
+          "type": "input sanitization",
+          "context": "vulnerability mitigation"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
         "evidence": "grep_absent: no matches",
         "method": "grep_absent"
-      },
-      {
-        "claim_type": "ENTRY_POINT",
-        "parameters": {
-          "function": "request",
-          "file": "lib/core/Axios.js"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
-        "method": "grep_entry_point"
       }
     ]
   },

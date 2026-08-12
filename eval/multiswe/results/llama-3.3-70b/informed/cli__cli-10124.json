@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-10124",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3128,
+  "reasoning_length": 3199,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
+    "total_claims": 12,
     "verified": 11,
-    "refuted": 0,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 1.0,
+    "verification_rate": 0.92,
     "action": "BOOST",
     "claims": [
       {
@@ -33,37 +33,55 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FILE_CLASSIFICATION",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "pkg/cmd/repo/repo.go",
-          "classification": "contains implementation of repo command"
+          "name": "NewCmdRepo"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=pkg/cmd/repo/repo.go, is_test=False, is_vendor=False",
-        "method": "path_regex"
-      },
-      {
-        "claim_type": "FILE_CLASSIFICATION",
-        "parameters": {
-          "file": "cmd/gh/main.go",
-          "classification": "main entry point"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "path=cmd/gh/main.go, is_test=False, is_vendor=False",
-        "method": "path_regex"
+        "confidence": 0.95,
+        "evidence": "cymbal: NewCmdRepo at pkg/cmd/repo/repo.go:24",
+        "method": "cymbal_function"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "main",
-          "file": "cmd/gh/main.go"
+          "name": "NewCmdAutolinkList"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for NewCmdAutolinkList",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "mainRun"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: main at cmd/gh/main.go:45",
+        "evidence": "cymbal: mainRun at cmd/gh/main.go:50",
         "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "root.NewCmdRoot"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/root/root.go:54:func NewCmdRoot(f *cmdutil.Factory, version, buildDate string) (*cobra.Command, error) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "NewCmdRepo",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 3 callers (NewCmdRoot, run, mainRun)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -88,16 +106,6 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "import": "github.com/cli/cli/v2/internal/config"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:10:\t\"github.com/cli/cli/v2/internal/config\"",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
           "import": "github.com/cli/cli/v2/internal/ghrepo"
         },
         "verdict": "VERIFIED",
@@ -106,19 +114,19 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "item": "mitigations or input sanitization for gh repo autolink list command"
+          "command": "gh repo autolink list"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
+        "method": "grep_entry_point"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh repo autolink list"
+          "command": "gh repo autolink list --help"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,

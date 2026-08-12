@@ -1,0 +1,119 @@
+{
+  "vuln_id": "BurntSushi__ripgrep-2488",
+  "model": "llama-3.3-70b",
+  "condition": "informed",
+  "reasoning_length": 3798,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 8,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.92,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: globset/src/glob.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "globset/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: globset/src/lib.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "new",
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/glob.rs:57:    pub fn new(pat: &Glob) -> MatchStrategy {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "compile_matcher",
+          "file": "globset/src/glob.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/glob.rs:233:    pub fn compile_matcher(&self) -> GlobMatcher {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "add"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/lib.rs:445:    pub fn add(&mut self, pat: Glob) -> &mut GlobSetBuilder {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "build"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/BurntSushi__ripgrep/globset/src/lib.rs:439:    pub fn build(&self) -> Result<GlobSet, Error> {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "regex",
+          "relationship": "dependency"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "lazy_static",
+          "relationship": "dependency"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "Cargo.toml: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "tool": "ripgrep",
+          "options": [
+            "-e",
+            "-f"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -2,20 +2,30 @@
   "vuln_id": "alibaba__fastjson2-2775",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2672,
+  "reasoning_length": 2668,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 6,
-    "refuted": 5,
+    "total_claims": 12,
+    "verified": 10,
+    "refuted": 2,
     "unverifiable": 0,
-    "verification_rate": 0.48,
-    "action": "OVERRIDE",
+    "verification_rate": 0.67,
+    "action": "FLAG",
     "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/main/java/com/alibaba/fastjson2/JSON.java",
+        "method": "os.path.isfile"
+      },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "name": "JSON.parseObject(String, Type, JSONReader.Context)",
+          "item": "JSON.parseObject(String, Type, JSONReader.Context)",
           "type": "method"
         },
         "verdict": "VERIFIED",
@@ -24,35 +34,27 @@
         "method": "grep_absent"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "path": "core/src/main/java/com/alibaba/fastjson2/JSON.java"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: core/src/main/java/com/alibaba/fastjson2/JSON.java",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "JSON.parseObject(String, Class<?>, JSONReader.Context)",
+          "name": "JSON.parseObject",
+          "signature": "String, Class<T>",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for JSON.parseObject(String, Class<?>, JSONReader.Context)",
+        "evidence": "No definition found for JSON.parseObject",
         "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "JSON.parseObject(String, Type)",
+          "name": "JSON.parseObject",
+          "signature": "String, Type",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.85,
-        "evidence": "No definition found for JSON.parseObject(String, Type)",
+        "evidence": "No definition found for JSON.parseObject",
         "method": "grep_function_def"
       },
       {
@@ -67,73 +69,86 @@
         "method": "grep_callers"
       },
       {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "JSON.parseObject",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "callers=yes (1474 call sites)",
+        "method": "grep_callers"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "JSON.parseObject",
+          "caller": "DUMPTest",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1474 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson_perf/eishay/EishayParseTreeUTF8Bytes.java:41:        JSON.pa",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "JSON.parseObject",
+          "caller": "Hessian2Test",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1474 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson_perf/eishay/EishayParseTreeUTF8Bytes.java:41:        JSON.pa",
+        "method": "grep_call_site"
+      },
+      {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+          "file": "JSON.java",
           "import": "JSONReader",
           "expected": true
         },
-        "verdict": "REFUTED",
+        "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "No import of JSONReader found",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2_vo/LongValueField10.java:4:import com.alibaba.fastjson2.JSONReader;",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+          "file": "JSON.java",
           "import": "ObjectReader",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/JSON.java:4:import com.alibaba.fastjson2.reader.ObjectReader;",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson_perf/Integer20CompactTest.java:5:import com.alibaba.fastjson2.reader.ObjectReaderCreatorASM;",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "core/src/main/java/com/alibaba/fastjson2/JSON.java",
+          "file": "JSON.java",
           "import": "TypeUtils",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/JSON.java:7:import com.alibaba.fastjson2.util.TypeUtils;",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/v1issues/issue_1300/Issue1300C.java:6:import com.alibaba.fastjson2.util.TypeUtils;",
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "name": "input sanitization",
-          "type": "mitigation"
+          "file": "JSON.java",
+          "classification": "public"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "JSON.parse(String)",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for JSON.parse(String)",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "JSON.parseObject(String, Class<?>)",
-          "expected": true
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.85,
-        "evidence": "No definition found for JSON.parseObject(String, Class<?>)",
-        "method": "grep_function_def"
+        "confidence": 0.8,
+        "evidence": "path=JSON.java, is_test=False, is_vendor=False",
+        "method": "path_regex"
       }
     ]
   },

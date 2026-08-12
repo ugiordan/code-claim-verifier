@@ -2,15 +2,15 @@
   "vuln_id": "anuraghazra__github-readme-stats-99",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3410,
+  "reasoning_length": 3557,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
+    "total_claims": 15,
     "verified": 6,
-    "refuted": 6,
+    "refuted": 9,
     "unverifiable": 0,
-    "verification_rate": 0.54,
-    "action": "FLAG",
+    "verification_rate": 0.46,
+    "action": "OVERRIDE",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -55,6 +55,16 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pin.test.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): tests/pin.test.js",
+        "method": "os.walk_fuzzy"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
           "name": "fetchRepo",
@@ -79,11 +89,11 @@
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "pin.test.js"
+          "file": "utils.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "exists (fuzzy match): tests/pin.test.js",
+        "evidence": "exists (fuzzy match): src/utils.js",
         "method": "os.walk_fuzzy"
       },
       {
@@ -135,14 +145,36 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "MITIGATION_EXISTS",
         "parameters": {
-          "description": "Archived badge functionality"
+          "type": "input_validation",
+          "location": "fetchRepo.js"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "MITIGATION_EXISTS",
+        "parameters": {
+          "type": "input_sanitization",
+          "location": "renderRepoCard.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "endpoint": "/api/pin"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
       }
     ]
   },

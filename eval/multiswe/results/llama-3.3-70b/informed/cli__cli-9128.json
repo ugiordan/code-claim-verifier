@@ -2,7 +2,7 @@
   "vuln_id": "cli__cli-9128",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3095,
+  "reasoning_length": 2452,
   "reasoning_truncated": false,
   "ccv": {
     "total_claims": 15,
@@ -23,6 +23,16 @@
         "method": "os.path.isfile"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/variable/list/list.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/cmd/variable/list/list.go",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
           "name": "getRun",
@@ -32,17 +42,6 @@
         "confidence": 0.95,
         "evidence": "cymbal: getRun at pkg/cmd/variable/get/get.go:79",
         "method": "cymbal_function"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "getRun",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (NewCmdConfigGet, Test_getRun, NewCmdGet)",
-        "method": "cymbal_callers"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -56,14 +55,15 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "file": "cmd/gh/main.go"
+          "name": "getRun",
+          "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: cmd/gh/main.go",
-        "method": "os.path.isfile"
+        "confidence": 0.9,
+        "evidence": "cymbal: 9 callers (NewCmdConfigGet, Test_getRun, NewCmdGet)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -132,10 +132,20 @@
         "method": "grep_import"
       },
       {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/cmd/variable/get/get.go",
+          "import": "github.com/spf13/cobra"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/variable/get/get.go:15:\t\"github.com/spf13/cobra\"",
+        "method": "grep_import"
+      },
+      {
         "claim_type": "ABSENCE",
         "parameters": {
-          "type": "mitigation",
-          "location": "getRun function"
+          "description": "mitigations or input sanitization related to the missing --json option"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -145,7 +155,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "entry_point": "variable get command"
+          "command": "gh variable get"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -153,24 +163,14 @@
         "method": "grep_entry_point"
       },
       {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "pkg/cmd/variable/list/list.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: pkg/cmd/variable/list/list.go",
-        "method": "os.path.isfile"
-      },
-      {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "listRun",
+          "name": "NewCmdList",
           "file": "pkg/cmd/variable/list/list.go"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
-        "evidence": "cymbal: listRun at pkg/cmd/variable/list/list.go:84",
+        "evidence": "cymbal: NewCmdList at pkg/cmd/variable/list/list.go:42",
         "method": "cymbal_function"
       }
     ]

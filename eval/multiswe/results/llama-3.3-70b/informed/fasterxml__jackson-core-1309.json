@@ -2,15 +2,15 @@
   "vuln_id": "fasterxml__jackson-core-1309",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 2802,
+  "reasoning_length": 3791,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 8,
-    "verified": 7,
-    "refuted": 1,
-    "unverifiable": 0,
-    "verification_rate": 0.85,
-    "action": "BOOST",
+    "total_claims": 12,
+    "verified": 8,
+    "refuted": 3,
+    "unverifiable": 1,
+    "verification_rate": 0.71,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -23,15 +23,27 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "FILE_CLASSIFICATION",
         "parameters": {
-          "item": "looksLikeValidNumber(String) function definition",
-          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java"
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+          "contains": "NumberInput class"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.8,
+        "evidence": "path=src/main/java/com/fasterxml/jackson/core/io/NumberInput.java, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "looksLikeValidNumber",
+          "file": "src/main/java/com/fasterxml/jackson/core/io/NumberInput.java",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for looksLikeValidNumber",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "LINE_CONTENT",
@@ -43,6 +55,17 @@
         "confidence": 0.95,
         "evidence": "Line 0 out of range (file has 584 lines)",
         "method": "file_read"
+      },
+      {
+        "claim_type": "HAS_CALLERS",
+        "parameters": {
+          "name": "looksLikeValidNumber",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (testLooksLikeValidNumber)",
+        "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
@@ -98,6 +121,28 @@
         "confidence": 0.8,
         "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/fasterxml__jackson-core/src/main/java/com/fasterxml/jackson/core/io/NumberInput.java:8:import java.util.regex.Pattern;",
         "method": "grep_import"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "fastdoubleparser",
+          "type": "external"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No manifest found",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "ConcurrencyReadTest",
+          "contains": "JsonParser usage"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=ConcurrencyReadTest, is_test=False, is_vendor=False",
+        "method": "path_regex"
       }
     ]
   },

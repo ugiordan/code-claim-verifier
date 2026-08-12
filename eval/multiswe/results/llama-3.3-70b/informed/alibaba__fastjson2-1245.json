@@ -2,14 +2,14 @@
   "vuln_id": "alibaba__fastjson2-1245",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3172,
+  "reasoning_length": 3014,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 7,
-    "verified": 6,
-    "refuted": 1,
+    "total_claims": 11,
+    "verified": 7,
+    "refuted": 4,
     "unverifiable": 0,
-    "verification_rate": 0.77,
+    "verification_rate": 0.58,
     "action": "FLAG",
     "claims": [
       {
@@ -34,57 +34,98 @@
         "method": "grep_function_def"
       },
       {
-        "claim_type": "HAS_CALLERS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "of",
+          "name": "createInstance",
+          "file": "core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for createInstance",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "readObject",
+          "file": "core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for readObject",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "core/src/test/java/com/alibaba/Hessian2Test.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: core/src/test/java/com/alibaba/Hessian2Test.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "test_obj_list_1",
+          "file": "core/src/test/java/com/alibaba/Hessian2Test.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for test_obj_list_1",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "JSONB.toBytes",
           "expected": true
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (getJSONArray, getJSONObject, toString)",
-        "method": "cymbal_callers"
+        "confidence": 0.65,
+        "evidence": "Found call sites (688 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/Hessian2Test.java:26:            byte[] jsonbBytes = JSONB.toBytes((lo",
+        "method": "grep_call_site"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java",
-          "import": "com.alibaba.fastjson2.util.TypeUtils"
+          "file": "core/src/test/java/com/alibaba/DUMPTest.java"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java:6:import com.alibaba.fastjson2.util.TypeUtils;",
-        "method": "grep_import"
+        "confidence": 0.99,
+        "evidence": "exists: core/src/test/java/com/alibaba/DUMPTest.java",
+        "method": "os.path.isfile"
       },
       {
-        "claim_type": "IMPORT_EXISTS",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java",
-          "import": "java.lang.reflect.ParameterizedType"
+          "function": "JSONB.toBytes"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/main/java/com/alibaba/fastjson2/reader/ObjectReaderImplList.java:8:import java.lang.reflect.ParameterizedType;",
-        "method": "grep_import"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "description": "input sanitization or mitigation in the provided source code"
+          "function": "JSONB.parseObject"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "ENTRY_POINT",
         "parameters": {
-          "description": "validation on the input type in the of method"
+          "function": "ObjectReaderImplList.of"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.65,
+        "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/alibaba__fastjson2/core/src/test/java/com/alibaba/fastjson2/annotation/JSONCreatorTest.java:44:        assertEquals(true, vo.",
+        "method": "grep_entry_point"
       }
     ]
   },

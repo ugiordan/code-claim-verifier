@@ -2,95 +2,62 @@
   "vuln_id": "cli__cli-9307",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3130,
+  "reasoning_length": 2473,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 12,
-    "verified": 10,
-    "refuted": 2,
+    "total_claims": 9,
+    "verified": 8,
+    "refuted": 1,
     "unverifiable": 0,
-    "verification_rate": 0.55,
-    "action": "FLAG",
+    "verification_rate": 0.81,
+    "action": "BOOST",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
         "parameters": {
-          "file": "github.com/cli/cli/v2/pkg/cmdutil/json_flags.go"
+          "file": "github.com/cli/cli/v2/api/export_pr.go"
         },
         "verdict": "REFUTED",
         "confidence": 0.99,
-        "evidence": "not found: github.com/cli/cli/v2/pkg/cmdutil/json_flags.go",
+        "evidence": "not found: github.com/cli/cli/v2/api/export_pr.go",
         "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "exportData",
-          "file": "github.com/cli/cli/v2/pkg/cmdutil/json_flags.go"
+          "name": "ExportData",
+          "file": "github.com/cli/cli/v2/api/export_pr.go"
         },
         "verdict": "VERIFIED",
         "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmdutil/json_flags.go:235:func (e *jsonExporter) exportData(v reflect.Value) interface{} {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "Write",
-          "file": "github.com/cli/cli/v2/pkg/cmdutil/json_flags.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/gh/mock/config.go:607:func (mock *ConfigMock) Write() error {",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/api/api.go:304:func (c *Codespace) ExportData(fields []string) map[string]interface{} {",
         "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "name": "exportData",
+          "name": "ExportData",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (Write, NewMockHttpClient, Migrate)",
+        "evidence": "cymbal: 24 callers (TestIssue_ExportData, TestPullRequest_ExportData, TestCodespace_ExportData)",
         "method": "cymbal_callers"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "HAS_CALLERS",
         "parameters": {
-          "file": "github.com/cli/cli/v2/pkg/cmd/pr/view/view.go"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.99,
-        "evidence": "not found: github.com/cli/cli/v2/pkg/cmd/pr/view/view.go",
-        "method": "os.path.isfile"
-      },
-      {
-        "claim_type": "FUNCTION_EXISTS",
-        "parameters": {
-          "name": "viewRun",
-          "file": "github.com/cli/cli/v2/pkg/cmd/pr/view/view.go"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/ruleset/view/view.go:110:func viewRun(opts *ViewOptions) error {",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "Write",
+          "name": "ExportData",
           "expected": true
         },
         "verdict": "VERIFIED",
         "confidence": 0.9,
-        "evidence": "cymbal: 50 callers (NewMockHttpClient, Migrate, Logout)",
+        "evidence": "cymbal: 24 callers (TestIssue_ExportData, TestPullRequest_ExportData, TestCodespace_ExportData)",
         "method": "cymbal_callers"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "github.com/cli/cli/v2/pkg/cmdutil/json_flags.go",
           "import": "github.com/cli/cli/v2/api"
         },
         "verdict": "VERIFIED",
@@ -101,18 +68,16 @@
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "github.com/cli/cli/v2/pkg/cmdutil/json_flags.go",
-          "import": "github.com/cli/cli/v2/internal/ghrepo"
+          "import": "github.com/cli/cli/v2/pkg/cmdutil"
         },
         "verdict": "VERIFIED",
         "confidence": 0.8,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:13:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:15:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "github.com/cli/cli/v2/pkg/cmdutil/json_flags.go",
           "import": "github.com/cli/cli/v2/pkg/iostreams"
         },
         "verdict": "VERIFIED",
@@ -121,15 +86,14 @@
         "method": "grep_import"
       },
       {
-        "claim_type": "ABSENCE",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "type": "input_sanitization",
-          "location": "exportData function"
+          "import": "github.com/spf13/cobra"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.6,
-        "evidence": "grep_absent: no matches",
-        "method": "grep_absent"
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:30:\t\"github.com/spf13/cobra\"",
+        "method": "grep_import"
       },
       {
         "claim_type": "ENTRY_POINT",

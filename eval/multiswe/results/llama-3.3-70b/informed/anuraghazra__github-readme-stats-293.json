@@ -2,15 +2,15 @@
   "vuln_id": "anuraghazra__github-readme-stats-293",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3061,
+  "reasoning_length": 3438,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 14,
-    "verified": 4,
-    "refuted": 10,
+    "total_claims": 12,
+    "verified": 7,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.3,
-    "action": "OVERRIDE",
+    "verification_rate": 0.64,
+    "action": "FLAG",
     "claims": [
       {
         "claim_type": "FILE_EXISTS",
@@ -23,26 +23,14 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FUNCTION_EXISTS",
+        "claim_type": "FILE_EXISTS",
         "parameters": {
-          "name": "fetchStats",
-          "file": "api/index.js"
+          "file": "src/renderStatsCard.js"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.85,
-        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/api/index.js:3:const fetchStats = require(\"../src/fetchStats\");",
-        "method": "grep_function_def"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "api/index.js",
-          "content": "const fetchStats = require(\"../src/fetchStats\");"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 41 lines)",
-        "method": "file_read"
+        "confidence": 0.99,
+        "evidence": "exists: src/renderStatsCard.js",
+        "method": "os.path.isfile"
       },
       {
         "claim_type": "FILE_EXISTS",
@@ -55,14 +43,37 @@
         "method": "os.path.isfile"
       },
       {
-        "claim_type": "FILE_EXISTS",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "file": "fetchStats.test.js"
+          "name": "renderStatsCard",
+          "file": "src/renderStatsCard.js"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "exists (fuzzy match): tests/fetchStats.test.js",
-        "method": "os.walk_fuzzy"
+        "confidence": 0.95,
+        "evidence": "cymbal: renderStatsCard at src/renderStatsCard.js:22",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "fetchStats",
+          "file": "src/fetchStats.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "cymbal: fetchStats at src/fetchStats.js:5",
+        "method": "cymbal_function"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "renderStatsCard",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
       },
       {
         "claim_type": "FUNCTION_CALLED",
@@ -76,92 +87,56 @@
         "method": "grep_call_site"
       },
       {
-        "claim_type": "LINE_CONTENT",
+        "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "file": "api/index.js",
-          "content": "stats = await fetchStats(username);"
+          "module": "axios"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/tests/fetchRepo.test.js:2:const axios = require(\"axios\");",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "graphql"
         },
         "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 41 lines)",
-        "method": "file_read"
+        "confidence": 0.8,
+        "evidence": "No import of graphql found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "svg"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of svg found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_sanitization",
+          "context": "custom username feature"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
       },
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
           "file": "api/index.js",
-          "function": "api"
+          "type": "HTTP endpoint"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
-        "evidence": "No any entry point patterns found",
+        "evidence": "No http endpoint entry point patterns found",
         "method": "grep_entry_point"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "api/index.js",
-          "content": "module.exports = async (req, res) => {"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 41 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "IMPORT_EXISTS",
-        "parameters": {
-          "module": "axios",
-          "file": "src/fetchStats.js"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.8,
-        "evidence": "No import of axios found",
-        "method": "grep_import"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "src/fetchStats.js",
-          "content": "const axios = require(\"axios\");"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 83 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "fetchStats.test.js",
-          "content": "it(\"should throw error\", async () => {"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 80 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "fetchStats.test.js",
-          "content": "mock.onPost(\"https://api.github.com/graphql\").reply(200, error);"
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 80 lines)",
-        "method": "file_read"
-      },
-      {
-        "claim_type": "LINE_CONTENT",
-        "parameters": {
-          "file": "fetchStats.test.js",
-          "content": "await expect(fetchStats(\"anuraghazra\")).rejects.toThrow("
-        },
-        "verdict": "REFUTED",
-        "confidence": 0.95,
-        "evidence": "Line 0 out of range (file has 80 lines)",
-        "method": "file_read"
       }
     ]
   },

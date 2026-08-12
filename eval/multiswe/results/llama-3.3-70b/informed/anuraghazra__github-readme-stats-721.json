@@ -2,14 +2,14 @@
   "vuln_id": "anuraghazra__github-readme-stats-721",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3362,
+  "reasoning_length": 2818,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 11,
-    "verified": 8,
-    "refuted": 3,
+    "total_claims": 16,
+    "verified": 11,
+    "refuted": 5,
     "unverifiable": 0,
-    "verification_rate": 0.8,
+    "verification_rate": 0.75,
     "action": "FLAG",
     "claims": [
       {
@@ -56,7 +56,8 @@
       {
         "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "calculateRank"
+          "name": "calculateRank",
+          "file": "src/calculateRank.js"
         },
         "verdict": "VERIFIED",
         "confidence": 0.95,
@@ -64,38 +65,25 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/calculateRank.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/calculateRank.js",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "FUNCTION_CALLED",
         "parameters": {
-          "caller": "api/index.js",
-          "callee": "renderStatsCard",
+          "name": "renderStatsCard",
           "expected": true
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
         "evidence": "No call sites (0 matches). ",
         "method": "grep_call_site"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "caller": "src/fetchStats.js",
-          "callee": "calculateRank",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 1 callers (fetchStats)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FILE_EXISTS",
-        "parameters": {
-          "file": "src/fetchStats.js"
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.99,
-        "evidence": "exists: src/fetchStats.js",
-        "method": "os.path.isfile"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -109,9 +97,70 @@
         "method": "cymbal_function"
       },
       {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/fetchStats.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/fetchStats.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "calculateRank",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "cymbal: 1 callers (fetchStats)",
+        "method": "cymbal_callers"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "axios"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/anuraghazra__github-readme-stats/tests/fetchRepo.test.js:2:const axios = require(\"axios\");",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "graphql"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of graphql found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "svg"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of svg found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "api/pin.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: api/pin.js",
+        "method": "os.path.isfile"
+      },
+      {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "api/index.js"
+          "endpoint": "/api"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,
@@ -121,7 +170,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "file": "src/fetchStats.js"
+          "endpoint": "/api/pin"
         },
         "verdict": "REFUTED",
         "confidence": 0.65,

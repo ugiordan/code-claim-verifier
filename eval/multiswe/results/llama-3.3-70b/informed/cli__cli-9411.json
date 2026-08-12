@@ -2,14 +2,14 @@
   "vuln_id": "cli__cli-9411",
   "model": "llama-3.3-70b",
   "condition": "informed",
-  "reasoning_length": 3234,
+  "reasoning_length": 3013,
   "reasoning_truncated": false,
   "ccv": {
-    "total_claims": 22,
-    "verified": 15,
-    "refuted": 0,
-    "unverifiable": 7,
-    "verification_rate": 1.0,
+    "total_claims": 24,
+    "verified": 23,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.96,
     "action": "BOOST",
     "claims": [
       {
@@ -76,26 +76,14 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "removeRun",
-          "expected": true
+          "name": "RunE"
         },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 32 callers (Test_removeRun_repo, Test_removeRun_env, Test_removeRun_org)",
-        "method": "cymbal_callers"
-      },
-      {
-        "claim_type": "FUNCTION_CALLED",
-        "parameters": {
-          "name": "getRun",
-          "expected": true
-        },
-        "verdict": "VERIFIED",
-        "confidence": 0.9,
-        "evidence": "cymbal: 9 callers (NewCmdConfigGet, Test_getRun, NewCmdGet)",
-        "method": "cymbal_callers"
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for RunE",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "FUNCTION_EXISTS",
@@ -118,90 +106,109 @@
         "method": "cymbal_function"
       },
       {
-        "claim_type": "FUNCTION_CALLED",
+        "claim_type": "FUNCTION_EXISTS",
         "parameters": {
-          "name": "api.NewClientFromHTTP",
-          "expected": true
+          "name": "DefaultHost"
         },
         "verdict": "VERIFIED",
-        "confidence": 0.65,
-        "evidence": "Found call sites (142 matches). /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/authflow/flow.go:125:\treturn api.CurrentLoginName(api.NewClientFromHTTP(client), hostname)",
-        "method": "grep_call_site"
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/config/config.go:284:func (c *AuthConfig) DefaultHost() (string, string) {",
+        "method": "grep_function_def"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "net/http"
+          "import": "github.com/cli/cli/v2/api"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:17:\t\"github.com/cli/cli/v2/api\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/MakeNowJust/heredoc"
+          "import": "github.com/cli/cli/v2/internal/gh"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:12:\t\"github.com/cli/cli/v2/internal/gh\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/api"
+          "import": "github.com/cli/cli/v2/internal/ghrepo"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:13:\t\"github.com/cli/cli/v2/internal/ghrepo\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/internal/gh"
+          "import": "github.com/cli/cli/v2/pkg/cmd/secret/shared"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/secret/delete/delete.go:11:\t\"github.com/cli/cli/v2/pkg/cmd/secret/shared\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/internal/ghrepo"
+          "import": "github.com/cli/cli/v2/pkg/cmd/variable/shared"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/pkg/cmd/variable/delete/delete.go:11:\t\"github.com/cli/cli/v2/pkg/cmd/variable/shared\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/pkg/cmdutil"
+          "import": "github.com/cli/cli/v2/pkg/cmdutil"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:15:\t\"github.com/cli/cli/v2/pkg/cmdutil\"",
         "method": "grep_import"
       },
       {
         "claim_type": "IMPORT_EXISTS",
         "parameters": {
-          "package": "github.com/cli/cli/v2/pkg/iostreams"
+          "import": "github.com/cli/cli/v2/pkg/iostreams"
         },
-        "verdict": "UNVERIFIABLE",
-        "confidence": 0.0,
-        "evidence": "No module specified",
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gen-docs/main.go:17:\t\"github.com/cli/cli/v2/pkg/iostreams\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "import": "github.com/spf13/cobra"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/cmd/gh/main.go:30:\t\"github.com/spf13/cobra\"",
         "method": "grep_import"
       },
       {
         "claim_type": "ABSENCE",
         "parameters": {
-          "description": "existing mitigations or input sanitization measures"
+          "type": "mitigations"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input sanitization"
         },
         "verdict": "VERIFIED",
         "confidence": 0.6,
@@ -211,7 +218,7 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh variable get"
+          "command": "gh secret delete"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
@@ -231,12 +238,23 @@
       {
         "claim_type": "ENTRY_POINT",
         "parameters": {
-          "command": "gh secret delete"
+          "command": "gh variable get"
         },
         "verdict": "VERIFIED",
         "confidence": 0.65,
         "evidence": "Entry point pattern found: /Users/ugogiordano/workdir/rhoai/multiswe-repos/cli__cli/internal/codespaces/connection/tunnels_api_server_mock.go:36:\tmockServer := httptest.NewServer(http.HandlerFunc(func",
         "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "DefaultHost",
+          "default_behavior": "api.github.com"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'DefaultHost' found in 100 locations.",
+        "method": "default_value"
       }
     ]
   },
