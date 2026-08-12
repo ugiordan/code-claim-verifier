@@ -1,0 +1,177 @@
+{
+  "vuln_id": "GHSA-22x7-vwh9-5w4g",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4092,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 3,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.13,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "pe_reader.c",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "fuzzing/pe_fuzzer.cpp",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "fuzzing/pe_fuzzer.cpp",
+          "line_number": 1,
+          "content": "extern \"C\" int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LIEF::PE::Parser::parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-22x7-vwh9-5w4g/fuzzing/pe_fuzzer.cpp:8:    std::unique_ptr<LIEF::PE::Binary> b{LIEF:",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "fuzzing/pme_fuzzer.cpp",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "LIEF::Parser::parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-22x7-vwh9-5w4g/fuzzing/pme_fuzzer.cpp:8:    std::unique_ptr<LIEF::Binary> b{LIEF::Pa",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "setup.py",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "setup.py",
+          "line_number": 140,
+          "content": "if self.distribution.lief_no_pe:"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "setup.py",
+          "line_number": 141,
+          "content": "    log.info(\"LIEF PE module disabled\")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "setup.py",
+          "line_number": 142,
+          "content": "    cmake_args += [\"-DLIEF_PE=off\"]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "filename": "fuzzing/clean-corpus.py",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "filename": "fuzzing/clean-corpus.py",
+          "line_number": 18,
+          "content": "def is_pe(file):"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "is_pe",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-22x7-vwh9-5w4g/fuzzing/clean-corpus.py:15:def is_pe(file):",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "vuln_id": "GHSA-2894-qcqf-g23g",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4181,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 10,
+    "verified": 6,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.6,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/conftest.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/conftest.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/test_client.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/test_client.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/test_common.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/test_common.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/conftest.py",
+          "line_range": "95-110",
+          "content": "@pytest.fixture(scope='module')\nasync def client():\n    # start anonymous client\n    ro_clt = Client(f'opc.tcp://127.0.0.1:{port_num}')\n    await ro_clt.connect()\n    yield ro_clt\n    await ro_clt.disconnect()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 458 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/test_client.py",
+          "line_range": "15-25",
+          "content": "async def test_objects_anonymous(server, client):\n    objects = client.nodes.objects\n    with pytest.raises(ua.UaStatusCodeError):\n        await objects.write_attribute(ua.AttributeIds.WriteMask, ua.DataValue(999))\n    with pytest.raises(ua.UaStatusCodeError):\n        await objects.add_folder(3, 'MyFolder')"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 157 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "setup.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: setup.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line_range": "32-44",
+          "content": "entry_points={\n    'console_scripts': [\n        'uaread = asyncua.tools:uaread',\n        'uals = asyncua.tools:uals',\n        'uabrowse = asyncua.tools:uals',\n        'uawrite = asyncua.tools:uawrite',\n        'uasubscribe = asyncua.tools:uasubscribe',\n        'uahistoryread = asyncua.tools:uahistoryread',\n        'uaclient = asyncua.tools:uaclient',\n        'uaserver = asyncua.tools:uaserver',\n        'uadiscover = asyncua.tools:uadiscover',\n        'uacall = asyncua.tools:uacall',\n        'uageneratestructs = asyncua.tools:uageneratestructs',\n    ]\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 53 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "cryptography",
+          "type": "install_requires"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "requirements.txt: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "test_objects_anonymous",
+          "file": "tests/test_client.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-2894-qcqf-g23g/tests/test_client.py:20:async def test_objects_anonymous(server, client):",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "client",
+          "file": "tests/conftest.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-2894-qcqf-g23g/tests/conftest.py:157:async def client():",
+        "method": "grep_function_def"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 5,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "vuln_id": "GHSA-2ccf-ffrj-m4qw",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4187,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 4,
+    "refuted": 6,
+    "unverifiable": 3,
+    "verification_rate": 0.43,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "vulnerable code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/helpers.ts",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/helpers.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/helpers.ts",
+          "line_range": "60-75",
+          "content": "const loadSessionPlugins = (server: FastifyInstance, sessionOptions: SessionOptions = null) => {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 130 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/decorators.test.ts",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/decorators.test.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/decorators.test.ts",
+          "line_range": "85-120",
+          "content": "server.get(\n  '/logout',\n  { preValidation: fastifyPassport.authenticate('test', { authInfo: false }) },\n  async (request, reply) => {\n    void request.logout()\n    void reply.send('logged out')\n  }\n)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 140 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "@fastify/secure-session",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "@fastify/session",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "package": "@fastify/cookie",
+          "expected": true
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No module specified",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "server.register",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "request.logout",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/Authenticator.ts",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/Authenticator.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "clearSessionOnLogin",
+          "default_behavior": "true"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "Variable 'clearSessionOnLogin' not found in searched scope",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "clearSessionIgnoreFields",
+          "default_behavior": "['session']"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "Variable 'clearSessionIgnoreFields' not found in searched scope",
+        "method": "default_value"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

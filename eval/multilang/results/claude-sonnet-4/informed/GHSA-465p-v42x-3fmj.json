@@ -1,0 +1,206 @@
+{
+  "vuln_id": "GHSA-465p-v42x-3fmj",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3856,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 10,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.69,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/apis/sealedsecrets/v1alpha1/sealedsecret_expansion.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/apis/sealedsecrets/v1alpha1/sealedsecret_expansion.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/apis/sealedsecrets/v1alpha1/sealedsecret_expansion.go",
+          "line_range": "112-122",
+          "content": "SecretScope() function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 357 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "pkg/controller/controller.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: pkg/controller/controller.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "pkg/controller/controller.go",
+          "line_range": "560-606",
+          "content": "rotate handler"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 605 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "SecretScope",
+          "file": "pkg/apis/sealedsecrets/v1alpha1/sealedsecret_expansion.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-465p-v42x-3fmj/pkg/apis/sealedsecrets/v1alpha1/sealedsecret_expansion.go:112:func SecretScope(o metav1.Object) Sealing",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "NewSealedSecret",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (13 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-465p-v42x-3fmj/integration/controller_test.go:188:\t\tss, err = ssv1alpha1.NewSealedSecre",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "SecretScope",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (7 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-465p-v42x-3fmj/pkg/apis/sealedsecrets/v1alpha1/sealedsecret_expansion.go:108:\treturn Enc",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/kubeseal/main.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/kubeseal/main.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/kubeseal/main.go",
+          "content": "if flags.reEncrypt { return kubeseal.ReEncryptSealedSecret(cfg.ctx, cfg.clientConfig, flags.controllerNs, flags.controllerName, flags.outputFormat, input, w, scheme.Codecs) }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 296 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "kubeseal.ReEncryptSealedSecret",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-465p-v42x-3fmj/cmd/kubeseal/main.go:196:\t\treturn kubeseal.ReEncryptSealedSecret(cfg.ctx,",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "pkg/controller/controller.go",
+          "import": "github.com/bitnami-labs/sealed-secrets/pkg/apis/sealedsecrets/v1alpha1"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-465p-v42x-3fmj/pkg/controller/controller.go:32:\tssv1alpha1 \"github.com/bitnami-labs/sealed-secrets/pkg/apis/sealedsecr",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "cmd/kubeseal/main.go",
+            "kubeseal.ReEncryptSealedSecret",
+            "controller rotate endpoint"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: cmd/kubeseal/main.go not found in repo. Verified: ",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input sanitization",
+          "context": "rotate process"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "scope validation",
+          "context": "rotate process"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 4,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.8,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

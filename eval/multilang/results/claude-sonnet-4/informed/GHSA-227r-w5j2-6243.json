@@ -1,0 +1,177 @@
+{
+  "vuln_id": "GHSA-227r-w5j2-6243",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3294,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 5,
+    "refuted": 5,
+    "unverifiable": 1,
+    "verification_rate": 0.5,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "invokeai/app/api_app.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: invokeai/app/api_app.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "invokeai/app/api_app.py",
+          "line": 134,
+          "content": "app.include_router(images.images_router, prefix=\"/api\")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 134: app.include_router(session_queue.session_queue_router, prefix=\"/api\")",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "file": "invokeai/app/api/routers/images.py"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No pattern to search for in claim parameters",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "invokeai/app/api_app.py",
+          "import": "invokeai.app.api.routers.images"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of invokeai.app.api.routers.images found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "invokeai/app/api_app.py",
+          "line_range": "130-139",
+          "content": "app.include_router(utilities.utilities_router, prefix=\"/api\")\napp.include_router(model_manager.model_manager_router, prefix=\"/api\")\napp.include_router(download_queue.download_queue_router, prefix=\"/api\")\napp.include_router(images.images_router, prefix=\"/api\")"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 237 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "invokeai/app/run_app.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: invokeai/app/run_app.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "run_app",
+          "file": "invokeai/app/run_app.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-227r-w5j2-6243/invokeai/app/run_app.py:4:def run_app() -> None:",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "invoke_api",
+          "file": "invokeai/app/api_app.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-227r-w5j2-6243/invokeai/app/api_app.py:186:def invoke_api() -> None:",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "invoke_api",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-227r-w5j2-6243/invokeai/app/run_app.py:12:    invoke_api()",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "FastAPI",
+          "type": "web framework"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "pyproject.toml: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "uvicorn",
+          "type": "ASGI server"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "pyproject.toml: direct",
+        "method": "manifest_parse"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 5,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.65,
+        "gt_tier": "derived"
+      }
+    ]
+  }
+}

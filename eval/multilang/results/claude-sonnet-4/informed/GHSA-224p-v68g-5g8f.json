@@ -1,0 +1,194 @@
+{
+  "vuln_id": "GHSA-224p-v68g-5g8f",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4519,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 4,
+    "refuted": 10,
+    "unverifiable": 0,
+    "verification_rate": 0.29,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "countDepth function"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "packages/graphql-armor/src/envelop/protections/max-depth.ts",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: packages/graphql-armor/src/envelop/protections/max-depth.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "packages/graphql-armor/src/envelop/armor.ts",
+          "line": 10,
+          "import": "EnvelopMaxDepthProtection",
+          "from": "./protections/max-depth"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of EnvelopMaxDepthProtection found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/yoga/src/yoga.ts",
+          "line": 15,
+          "content": "maxDepth: {\n  n: 4,\n},"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 15: scalarCost: 1,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/apollo/src/server.ts",
+          "line": 65,
+          "content": "maxDepth: {\n  n: 4,\n},"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 65: scalarCost: 1,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/yoga/test/index.spec.ts",
+          "line": 126,
+          "content": "it('should limit depth', async () => {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 126: });",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "maxTokens",
+          "value": "{ n: 250 }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.75,
+        "evidence": "Flag 'maxTokens' found but not with value '{ n: 250 }': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-224p-v68g-5g8f/examples/yoga/test/index.spec.ts:33:   ",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "costLimit",
+          "value": "{ maxCost: 100 }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.75,
+        "evidence": "Flag 'costLimit' found but not with value '{ maxCost: 100 }': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-224p-v68g-5g8f/examples/yoga/src/yoga.ts:11:    ",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "maxAliases",
+          "value": "{ n: 1 }"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.75,
+        "evidence": "Flag 'maxAliases' found but not with value '{ n: 1 }': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-224p-v68g-5g8f/examples/yoga/src/yoga.ts:19:      maxAl",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "maxDirectives",
+          "value": "{ n: 10 }"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "Flag 'maxDirectives' set to '{ n: 10 }': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-224p-v68g-5g8f/packages/plugins/max-directives/test/index.spec.ts:51:",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "ignoreIntrospection",
+          "value": "true"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "Flag 'ignoreIntrospection' set to 'true': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-224p-v68g-5g8f/examples/yoga/src/yoga.ts:17:        ignoreIntrospect",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "examples/yoga/src/yoga.ts",
+          "endpoint": "/graphql"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "examples/apollo/src/server.ts",
+          "endpoint": "/graphql"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "file": "examples/nestjs/src/app.module.ts",
+          "endpoint": "GraphQL playground"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

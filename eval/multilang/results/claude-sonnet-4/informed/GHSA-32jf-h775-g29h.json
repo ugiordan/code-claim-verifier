@@ -1,0 +1,167 @@
+{
+  "vuln_id": "GHSA-32jf-h775-g29h",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3116,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 10,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.69,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": ".evergreen/azure-kms-test/src/main.rs",
+          "classification": "test"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=.evergreen/azure-kms-test/src/main.rs, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": ".evergreen/aws-ecs-test/src/main.rs",
+          "classification": "test"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=.evergreen/aws-ecs-test/src/main.rs, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ClientEncryption::new",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (32 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/.evergreen/azure-kms-test/src/main.rs:11:    let c = ClientEncryption:",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "create_data_key",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/.evergreen/azure-kms-test/src/main.rs:21:    c.create_data_key(MasterK",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": ".evergreen/azure-kms-test/src/main.rs",
+          "line_number": 16,
+          "content": "KEY_NAME"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 32 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": ".evergreen/azure-kms-test/src/main.rs",
+          "line_number": 19,
+          "content": "KEY_VAULT_ENDPOINT"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 32 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Client::with_uri_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (90 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/.evergreen/azure-kms-test/src/main.rs:12:        Client::with_uri_str(",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": ".evergreen/aws-ecs-test/src/main.rs",
+          "line_number": 6,
+          "content": "MONGODB_URI"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 14 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "mongodb",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/.evergreen/azure-kms-test/src/main.rs:1:use mongodb::{",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "mongodb::bson",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/tests/readme_examples.rs:50:    use mongodb::bson::{doc, Document};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "mongodb::options",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/docs/manual/searchindex.js:1:Object.assign(window.search, {\"doc_urls\":[\"index.html#introduction\",\"ind",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "mongodb::client_encryption",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/src/client/csfle/client_encryption.rs:51:    /// # use mongodb::client_encryption::ClientEncryption;",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "env::var",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (67 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-32jf-h775-g29h/.evergreen/azure-kms-test/src/main.rs:17:    let key_name = env::var(\"",
+        "method": "grep_call_site"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

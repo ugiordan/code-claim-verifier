@@ -1,0 +1,211 @@
+{
+  "vuln_id": "GHSA-27h2-hvpr-p74q",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4212,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 11,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.8,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "verify.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: verify.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "module.exports",
+          "file": "verify.js"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for module.exports",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "verify.js",
+          "line": 19,
+          "content_type": "function_start"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 19: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "verify.js",
+          "line": 285,
+          "content_type": "function_end"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 285 out of range (file has 250 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "verify.js",
+          "line": 75,
+          "content_type": "conditional_check"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 75: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "verify.js",
+          "line": 85,
+          "content_type": "conditional_end"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 85: return done(new JsonWebTokenError('verify must be called asynchronous if secret or public key is provided as a callback'));",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "verify.js",
+          "line": 87,
+          "content_type": "function_call"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 87: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "verify.js",
+          "line": 95,
+          "content_type": "function_call_end"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 95: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "index.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: index.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "index.js",
+          "line": 2,
+          "content_type": "export"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 2: verify: require('./verify'),",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "verify.js",
+          "import": "jws",
+          "line": 7
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-27h2-hvpr-p74q/verify.js:7:const jws = require('jws');",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "verify.js",
+          "import": "crypto",
+          "line": 8
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-27h2-hvpr-p74q/verify.js:8:const {KeyObject, createSecretKey, createPublicKey} = require(\"crypto\");",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "validation",
+          "context": "secretOrPublicKey parameter"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 22 matches found: /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-27h2-hvpr-p74q/test/claim-sub.tests.js:17:  describe('`jwt.sign` \"subject\" opti",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "input_validation",
+          "context": "before vulnerable code path"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 4,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.8,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.8,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

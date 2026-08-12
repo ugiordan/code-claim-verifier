@@ -1,0 +1,172 @@
+{
+  "vuln_id": "GHSA-28mg-98xm-q493",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3249,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 7,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.6,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "archivy/__init__.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: archivy/__init__.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "archivy/api.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: archivy/api.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "archivy/cli.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: archivy/cli.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "archivy/__init__.py",
+          "import": "archivy.routes",
+          "line": 108
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of archivy.routes found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "archivy/api.py",
+          "line_start": 15,
+          "line_end": 27,
+          "content_description": "Contains a `/login` endpoint"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 245 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "archivy/__init__.py",
+          "line": 75,
+          "content_description": "login_manager.login_view = \"login\""
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 75: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "archivy/cli.py",
+          "line": 85,
+          "content_description": "archivy run command"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 85: \"Config successfully created at \"",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "Flask"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "requirements.txt: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "Flask-Login"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "requirements.txt: direct",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "click_web"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "requirements.txt: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "werkzeug.security"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "requirements.txt: not found (transitive?)",
+        "method": "manifest_parse"
+      },
+      {
+        "claim_type": "DEPENDENCY_TYPE",
+        "parameters": {
+          "package": "flask_wtf.csrf"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "requirements.txt: not found (transitive?)",
+        "method": "manifest_parse"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 3,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "vuln_id": "GHSA-29vr-79w7-p649",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2963,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 4,
+    "verified": 0,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.0,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "name": "project_configure",
+          "type": "function"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 2 matches found: /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-29vr-79w7-p649/gerapy/server/core/urls.py:27:    url(r'^api/project/(\\S+)/configure'",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 95,
+          "content": "'console_scripts': ['gerapy = gerapy.cmd:cmd']"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: sys.exit()",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "gerapy/cmd/generate.py",
+          "line": 11,
+          "import": "from gerapy.server.core.utils import generate_project"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of from gerapy.server.core.utils import generate_project found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "gerapy/cmd/initadmin.py",
+          "line": 9,
+          "content": "sets Django settings module to `gerapy.server.server.settings`"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 9: create super user",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

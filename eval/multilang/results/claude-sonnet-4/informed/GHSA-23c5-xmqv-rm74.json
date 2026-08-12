@@ -1,0 +1,222 @@
+{
+  "vuln_id": "GHSA-23c5-xmqv-rm74",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4326,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 11,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.79,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/ast.ts",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/ast.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/index.ts",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/index.ts",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "AST.toRegExpSource",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/basic.js:39:    ast.toRegExpSource()",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "src/ast.ts",
+          "line": 598,
+          "content": "AST.toRegExpSource()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 598: : this.type === '*' && bodyDotAllowed ? `)?`",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "minimatch",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/multiple-non-adjacent-globstars.ts:13:  t.equal(minimatch(patha, pattern), false)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "Minimatch",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/the-sky-is-full-of-stars-at-least-100.ts:5:t.strictSame(new Minimatch(sky).set, new Minima",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "makeRe",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/negative-extglob-anchoring.js:8:t.equal(mm.makeRe(pattern).test(nope), false)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "match",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/multiple-non-adjacent-globstars.ts:13:  t.equal(minimatch(patha, pattern), false)",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "matchOne",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/src/index.ts:839:  matchOne(",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "minimatch",
+            "matchOne",
+            "p.test",
+            "AST.toRegExpSource"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: p.test does not call AST.toRegExpSource. Verified: minimatch->matchOne: found matchOne() call but not in minimatch's body; matchOne->p.test: found p.test() call but not in matchOne's bod",
+        "method": "call_chain"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "../dist/esm/index.js",
+          "imports": [
+            "minimatch",
+            "Minimatch",
+            "GLOBSTAR",
+            "braceExpand"
+          ],
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/tricky-negations.js:2:import { minimatch } from '../dist/esm/index.js'",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "noext",
+          "value": "true"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "Flag 'noext' set to 'true': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-23c5-xmqv-rm74/test/patterns.js:234:    { noext: true },",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/basic.js",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/basic.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/basic.js",
+          "line_contains": "const toolong = 'x'.repeat(64 * 1024) + 'y'"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 324 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 5,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.8,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

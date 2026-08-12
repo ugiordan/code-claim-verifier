@@ -1,0 +1,125 @@
+{
+  "vuln_id": "GHSA-498w-5j49-vqjg",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3693,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 6,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.72,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "frontend/api.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: frontend/api.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/api.go",
+          "line": 85,
+          "content": "Cmp(i1, i2 Variable) Variable"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 85: // Or returns a & b",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "frontend/api.go",
+          "line_range": "67-72",
+          "content": "ToBinary(i1 Variable, n ...int) []Variable"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 145 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "debug_test.go"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: debug_test.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "debug_test.go",
+          "line": 33,
+          "content": "bs := api.ToBinary(circuit.B, 10)"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 33: bs := api.ToBinary(circuit.B, 10)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ToBinary",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (54 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-498w-5j49-vqjg/frontend/cs/r1cs/api_assertions.go:122:\taBits := bits.ToBinary(builder, ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "frontend/api.go",
+          "classification": "interface_definitions"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=frontend/api.go, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable implementations",
+          "location": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

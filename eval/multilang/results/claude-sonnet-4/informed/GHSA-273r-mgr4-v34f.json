@@ -1,0 +1,184 @@
+{
+  "vuln_id": "GHSA-273r-mgr4-v34f",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3521,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 7,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.47,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "Receiver.getInfo function",
+          "location": "provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "Receiver.startLoop function",
+          "location": "provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "Receiver._write function",
+          "location": "provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "lib/engine.io.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: lib/engine.io.js",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/common.js",
+          "line": 20,
+          "content": "if (process.env.EIO_WS_ENGINE) {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 20: opts.wsEngine = require(process.env.EIO_WS_ENGINE).Server;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/common.js",
+          "line": 21,
+          "content": "opts.wsEngine = require(process.env.EIO_WS_ENGINE).Server;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 21: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/latency/public/index.js",
+          "line": 45,
+          "content": "const socket = new eio.Socket();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 45: send();",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/engine.io.js",
+          "line": 95,
+          "content": "exports.attach = attach;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: options = {};",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/latency/index.js",
+          "line": 8,
+          "content": "const io = require('engine.io').attach(server);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 8: const server = require('http').createServer(app);",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "lib/engine.io.js",
+          "line": 75,
+          "content": "exports.listen = listen;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 75: * @api public",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "attach",
+          "file": "lib/engine.io.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-273r-mgr4-v34f/lib/engine.io.js:104:  const engine = exports.attach(server, options);",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "listen",
+          "file": "lib/engine.io.js"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/javascript/GHSA-273r-mgr4-v34f/lib/engine.io.js:92:function listen(port, options, fn) {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "input sanitization for WebSocket frame validation",
+          "location": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

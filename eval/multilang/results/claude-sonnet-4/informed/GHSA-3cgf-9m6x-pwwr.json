@@ -1,0 +1,112 @@
+{
+  "vuln_id": "GHSA-3cgf-9m6x-pwwr",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3612,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 5,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.7,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libsqlite3-sys/build.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libsqlite3-sys/build.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "libsqlite3-sys/wrapper.h"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: libsqlite3-sys/wrapper.h",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "libsqlite3-sys/bindgen-bindings/*.rs",
+          "classification": "auto-generated bindings"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=libsqlite3-sys/bindgen-bindings/*.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "libsqlite3-sys/build.rs",
+          "line_range": "95-97",
+          "content": "if cfg!(feature = \"unlock_notify\") {\n    cfg.flag(\"-DSQLITE_ENABLE_UNLOCK_NOTIFY\");\n}"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 414 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "unlock_notify",
+          "value": "conditional"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.75,
+        "evidence": "Flag 'unlock_notify' found but not with value 'conditional': /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-3cgf-9m6x-pwwr/Cargo.toml:42:unlock_notify = [\"libsqlit",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "UnlockNotification vulnerable code",
+          "scope": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable UnlockNotification implementation",
+          "scope": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

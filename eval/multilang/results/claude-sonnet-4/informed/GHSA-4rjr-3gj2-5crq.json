@@ -1,0 +1,183 @@
+{
+  "vuln_id": "GHSA-4rjr-3gj2-5crq",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3876,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 14,
+    "verified": 10,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.66,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "tests/connection_snippets.rs",
+          "classification": "test"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=tests/connection_snippets.rs, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "tests/readme_examples.rs",
+          "classification": "test"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=tests/readme_examples.rs, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "benchmarks/src",
+          "classification": "benchmark"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=benchmarks/src, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": ".evergreen/aws-ecs-test/src/main.rs",
+          "classification": "example"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "path=.evergreen/aws-ecs-test/src/main.rs, is_test=True, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": ".evergreen/aws-ecs-test/src/main.rs",
+          "line": 4,
+          "content": "let uri = std::env::var(\"MONGODB_URI\").expect(\"no URI given!\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 4: async fn main() {",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/connection_snippets.rs",
+          "line_range": "11-14",
+          "content": "let client_options = ClientOptions::parse(\n    \"mongodb+srv://<username>:<password>@<cluster-url>/<dbname>?w=majority\",\n).await?;\nlet client = Client::with_options(client_options)?;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 20 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/readme_examples.rs",
+          "line": 25,
+          "content": "let mut client_options = ClientOptions::parse(\"mongodb://localhost:27017\").await?;"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 25: let client = Client::with_options(client_options)?;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Client::with_uri_str",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (25 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4rjr-3gj2-5crq/.evergreen/aws-ecs-test/src/main.rs:6:    let client = Client::with_ur",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "ClientOptions::parse",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (34 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4rjr-3gj2-5crq/tests/connection_snippets.rs:12:    let client_options = ClientOptions",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Client::with_options",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (44 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4rjr-3gj2-5crq/tests/connection_snippets.rs:16:    let client = Client::with_options(",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "mongodb",
+          "items": [
+            "options::ClientOptions",
+            "Client"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4rjr-3gj2-5crq/.evergreen/aws-ecs-test/src/main.rs:1:use mongodb::{bson::Document, Client};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "mongodb::bson",
+          "items": [
+            "Document"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4rjr-3gj2-5crq/tests/readme_examples.rs:50:    use mongodb::bson::{doc, Document};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable code",
+          "scope": "provided files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "core driver implementation",
+          "scope": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "vuln_id": "GHSA-2hvr-h6gw-qrxp",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2721,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 7,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.77,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "vulnerable code for zip bomb/disk space exhaustion attack"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "compress_man",
+          "file": "build.rs",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-2hvr-h6gw-qrxp/build.rs:16:fn compress_man() {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "tar::Builder",
+          "file": "build.rs",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of tar::Builder found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "GzBuilder",
+          "file": "build.rs",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-2hvr-h6gw-qrxp/build.rs:1:use flate2::{Compression, GzBuilder};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "publish.py",
+          "classification": "Python script for publishing to crates.io"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=publish.py, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "archive extraction logic",
+          "file": "publish.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "cargo-test-support/build.rs",
+          "classification": "Simple build script setting environment variables"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=cargo-test-support/build.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "flate2",
+          "file": "build.rs",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-2hvr-h6gw-qrxp/build.rs:1:use flate2::{Compression, GzBuilder};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "tar",
+          "file": "build.rs",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of tar found",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

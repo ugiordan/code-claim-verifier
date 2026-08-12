@@ -1,0 +1,106 @@
+{
+  "vuln_id": "GHSA-2647-c639-qv2j",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2461,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 6,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.85,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "search_metadata",
+          "alias": "meta",
+          "file": "cps.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of search_metadata found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cps.py",
+          "line": 35,
+          "content_description": "imports search_metadata as meta"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 35: from cps import web_server",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cps.py",
+          "line": 62,
+          "content_description": "registers the meta blueprint in the Flask app"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 62: def main():",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "URL validation, blacklist implementation, or SSRF-related code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "cps/admin.py",
+          "classification": "admin functionality"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=cps/admin.py, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "obvious SSRF-related code in cps/admin.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "obvious network request libraries imported in the provided files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

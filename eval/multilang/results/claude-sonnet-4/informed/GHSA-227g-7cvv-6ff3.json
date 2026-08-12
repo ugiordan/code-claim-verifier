@@ -1,0 +1,133 @@
+{
+  "vuln_id": "GHSA-227g-7cvv-6ff3",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4315,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 6,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.61,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "ContentType",
+          "file": "tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for ContentType",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java",
+          "line": 44,
+          "content": "private static final Pattern PATTERN = Pattern.compile(\"^(.+)/([^;]+)(;(.+=[^;]+))*$\");"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 44: /**",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java",
+          "line": 78,
+          "content": "new ContentType(baseType, subType, parameters)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 78: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java",
+          "import": "java.util.regex.Pattern"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/java/GHSA-227g-7cvv-6ff3/tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java:21:import java.util.regex.Patt",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java",
+          "import": "java.util.regex.Matcher"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/java/GHSA-227g-7cvv-6ff3/tapestry-http/src/main/java/org/apache/tapestry5/http/ContentType.java:20:import java.util.regex.Matc",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "input sanitization in ContentType constructor"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "timeout mechanism for regex matching"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "direct calls to vulnerable ContentType(String) constructor in provided source files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "REFUTED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

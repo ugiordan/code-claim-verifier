@@ -1,0 +1,262 @@
+{
+  "vuln_id": "GHSA-3rcq-39xp-7xjp",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 4094,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 16,
+    "verified": 11,
+    "refuted": 4,
+    "unverifiable": 1,
+    "verification_rate": 0.69,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "BTreeMap implementation",
+          "scope": "provided source files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "StableBTreeMap implementation",
+          "scope": "provided source files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "Node deallocation functions",
+          "scope": "provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "examples/src/assets_example/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: examples/src/assets_example/src/lib.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/src/assets_example/src/lib.rs",
+          "line_range": "15-20",
+          "content": "static ASSETS: RefCell<StableBTreeMap<String, Vec<u8>, Memory>> = RefCell::new(\n    StableBTreeMap::init(\n        MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),\n    )\n);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 32 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (197 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-3rcq-39xp-7xjp/examples/src/vecs_and_strings/src/lib.rs:62:            MEMORY_MANAGE",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "insert",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (155 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-3rcq-39xp-7xjp/examples/src/vecs_and_strings/src/lib.rs:76:    MAP.with(|p| p.borrow",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "examples/src/vecs_and_strings/src/lib.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: examples/src/vecs_and_strings/src/lib.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/src/vecs_and_strings/src/lib.rs",
+          "line_range": "56-62",
+          "content": "static MAP: RefCell<StableBTreeMap<UserName, UserData, Memory>> = RefCell::new(\n    StableBTreeMap::init(\n        MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),\n    )\n);"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 78 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "get",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (197 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-3rcq-39xp-7xjp/examples/src/vecs_and_strings/src/lib.rs:62:            MEMORY_MANAGE",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "insert",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (155 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-3rcq-39xp-7xjp/examples/src/vecs_and_strings/src/lib.rs:76:    MAP.with(|p| p.borrow",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "ic_stable_structures",
+          "items": [
+            "DefaultMemoryImpl",
+            "StableBTreeMap"
+          ]
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-3rcq-39xp-7xjp/examples/src/vecs_and_strings/src/lib.rs:1:use ic_stable_structures::memory_manager::{MemoryId, Memor",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CVE_AFFECTS_VERSION",
+        "parameters": {
+          "package": "ic_stable_structures",
+          "version_range": "0.6.0 to 0.6.3"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "Missing package or version parameter",
+        "method": "osv_api"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "input sanitization",
+          "scope": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "examples/src/custom_types_example",
+          "content": "MAX_VALUE_SIZE: u32 = 100"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: examples/src/custom_types_example",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "External API call",
+            "insert()",
+            "MAP.with()",
+            "StableBTreeMap::insert()",
+            "vulnerable deallocation code"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: External API call not found in repo. Verified: ",
+        "method": "call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 8,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.65,
+        "gt_tier": "derived"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.65,
+        "gt_tier": "derived"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.65,
+        "gt_tier": "derived"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.65,
+        "gt_tier": "derived"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.85,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

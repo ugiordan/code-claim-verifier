@@ -21,7 +21,11 @@ def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> Ve
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
                              evidence="No module specified", method="grep_import")
 
-    lang = detect_language(file_param) if file_param else language
+    if file_param:
+        detected = detect_language(file_param)
+        lang = detected if detected != "unknown" else language
+    else:
+        lang = language
     patterns = get_import_patterns(module, lang)
 
     if file_param:

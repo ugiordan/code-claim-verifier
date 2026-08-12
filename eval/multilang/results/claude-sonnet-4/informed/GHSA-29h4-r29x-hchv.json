@@ -1,0 +1,368 @@
+{
+  "vuln_id": "GHSA-29h4-r29x-hchv",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 5175,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 27,
+    "verified": 8,
+    "refuted": 19,
+    "unverifiable": 0,
+    "verification_rate": 0.29,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "redshift_connector/core.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: redshift_connector/core.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "redshift_connector/cursor.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: redshift_connector/cursor.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/unit/test_connection.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/unit/test_connection.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 142,
+          "content": "def test_handle_row_description_extended_metadata(_input, protocol) -> None:"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 142: assert str(expected_decoded_msg) in str(mock_connection.error)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 143,
+          "content": "mock_connection.handle_ROW_DESCRIPTION(data, mock_cursor)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 143: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "handle_ROW_DESCRIPTION",
+          "class": "Connection"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-29h4-r29x-hchv/redshift_connector/core.py:1566:    def handle_ROW_DESCRIPTION(self: \"Connection\", data, cursor: Cu",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "handle_ERROR_RESPONSE",
+          "class": "Connection"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-29h4-r29x-hchv/redshift_connector/core.py:934:    def handle_ERROR_RESPONSE(self: \"Connection\", data, ps):",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "handle_COMMAND_COMPLETE",
+          "class": "Connection"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-29h4-r29x-hchv/redshift_connector/core.py:2021:    def handle_COMMAND_COMPLETE(self: \"Connection\", data: bytes, cu",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 89,
+          "content": "mock_connection.handle_ERROR_RESPONSE(server_msg, None)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 89: IntegrityError,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 90,
+          "content": "assert type(mock_connection.error) == expected_error"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 90: ),",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 91,
+          "content": "assert str(expected_decoded_msg) in str(mock_connection.error)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 91: (",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 142,
+          "content": "mock_connection.handle_ROW_DESCRIPTION(data, mock_cursor)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 142: assert str(expected_decoded_msg) in str(mock_connection.error)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 143,
+          "content": "assert mock_cursor.ps is not None"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 143: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 144,
+          "content": "assert \"row_desc\" in mock_cursor.ps"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 144: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 145,
+          "content": "assert len(mock_cursor.ps[\"row_desc\"]) == 1"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 145: test_inspect_int_vals: typing.List[typing.Tuple[int, typing.Tuple[int, int, typing.Callable]]] = [",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 146,
+          "content": "assert exp_result[0].items() <= mock_cursor.ps[\"row_desc\"][0].items()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 146: (min_int2 - 1, PY_TYPES[23]),",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 147,
+          "content": "assert \"func\" in mock_cursor.ps[\"row_desc\"][0]"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 147: (min_int2, PY_TYPES[23]),",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "test/unit/test_core.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: test/unit/test_core.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_core.py",
+          "line": 95,
+          "content": "cursor = Mock(spec=Cursor)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_core.py",
+          "line": 96,
+          "content": "connection.handle_COMMAND_COMPLETE(command_status, cursor)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 96: # Verify cache was cleared",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "setup.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: setup.py",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 95,
+          "content": "install_requires=open(\"requirements.txt\").read().strip().split(\"\\n\"),"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 95: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 96,
+          "content": "extras_require=optional_deps,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 96: if os.getenv(\"CUSTOMINSTALL\", False):",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_connection.py",
+          "line": 13,
+          "content": "test_error_responses_data: typing.List[typing.Tuple[bytes, typing.Dict, typing.Type[Error]]] = ["
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 13: Cursor,",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_core.py",
+          "line": 130,
+          "content": "def test_prepared_statement_cache_behavior(mocker, test_case):"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 130: pid: {\"ps\": {stmt: ps.copy() for stmt, ps in pid_cache[\"ps\"].items()}}",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_core.py",
+          "line": 131,
+          "content": "mock_connection.handle_messages = mocker.Mock()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 131: for pid, pid_cache in paramstyle_cache.items()",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "test/unit/test_core.py",
+          "line": 132,
+          "content": "mock_connection.handle_messages_merge_socket_read = mocker.Mock()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 132: }",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 5,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

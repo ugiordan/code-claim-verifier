@@ -1,0 +1,167 @@
+{
+  "vuln_id": "GHSA-237q-6hjp-pchq",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3764,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 12,
+    "verified": 5,
+    "refuted": 7,
+    "unverifiable": 0,
+    "verification_rate": 0.37,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "getTotpRemoveUrl",
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for getTotpRemoveUrl",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java",
+          "line": 73,
+          "content": "public String getTotpRemoveUrl() {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 73: }",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java",
+          "line": 74,
+          "content": "return Urls.accountTotpRemove(baseQueryURI, realm, stateChecker).toString();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 74: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "Urls.accountTotpRemove",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/java/GHSA-237q-6hjp-pchq/forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "FreeMarkerAccountProvider.createResponse",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "FreeMarkerAccountProvider.java",
+          "line": 75,
+          "content": "FreeMarkerAccountProvider.createResponse()"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 75: return this;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "FreeMarkerAccountProvider.java",
+          "line": 130,
+          "content": "TotpBean"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 130: case ACCOUNT:",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java",
+          "import": "org.keycloak.services.resources.flows.Urls"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/java/GHSA-237q-6hjp-pchq/forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java:5:import or",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java",
+          "import": "org.keycloak.freemarker.Theme"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/java/GHSA-237q-6hjp-pchq/forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java:3:import or",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java",
+          "import": "org.keycloak.models.RealmModel"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/java/GHSA-237q-6hjp-pchq/forms/account-freemarker/src/main/java/org/keycloak/account/freemarker/model/UrlBean.java:4:import or",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "CALL_CHAIN",
+        "parameters": {
+          "chain": [
+            "FreeMarkerAccountProvider.createResponse",
+            "TotpBean",
+            "UrlBean.getTotpRemoveUrl"
+          ]
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.7,
+        "evidence": "Chain broken: FreeMarkerAccountProvider.createResponse not found in repo. Verified: ",
+        "method": "call_chain"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

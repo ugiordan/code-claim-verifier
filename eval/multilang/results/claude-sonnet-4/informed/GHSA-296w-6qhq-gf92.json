@@ -1,0 +1,132 @@
+{
+  "vuln_id": "GHSA-296w-6qhq-gf92",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3094,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 4,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.34,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/urls.py",
+          "line": 8,
+          "content": "(r'^file_uploads/', include('regressiontests.file_uploads.urls'))"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 8: # File upload test views",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/modeltests/model_forms/models.py",
+          "line": 11,
+          "content": "from django.core.files.storage import FileSystemStorage"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 11: import os",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/modeltests/model_forms/models.py",
+          "line": 93,
+          "content": "models.FileField(storage=temp_storage, upload_to='tests', max_length=15)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 93: ",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/modeltests/model_forms/models.py",
+          "line": 12,
+          "content": "temp_storage = FileSystemStorage(temp_storage_dir)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 12: import tempfile",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tests/modeltests/model_forms/models.py",
+          "import": "from django.core.files.storage import FileSystemStorage"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of from django.core.files.storage import FileSystemStorage found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "django/core/files/storage.py",
+          "context": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "django/core/files/uploadhandler.py",
+          "context": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable functions",
+          "context": "provided codebase"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "mitigations",
+          "context": "provided code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

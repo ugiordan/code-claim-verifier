@@ -1,0 +1,151 @@
+{
+  "vuln_id": "GHSA-4mq4-7rw3-vm5j",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3794,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 11,
+    "verified": 7,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.59,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "build.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: build.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "build.rs",
+          "classification": "build script"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=build.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/integration/cli/tests"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: tests/integration/cli/tests",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/rust-wasi-tests/src/bin"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: tests/rust-wasi-tests/src/bin",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "tests/rust-wasi-tests/src/bin/fs-rename.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: tests/rust-wasi-tests/src/bin/fs-rename.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/rust-wasi-tests/src/bin/fs-rename.rs",
+          "line_content": "fs::create_dir(\"/test-dir\").unwrap();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 34 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "tests/rust-wasi-tests/src/bin/fs-rename.rs",
+          "line_content": "fs::write(\"/test-dir/a\", \"a\").unwrap();"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 34 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fs::create_dir",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (14 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4mq4-7rw3-vm5j/tests/rust-wasi-tests/src/bin/fs-rename.rs:15:        fs::create_dir(\"",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fs::write",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (66 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4mq4-7rw3-vm5j/tests/rust-wasi-tests/src/bin/fs-rename.rs:17:        fs::write(\"/test",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "std::fs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4mq4-7rw3-vm5j/tests/rust-wasi-tests/src/bin/fs-rename.rs:1:use std::fs::{self, File};",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "wasi"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/rust/GHSA-4mq4-7rw3-vm5j/tests/wasi-wast/wasi/tests/fd_pread.rs:6:use std::os::wasi::prelude::AsRawFd;",
+        "method": "grep_import"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 2,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

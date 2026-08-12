@@ -1,0 +1,179 @@
+{
+  "vuln_id": "GHSA-22jr-vc7j-g762",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3705,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 4,
+    "refuted": 8,
+    "unverifiable": 1,
+    "verification_rate": 0.28,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "src/psd_tools/compression/_rle.pyx"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: src/psd_tools/compression/_rle.pyx",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 11,
+          "content": "src/psd_tools/compression/_rle.pyx"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 11: [",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "file": "_rle.pyx",
+          "description": "actual vulnerable Cython source file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tests/psd_tools/test_compression.py",
+          "line": 4,
+          "import": "psd_tools.compression.decode_rle"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of psd_tools.compression.decode_rle found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "tests/psd_tools/test_compression.py",
+          "line": 2,
+          "import": "psd_tools.compression.decompress"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of psd_tools.compression.decompress found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "decompress",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-22jr-vc7j-g762/tests/psd_tools/test_compression.py:63:def test_compress_decompress(d",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "decode_rle",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (2 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/python/GHSA-22jr-vc7j-g762/tests/psd_tools/test_compression.py:40:    decoded = decode_rle(encod",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 8,
+          "content": "from Cython.Build import cythonize"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 8: try:",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 45,
+          "content": "psd-tools=psd_tools.__main__:main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 45: install_requires=[",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 14,
+          "content": "except ImportError:"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 14: ['src/psd_tools/compression/_rle.pyx']",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 15,
+          "content": "logging.error('Cython not found, no extension will be built.')"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 15: )",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "setup.py",
+          "line": 16,
+          "content": "extension = []"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 16: ],",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "PACKAGE_VERSION",
+        "parameters": {
+          "package": "Pillow",
+          "version": ">=6.2.0"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No lockfile found containing Pillow",
+        "method": "lockfile_parse"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

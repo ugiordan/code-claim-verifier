@@ -21,40 +21,118 @@ def run_ccv_verification(claims: list[TypedClaim], source_root: str,
     return engine.verify_claims_with_chaining(claims, source_root, language)
 
 
+def _normalize_path(p: str) -> str:
+    return normalize_claim_path(p) if isinstance(p, str) else p
+
+
+def _import_name_match(gt_module: str, vc_params: dict) -> bool:
+    """Match GT 'module' key against LLM claims that use 'import', 'module', or 'from'.
+
+    Matching strategy (in order):
+    1. Exact full-string match on any import-related key.
+    2. Last path/dot component match, but only if the component is >= 5 chars
+       (avoids false matches on short generic names like io, os, net).
+    """
+    if not isinstance(gt_module, str) or not gt_module:
+        return False
+
+    for key in ("module", "import", "from", "package"):
+        val = vc_params.get(key)
+        if isinstance(val, str) and val:
+            if gt_module == val:
+                return True
+
+    gt_last = gt_module.split(".")[-1].lstrip("@").split("/")[-1].lower()
+    if len(gt_last) < 5:
+        return False
+
+    for key in ("module", "import", "from", "package"):
+        val = vc_params.get(key)
+        if isinstance(val, str) and val:
+            val_last = val.split(".")[-1].lstrip("@").split("/")[-1].lower()
+            if gt_last == val_last:
+                return True
+    return False
+
+
+def _exact_match(gt_params: dict, vc_params: dict, claim_type: str) -> bool:
+    for key, value in gt_params.items():
+        vc_value = vc_params.get(key)
+        if vc_value is None and key == "file":
+            vc_value = vc_params.get("path")
+        if vc_value is None and key == "path":
+            vc_value = vc_params.get("file")
+        if key in ("file", "path") and isinstance(value, str) and isinstance(vc_value, str):
+            value = _normalize_path(value)
+            vc_value = _normalize_path(vc_value)
+        if vc_value != value:
+            return False
+    return True
+
+
 def match_claims_to_gt(verified: list[VerifiedClaim],
                        gt_claims: list[dict]) -> list[dict]:
     matched: list[dict] = []
     used_gt: set[int] = set()
+
+    def _record(vc, gt, i):
+        used_gt.add(i)
+        matched.append({
+            "claim_type": vc.claim.claim_type,
+            "expected": gt["expected_verdict"],
+            "actual": vc.verdict,
+            "confidence": vc.method_confidence,
+            "gt_tier": gt.get("gt_tier", "unknown"),
+        })
+
     for vc in verified:
+        ct = vc.claim.claim_type
+        vc_params = vc.claim.parameters
+
+        # Pass 1: exact match (covers FILE_EXISTS, ABSENCE, and exact file+name matches)
+        matched_exact = False
         for i, gt in enumerate(gt_claims):
-            if i in used_gt:
+            if i in used_gt or gt["claim_type"] != ct:
                 continue
-            if gt["claim_type"] != vc.claim.claim_type:
-                continue
-            gt_params = gt.get("parameters", {})
-            all_match = True
-            for key, value in gt_params.items():
-                vc_value = vc.claim.parameters.get(key)
-                if vc_value is None and key == "file":
-                    vc_value = vc.claim.parameters.get("path")
-                if vc_value is None and key == "path":
-                    vc_value = vc.claim.parameters.get("file")
-                if key in ("file", "path") and isinstance(value, str) and isinstance(vc_value, str):
-                    value = normalize_claim_path(value)
-                    vc_value = normalize_claim_path(vc_value)
-                if vc_value != value:
-                    all_match = False
-                    break
-            if all_match:
-                used_gt.add(i)
-                matched.append({
-                    "claim_type": vc.claim.claim_type,
-                    "expected": gt["expected_verdict"],
-                    "actual": vc.verdict,
-                    "confidence": vc.method_confidence,
-                    "gt_tier": gt.get("gt_tier", "unknown"),
-                })
+            if _exact_match(gt.get("parameters", {}), vc_params, ct):
+                _record(vc, gt, i)
+                matched_exact = True
                 break
+        if matched_exact:
+            continue
+
+        # Pass 2: fuzzy fallbacks per claim type
+        if ct == "FUNCTION_EXISTS":
+            # Name-only fallback: LLM may report a different file than GT
+            vc_name = vc_params.get("name", "")
+            for i, gt in enumerate(gt_claims):
+                if i in used_gt or gt["claim_type"] != "FUNCTION_EXISTS":
+                    continue
+                if gt.get("parameters", {}).get("name") == vc_name and vc_name:
+                    _record(vc, gt, i)
+                    break
+
+        elif ct == "FUNCTION_CALLED":
+            # GT uses {name, file} (call site file); LLM uses {name, expected} or {name, caller}
+            # Match on function name only
+            vc_name = vc_params.get("name", "")
+            for i, gt in enumerate(gt_claims):
+                if i in used_gt or gt["claim_type"] != "FUNCTION_CALLED":
+                    continue
+                if gt.get("parameters", {}).get("name") == vc_name and vc_name:
+                    _record(vc, gt, i)
+                    break
+
+        elif ct == "IMPORT_EXISTS":
+            # GT uses {module}; LLM uses {import, from} or {module} with varying formats
+            for i, gt in enumerate(gt_claims):
+                if i in used_gt or gt["claim_type"] != "IMPORT_EXISTS":
+                    continue
+                gt_module = gt.get("parameters", {}).get("module", "")
+                if _import_name_match(gt_module, vc_params):
+                    _record(vc, gt, i)
+                    break
+
     return matched
 
 
@@ -211,7 +289,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             result = {
                 "vuln_id": vuln_id, "model": model_name, "condition": condition,
                 "reasoning_length": len(reasoning),
-                "reasoning_truncated": len(reasoning) > 4000,
+                "reasoning_truncated": len(reasoning) > 8000,
                 "ccv": {
                     "total_claims": 0, "verified": 0, "refuted": 0,
                     "unverifiable": 0, "verification_rate": 0.0,
@@ -261,7 +339,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             "model": model_name,
             "condition": condition,
             "reasoning_length": len(reasoning),
-            "reasoning_truncated": len(reasoning) > 4000,
+            "reasoning_truncated": len(reasoning) > 8000,
             "ccv": ccv_result,
             "gt_comparison": {
                 "matched": len(gt_comparison),

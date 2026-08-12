@@ -1,0 +1,128 @@
+{
+  "vuln_id": "GHSA-468w-8x39-gj5v",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3869,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 9,
+    "verified": 7,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.71,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "tlsManager.UpdateConfigs",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (8 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-468w-8x39-gj5v/cmd/traefik/traefik.go:278:\t\ttlsManager.UpdateConfigs(ctx, conf.TLS.Store",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "staticConfiguration.ValidateConfiguration",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.65,
+        "evidence": "Found call sites (1 matches). /Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-468w-8x39-gj5v/cmd/traefik/traefik.go:98:\tif err := staticConfiguration.ValidateConfigur",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "cmd/traefik/traefik.go",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: cmd/traefik/traefik.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "TLS options validation code",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "pkg/tls/ package files",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "Router configuration code",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "TLS configuration parsing and validation logic",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/traefik/traefik.go",
+          "content": "watcher.AddListener(func(conf dynamic.Configuration) {"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 655 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "cmd/traefik/traefik.go",
+          "content": "tlsManager.UpdateConfigs(ctx, conf.TLS.Stores, conf.TLS.Options, conf.TLS.Certificates)"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 655 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}

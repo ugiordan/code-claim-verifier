@@ -1,0 +1,66 @@
+{
+  "vuln_id": "GHSA-4c7m-vv47-7c69",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 2449,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 4,
+    "verified": 2,
+    "refuted": 2,
+    "unverifiable": 0,
+    "verification_rate": 0.35,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "models/user_mail.go",
+          "expected": false
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "not found: models/user_mail.go",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "MakeEmailPrimary",
+          "expected": false
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-4c7m-vv47-7c69/internal/db/user_mail.go:163:func MakeEmailPrimary(email *EmailAddress) error {",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "file": "cmd files",
+          "import": "gogs.io/gogs/internal/db",
+          "expected": true
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "/Users/ugogiordano/workdir/rhoai/code-claim-verifier/eval/multilang/repos/go/GHSA-4c7m-vv47-7c69/internal/cmd/backup.go:23:\t\"gogs.io/gogs/internal/db\"",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "gogs.go",
+          "content": "0.12.0+dev"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 42 lines)",
+        "method": "file_read"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 0,
+    "results": []
+  }
+}

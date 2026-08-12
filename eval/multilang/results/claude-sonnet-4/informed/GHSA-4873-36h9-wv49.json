@@ -1,0 +1,119 @@
+{
+  "vuln_id": "GHSA-4873-36h9-wv49",
+  "model": "claude-sonnet-4",
+  "condition": "informed",
+  "reasoning_length": 3178,
+  "reasoning_truncated": false,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 5,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.57,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "build.rs"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.99,
+        "evidence": "exists: build.rs",
+        "method": "os.path.isfile"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "build.rs",
+          "line": 25,
+          "content": "test_directory_module(out, \"tests/misc_testsuite/reference-types\", strategy)?"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 25: writeln!(out, \"#[cfg(test)]\")?;",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "build.rs",
+          "line": 44,
+          "content": "test_directory_module(out, \"tests/spec_testsuite/proposals/reference-types\", strategy)?"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 44: // out.",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "build.rs",
+          "line_range": "154-156",
+          "content": "(\"reference_types\", _) if cfg!(feature = \"old-x86-backend\") => return true,"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 214 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "build.rs",
+          "classification": "Test suite generation script for Wasmtime tests"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=build.rs, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "directory": "crates/wasi-crypto/src/",
+          "classification": "WASI crypto implementation modules"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "externref GC handling code",
+          "scope": "provided files"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "vulnerable functions",
+          "scope": "provided source code"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  },
+  "gt_comparison": {
+    "matched": 1,
+    "results": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "expected": "VERIFIED",
+        "actual": "VERIFIED",
+        "confidence": 0.99,
+        "gt_tier": "source"
+      }
+    ]
+  }
+}
