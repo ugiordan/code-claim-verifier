@@ -10,22 +10,24 @@ logger = logging.getLogger(__name__)
 
 
 def compute_rq1(results: list[dict]) -> dict:
-    by_model: dict[str, dict] = defaultdict(
+    by_key: dict[str, dict] = defaultdict(
         lambda: {"total_claims": 0, "total_verified": 0,
                  "total_refuted": 0, "total_unverifiable": 0, "samples": 0}
     )
     for r in results:
         model = r.get("model", "unknown")
+        condition = r.get("condition", "informed")
+        key = f"{model}/{condition}"
         ccv = r.get("ccv", {})
-        by_model[model]["total_claims"] += ccv.get("total_claims", 0)
-        by_model[model]["total_verified"] += ccv.get("verified", 0)
-        by_model[model]["total_refuted"] += ccv.get("refuted", 0)
-        by_model[model]["total_unverifiable"] += ccv.get("unverifiable", 0)
-        by_model[model]["samples"] += 1
-    for model, data in by_model.items():
+        by_key[key]["total_claims"] += ccv.get("total_claims", 0)
+        by_key[key]["total_verified"] += ccv.get("verified", 0)
+        by_key[key]["total_refuted"] += ccv.get("refuted", 0)
+        by_key[key]["total_unverifiable"] += ccv.get("unverifiable", 0)
+        by_key[key]["samples"] += 1
+    for key, data in by_key.items():
         total = data["total_claims"]
         data["hallucination_rate"] = round(data["total_refuted"] / total, 4) if total > 0 else 0.0
-    return dict(by_model)
+    return dict(by_key)
 
 
 def compute_rq2(results: list[dict]) -> dict:

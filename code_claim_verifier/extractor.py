@@ -92,7 +92,7 @@ def extract_claims(
         system += "\n\nCUSTOM CLAIM TYPES:\n" + "\n".join(f"- {h}" for h in custom_hints)
     evidence_str = json.dumps(evidence, indent=2, default=str)[:3000]
     user_prompt = _EXTRACTION_USER.format(
-        reasoning=reasoning[:4000],
+        reasoning=reasoning[:8000],
         evidence=evidence_str,
     )
 

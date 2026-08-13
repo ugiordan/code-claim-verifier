@@ -35,6 +35,14 @@ def main() -> None:
     p_gt = subparsers.add_parser("generate-gt", help="Stage 5: generate ground truth claims")
     p_gt.add_argument("--candidates", default="eval/multilang/candidates.jsonl")
     p_gt.add_argument("--base-dir", default="eval/multilang")
+    p_gt.add_argument("--retry-failed", action="store_true",
+                      help="Reset FAILED candidates with failure_stage='generate_gt' and retry")
+
+    p_gen = subparsers.add_parser("generate", help="Stage 7: generate LLM reasoning")
+    p_gen.add_argument("--manifest", default="eval/multilang/manifest.jsonl")
+    p_gen.add_argument("--model", default="claude-sonnet-4")
+    p_gen.add_argument("--condition", default="informed", choices=["informed", "blind"])
+    p_gen.add_argument("--output-dir", default="eval/multilang/reasoning")
 
     p_manifest = subparsers.add_parser("manifest", help="Stage 6: build final manifest")
     p_manifest.add_argument("--candidates", default="eval/multilang/candidates.jsonl")
@@ -69,7 +77,11 @@ def main() -> None:
 
     elif args.stage == "generate-gt":
         from eval.multilang.generate_gt import run_generate_gt
-        run_generate_gt(args.candidates, args.base_dir)
+        run_generate_gt(args.candidates, args.base_dir, args.retry_failed)
+
+    elif args.stage == "generate":
+        from eval.multilang.generate import run_generate
+        run_generate(args.manifest, args.model, args.condition, args.output_dir)
 
     elif args.stage == "manifest":
         from eval.multilang.build_manifest import build_manifest

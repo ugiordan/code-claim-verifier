@@ -221,7 +221,7 @@ MODEL_REGISTRY: dict[str, dict] = {
     },
     "llama-3.3-70b": {
         "factory": "models-corp",
-        "model": "RedHatAI/Llama-3.3-70B-Instruct-FP8-dynamic",
+        "model": "meta/llama-3.3-70b-instruct-maas",
     },
     "qwen3-14b": {
         "factory": "models-corp",
