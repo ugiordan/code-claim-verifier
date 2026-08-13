@@ -1,0 +1,163 @@
+{
+  "trial_id": "goose_qwen/qwen3.6-plus_apache-log-security-analyzer",
+  "harness": "goose",
+  "model": "qwen/qwen3.6-plus",
+  "task_name": "apache-log-security-analyzer",
+  "solved": false,
+  "failure_category": "REASON",
+  "tokens_total": 15226,
+  "reasoning_length": 13165,
+  "ccv": {
+    "total_claims": 13,
+    "verified": 7,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.47,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/app/config.json"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/app/access.log"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "/app/config.json",
+          "type": "configuration"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=/app/config.json, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "/app/access.log",
+          "type": "log_file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=/app/access.log, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "verifier script",
+          "location": "/app"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "tests directory",
+          "location": "/app"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "test file",
+          "location": "/app"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "suspicious_threshold",
+          "file": "config.json",
+          "default_behavior": "5"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'suspicious_threshold' found in 6 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "sliding_window_seconds",
+          "file": "config.json",
+          "default_behavior": "60"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'sliding_window_seconds' found in 5 locations.",
+        "method": "default_value"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "output_paths.csv",
+          "value": "/app/report.csv"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Flag 'output_paths.csv' not found anywhere in repo",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "CONFIG_FLAG",
+        "parameters": {
+          "flag": "output_paths.json",
+          "value": "/app/summary.json"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "Flag 'output_paths.json' not found anywhere in repo",
+        "method": "config_flag"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "class": "AdvancedLogAnalyzer",
+          "file": "/app/log_analyzer.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      },
+      {
+        "claim_type": "ENTRY_POINT",
+        "parameters": {
+          "test_suite": "test_analyzer.py",
+          "file": "/app/tests/test_analyzer.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No any entry point patterns found",
+        "method": "grep_entry_point"
+      }
+    ]
+  }
+}

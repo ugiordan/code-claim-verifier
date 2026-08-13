@@ -1,0 +1,82 @@
+{
+  "trial_id": "opencode_qwen/qwen3.6-plus_diagnose-and-repair-broken-pip-installation",
+  "harness": "opencode",
+  "model": "qwen/qwen3.6-plus",
+  "task_name": "diagnose-and-repair-broken-pip-installation",
+  "solved": true,
+  "failure_category": "SOLVED",
+  "tokens_total": 437286,
+  "reasoning_length": 4704,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 1,
+    "refuted": 5,
+    "unverifiable": 0,
+    "verification_rate": 0.05,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/usr/local/bin/pip"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/usr/local/bin/pip3"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/usr/local/lib/python3.13/site-packages/pip/"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/root/.config/pip/pip.conf"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "pip._internal.cli.main.main"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.85,
+        "evidence": "No definition found for pip._internal.cli.main.main",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "DEFAULT_VALUE",
+        "parameters": {
+          "variable": "index-url",
+          "file": "/root/.config/pip/pip.conf",
+          "default_behavior": "invalid-pypi-mirror.example.com"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.55,
+        "evidence": "Variable 'index-url' found in 2 locations.",
+        "method": "default_value"
+      }
+    ]
+  }
+}

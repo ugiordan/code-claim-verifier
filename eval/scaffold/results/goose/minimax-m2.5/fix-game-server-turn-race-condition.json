@@ -1,0 +1,105 @@
+{
+  "trial_id": "goose_minimax/minimax-m2.5_fix-game-server-turn-race-condition",
+  "harness": "goose",
+  "model": "minimax/minimax-m2.5",
+  "task_name": "fix-game-server-turn-race-condition",
+  "solved": true,
+  "failure_category": "TIME",
+  "tokens_total": null,
+  "reasoning_length": 15000,
+  "ccv": {
+    "total_claims": 8,
+    "verified": 4,
+    "refuted": 4,
+    "unverifiable": 0,
+    "verification_rate": 0.43,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/app/game_server.py"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "game_server.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): 68821ecb39f76b215a450cd110ea3e713cb8371e8e95b1f10058d8832d145afd/environment/game_server.py",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FUNCTION_EXISTS",
+        "parameters": {
+          "name": "process_move",
+          "file": "game_server.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.85,
+        "evidence": "/tmp/scaffold-effects/terminal-bench-pro-selected-subset/fix-game-server-turn-race-condition/68821ecb39f76b215a450cd110ea3e713cb8371e8e95b1f10058d8832d145afd/solution/solve.sh:118:    def process_move",
+        "method": "grep_function_def"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "content": "player_id != self.active_player"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 155 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "content": "if player_id != self.active_player"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 155 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "content": "self.current_turn += 1"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 155 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "locking mechanism",
+          "location": "process_move method"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "type": "verifier file"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  }
+}

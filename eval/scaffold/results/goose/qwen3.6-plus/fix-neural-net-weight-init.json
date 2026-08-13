@@ -1,0 +1,95 @@
+{
+  "trial_id": "goose_qwen/qwen3.6-plus_fix-neural-net-weight-init",
+  "harness": "goose",
+  "model": "qwen/qwen3.6-plus",
+  "task_name": "fix-neural-net-weight-init",
+  "solved": true,
+  "failure_category": "SOLVED",
+  "tokens_total": 10339,
+  "reasoning_length": 14761,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 4,
+    "refuted": 3,
+    "unverifiable": 0,
+    "verification_rate": 0.53,
+    "action": "FLAG",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "network.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): 00c336105fcf7a62f1c7ecf96a6d030131c10d75ad01e7a96fc7c670bb59a8ae/environment/network.py",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "train.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): 00c336105fcf7a62f1c7ecf96a6d030131c10d75ad01e7a96fc7c670bb59a8ae/environment/train.py",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "network.py",
+          "line_number": 9,
+          "content": "self.W1 = np.random.randn(input_size, hidden_size) * 10.0"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 60 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "network.py",
+          "line_number": 11,
+          "content": "self.W2 = np.random.randn(hidden_size, output_size) * 10.0"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "Line 0 out of range (file has 60 lines)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/logs/verifier"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_CLASSIFICATION",
+        "parameters": {
+          "file": "/logs/verifier",
+          "classification": "directory"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.8,
+        "evidence": "path=/logs/verifier, is_test=False, is_vendor=False",
+        "method": "path_regex"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "description": "verifier directory is empty"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  }
+}

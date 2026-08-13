@@ -1,0 +1,102 @@
+{
+  "trial_id": "goose_qwen/qwen3.6-plus_fix-game-server-turn-race-condition",
+  "harness": "goose",
+  "model": "qwen/qwen3.6-plus",
+  "task_name": "fix-game-server-turn-race-condition",
+  "solved": true,
+  "failure_category": "TIME",
+  "tokens_total": null,
+  "reasoning_length": 10836,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 6,
+    "refuted": 1,
+    "unverifiable": 0,
+    "verification_rate": 0.9,
+    "action": "BOOST",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "game_server.py"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.9,
+        "evidence": "exists (fuzzy match): 68821ecb39f76b215a450cd110ea3e713cb8371e8e95b1f10058d8832d145afd/environment/game_server.py",
+        "method": "os.walk_fuzzy"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "line": 91,
+          "content": "def process_move(self, player_id, message):"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 91: def process_move(self, player_id, message):",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "line": 92,
+          "content": "if player_id != self.active_player:"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 92: if player_id != self.active_player:",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "line": 111,
+          "content": "time.sleep(0.001)"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 111: time.sleep(0.001)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "line": 46,
+          "content": "player_id = self.next_player_id"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 46: player_id = self.next_player_id",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "game_server.py",
+          "line": 124,
+          "content": "self.active_player"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.95,
+        "evidence": "Line 124: self.active_player = (self.active_player + 1) % len(self.players)",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "threading.Lock",
+          "file": "game_server.py",
+          "method": "__init__"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: 4 matches found: /tmp/scaffold-effects/terminal-bench-pro-selected-subset/fix-game-server-turn-race-condition/68821ecb39f76b215a450cd110ea3e713cb8371e8e95b1f10058d8832d145afd/tests/test_o",
+        "method": "grep_absent"
+      }
+    ]
+  }
+}

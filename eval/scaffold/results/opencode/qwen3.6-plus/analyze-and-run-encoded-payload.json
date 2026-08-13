@@ -1,0 +1,94 @@
+{
+  "trial_id": "opencode_qwen/qwen3.6-plus_analyze-and-run-encoded-payload",
+  "harness": "opencode",
+  "model": "qwen/qwen3.6-plus",
+  "task_name": "analyze-and-run-encoded-payload",
+  "solved": false,
+  "failure_category": "REASON",
+  "tokens_total": 248592,
+  "reasoning_length": 2747,
+  "ccv": {
+    "total_claims": 7,
+    "verified": 1,
+    "refuted": 6,
+    "unverifiable": 0,
+    "verification_rate": 0.11,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/protected/data.b64"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/app/out.txt"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "/app/out.txt",
+          "content": "Hello from WebAssembly!"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: /app/out.txt",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "IMPORT_EXISTS",
+        "parameters": {
+          "module": "wasi",
+          "imported_name": "WASI"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.8,
+        "evidence": "No import of wasi found",
+        "method": "grep_import"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "require",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "FUNCTION_CALLED",
+        "parameters": {
+          "name": "fs.readFileSync",
+          "expected": true
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.65,
+        "evidence": "No call sites (0 matches). ",
+        "method": "grep_call_site"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "/app/payload.bin"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      }
+    ]
+  }
+}

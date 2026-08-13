@@ -1,0 +1,85 @@
+{
+  "trial_id": "goose_qwen/qwen3.6-plus_train-fraud-detection-model",
+  "harness": "goose",
+  "model": "qwen/qwen3.6-plus",
+  "task_name": "train-fraud-detection-model",
+  "solved": true,
+  "failure_category": "SOLVED",
+  "tokens_total": 15850,
+  "reasoning_length": 15000,
+  "ccv": {
+    "total_claims": 6,
+    "verified": 2,
+    "refuted": 3,
+    "unverifiable": 1,
+    "verification_rate": 0.29,
+    "action": "OVERRIDE",
+    "claims": [
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/data/transactions.csv"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "FILE_EXISTS",
+        "parameters": {
+          "file": "/app"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.99,
+        "evidence": "Path traversal detected",
+        "method": "path_check"
+      },
+      {
+        "claim_type": "LINE_CONTENT",
+        "parameters": {
+          "file": "/data/transactions.csv",
+          "line_number": 1,
+          "content": "200 data rows + 1 header = 201 lines"
+        },
+        "verdict": "REFUTED",
+        "confidence": 0.95,
+        "evidence": "File not found: /data/transactions.csv",
+        "method": "file_read"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "verifier script",
+          "location": "/app"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "ABSENCE",
+        "parameters": {
+          "item": "verifier script",
+          "location": "/data"
+        },
+        "verdict": "VERIFIED",
+        "confidence": 0.6,
+        "evidence": "grep_absent: no matches",
+        "method": "grep_absent"
+      },
+      {
+        "claim_type": "PACKAGE_VERSION",
+        "parameters": {
+          "package": "sklearn",
+          "availability": "available"
+        },
+        "verdict": "UNVERIFIABLE",
+        "confidence": 0.0,
+        "evidence": "No lockfile found containing sklearn",
+        "method": "lockfile_parse"
+      }
+    ]
+  }
+}
