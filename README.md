@@ -1,6 +1,11 @@
 # CodeClaimVerifier
 
-Deterministic verification of LLM claims about source code. Zero LLM calls for verification.
+Tool-backed verification of LLM claims about source code. The built-in verification path makes no LLM calls after claim extraction.
+
+> Evaluation status: the collected CyberGym and Multi-SWE-bench runs are
+> undergoing a provenance and ground-truth audit. Their legacy headline
+> numbers are not currently validated accuracy or hallucination results.
+> See [`eval/VALIDITY.md`](eval/VALIDITY.md).
 
 ## The Problem
 
@@ -8,7 +13,7 @@ LLMs reason about code and make factual assertions: "function X has no callers,"
 
 **Without CCV**, an LLM can dismiss a real vulnerability by hallucinating "no callers" for a function that is called in three places. Or it can escalate a non-issue by claiming a dangerous function is used when it isn't. Both cost time and create risk.
 
-**With CCV**, every factual claim the LLM makes about code is extracted, typed, and verified against the actual codebase using grep, file reads, and lockfile parsing. Grep doesn't hallucinate.
+**With CCV**, every factual claim the LLM makes about code is extracted, typed, and checked against the actual codebase using repository tools such as grep, file reads, and lockfile parsing. The checks are repeatable, but heuristic checks are not automatically complete or sound.
 
 ## What It Actually Does
 
@@ -44,13 +49,13 @@ CCV extracts `FUNCTION_CALLED(name=process_input, expected=true)`. Grep finds ze
 
 ### Calibrating confidence
 
-An LLM produces a triage with 5 factual claims. CCV verifies 4 out of 5 (80% verification rate). Action: BOOST. The triage is reliable.
+An LLM produces a triage with 5 factual claims. CCV verifies 4 out of 5 (80% verification rate). Action: BOOST. The triage passes the configured review gate.
 
-Another LLM triage has 3 claims, 1 verified, 2 refuted (33% rate). Action: OVERRIDE. The LLM is hallucinating. Don't trust this triage, re-run it or escalate to a human.
+Another LLM triage has 3 claims, 1 verified, 2 refuted (33% rate). Action: OVERRIDE. The output disagrees with the repository evidence and should be re-run or escalated to a human.
 
 | Verification Rate | Action | What It Means |
 |---|---|---|
-| 80-100% | BOOST | Claims check out. Trust the LLM's conclusion. |
+| 80-100% | BOOST | Claims pass the configured review gate. |
 | 50-79% | FLAG | Some claims failed. Human should review. |
 | <50% | OVERRIDE | Majority wrong. Don't trust this output. |
 
@@ -80,7 +85,7 @@ LLM Reasoning (text)
 VerificationReport
 ```
 
-One LLM call for extraction. Zero LLM calls for verification. The verification step uses the same tools a developer would use to check: does this file exist? Is this function defined? Is this package at this version?
+One LLM call for extraction. The built-in verification path makes no LLM calls after extraction. It uses the same repository tools a developer would use to check: does this file exist? Is this function defined? Is this package at this version? Some checks, such as OSV advisory lookups, use external data and are only repeatable when that data is pinned.
 
 ## Quick Start
 
@@ -274,7 +279,7 @@ pip install -e ".[test]"
 
 ## Key Design Principles
 
-- **Zero LLM calls for verification.** Grep doesn't hallucinate. `os.path.exists()` doesn't hallucinate.
+- **No built-in LLM calls after extraction.** Verification uses repository tools and reports evidence; repeatable execution does not guarantee that a heuristic is semantically complete.
 - **Language-aware.** Function/import patterns for Python, Go, TypeScript, Java, C/C++, Rust.
 - **Absence is first-class.** "No callers exist" is the most important claim in security triage, and CCV verifies it.
 - **Claim chaining.** Cascading hallucinations caught by dependency propagation.
@@ -293,12 +298,12 @@ Full documentation: [ugiordan.github.io/code-claim-verifier](https://ugiordan.gi
 
 ## Background
 
-Inspired by [Claimify](https://arxiv.org/abs/2502.10855) (ACL 2025), extended to the code domain with deterministic verification:
+Inspired by [Claimify](https://arxiv.org/abs/2502.10855) (ACL 2025), extended to the code domain with non-LLM, tool-backed verification:
 
-- Claimify is extraction-only. CCV adds deterministic verification.
+- Claimify is extraction-only. CCV adds repository-backed verification.
 - Claimify filters out absence claims. CCV makes them first-class.
 - Claimify verifies against text. CCV verifies against source code.
-- Claimify uses LLM-as-judge. CCV uses zero LLM calls for verification.
+- Claimify uses LLM-as-judge. CCV's built-in verifiers use no LLM calls after extraction.
 
 ## License
 
