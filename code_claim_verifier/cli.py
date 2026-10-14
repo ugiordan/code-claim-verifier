@@ -172,6 +172,9 @@ def _make_llm_function(provider: str, model: str | None):
     elif provider == "openai":
         from code_claim_verifier.providers.openai_provider import make_llm_function
         return make_llm_function(model)
+    elif provider == "opencode":
+        from code_claim_verifier.providers.opencode_provider import make_llm_function
+        return make_llm_function(model)
     else:
         print(f"Error: unknown LLM provider '{provider}'", file=sys.stderr)
         sys.exit(1)
@@ -276,7 +279,7 @@ def main(argv: list[str] | None = None) -> None:
     sub_verify.add_argument("--finding-file", default="", help="File path for language detection")
     sub_verify.add_argument("--domain-context", default="", help="Domain-specific extraction context")
     sub_verify.add_argument(
-        "--llm-provider", choices=["anthropic", "openai"],
+        "--llm-provider", choices=["anthropic", "openai", "opencode"],
         default="anthropic", help="LLM provider (default: anthropic)",
     )
     sub_verify.add_argument("--model", default=None, help="Model name override")
@@ -295,7 +298,7 @@ def main(argv: list[str] | None = None) -> None:
         help="Maximum number of items to process (default: 10000)",
     )
     sub_batch.add_argument(
-        "--llm-provider", choices=["anthropic", "openai"],
+        "--llm-provider", choices=["anthropic", "openai", "opencode"],
         default="anthropic", help="LLM provider (default: anthropic)",
     )
     sub_batch.add_argument("--model", default=None, help="Model name override")
