@@ -1,7 +1,7 @@
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.verifiers.file_claims import verify_file_exists, verify_line_content, verify_file_classification, verify_generated_or_vendored
 from code_claim_verifier.verifiers.symbol_claims import verify_function_exists, verify_function_called, verify_has_callers
-from code_claim_verifier.verifiers.import_claims import verify_import_exists, verify_package_version, verify_dependency_type, verify_cve_affects
+from code_claim_verifier.verifiers.import_claims import verify_import_exists, verify_package_version, verify_package_absent, verify_dependency_type, verify_cve_affects
 from code_claim_verifier.verifiers.security_claims import verify_absence, verify_mitigation_exists, verify_entry_point
 from code_claim_verifier.verifiers.auth_claims import verify_call_chain, verify_default_value, verify_config_flag
 
@@ -15,6 +15,7 @@ VERIFIER_REGISTRY: dict[str, callable] = {
     "HAS_CALLERS": verify_has_callers,
     "IMPORT_EXISTS": verify_import_exists,
     "PACKAGE_VERSION": verify_package_version,
+    "PACKAGE_ABSENT": verify_package_absent,
     "DEPENDENCY_TYPE": verify_dependency_type,
     "CVE_AFFECTS_VERSION": verify_cve_affects,
     "ABSENCE": verify_absence,

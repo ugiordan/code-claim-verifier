@@ -1,13 +1,17 @@
 from __future__ import annotations
 
-import json
 import os
-import re
 
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.language import get_import_patterns, detect_language
 from code_claim_verifier.security import safe_path
 from code_claim_verifier.grep import grep as _grep
+from code_claim_verifier.lockfiles import (
+    LockfileInfo,
+    build_path_filter,
+    find_lockfiles,
+    parse_lockfile,
+)
 
 
 def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
@@ -30,7 +34,14 @@ def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> Ve
 
     if file_param:
         resolved = safe_path(file_param, repo_path)
-        search_path = resolved if resolved and os.path.isfile(resolved) else repo_path
+        if resolved is None or not os.path.isfile(resolved):
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.99,
+                evidence=(f"Invalid target file path: {file_param}"
+                          if resolved is None else f"Target file not found: {file_param}"),
+                method="file_scope",
+            )
+        search_path = resolved
     else:
         search_path = repo_path
 
@@ -51,109 +62,161 @@ def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> Ve
 def verify_package_version(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     package = claim.parameters.get("package", "")
     expected_version = claim.parameters.get("version", "")
+    if not package:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No package specified", method="lockfile_parse")
 
-    lockfiles = [
-        ("go.sum", _parse_go_sum),
-        ("go.mod", _parse_go_mod),
-        ("requirements.txt", _parse_requirements),
-        ("poetry.lock", _parse_poetry_lock),
-        ("package-lock.json", _parse_package_lock),
-    ]
+    lockfiles = find_lockfiles(repo_path)
+    if not lockfiles:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence=f"No lockfile found containing {package}", method="lockfile_parse")
 
-    for filename, parser in lockfiles:
-        lockfile_path = os.path.join(repo_path, filename)
-        if os.path.isfile(lockfile_path):
-            actual = parser(lockfile_path, package)
-            if actual:
-                match = actual == expected_version or expected_version in actual
-                return VerifiedClaim(
-                    claim=claim,
-                    verdict="VERIFIED" if match else "REFUTED",
-                    method_confidence=0.90,
-                    evidence=f"{filename}: {package}=={actual} (expected {expected_version})",
-                    method="lockfile_parse",
-                )
+    build_scope = build_path_filter(repo_path, lockfiles)
+    found: list[tuple[str, str]] = []       # (rel, version) in build scope
+    found_outside: list[tuple[str, str]] = []  # occurrences outside the build path
+    for lf in lockfiles:
+        versions = parse_lockfile(lf)
+        actual = _match_package(versions, package, lf.ecosystem)
+        if actual is None:
+            continue
+        if build_scope is None or lf.rel in build_scope:
+            found.append((lf.rel, actual))
+        else:
+            found_outside.append((lf.rel, actual))
 
+    if not found:
+        if found_outside:
+            rels = ", ".join(f"{rel} ({ver})" for rel, ver in found_outside)
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.70,
+                evidence=(f"{package} present in {rels}, but those files are not "
+                          f"consumed by the container build path"),
+                method="lockfile_parse",
+            )
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence=f"No lockfile found containing {package}", method="lockfile_parse")
+
+    # First in-scope hit wins; lockfiles sort before manifests.
+    rel, actual = found[0]
+    actual_normalized = actual.strip().removeprefix("v")
+    expected_normalized = str(expected_version).strip().removeprefix("v")
+    match = bool(expected_normalized) and actual_normalized == expected_normalized
+    extra = ""
+    confidence = 0.90
+    if build_scope is None:
+        confidence = 0.85
+        extra = " (no container build path found; all lockfiles considered)"
     return VerifiedClaim(
-        claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-        evidence=f"No lockfile found containing {package}", method="lockfile_parse",
+        claim=claim,
+        verdict="VERIFIED" if match else "REFUTED",
+        method_confidence=confidence,
+        evidence=f"{rel}: {package}=={actual} (expected {expected_version}){extra}",
+        method="lockfile_parse",
     )
 
 
-def _parse_go_sum(path: str, package: str) -> str | None:
-    try:
-        with open(path) as f:
-            for line in f:
-                parts = line.strip().split()
-                if len(parts) >= 2 and (parts[0] == package or parts[0].endswith("/" + package)):
-                    return parts[1].lstrip("v").split("/")[0]
-    except Exception:
-        pass
+def verify_package_absent(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
+    package = (claim.parameters.get("package", "")
+               or claim.parameters.get("name", "")
+               or claim.parameters.get("dependency", ""))
+    if not package:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No package specified", method="lockfile_parse")
+
+    lockfiles = find_lockfiles(repo_path)
+    if not lockfiles:
+        return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                             evidence="No lockfiles found; absence cannot be established",
+                             method="lockfile_parse")
+
+    build_scope = build_path_filter(repo_path, lockfiles)
+    in_scope = [lf for lf in lockfiles if build_scope is None or lf.rel in build_scope]
+    found_in_scope: list[tuple[str, str]] = []
+    found_outside: list[tuple[str, str]] = []
+    for lf in lockfiles:
+        versions = parse_lockfile(lf)
+        actual = _match_package(versions, package, lf.ecosystem)
+        if actual is None:
+            continue
+        if build_scope is None or lf.rel in build_scope:
+            found_in_scope.append((lf.rel, actual))
+        else:
+            found_outside.append((lf.rel, actual))
+
+    if found_in_scope:
+        rel, ver = found_in_scope[0]
+        return VerifiedClaim(
+            claim=claim, verdict="REFUTED", method_confidence=0.90,
+            evidence=f"{rel}: {package}=={ver}", method="lockfile_parse",
+        )
+
+    checked = ", ".join(lf.rel for lf in in_scope) or "none"
+    if found_outside:
+        rels = ", ".join(f"{rel} ({ver})" for rel, ver in found_outside)
+        return VerifiedClaim(
+            claim=claim, verdict="VERIFIED", method_confidence=0.80,
+            evidence=(f"{package} absent from the build-path lockfiles ({checked}); "
+                      f"present only outside the build path in {rels}"),
+            method="lockfile_parse",
+        )
+    if build_scope is None:
+        return VerifiedClaim(
+            claim=claim, verdict="VERIFIED", method_confidence=0.80,
+            evidence=f"{package} absent from all {len(in_scope)} lockfiles "
+                     f"(no container build path found; absence is repo-wide, not build-scoped)",
+            method="lockfile_parse",
+        )
+    return VerifiedClaim(
+        claim=claim, verdict="VERIFIED", method_confidence=0.90,
+        evidence=f"{package} absent from the {len(in_scope)} lockfiles consumed by the build",
+        method="lockfile_parse",
+    )
+
+
+def _match_package(versions: dict[str, str], package: str, ecosystem: str) -> str | None:
+    """Resolve a package name inside a parsed lockfile, ecosystem-aware."""
+    if ecosystem == "python":
+        lowered = {k.lower(): v for k, v in versions.items()}
+        return lowered.get(package.lower())
+    if ecosystem == "go":
+        if package in versions:
+            return versions[package]
+        for name, version in versions.items():
+            if name.endswith("/" + package):
+                return version
+        return None
+    if package in versions:
+        return versions[package]
+    for name, version in versions.items():
+        if name.endswith("/" + package):
+            return version
     return None
+
+
+# Backwards-compatible single-package wrappers (used by tests and callers).
+def _parse_go_sum(path: str, package: str) -> str | None:
+    return _match_package(_lf_parse(path, "go.sum", "go"), package, "go")
 
 
 def _parse_go_mod(path: str, package: str) -> str | None:
-    try:
-        with open(path) as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith("//"):
-                    continue
-                parts = line.split()
-                if len(parts) >= 2 and (parts[0] == package or parts[0].endswith("/" + package)):
-                    return parts[-1].lstrip("v")
-    except Exception:
-        pass
-    return None
+    return _match_package(_lf_parse(path, "go.mod", "go"), package, "go")
 
 
 def _parse_requirements(path: str, package: str) -> str | None:
-    try:
-        with open(path) as f:
-            for line in f:
-                line = line.strip()
-                if line.startswith("#") or not line:
-                    continue
-                if "==" in line:
-                    name, version = line.split("==", 1)
-                    if name.strip().lower() == package.lower():
-                        return version.strip()
-    except Exception:
-        pass
-    return None
+    return _match_package(_lf_parse(path, "requirements.txt", "python"), package, "python")
 
 
 def _parse_poetry_lock(path: str, package: str) -> str | None:
-    try:
-        with open(path) as f:
-            content = f.read()
-        in_package = False
-        for line in content.split("\n"):
-            if line.strip() == "[[package]]":
-                in_package = False
-            if f'name = "{package}"' in line.lower() or f"name = '{package}'" in line.lower():
-                in_package = True
-            if in_package and line.strip().startswith("version"):
-                return line.split("=", 1)[1].strip().strip('"').strip("'")
-    except Exception:
-        pass
-    return None
+    return _match_package(_lf_parse(path, "poetry.lock", "python"), package, "python")
 
 
 def _parse_package_lock(path: str, package: str) -> str | None:
-    try:
-        with open(path) as f:
-            data = json.load(f)
-        deps = data.get("dependencies", {})
-        if package in deps:
-            return deps[package].get("version", "")
-        packages = data.get("packages", {})
-        for key, val in packages.items():
-            if key.endswith(f"/{package}") or key == f"node_modules/{package}":
-                return val.get("version", "")
-    except Exception:
-        pass
-    return None
+    return _match_package(_lf_parse(path, "package-lock.json", "javascript"), package, "javascript")
+
+
+def _lf_parse(path: str, basename: str, ecosystem: str) -> dict[str, str]:
+    info = LockfileInfo(path=path, rel=basename, ecosystem=ecosystem, kind="lock")
+    return parse_lockfile(info)
 
 
 def verify_dependency_type(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
