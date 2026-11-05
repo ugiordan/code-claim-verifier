@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import logging
-import sys
 
 
 def main() -> None:
@@ -15,6 +14,16 @@ def main() -> None:
     p_prepare = subparsers.add_parser("prepare", help="Stage 1: scan repos, generate GT")
     p_prepare.add_argument("--cybergym-repos", required=True, help="Path to cybergym-repos directory")
     p_prepare.add_argument("--output", default="eval/cybergym/manifest.jsonl", help="Output manifest path")
+    p_prepare.add_argument(
+        "--descriptions",
+        default=None,
+        help="Optional JSONL with vuln_id and description fields",
+    )
+    p_prepare.add_argument(
+        "--dataset-revision",
+        required=True,
+        help="40-character upstream dataset commit or sha256 digest",
+    )
 
     p_generate = subparsers.add_parser("generate", help="Stage 2: generate LLM reasoning")
     p_generate.add_argument("--manifest", required=True, help="Path to manifest.jsonl")
@@ -28,26 +37,48 @@ def main() -> None:
     p_verify.add_argument("--output-dir", default="eval/cybergym/results")
     p_verify.add_argument("--extraction-llm", default="claude-sonnet-4")
     p_verify.add_argument("--with-judge", action="store_true")
+    p_verify.add_argument(
+        "--with-cymbal",
+        action="store_true",
+        help="Use the optional AST backend; requires a Git checkout and may be slow",
+    )
+    p_verify.add_argument(
+        "--force",
+        action="store_true",
+        help="Recompute existing result files instead of reusing them",
+    )
 
     p_analyze = subparsers.add_parser("analyze", help="Stage 4: compute metrics")
     p_analyze.add_argument("--results-dir", default="eval/cybergym/results")
     p_analyze.add_argument("--output-dir", default="eval/cybergym/analysis")
+    p_analyze.add_argument("--manifest", default="eval/cybergym/manifest.jsonl")
+    p_analyze.add_argument(
+        "--allow-invalid",
+        action="store_true",
+        help="Analyze invalid artifacts for exploratory debugging only",
+    )
 
     args = parser.parse_args()
 
     if args.stage == "prepare":
         from eval.cybergym.prepare import run_prepare
-        run_prepare(args.cybergym_repos, args.output)
+        run_prepare(
+            args.cybergym_repos,
+            args.output,
+            descriptions_path=args.descriptions,
+            dataset_revision=args.dataset_revision,
+        )
     elif args.stage == "generate":
         from eval.cybergym.generate import run_generate
         run_generate(args.manifest, args.model, args.condition, args.output_dir)
     elif args.stage == "verify":
         from eval.cybergym.verify import run_verify
         run_verify(args.manifest, args.reasoning_dir, args.output_dir,
-                   args.extraction_llm, args.with_judge)
+                   args.extraction_llm, args.with_judge, args.with_cymbal,
+                   args.force)
     elif args.stage == "analyze":
         from eval.cybergym.analyze import run_analyze
-        run_analyze(args.results_dir, args.output_dir)
+        run_analyze(args.results_dir, args.output_dir, args.manifest, args.allow_invalid)
 
 
 if __name__ == "__main__":

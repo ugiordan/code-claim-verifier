@@ -2,7 +2,6 @@
 """Finish remaining models + re-verify Llama. Use with nohup."""
 from __future__ import annotations
 
-import json
 import logging
 import os
 import sys
@@ -65,7 +64,7 @@ for model in ["qwen3-14b", "gpt-oss-20b"]:
     run_model(model, manifest)
 
 # Step 2: Re-verify Llama (import vs module fix)
-print(f"\nRe-verifying llama-3.3-70b with import/module fix...", flush=True)
+print("\nRe-verifying llama-3.3-70b with import/module fix...", flush=True)
 run_model("llama-3.3-70b", manifest, force_reverify=True)
 
 print("\nAll done!", flush=True)

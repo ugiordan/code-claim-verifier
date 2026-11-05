@@ -16,11 +16,10 @@ import logging
 import os
 import subprocess
 import sys
-import time
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from code_claim_verifier.language import detect_language
+from eval.provenance import git_head, git_is_clean, is_immutable_revision, snapshot_digest
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -32,11 +31,20 @@ LANG_MAP = {
 }
 
 
-def download_dataset(languages: list[str] | None = None) -> list[dict]:
+def download_dataset(
+    languages: list[str] | None = None,
+    revision: str = "",
+) -> list[dict]:
     """Download Multi-SWE-bench JSONL files from HuggingFace."""
+    if not is_immutable_revision(revision):
+        raise ValueError("revision must be a 40-character commit or sha256 digest")
     from huggingface_hub import hf_hub_download, list_repo_files
 
-    files = [f for f in list_repo_files("ByteDance-Seed/Multi-SWE-bench", repo_type="dataset")
+    files = [f for f in list_repo_files(
+        "ByteDance-Seed/Multi-SWE-bench",
+        repo_type="dataset",
+        revision=revision,
+    )
              if f.endswith(".jsonl")]
 
     if languages:
@@ -45,7 +53,12 @@ def download_dataset(languages: list[str] | None = None) -> list[dict]:
     instances = []
     for fpath in files:
         lang = fpath.split("/")[0]
-        local = hf_hub_download("ByteDance-Seed/Multi-SWE-bench", fpath, repo_type="dataset")
+        local = hf_hub_download(
+            "ByteDance-Seed/Multi-SWE-bench",
+            fpath,
+            repo_type="dataset",
+            revision=revision,
+        )
         with open(local) as f:
             for line in f:
                 entry = json.loads(line)
@@ -58,14 +71,21 @@ def download_dataset(languages: list[str] | None = None) -> list[dict]:
 
 def clone_repo(org: str, repo: str, sha: str, repos_dir: str) -> str | None:
     """Clone a repo and checkout at the specified commit. Returns repo path or None."""
-    repo_dir = os.path.join(repos_dir, f"{org}__{repo}")
+    # A checkout is immutable for one benchmark base revision. Sharing a
+    # directory across SHAs makes earlier manifest entries silently point at
+    # whichever revision was checked out last.
+    repo_dir = os.path.join(repos_dir, f"{org}__{repo}__{sha[:12]}")
 
     if os.path.isdir(repo_dir):
         result = subprocess.run(
             ["git", "rev-parse", "HEAD"],
             cwd=repo_dir, capture_output=True, text=True, timeout=10,
         )
-        if result.returncode == 0 and result.stdout.strip().startswith(sha[:7]):
+        if (
+            result.returncode == 0
+            and result.stdout.strip().startswith(sha[:7])
+            and git_is_clean(repo_dir)
+        ):
             return repo_dir
 
     if not os.path.isdir(repo_dir):
@@ -119,8 +139,11 @@ def build_description(entry: dict) -> str:
 
 
 def build_manifest(instances: list[dict], repos_dir: str,
-                    max_per_lang: int = 0) -> list[dict]:
+                    max_per_lang: int = 0,
+                    dataset_revision: str = "") -> list[dict]:
     """Clone repos, build manifest entries."""
+    if not is_immutable_revision(dataset_revision):
+        raise ValueError("dataset_revision must be a 40-character commit or sha256 digest")
     by_lang: dict[str, list[dict]] = {}
     for inst in instances:
         lang = inst["_lang"]
@@ -159,6 +182,11 @@ def build_manifest(instances: list[dict], repos_dir: str,
                 "project": f"{org}/{repo}",
                 "description": description,
                 "base_sha": base_sha,
+                "source_head": git_head(repo_path),
+                "source_digest": snapshot_digest(repo_path),
+                "dataset_revision": dataset_revision,
+                "manifest_schema": 2,
+                "ground_truth_validation": "unavailable",
                 "fix_patch_files": _extract_patch_files(entry.get("fix_patch", "")),
             })
 
@@ -184,12 +212,22 @@ def main():
     parser.add_argument("--output", default="eval/multiswe/manifest.jsonl", help="Output manifest")
     parser.add_argument("--languages", default="", help="Comma-separated languages (empty=all)")
     parser.add_argument("--max-per-lang", type=int, default=0, help="Max instances per language (0=all)")
+    parser.add_argument(
+        "--dataset-revision",
+        required=True,
+        help="40-character Hugging Face dataset commit or sha256 digest",
+    )
     args = parser.parse_args()
 
-    languages = [l.strip() for l in args.languages.split(",") if l.strip()] or None
+    languages = [language.strip() for language in args.languages.split(",") if language.strip()] or None
 
-    instances = download_dataset(languages)
-    manifest = build_manifest(instances, args.repos_dir, args.max_per_lang)
+    instances = download_dataset(languages, revision=args.dataset_revision)
+    manifest = build_manifest(
+        instances,
+        args.repos_dir,
+        args.max_per_lang,
+        dataset_revision=args.dataset_revision,
+    )
 
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
     with open(args.output, "w") as f:

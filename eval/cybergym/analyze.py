@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import json
 import os
 from collections import defaultdict
 
@@ -26,7 +27,7 @@ def compute_rq1(results: list[dict]) -> dict:
         by_key[key]["samples"] += 1
     for key, data in by_key.items():
         total = data["total_claims"]
-        data["hallucination_rate"] = round(data["total_refuted"] / total, 4) if total > 0 else 0.0
+        data["refutation_rate"] = round(data["total_refuted"] / total, 4) if total > 0 else 0.0
     return dict(by_key)
 
 
@@ -37,6 +38,10 @@ def compute_rq2(results: list[dict]) -> dict:
     ccv_false_refuted = 0
     for r in results:
         for m in r.get("gt_comparison", {}).get("results", []):
+            if m.get("status", "matched") != "matched":
+                continue
+            if m.get("expected") is None or m.get("actual") is None:
+                continue
             ccv_total += 1
             if m["expected"] == m["actual"]:
                 ccv_correct += 1
@@ -50,6 +55,14 @@ def compute_rq2(results: list[dict]) -> dict:
         "ccv_false_verified": ccv_false_verified,
         "ccv_false_refuted": ccv_false_refuted,
         "ccv_total": ccv_total,
+        "unmatched_predictions": sum(
+            r.get("gt_comparison", {}).get("unmatched_predictions", 0)
+            for r in results
+        ),
+        "unmatched_ground_truth": sum(
+            r.get("gt_comparison", {}).get("unmatched_ground_truth", 0)
+            for r in results
+        ),
     }
 
     judge_results = [r for r in results if "llm_judge" in r]
@@ -57,15 +70,29 @@ def compute_rq2(results: list[dict]) -> dict:
         j_total = sum(r["llm_judge"]["total_claims"] for r in judge_results)
         j_verified = sum(r["llm_judge"]["verified"] for r in judge_results)
         j_refuted = sum(r["llm_judge"]["refuted"] for r in judge_results)
-        ccv_claims_count = sum(r["ccv"]["total_claims"] for r in judge_results)
-
         disagree_ccv_right = 0
         disagree_judge_right = 0
-        both_wrong = 0
         for r in judge_results:
             ccv_claims = r["ccv"].get("claims", [])
             judge_claims = r["llm_judge"].get("claims", [])
-            for cc, jc in zip(ccv_claims, judge_claims):
+            judge_by_key = {
+                (
+                    item.get("claim_type"),
+                    json.dumps(item.get("parameters", {}), sort_keys=True),
+                ): item
+                for item in judge_claims
+            }
+            for cc in ccv_claims:
+                cc_type = cc.get("claim_type", cc.get("type"))
+                cc_params = cc.get("parameters", cc.get("params", {}))
+                jc = judge_by_key.get(
+                    (
+                        cc_type,
+                        json.dumps(cc_params, sort_keys=True),
+                    )
+                )
+                if jc is None:
+                    continue
                 if cc["verdict"] != jc["verdict"]:
                     if cc["verdict"] in ("VERIFIED", "REFUTED"):
                         disagree_ccv_right += 1
@@ -90,7 +117,13 @@ def compute_rq4(results: list[dict]) -> dict:
     )
     for r in results:
         for m in r.get("gt_comparison", {}).get("results", []):
-            ct = m["claim_type"]
+            ct = m.get("claim_type", "unknown")
+            if m.get("status", "matched") != "matched":
+                by_type[ct].setdefault("unmatched", 0)
+                by_type[ct]["unmatched"] += 1
+                continue
+            if m.get("expected") is None or m.get("actual") is None:
+                continue
             by_type[ct]["total"] += 1
             if m["expected"] == m["actual"]:
                 by_type[ct]["correct"] += 1
@@ -100,6 +133,7 @@ def compute_rq4(results: list[dict]) -> dict:
         result[ct] = {
             "accuracy": round(data["correct"] / data["total"], 4) if data["total"] > 0 else 0.0,
             "count": data["total"],
+            "unmatched": data.get("unmatched", 0),
             "avg_confidence": round(
                 sum(data["confidences"]) / len(data["confidences"]), 4
             ) if data["confidences"] else 0.0,
@@ -107,7 +141,15 @@ def compute_rq4(results: list[dict]) -> dict:
     return result
 
 
-def run_analyze(results_dir: str, output_dir: str) -> None:
+def run_analyze(
+    results_dir: str,
+    output_dir: str,
+    manifest_path: str = "eval/cybergym/manifest.jsonl",
+    allow_invalid: bool = False,
+) -> None:
+    from eval.audit_results import audit_cybergym
+
+    audit = audit_cybergym(manifest_path, results_dir)
     all_results: list[dict] = []
     for model_dir in sorted(os.listdir(results_dir)):
         model_path = os.path.join(results_dir, model_dir)
@@ -125,10 +167,30 @@ def run_analyze(results_dir: str, output_dir: str) -> None:
                     all_results.append(data)
 
     os.makedirs(output_dir, exist_ok=True)
+    if not audit["valid_for_headline_accuracy"] and not allow_invalid:
+        summary = {
+            "valid_for_headline_accuracy": False,
+            "audit": audit,
+            "rq1": {},
+            "rq2": {},
+            "rq4": {},
+            "total_results": 0,
+        }
+        save_json(summary, os.path.join(output_dir, "summary.json"))
+        logger.warning("Refusing to analyze invalid evaluation artifacts")
+        return
+
     rq1 = compute_rq1(all_results)
     rq2 = compute_rq2(all_results)
     rq4 = compute_rq4(all_results)
 
-    summary = {"rq1": rq1, "rq2": rq2, "rq4": rq4, "total_results": len(all_results)}
+    summary = {
+        "valid_for_headline_accuracy": audit["valid_for_headline_accuracy"],
+        "audit": audit,
+        "rq1": rq1,
+        "rq2": rq2,
+        "rq4": rq4,
+        "total_results": len(all_results),
+    }
     save_json(summary, os.path.join(output_dir, "summary.json"))
     logger.info("Analysis complete: %d results, written to %s", len(all_results), output_dir)

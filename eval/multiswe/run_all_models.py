@@ -11,7 +11,13 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 from eval.cybergym.utils import load_jsonl
-from eval.multiswe.run_eval import generate_reasoning, REASONING_DIR, RESULTS_DIR, EXTRACTION_LLM
+from eval.multiswe.run_eval import (
+    _base_revision_matches,
+    generate_reasoning,
+    REASONING_DIR,
+    RESULTS_DIR,
+    EXTRACTION_LLM,
+)
 from eval.cybergym.verify import verify_one
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(message)s")
@@ -29,6 +35,11 @@ def main():
         ok, fail = 0, 0
         for i, entry in enumerate(manifest):
             vid = entry["vuln_id"]
+
+            if not _base_revision_matches(entry):
+                print(f"Skipping {vid}: checkout does not match base_sha", flush=True)
+                fail += 1
+                continue
 
             reasoning_result = generate_reasoning(entry, model_name)
             if not reasoning_result:

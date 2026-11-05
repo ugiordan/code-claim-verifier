@@ -20,10 +20,12 @@ import time
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
+from code_claim_verifier.security import safe_path
 from eval.cybergym.utils import load_jsonl, save_json
-from eval.cybergym.models import get_model
+from eval.cybergym.models import get_model, get_model_provenance
 from eval.cybergym.prompts import build_reasoning_prompt
 from eval.cybergym.verify import verify_one
+from eval.provenance import git_head, git_is_clean, snapshot_digest, text_digest
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -33,16 +35,34 @@ RESULTS_DIR = "eval/multiswe/results"
 EXTRACTION_LLM = "claude-sonnet-4"
 
 
-def generate_reasoning(entry: dict, model_name: str) -> dict | None:
+def _base_revision_matches(entry: dict) -> bool:
+    expected = entry.get("base_sha", "")
+    actual = git_head(entry.get("source_root", ""))
+    return bool(
+        expected and actual and actual.startswith(expected[:12])
+        and git_is_clean(entry.get("source_root", ""))
+    )
+
+
+def _source_snapshot_matches(entry: dict) -> bool:
+    expected = entry.get("source_digest", "")
+    actual = snapshot_digest(entry.get("source_root", ""))
+    return bool(expected and actual == expected)
+
+
+def generate_reasoning(
+    entry: dict,
+    model_name: str,
+    include_patch_files: bool = False,
+) -> dict | None:
     """Generate LLM reasoning about a bug."""
     vid = entry["vuln_id"]
     out_path = os.path.join(REASONING_DIR, model_name, "informed", f"{vid}.json")
 
-    if os.path.isfile(out_path):
-        with open(out_path) as f:
-            return json.load(f)
+    if not _source_snapshot_matches(entry):
+        logger.error("Skipping %s: source snapshot does not match the manifest", vid)
+        return None
 
-    llm = get_model(model_name)
     system = build_reasoning_prompt(
         condition="informed",
         language=entry.get("language", "unknown"),
@@ -51,8 +71,29 @@ def generate_reasoning(entry: dict, model_name: str) -> dict | None:
     )
 
     source_root = entry["source_root"]
-    source_context = _read_source_context(source_root, entry.get("fix_patch_files", []))
+    patch_files = entry.get("fix_patch_files", []) if include_patch_files else []
+    source_context = _read_source_context(source_root, patch_files)
     user = f"Source code:\n{source_context}\n\nProvide your analysis."
+    provenance = {
+        "manifest_schema": entry.get("manifest_schema"),
+        "dataset_revision": entry.get("dataset_revision"),
+        "base_sha": entry.get("base_sha"),
+        "source_digest": entry.get("source_digest"),
+        "source_head": git_head(source_root),
+        "system_prompt_digest": text_digest(system),
+        "user_prompt_digest": text_digest(user),
+        "reasoning_version": "multiswe-reasoning-v1",
+        "include_patch_files": include_patch_files,
+        **get_model_provenance(model_name),
+    }
+
+    if os.path.isfile(out_path):
+        with open(out_path) as f:
+            existing = json.load(f)
+        if existing.get("provenance") == provenance:
+            return existing
+
+    llm = get_model(model_name)
 
     try:
         reasoning = llm(system, user)
@@ -66,6 +107,7 @@ def generate_reasoning(entry: dict, model_name: str) -> dict | None:
         "condition": "informed",
         "reasoning": reasoning,
         "reasoning_length": len(reasoning),
+        "provenance": provenance,
     }
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -80,8 +122,8 @@ def _read_source_context(source_root: str, patch_files: list[str],
     total = 0
 
     for rel_path in patch_files:
-        full_path = os.path.join(source_root, rel_path)
-        if os.path.isfile(full_path):
+        full_path = safe_path(rel_path, source_root)
+        if full_path and os.path.isfile(full_path):
             try:
                 with open(full_path, errors="replace") as f:
                     content = f.read(5000)
@@ -122,11 +164,16 @@ def main():
     parser.add_argument("--languages", default="", help="Filter by languages (comma-separated)")
     parser.add_argument("--extraction-llm", default=EXTRACTION_LLM, help="LLM for claim extraction")
     parser.add_argument("--max", type=int, default=0, help="Max instances to process")
+    parser.add_argument(
+        "--include-patch-files",
+        action="store_true",
+        help="Include files changed by the fix patch; disabled for leakage-free evaluation",
+    )
     args = parser.parse_args()
 
     manifest = load_jsonl(args.manifest)
     if args.languages:
-        langs = {l.strip() for l in args.languages.split(",")}
+        langs = {language.strip() for language in args.languages.split(",")}
         manifest = [e for e in manifest if e.get("language") in langs]
     if args.max > 0:
         manifest = manifest[:args.max]
@@ -139,7 +186,20 @@ def main():
     for i, entry in enumerate(manifest):
         vid = entry["vuln_id"]
 
-        reasoning_result = generate_reasoning(entry, args.model)
+        if not _base_revision_matches(entry):
+            logger.error("Skipping %s: checkout does not match base_sha", vid)
+            fail += 1
+            continue
+        if not _source_snapshot_matches(entry):
+            logger.error("Skipping %s: checkout does not match source_digest", vid)
+            fail += 1
+            continue
+
+        reasoning_result = generate_reasoning(
+            entry,
+            args.model,
+            include_patch_files=args.include_patch_files,
+        )
         if not reasoning_result:
             fail += 1
             continue

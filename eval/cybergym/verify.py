@@ -4,12 +4,18 @@ import logging
 import os
 
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
-from code_claim_verifier.extractor import extract_claims
+from code_claim_verifier.extractor import (
+    EXTRACTION_VERSION,
+    build_extraction_prompts,
+    extract_claims,
+)
 from code_claim_verifier.engine import VerificationEngine
 from code_claim_verifier.calibrator import calibrate
-from eval.cybergym.models import get_model
+from code_claim_verifier.security import safe_path
+from eval.cybergym.models import get_model, get_model_provenance
 from eval.cybergym.prompts import build_judge_prompt
 from eval.cybergym.utils import load_jsonl, load_json, save_json, normalize_claim_path
+from eval.provenance import snapshot_digest, text_digest
 
 logger = logging.getLogger(__name__)
 
@@ -23,6 +29,62 @@ def run_ccv_verification(claims: list[TypedClaim], source_root: str,
 
 def _normalize_path(p: str) -> str:
     return normalize_claim_path(p) if isinstance(p, str) else p
+
+
+_PATH_CLAIM_TYPES = frozenset({
+    "FILE_EXISTS", "LINE_CONTENT", "FILE_CLASSIFICATION",
+    "GENERATED_OR_VENDORED",
+})
+_FILE_SCOPED_CLAIM_TYPES = frozenset({
+    "FUNCTION_EXISTS", "IMPORT_EXISTS", "MITIGATION_EXISTS",
+    "DEFAULT_VALUE",
+})
+
+
+def _canonicalize_parameters(claim_type: str, parameters: dict) -> dict:
+    """Normalize extractor aliases into the verifier parameter schema.
+
+    Canonicalization is deliberately narrow. Descriptive fields such as
+    ``content_description`` are not converted into exact source content.
+    """
+    normalized = dict(parameters or {})
+    if claim_type in _PATH_CLAIM_TYPES:
+        if "path" not in normalized:
+            for alias in ("file", "filename"):
+                if alias in normalized:
+                    normalized["path"] = normalized[alias]
+                    break
+        for alias in ("file", "filename"):
+            normalized.pop(alias, None)
+    elif claim_type in _FILE_SCOPED_CLAIM_TYPES:
+        if "file" not in normalized:
+            for alias in ("path", "filename"):
+                if alias in normalized:
+                    normalized["file"] = normalized[alias]
+                    break
+        for alias in ("path", "filename"):
+            normalized.pop(alias, None)
+    if claim_type == "LINE_CONTENT" and "content" not in normalized:
+        if "expected_content" in normalized:
+            normalized["content"] = normalized["expected_content"]
+        elif "expected" in normalized and isinstance(normalized["expected"], str):
+            normalized["content"] = normalized["expected"]
+    if claim_type == "LINE_CONTENT":
+        normalized.pop("expected_content", None)
+        if isinstance(normalized.get("expected"), str):
+            normalized.pop("expected", None)
+    if claim_type == "FILE_CLASSIFICATION":
+        if "category" not in normalized and "classification" in normalized:
+            normalized["category"] = normalized["classification"]
+        normalized.pop("classification", None)
+    if claim_type == "DEPENDENCY_TYPE":
+        if "dep_type" not in normalized and "type" in normalized:
+            normalized["dep_type"] = normalized["type"]
+        normalized.pop("type", None)
+    for key in ("path", "file"):
+        if isinstance(normalized.get(key), str):
+            normalized[key] = _normalize_path(normalized[key])
+    return normalized
 
 
 def _import_name_match(gt_module: str, vc_params: dict) -> bool:
@@ -56,6 +118,8 @@ def _import_name_match(gt_module: str, vc_params: dict) -> bool:
 
 
 def _exact_match(gt_params: dict, vc_params: dict, claim_type: str) -> bool:
+    vc_params = _canonicalize_parameters(claim_type, vc_params)
+    gt_params = _canonicalize_parameters(claim_type, gt_params)
     for key, value in gt_params.items():
         vc_value = vc_params.get(key)
         if vc_value is None and key == "file":
@@ -136,6 +200,75 @@ def match_claims_to_gt(verified: list[VerifiedClaim],
     return matched
 
 
+def compare_claims_to_gt(verified: list[VerifiedClaim],
+                         gt_claims: list[dict]) -> list[dict]:
+    """Compare every real claim and every GT claim without dropping misses.
+
+    Matched claims are suitable for verifier accuracy. Unmatched predictions
+    are extraction mismatches, not verifier errors, and unmatched GT entries
+    are missed extractions. Keeping both categories visible prevents a
+    matching heuristic from manufacturing a perfect precision score.
+    """
+    real_claims = [vc for vc in verified if not vc.synthesized]
+    used_gt: set[int] = set()
+    comparisons: list[dict] = []
+
+    for vc in real_claims:
+        matched_index = None
+        for index, gt in enumerate(gt_claims):
+            if index in used_gt or gt.get("claim_type") != vc.claim.claim_type:
+                continue
+            if _exact_match(
+                gt.get("parameters", {}), vc.claim.parameters, vc.claim.claim_type
+            ):
+                matched_index = index
+                used_gt.add(index)
+                break
+
+        if matched_index is None:
+            comparisons.append({
+                "claim_type": vc.claim.claim_type,
+                "parameters": _canonicalize_parameters(
+                    vc.claim.claim_type, vc.claim.parameters
+                ),
+                "expected": None,
+                "actual": vc.verdict,
+                "confidence": vc.method_confidence,
+                "status": "unmatched_prediction",
+            })
+            continue
+
+        gt = gt_claims[matched_index]
+        comparisons.append({
+            "claim_type": vc.claim.claim_type,
+            "parameters": _canonicalize_parameters(
+                vc.claim.claim_type, vc.claim.parameters
+            ),
+            "expected": gt.get("expected_verdict"),
+            "actual": vc.verdict,
+            "confidence": vc.method_confidence,
+            "gt_tier": gt.get("gt_tier", "unknown"),
+            "status": "matched",
+        })
+
+    for index, gt in enumerate(gt_claims):
+        if index in used_gt:
+            continue
+        comparisons.append({
+            "claim_type": gt.get("claim_type", "unknown"),
+            "parameters": _canonicalize_parameters(
+                gt.get("claim_type", ""), gt.get("parameters", {})
+            ),
+            "expected": gt.get("expected_verdict"),
+            "actual": None,
+            "confidence": None,
+            "gt_tier": gt.get("gt_tier", "unknown"),
+            "status": "unmatched_ground_truth",
+        })
+
+    return comparisons
+
+
 def _build_judge_context(claim: TypedClaim, source_root: str) -> str:
     """Build the context a judge sees for a claim, equivalent to what CCV uses."""
     claim_type = claim.claim_type
@@ -143,7 +276,9 @@ def _build_judge_context(claim: TypedClaim, source_root: str) -> str:
 
     if claim_type == "FILE_EXISTS":
         path = params.get("path", params.get("file", ""))
-        full = os.path.join(source_root, path)
+        full = safe_path(path, source_root)
+        if full is None:
+            return f"File lookup result: invalid path '{path}'"
         exists = os.path.isfile(full)
         return f"File lookup result: os.path.isfile('{path}') = {exists}"
 
@@ -151,8 +286,8 @@ def _build_judge_context(claim: TypedClaim, source_root: str) -> str:
         file_param = params.get("file", params.get("path", ""))
         name = params.get("name", "")
         if file_param:
-            full = os.path.join(source_root, file_param)
-            if os.path.isfile(full):
+            full = safe_path(file_param, source_root)
+            if full and os.path.isfile(full):
                 try:
                     with open(full, "r", encoding="utf-8", errors="replace") as f:
                         content = f.read(8000)
@@ -191,8 +326,8 @@ def _build_judge_context(claim: TypedClaim, source_root: str) -> str:
     if claim_type == "LINE_CONTENT":
         path = params.get("file", params.get("path", ""))
         line_num = params.get("line", 0)
-        full = os.path.join(source_root, path)
-        if os.path.isfile(full):
+        full = safe_path(path, source_root)
+        if full and os.path.isfile(full):
             try:
                 with open(full, "r", encoding="utf-8", errors="replace") as f:
                     lines = f.readlines()
@@ -206,8 +341,8 @@ def _build_judge_context(claim: TypedClaim, source_root: str) -> str:
     if claim_type in ("IMPORT_EXISTS", "PACKAGE_VERSION"):
         file_param = params.get("file", "")
         if file_param:
-            full = os.path.join(source_root, file_param)
-            if os.path.isfile(full):
+            full = safe_path(file_param, source_root)
+            if full and os.path.isfile(full):
                 try:
                     with open(full, "r", encoding="utf-8", errors="replace") as f:
                         return f"File content of {file_param}:\n{f.read(8000)}"
@@ -249,16 +384,18 @@ def _parse_judge_verdict(response: str) -> str:
 
 def _normalize_claims(claims: list[TypedClaim]) -> list[TypedClaim]:
     for claim in claims:
-        for key in ("path", "file"):
-            if key in claim.parameters and isinstance(claim.parameters[key], str):
-                claim.parameters[key] = normalize_claim_path(claim.parameters[key])
+        claim.parameters = _canonicalize_parameters(
+            claim.claim_type, claim.parameters
+        )
     return claims
 
 
 def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                extraction_llm: str = "claude-sonnet-4",
                with_judge: bool = False,
-               judge_model: str = "gpt-4o") -> dict | None:
+               with_cymbal: bool = False,
+               judge_model: str = "gpt-4o",
+               force: bool = False) -> dict | None:
     try:
         vuln_id = entry["vuln_id"]
         reasoning_data = load_json(reasoning_path)
@@ -273,12 +410,53 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
         condition = reasoning_data.get("condition", "informed")
         out_path = os.path.join(output_dir, model_name, condition, f"{vuln_id}.json")
 
-        existing = load_json(out_path)
-        if existing is not None:
-            return existing
+        source_root = entry["source_root"]
+        expected_source_digest = entry.get("source_digest", "")
+        if not expected_source_digest or snapshot_digest(source_root) != expected_source_digest:
+            logger.error("Skipping %s: source snapshot does not match the manifest", vuln_id)
+            return None
+
+        reasoning_provenance = reasoning_data.get("provenance", {})
+        if reasoning_provenance.get("source_digest") not in (None, expected_source_digest):
+            logger.error("Skipping %s: reasoning source digest does not match the manifest", vuln_id)
+            return None
 
         reasoning = reasoning_data["reasoning"]
-        source_root = entry["source_root"]
+        extraction_system, extraction_user = build_extraction_prompts(reasoning, {})
+        extraction_provenance = {
+            **get_model_provenance(extraction_llm),
+            "extraction_version": EXTRACTION_VERSION,
+            "system_prompt_digest": text_digest(extraction_system),
+            "user_prompt_digest": text_digest(extraction_user),
+        }
+        expected_provenance = {
+            "manifest_schema": entry.get("manifest_schema"),
+            "dataset_revision": entry.get("dataset_revision"),
+            "source_digest": expected_source_digest,
+            "source_head": reasoning_provenance.get("source_head"),
+            "include_patch_files": reasoning_provenance.get("include_patch_files", False),
+            "provider": reasoning_provenance.get("provider"),
+            "resolved_model": reasoning_provenance.get("resolved_model"),
+            "max_tokens": reasoning_provenance.get("max_tokens"),
+            "temperature": reasoning_provenance.get("temperature"),
+            "config_version": reasoning_provenance.get("config_version"),
+            "extraction": extraction_provenance,
+            "reasoning_provenance": reasoning_provenance,
+            "with_judge": with_judge,
+            "judge_model": judge_model if with_judge else None,
+            "with_cymbal": with_cymbal,
+        }
+
+        existing = load_json(out_path)
+        existing_provenance = existing.get("provenance", {}) if existing else {}
+        if (
+            existing is not None
+            and not force
+            and all(existing_provenance.get(key) == value
+                    for key, value in expected_provenance.items())
+        ):
+            return existing
+
         language = entry.get("language", "c")
 
         extractor_llm = get_model(extraction_llm)
@@ -286,6 +464,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
         claims = _normalize_claims(claims)
 
         if not claims:
+            missing_gt = compare_claims_to_gt([], entry.get("gt_claims", []))
             result = {
                 "vuln_id": vuln_id, "model": model_name, "condition": condition,
                 "reasoning_length": len(reasoning),
@@ -295,7 +474,17 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                     "unverifiable": 0, "verification_rate": 0.0,
                     "action": "NO_CHANGE", "claims": [],
                 },
-                "gt_comparison": {"matched": 0, "results": []},
+                "provenance": {
+                    **expected_provenance,
+                    "extraction_model": extraction_llm,
+                    "verification_backend": "none",
+                },
+                "gt_comparison": {
+                    "matched": 0,
+                    "unmatched_predictions": 0,
+                    "unmatched_ground_truth": len(missing_gt),
+                    "results": missing_gt,
+                },
             }
             save_json(result, out_path)
             return result
@@ -306,13 +495,17 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             from code_claim_verifier.cpg_backend import load_quick_index
             cpg = load_quick_index(qi_path)
 
-        from code_claim_verifier.cymbal_backend import load_cymbal
-        cymbal = load_cymbal(source_root)
+        cymbal = None
+        if with_cymbal:
+            from code_claim_verifier.cymbal_backend import load_cymbal
+            cymbal = load_cymbal(source_root)
         verified = run_ccv_verification(claims, source_root, language,
                                         cymbal_backend=cymbal, cpg=cpg)
         report = calibrate(verified)
 
-        gt_comparison = match_claims_to_gt(verified, entry.get("gt_claims", []))
+        gt_comparison = compare_claims_to_gt(
+            verified, entry.get("gt_claims", [])
+        )
 
         ccv_result = {
             "total_claims": report.total_claims,
@@ -341,8 +534,23 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             "reasoning_length": len(reasoning),
             "reasoning_truncated": len(reasoning) > 8000,
             "ccv": ccv_result,
+            "provenance": {
+                **expected_provenance,
+                "extraction_model": extraction_llm,
+                "verification_backend": "cpg+grep" if cpg else "grep",
+            },
             "gt_comparison": {
-                "matched": len(gt_comparison),
+                "matched": sum(
+                    1 for item in gt_comparison if item["status"] == "matched"
+                ),
+                "unmatched_predictions": sum(
+                    1 for item in gt_comparison
+                    if item["status"] == "unmatched_prediction"
+                ),
+                "unmatched_ground_truth": sum(
+                    1 for item in gt_comparison
+                    if item["status"] == "unmatched_ground_truth"
+                ),
                 "results": gt_comparison,
             },
         }
@@ -371,7 +579,9 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
 
 def run_verify(manifest_path: str, reasoning_dir: str, output_dir: str,
                extraction_llm: str = "claude-sonnet-4",
-               with_judge: bool = False) -> None:
+               with_judge: bool = False,
+               with_cymbal: bool = False,
+               force: bool = False) -> None:
     manifest = load_jsonl(manifest_path)
     manifest_by_id = {e["vuln_id"]: e for e in manifest}
 
@@ -394,6 +604,8 @@ def run_verify(manifest_path: str, reasoning_dir: str, output_dir: str,
                 try:
                     verify_one(entry, reasoning_path, output_dir,
                                extraction_llm=extraction_llm,
-                               with_judge=with_judge)
+                               with_judge=with_judge,
+                               with_cymbal=with_cymbal,
+                               force=force)
                 except Exception:
                     logger.exception("Unexpected error processing %s", fname)

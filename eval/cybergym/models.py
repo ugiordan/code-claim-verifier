@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 LLMFunction = Callable[[str, str], str]
 
 MAX_TOKENS = int(os.environ.get("CCV_MAX_TOKENS", "8192"))
+MODEL_CONFIG_VERSION = "model-config-v1"
 
 
 
@@ -161,7 +162,8 @@ def make_models_corp(model_id: str, registry_name: str = "") -> LLMFunction:
     if not base_url.endswith("/v1"):
         base_url = base_url.rstrip("/") + "/v1"
 
-    client = openai.OpenAI(base_url=base_url, api_key=api_key)
+    client = openai.OpenAI(base_url=base_url, api_key=api_key,
+                          timeout=httpx.Timeout(600.0, connect=15.0))
 
     def call(system: str, user: str) -> str:
         response = client.chat.completions.create(
@@ -258,3 +260,18 @@ def get_model(name: str) -> LLMFunction:
         return make_models_corp(config["model"], registry_name=name)
     else:
         raise ValueError(f"Unknown factory: {config['factory']}")
+
+
+def get_model_provenance(name: str) -> dict[str, object]:
+    """Return non-secret, resolved model configuration for result metadata."""
+    if name not in MODEL_REGISTRY:
+        raise ValueError(f"Unknown model: {name}. Available: {list(MODEL_REGISTRY.keys())}")
+    config = MODEL_REGISTRY[name]
+    return {
+        "registry_name": name,
+        "provider": config["factory"],
+        "resolved_model": config["model"],
+        "max_tokens": MAX_TOKENS,
+        "temperature": 0,
+        "config_version": MODEL_CONFIG_VERSION,
+    }
