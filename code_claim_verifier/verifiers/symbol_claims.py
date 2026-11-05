@@ -6,7 +6,7 @@ import re
 from code_claim_verifier.grep import grep as _grep
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.language import get_function_pattern, detect_language
-from code_claim_verifier.security import safe_path
+from code_claim_verifier.security import is_concrete_symbol_name, safe_path
 
 
 def _strip_qualifier(name: str) -> str:
@@ -22,15 +22,25 @@ def _strip_qualifier(name: str) -> str:
 
 def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
-    if not name:
+    if not is_concrete_symbol_name(name):
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-                             evidence="No function name specified", method="grep_function_def")
+                             evidence=f"Invalid or descriptive function name: {name!r}",
+                             method="grep_function_def")
     file_param = claim.parameters.get("file", "")
 
     if file_param:
         lang = detect_language(file_param)
         resolved = safe_path(file_param, repo_path)
-        search_path = resolved if resolved and os.path.isfile(resolved) else repo_path
+        if resolved is None or not os.path.isfile(resolved):
+            return VerifiedClaim(
+                claim=claim, verdict="REFUTED", method_confidence=0.99,
+                evidence=(f"Invalid target file path: {file_param}"
+                          if resolved is None else f"Target file not found: {file_param}"),
+                method="file_scope",
+            )
+        if lang == "unknown":
+            lang = language
+        search_path = resolved
     else:
         lang = language
         search_path = repo_path
@@ -57,10 +67,16 @@ def verify_function_called(claim: TypedClaim, repo_path: str, language: str) -> 
     name = (claim.parameters.get("name", "")
             or claim.parameters.get("callee", "")
             or claim.parameters.get("function", ""))
-    if not name:
+    if not is_concrete_symbol_name(name):
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-                             evidence="No function name specified", method="grep_call")
+                             evidence=f"Invalid or descriptive function name: {name!r}",
+                             method="grep_call")
     expected = claim.parameters.get("expected", True)
+    if not isinstance(expected, bool):
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Invalid expected polarity: {expected!r}", method="grep_call",
+        )
 
     call_pattern = re.escape(name) + r"\s*\("
     matches = _grep(call_pattern, repo_path)
@@ -83,10 +99,16 @@ def verify_function_called(claim: TypedClaim, repo_path: str, language: str) -> 
 
 def verify_has_callers(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
-    if not name:
+    if not is_concrete_symbol_name(name):
         return VerifiedClaim(claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-                             evidence="No function name specified", method="grep_callers")
+                             evidence=f"Invalid or descriptive function name: {name!r}",
+                             method="grep_callers")
     expected = claim.parameters.get("expected", True)
+    if not isinstance(expected, bool):
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Invalid expected polarity: {expected!r}", method="grep_callers",
+        )
 
     call_pattern = re.escape(name) + r"\s*\("
     matches = _grep(call_pattern, repo_path)

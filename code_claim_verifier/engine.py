@@ -1,18 +1,56 @@
 from __future__ import annotations
 
 import dataclasses
+import os
 from collections import defaultdict, deque
 from typing import Callable
 
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.verifiers import VERIFIER_REGISTRY
 from code_claim_verifier import grep as grep_module
-from code_claim_verifier.cpg_backend import CpgBackend, load_cpg
+from code_claim_verifier.cpg_backend import CpgBackend
 from code_claim_verifier.cymbal_backend import CymbalBackend
+from code_claim_verifier.security import (
+    is_concrete_symbol_name,
+    is_concrete_search_pattern,
+    is_file_location,
+    safe_path,
+    split_file_location,
+)
 
 VerifierFunction = Callable[[TypedClaim, str, str], VerifiedClaim]
 
 _FREEZE_DEPTH_CAP = 20
+
+
+def _existing_repo_file(path: object, repo_path: str) -> str | None:
+    if not isinstance(path, str) or not path:
+        return None
+    resolved = safe_path(path, repo_path)
+    if resolved and os.path.isfile(resolved):
+        return resolved
+    return None
+
+
+def _cpg_file_matches(node_path: object, requested_path: str, repo_path: str) -> bool:
+    if not isinstance(node_path, str) or not node_path:
+        return False
+    if os.path.isabs(node_path):
+        node_path = os.path.relpath(node_path, os.path.realpath(repo_path))
+    node_resolved = safe_path(node_path, repo_path)
+    requested_resolved = safe_path(requested_path, repo_path)
+    return bool(node_resolved and requested_resolved and node_resolved == requested_resolved)
+
+
+def _entry_point_file(params: dict) -> object | None:
+    file_param = params.get("file", "")
+    if file_param is not None and file_param != "":
+        return file_param
+    location = params.get("location", "")
+    if is_file_location(location):
+        parts = split_file_location(location)
+        return parts[0] if parts else None
+    return None
 
 
 def _freeze(value: object, _depth: int = 0) -> object:
@@ -245,6 +283,8 @@ class VerificationEngine:
                 for claim in claim_list:
                     if claim.claim_type != rule_dep:
                         continue
+                    if not isinstance(claim.parameters, dict):
+                        continue
                     param_value = claim.parameters.get(src_param)
                     if param_value is None:
                         continue
@@ -300,7 +340,11 @@ class VerificationEngine:
     ) -> TypedClaim | None:
         """Linear search for a claim matching the prerequisite criteria."""
         for c in claims:
-            if c.claim_type == prereq_type and c.parameters.get(param_name) == param_value:
+            if (
+                c.claim_type == prereq_type
+                and isinstance(c.parameters, dict)
+                and c.parameters.get(param_name) == param_value
+            ):
                 return c
         return None
 
@@ -396,13 +440,18 @@ class VerificationEngine:
         self, claim: TypedClaim, repo_path: str, language: str
     ) -> VerifiedClaim:
         """Dispatch to CPG backend if available, else registry with error handling."""
+        if not isinstance(claim.parameters, dict):
+            return VerifiedClaim(
+                claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                evidence="Claim parameters must be an object", method="schema",
+            )
         if self.cpg:
-            cpg_result = self._try_cpg_verify(claim)
+            cpg_result = self._try_cpg_verify(claim, repo_path)
             if cpg_result:
                 return cpg_result
 
         if self.cymbal:
-            cymbal_result = self._try_cymbal_verify(claim)
+            cymbal_result = self._try_cymbal_verify(claim, repo_path)
             if cymbal_result:
                 return cymbal_result
 
@@ -428,7 +477,7 @@ class VerificationEngine:
                 error=f"{type(e).__name__}: {str(e)[:200]}",
             )
 
-    def _try_cpg_verify(self, claim: TypedClaim) -> VerifiedClaim | None:
+    def _try_cpg_verify(self, claim: TypedClaim, repo_path: str) -> VerifiedClaim | None:
         """Try to verify a claim using the CPG. Returns None to fall back to grep."""
         cpg = self.cpg
         ct = claim.claim_type
@@ -437,8 +486,24 @@ class VerificationEngine:
         if ct == "FUNCTION_EXISTS":
             name = params.get("name", "")
             file = params.get("file", params.get("path", ""))
+            if not name:
+                return None
+            if not is_concrete_symbol_name(name):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid or descriptive function name: {name!r}",
+                    method="cpg_function",
+                )
+            if file:
+                requested_file = _existing_repo_file(file, repo_path)
+                if requested_file is None:
+                    return VerifiedClaim(
+                        claim=claim, verdict="REFUTED", method_confidence=0.99,
+                        evidence=f"Explicit target file not found or invalid: {file}",
+                        method="file_scope",
+                    )
             node = cpg.function_exists(name, file or None)
-            if node:
+            if node and (not file or _cpg_file_matches(node.get("file"), file, repo_path)):
                 return VerifiedClaim(
                     claim=claim, verdict="VERIFIED", method_confidence=0.95,
                     evidence=f"CPG: {node['name']} at {node['file']}:{node['line']}",
@@ -449,6 +514,18 @@ class VerificationEngine:
         if ct in ("FUNCTION_CALLED", "HAS_CALLERS"):
             name = params.get("name", "")
             expected = params.get("expected", True)
+            if not isinstance(expected, bool):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid expected polarity: {expected!r}",
+                    method="cpg_callers",
+                )
+            if not is_concrete_symbol_name(name):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid or descriptive function name: {name!r}",
+                    method="cpg_callers",
+                )
             callers = cpg.function_callers(name)
             if callers:
                 conf = max(cpg.get_confidence_for_edge(c) for c in callers)
@@ -469,16 +546,35 @@ class VerificationEngine:
                 chain = [caller, callee]
             if len(chain) < 2:
                 return None
+            if not all(is_concrete_symbol_name(item) for item in chain):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Call chain contains a descriptive or invalid symbol: {chain}",
+                    method="cpg_call_chain",
+                )
             success, evidence = cpg.call_chain_exists(chain)
+            if not success:
+                return None
             return VerifiedClaim(
                 claim=claim,
-                verdict="VERIFIED" if success else "REFUTED",
+                verdict="VERIFIED",
                 method_confidence=0.85,
                 evidence=f"CPG chain: {'; '.join(evidence)}",
                 method="cpg_call_chain",
             )
 
         if ct == "ENTRY_POINT":
+            explicit_file = _entry_point_file(params)
+            if explicit_file is not None:
+                if _existing_repo_file(explicit_file, repo_path) is None:
+                    return VerifiedClaim(
+                        claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                        evidence=f"Explicit entry-point file not found or invalid: {explicit_file}",
+                        method="file_scope",
+                    )
+                # The grep verifier applies the exact file and optional line
+                # scope. The CPG endpoint query has no equivalent scope.
+                return None
             endpoints = cpg.http_endpoints()
             location = params.get("location", "")
             for ep in endpoints:
@@ -492,6 +588,45 @@ class VerificationEngine:
 
         if ct == "ABSENCE":
             pattern = params.get("pattern", "")
+            if not is_concrete_search_pattern(pattern):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence="Absence claim does not contain a concrete source pattern",
+                    method="cpg_absence",
+                )
+            raw_scope = params.get("scope", "repo")
+            if not isinstance(raw_scope, str):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid absence scope: {raw_scope}", method="cpg_absence",
+                )
+            scope = raw_scope.lower()
+            if scope == "file":
+                file_path = params.get("file", "")
+                if _existing_repo_file(file_path, repo_path) is None:
+                    return VerifiedClaim(
+                        claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                        evidence=f"Invalid or missing absence file scope: {file_path}",
+                        method="cpg_absence",
+                    )
+                return None
+            if scope == "directory":
+                directory = params.get("directory", "")
+                resolved = safe_path(directory, repo_path)
+                if resolved is None or not os.path.isdir(resolved):
+                    return VerifiedClaim(
+                        claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                        evidence=f"Invalid or missing absence directory scope: {directory}",
+                        method="cpg_absence",
+                    )
+                return None
+            if scope != "repo":
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Unsupported absence scope: {raw_scope}", method="cpg_absence",
+                )
+            if not is_concrete_symbol_name(pattern):
+                return None
             if pattern and not cpg.symbol_exists(pattern):
                 return VerifiedClaim(
                     claim=claim, verdict="VERIFIED", method_confidence=0.90,
@@ -511,7 +646,9 @@ class VerificationEngine:
             expected = params.get("version", "")
             actual = cpg.get_dependency_version(package)
             if actual is not None:
-                match = actual == expected or expected in actual
+                actual_normalized = str(actual).strip().removeprefix("v")
+                expected_normalized = str(expected).strip().removeprefix("v")
+                match = bool(expected_normalized) and actual_normalized == expected_normalized
                 return VerifiedClaim(
                     claim=claim,
                     verdict="VERIFIED" if match else "REFUTED",
@@ -524,11 +661,18 @@ class VerificationEngine:
         if ct == "DEFAULT_VALUE":
             variable = params.get("variable", "")
             file_param = params.get("file", "")
+            if file_param and _existing_repo_file(file_param, repo_path) is None:
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid or missing default-value file scope: {file_param}",
+                    method="file_scope",
+                )
             node = cpg.variable_exists(variable, file_param or None)
             if node:
                 return VerifiedClaim(
-                    claim=claim, verdict="VERIFIED", method_confidence=0.70,
-                    evidence=f"CPG: variable '{variable}' at {node['file']}:{node['line']}",
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=(f"CPG found variable '{variable}', but provides no "
+                              "behavior-specific default evidence"),
                     method="cpg_variable",
                 )
             return None
@@ -536,6 +680,11 @@ class VerificationEngine:
         if ct == "FILE_CLASSIFICATION":
             path = params.get("file", params.get("path", ""))
             category = params.get("category", "").lower()
+            if _existing_repo_file(path, repo_path) is None:
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"File not found or invalid: {path}", method="file_scope",
+                )
             if category in ("test", "production") and path:
                 is_test = cpg.file_is_test(path)
                 if is_test is not None:
@@ -559,6 +708,19 @@ class VerificationEngine:
 
         if ct == "IMPORT_EXISTS":
             module = params.get("module", "")
+            file = params.get("file", "")
+            if not module:
+                return None
+            if file:
+                if _existing_repo_file(file, repo_path) is None:
+                    return VerifiedClaim(
+                        claim=claim, verdict="REFUTED", method_confidence=0.99,
+                        evidence=f"Explicit target file not found or invalid: {file}",
+                        method="file_scope",
+                    )
+                # The CPG module query is repo-wide. Let the scoped grep
+                # verifier inspect only this existing file.
+                return None
             if module:
                 refs = cpg.module_is_used(module)
                 if refs:
@@ -572,8 +734,23 @@ class VerificationEngine:
 
         if ct == "MITIGATION_EXISTS":
             pattern = params.get("pattern", "")
-            if pattern and cpg.function_exists(pattern):
-                node = cpg.function_exists(pattern)
+            if not isinstance(pattern, str) or not pattern.strip():
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence="No concrete mitigation pattern supplied",
+                    method="cpg_mitigation",
+                )
+            file = params.get("file", "")
+            if file and _existing_repo_file(file, repo_path) is None:
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid or missing mitigation file scope: {file}",
+                    method="file_scope",
+                )
+            line = params.get("line")
+            node = cpg.function_exists(pattern, file or None)
+            if (node and (not file or _cpg_file_matches(node.get("file"), file, repo_path))
+                    and (line is None or line == node.get("line"))):
                 callers = cpg.function_callers(pattern)
                 return VerifiedClaim(
                     claim=claim, verdict="VERIFIED", method_confidence=0.75,
@@ -585,6 +762,36 @@ class VerificationEngine:
         if ct == "CONFIG_FLAG":
             flag = params.get("flag", "")
             value = params.get("value", "")
+            raw_scope = params.get("scope", "all")
+            if not isinstance(raw_scope, str):
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Invalid config scope: {raw_scope}", method="cpg_config",
+                )
+            scope = raw_scope.lower()
+            if scope not in {"all", "code", "manifests"}:
+                return VerifiedClaim(
+                    claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                    evidence=f"Unsupported config scope: {raw_scope}", method="cpg_config",
+                )
+
+            explicit_file = params.get("file", "")
+            if not explicit_file and is_file_location(params.get("location", "")):
+                location_parts = split_file_location(params.get("location"))
+                explicit_file = location_parts[0] if location_parts else ""
+            if explicit_file:
+                if _existing_repo_file(explicit_file, repo_path) is None:
+                    return VerifiedClaim(
+                        claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+                        evidence=f"Invalid or missing config file scope: {explicit_file}",
+                        method="file_scope",
+                    )
+                # The CPG query is not file- or line-scoped. The registry
+                # verifier will perform the exact scoped search.
+                return None
+            if scope != "all":
+                return None
+
             matches = cpg.struct_literal_with_field(field_name=flag, field_value=value or None)
             if matches:
                 m = matches[0]
@@ -607,7 +814,7 @@ class VerificationEngine:
 
         return None
 
-    def _try_cymbal_verify(self, claim: TypedClaim) -> VerifiedClaim | None:
+    def _try_cymbal_verify(self, claim: TypedClaim, repo_path: str) -> VerifiedClaim | None:
         """Try to verify using cymbal tree-sitter backend. Returns None to fall back."""
         cymbal = self.cymbal
         ct = claim.claim_type
@@ -618,6 +825,12 @@ class VerificationEngine:
             file = params.get("file", params.get("path", ""))
             if not name:
                 return None
+            if file and _existing_repo_file(file, repo_path) is None:
+                return VerifiedClaim(
+                    claim=claim, verdict="REFUTED", method_confidence=0.99,
+                    evidence=f"Explicit target file not found or invalid: {file}",
+                    method="file_scope",
+                )
             node = cymbal.function_exists(name, file or None)
             if node:
                 return VerifiedClaim(

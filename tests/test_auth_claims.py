@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import os
 
-import pytest
-
 from code_claim_verifier.types import TypedClaim
 from code_claim_verifier.verifiers.auth_claims import (
     verify_call_chain,
@@ -74,14 +72,14 @@ class TestCallChain:
 
 class TestDefaultValue:
     def test_variable_found(self):
-        """Variable exists in code: verified."""
+        """A declaration without default-handling behavior is insufficient."""
         claim = TypedClaim(
             claim_type="DEFAULT_VALUE",
             parameters={"variable": "AllowedNamespaces", "default_behavior": "deny"},
             source_sentence="AllowedNamespaces defaults to deny-all when empty",
         )
         result = verify_default_value(claim, GO_REPO, "go")
-        assert result.verdict == "VERIFIED"
+        assert result.verdict == "UNVERIFIABLE"
         assert result.method == "default_value"
         assert "AllowedNamespaces" in result.evidence
 

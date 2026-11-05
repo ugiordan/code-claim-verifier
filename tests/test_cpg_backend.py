@@ -183,33 +183,36 @@ SAMPLE_ARCH = {
 
 
 class TestCpgFileClassification:
-    def test_test_file_verified(self):
+    def test_test_file_verified(self, tmp_path):
+        (tmp_path / "auth_test.go").write_text("package auth\n")
         cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
         engine = VerificationEngine(cpg=cpg)
         claim = TypedClaim(claim_type="FILE_CLASSIFICATION",
                            parameters={"path": "auth_test.go", "category": "test"},
                            source_sentence="")
-        results = engine.verify_claims([claim], "/tmp", "go")
+        results = engine.verify_claims([claim], str(tmp_path), "go")
         assert results[0].verdict == "VERIFIED"
         assert results[0].method == "cpg_classification"
 
-    def test_production_file_verified(self):
+    def test_production_file_verified(self, tmp_path):
+        (tmp_path / "auth.go").write_text("package auth\n")
         cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
         engine = VerificationEngine(cpg=cpg)
         claim = TypedClaim(claim_type="FILE_CLASSIFICATION",
                            parameters={"path": "auth.go", "category": "production"},
                            source_sentence="")
-        results = engine.verify_claims([claim], "/tmp", "go")
+        results = engine.verify_claims([claim], str(tmp_path), "go")
         assert results[0].verdict == "VERIFIED"
         assert results[0].method == "cpg_classification"
 
-    def test_wrong_classification_refuted(self):
+    def test_wrong_classification_refuted(self, tmp_path):
+        (tmp_path / "auth_test.go").write_text("package auth\n")
         cpg = CpgBackend(_make_cpg(NODES_WITH_TESTS, SAMPLE_EDGES)[0])
         engine = VerificationEngine(cpg=cpg)
         claim = TypedClaim(claim_type="FILE_CLASSIFICATION",
                            parameters={"path": "auth_test.go", "category": "production"},
                            source_sentence="")
-        results = engine.verify_claims([claim], "/tmp", "go")
+        results = engine.verify_claims([claim], str(tmp_path), "go")
         assert results[0].verdict == "REFUTED"
 
 
@@ -237,14 +240,15 @@ class TestCpgImportExists:
 
 
 class TestCpgMitigation:
-    def test_mitigation_function_exists(self):
+    def test_mitigation_function_exists(self, tmp_path):
+        (tmp_path / "auth.go").write_text("\n" * 9 + "func authenticate() {}\n")
         cpg = CpgBackend(_make_cpg(SAMPLE_NODES, SAMPLE_EDGES)[0])
         engine = VerificationEngine(cpg=cpg)
         claim = TypedClaim(claim_type="MITIGATION_EXISTS",
                            parameters={"description": "auth check", "pattern": "authenticate",
                                        "file": "auth.go", "line": 10},
                            source_sentence="")
-        results = engine.verify_claims([claim], "/tmp", "go")
+        results = engine.verify_claims([claim], str(tmp_path), "go")
         assert results[0].verdict == "VERIFIED"
         assert results[0].method == "cpg_mitigation"
 
@@ -275,6 +279,30 @@ class TestCpgAbsence:
         assert results[0].verdict == "REFUTED"
         assert results[0].method == "cpg_absence"
 
+    def test_literal_absence_falls_back_to_source_search(self, tmp_path):
+        (tmp_path / "auth.go").write_text("package auth\nfunc deny() { return false }\n")
+        cpg = CpgBackend(_make_cpg(SAMPLE_NODES, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(
+            claim_type="ABSENCE",
+            parameters={"pattern": "return false", "scope": "repo"},
+            source_sentence="",
+        )
+        result = engine.verify_claims([claim], str(tmp_path), "go")[0]
+        assert result.verdict == "REFUTED"
+        assert result.method == "grep_absent"
+
+    def test_malformed_polarity_is_unverifiable(self):
+        cpg = CpgBackend(_make_cpg(SAMPLE_NODES, SAMPLE_EDGES)[0])
+        engine = VerificationEngine(cpg=cpg)
+        claim = TypedClaim(
+            claim_type="HAS_CALLERS",
+            parameters={"name": "authenticate", "expected": "false"},
+            source_sentence="",
+        )
+        result = engine.verify_claims([claim], "/tmp", "go")[0]
+        assert result.verdict == "UNVERIFIABLE"
+
 
 class TestCpgPackageVersion:
     def test_version_match(self):
@@ -301,14 +329,14 @@ class TestCpgPackageVersion:
 
 
 class TestCpgVariable:
-    def test_variable_found(self):
+    def test_variable_presence_is_not_default_behavior(self):
         cpg = CpgBackend(_make_cpg(EXTENDED_NODES, SAMPLE_EDGES)[0])
         engine = VerificationEngine(cpg=cpg)
         claim = TypedClaim(claim_type="DEFAULT_VALUE",
                            parameters={"variable": "allowedGroups"},
                            source_sentence="")
         results = engine.verify_claims([claim], "/tmp", "go")
-        assert results[0].verdict == "VERIFIED"
+        assert results[0].verdict == "UNVERIFIABLE"
         assert results[0].method == "cpg_variable"
 
 

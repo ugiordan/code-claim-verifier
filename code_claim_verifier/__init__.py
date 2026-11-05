@@ -17,8 +17,9 @@ class CodeClaimVerifier:
     security triage, code review, refactoring analysis, migration verification,
     documentation accuracy, architecture assessment, and more.
 
-    The only LLM call is for claim extraction. All verification is deterministic
-    (grep, file read, lockfile parse). Grep doesn't hallucinate.
+    The only LLM call is for claim extraction. Verification uses non-LLM
+    repository tools (grep, file reads, and lockfile parsing), which are
+    repeatable but not automatically complete or sound.
     """
 
     def __init__(
@@ -265,5 +266,5 @@ class CodeClaimVerifier:
 __all__ = [
     "CodeClaimVerifier",
     "TypedClaim", "VerifiedClaim", "VerificationReport",
-    "CLAIM_TYPES", "extract_claims", "calibrate",
+    "CLAIM_TYPES", "extract_claims", "calibrate", "load_cpg",
 ]

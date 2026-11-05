@@ -31,17 +31,9 @@ class CymbalBackend:
     def _ensure_git(self) -> None:
         git_dir = os.path.join(self.repo_path, ".git")
         if not os.path.isdir(git_dir):
-            subprocess.run(
-                ["git", "init", "-q"],
-                cwd=self.repo_path, capture_output=True, timeout=10,
-            )
-            subprocess.run(
-                ["git", "add", "-A"],
-                cwd=self.repo_path, capture_output=True, timeout=30,
-            )
-            subprocess.run(
-                ["git", "commit", "-q", "-m", "init", "--no-verify"],
-                cwd=self.repo_path, capture_output=True, timeout=30,
+            raise RuntimeError(
+                "cymbal requires an existing Git repository; refusing to mutate "
+                f"{self.repo_path}"
             )
 
     def _index(self) -> None:

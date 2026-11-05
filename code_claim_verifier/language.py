@@ -11,14 +11,40 @@ LANG_MAP = {
 FUNCTION_DEF_PATTERNS: dict[str, str] = {
     "python": r"def\s+{name}\s*\(",
     "go": r"func\s+(?:\([^)]*\)\s+)?{name}\s*\(",
-    "typescript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=|{name}\s*\()",
-    "javascript": r"(?:function\s+{name}|(?:const|let|var)\s+{name}\s*=|{name}\s*\()",
+    "typescript": (
+        r"(?:"
+        r"(?:^|[^A-Za-z0-9_$])(?:async\s+)?function\s+"
+        r"{name}\s*\("
+        r"|(?:^|[^A-Za-z0-9_$])(?:const|let|var)\s+{name}"
+        r"\s*=\s*(?:async\s+)?"
+        r"(?:function(?:\s+[A-Za-z_$][A-Za-z0-9_$]*)?\s*\(|"
+        r"(?:\([^)]*\)|[A-Za-z_$][A-Za-z0-9_$]*)\s*"
+        r"(?::\s*[^=]+)?=>)"
+        r"|(?:^|\s|\{{){name}\s*\([^;{{}}]*\)\s*\{{"
+        r")"
+    ),
+    "javascript": (
+        r"(?:"
+        r"(?:^|[^A-Za-z0-9_$])(?:async\s+)?function\s+"
+        r"{name}\s*\("
+        r"|(?:^|[^A-Za-z0-9_$])(?:const|let|var)\s+{name}"
+        r"\s*=\s*(?:async\s+)?"
+        r"(?:function(?:\s+[A-Za-z_$][A-Za-z0-9_$]*)?\s*\(|"
+        r"(?:\([^)]*\)|[A-Za-z_$][A-Za-z0-9_$]*)\s*=>)"
+        r"|(?:^|\s|\{{){name}\s*\([^;{{}}]*\)\s*\{{"
+        r")"
+    ),
     "java": r"(?:public|private|protected|static|\s)+[\w<>\[\]]+\s+{name}\s*\(",
     "kotlin": r"(?:fun\s+{name}\s*[\(<]|(?:override\s+)?fun\s+{name}\s*[\(<])",
     "c": r"(?:[\w*]+\s+{name}\s*\(|^{name}\s*\()",
     "cpp": r"(?:[\w*:]+\s+{name}\s*\(|^{name}\s*\()",
     "rust": r"fn\s+{name}\s*[<(]",
-    "unknown": r"(?:def|func|function|fn)\s+{name}\s*\(|{name}\s*[=:]\s*(?:function|\()",
+    "unknown": (
+        r"(?:\b(?:def|func|function|fn)\s+{name}\s*\(|"
+        r"\b(?:const|let|var)\s+{name}\s*=\s*"
+        r"(?:async\s+)?(?:function\b|"
+        r"(?:\([^)]*\)|[A-Za-z_$][\w$]*)\s*=>))"
+    ),
 }
 
 IMPORT_PATTERNS: dict[str, list[str]] = {

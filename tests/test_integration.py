@@ -28,13 +28,13 @@ class TestCodeClaimVerifierIntegration:
         v = CodeClaimVerifier(llm_function=mock_llm, repo_path=FIXTURE)
         import pytest
         with pytest.raises(ValueError):
-            v.register("FILE_EXISTS", lambda c, r, l: None, extraction_hint="")
+            v.register("FILE_EXISTS", lambda claim, repo, language: None, extraction_hint="")
 
     def test_register_rejects_long_hint(self):
         v = CodeClaimVerifier(llm_function=mock_llm, repo_path=FIXTURE)
         import pytest
         with pytest.raises(ValueError, match="500"):
-            v.register("LONG", lambda c, r, l: None, extraction_hint="x" * 501)
+            v.register("LONG", lambda claim, repo, language: None, extraction_hint="x" * 501)
 
     def test_verify_batch(self):
         v = CodeClaimVerifier(llm_function=mock_llm, repo_path=FIXTURE)
