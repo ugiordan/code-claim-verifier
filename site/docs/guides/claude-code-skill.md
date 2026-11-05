@@ -1,12 +1,12 @@
 # Claude Code Skill Integration
 
-CCV can be integrated as a Claude Code skill (slash command) so that Claude automatically verifies factual claims whenever it reasons about your codebase. This catches hallucinations before they reach code reviews, security triages, or architecture assessments.
+CCV can be integrated as a Claude Code skill (slash command) so that Claude automatically checks factual claims against repository evidence whenever it reasons about your codebase. Refuted claims are signals for review, not proof that every verifier heuristic is complete.
 
 ## How it works
 
 1. You create a skill file (`.md`) in your project's `.claude/commands/` directory
 2. When invoked via `/verify` (or whatever you name it), Claude runs CCV against the repo
-3. CCV extracts typed claims from the LLM reasoning and verifies each one deterministically
+3. CCV extracts typed claims from the LLM reasoning and verifies each one with repository-backed tools
 4. Claude reports which claims are verified, refuted, or unverifiable
 
 No LLM calls are used for verification. The only LLM call is for claim extraction.

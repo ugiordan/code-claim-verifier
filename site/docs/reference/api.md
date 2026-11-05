@@ -190,7 +190,7 @@ class VerificationReport:
     unverifiable: int                  # number of UNVERIFIABLE claims
     errored: int                       # claims with error field set
     verification_rate: float           # weighted verified / weighted total
-    hallucination_rate: float          # 1 - verification_rate
+    hallucination_rate: float          # refutation proxy: 1 - verification_rate
     calibrated_confidence: float       # same as verification_rate
     action: Action                     # "BOOST", "FLAG", "OVERRIDE", or "NO_CHANGE"
     reason: str                        # human-readable summary

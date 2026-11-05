@@ -25,7 +25,7 @@ The dataset is a JSONL file (one JSON object per line). Each entry represents a 
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `claim_type` | string | yes | One of the 14 built-in claim types |
+| `claim_type` | string | yes | One of the 17 built-in claim types |
 | `parameters` | object | yes | Claim parameters |
 | `expected_verdict` | string | yes | `"VERIFIED"`, `"REFUTED"`, or `"UNVERIFIABLE"` |
 
@@ -54,9 +54,9 @@ The fixture repos don't need to be real git repositories. They just need to cont
 
 Measures how well the LLM extracts claims from reasoning text.
 
-**Mock mode (default):** Ground truth claims are used directly as both the expected and predicted claims. This gives perfect extraction scores (precision=1.0, recall=1.0, F1=1.0) and isolates the verification stage for testing.
+**Mock mode (default):** Ground truth claims are used directly as both the expected and predicted claims. This gives perfect extraction scores by construction and is only suitable for verifier regression tests, not for measuring extraction quality.
 
-**Real mode** (`--no-mock-extraction`): Would use the LLM to extract claims from the reasoning text, then compare against ground truth. Matching criteria: same `claim_type` AND all ground truth parameters exist in the predicted claim with equal values (extra predicted params are OK).
+**Real mode** (`--no-mock-extraction`): Uses the configured LLM to extract claims from the reasoning text, then compares them against ground truth. Unmatched predictions and missed ground-truth claims are reported as extraction errors and are not silently dropped from the report.
 
 **Metrics:**
 
@@ -73,7 +73,7 @@ Measures how well the LLM extracts claims from reasoning text.
 
 Measures whether the verifiers produce the correct verdicts for known claims.
 
-Each ground truth claim is run through the `VerificationEngine` against its fixture repo. The actual verdict is compared to the `expected_verdict`.
+Each predicted claim that matches one ground-truth claim is run through the `VerificationEngine` against its fixture repo. The actual verdict is compared to the `expected_verdict`. Unmatched predictions and missed ground-truth claims remain extraction errors and are reported separately; they are not counted as verifier decisions.
 
 **Metrics:**
 
@@ -85,6 +85,9 @@ Each ground truth claim is run through the `VerificationEngine` against its fixt
 | `total` | total claims evaluated |
 | `confusion_matrix` | `{expected: {actual: count}}` |
 | `per_type` | per-claim-type accuracy breakdown |
+| `matched_claims` | number of one-to-one claim matches evaluated by the verifier |
+| `unmatched_predictions` | predicted claims with no ground-truth match |
+| `unmatched_ground_truth` | ground-truth claims with no prediction |
 
 ### 3. Calibration evaluation
 
@@ -148,19 +151,19 @@ The evaluation produces a combined report with all three stages plus a summary:
 }
 ```
 
-The `overall_score` is the average of: extraction F1, verification accuracy, and (1 - ECE).
+When verification results exist, `overall_score` is the average of extraction F1, verification accuracy, and (1 - ECE). An empty verification stage contributes zero rather than a misleading perfect calibration score.
 
 ## CLI usage
 
 ```bash
 # Basic evaluation with mock extraction
-ccv eval --dataset tests/eval/dataset.jsonl --fixtures tests/eval/fixtures/
+ccv eval --dataset eval/dataset.jsonl --fixtures eval/fixtures/
 
 # Save report to file
-ccv eval --dataset tests/eval/dataset.jsonl --fixtures tests/eval/fixtures/ --output eval-report.json
+ccv eval --dataset eval/dataset.jsonl --fixtures eval/fixtures/ --output eval-report.json
 
 # Real extraction (requires LLM API key)
-ccv eval --dataset tests/eval/dataset.jsonl --fixtures tests/eval/fixtures/ --no-mock-extraction
+ccv eval --dataset eval/dataset.jsonl --fixtures eval/fixtures/ --no-mock-extraction --llm-provider anthropic
 ```
 
 ## Python API
@@ -170,8 +173,8 @@ from code_claim_verifier.eval import run_evaluation
 from code_claim_verifier.eval.report import write_report
 
 report = run_evaluation(
-    dataset_path="tests/eval/dataset.jsonl",
-    fixtures_path="tests/eval/fixtures/",
+    dataset_path="eval/dataset.jsonl",
+    fixtures_path="eval/fixtures/",
     mock_extraction=True,
 )
 

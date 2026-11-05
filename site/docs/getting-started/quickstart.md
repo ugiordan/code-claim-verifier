@@ -114,8 +114,8 @@ When you call `verify()`, CCV:
 1. Sends the reasoning text to your LLM function, asking it to extract structured claims
 2. Parses the LLM response into `TypedClaim` objects (e.g., `FILE_EXISTS(path="src/config.py")`)
 3. Builds a dependency graph and synthesizes missing prerequisites
-4. Verifies each claim using deterministic tools (grep, file read, lockfile parse)
+4. Verifies each claim using repository tools (grep, file read, lockfile parse)
 5. Propagates SUSPECT flags when prerequisites are refuted
 6. Calibrates the results into a confidence score and action
 
-The LLM is only involved in step 1. Steps 2-6 are entirely deterministic.
+The LLM is only involved in step 1. Steps 2-6 do not call an LLM, but their reliability depends on the selected parser, repository snapshot, and external data sources.

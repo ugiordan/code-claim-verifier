@@ -1,6 +1,6 @@
 # Claim Types
 
-CCV ships with 17 built-in claim types organized into five categories. Each type has a dedicated verifier that uses deterministic tools to check the claim against the actual codebase.
+CCV ships with 17 built-in claim types organized into five categories. Each type has a dedicated verifier that uses repository-backed tools to check the claim against the actual codebase.
 
 ## File Claims
 
@@ -23,7 +23,7 @@ Checks whether a specific line in a file contains expected content.
 
 | Field | Value |
 |-------|-------|
-| **Parameters** | `path` (string, required), `line` (integer, optional), `content` (string, required) |
+| **Parameters** | `path` (string, required), `line` (integer, required, 1-based), `content` (string, required) |
 | **Verification method** | File read + substring match |
 | **Confidence** | 0.95 |
 | **Triggers on reasoning like** | "Line 42 of `model.py` calls `torch.load()`" |
@@ -189,12 +189,12 @@ Checks whether a security mitigation or safeguard exists at a specific location.
 
 | Field | Value |
 |-------|-------|
-| **Parameters** | `mitigation` (string, required), `file` (string, required), `pattern` (string, optional) |
-| **Verification method** | File read + content check |
-| **Confidence** | 0.70 |
+| **Parameters** | `pattern` (string, required), `file` (string, required), `mitigation` (string, optional), `line` (integer, optional) |
+| **Verification method** | Fixed-string search in the scoped file |
+| **Confidence** | 0.75 |
 | **Triggers on reasoning like** | "Input sanitization is applied at line 58 of handler.go" |
 
-Reads the specified file and line, checking that the line contains non-trivial content (more than 5 characters). This is a rough heuristic: it confirms something exists at the claimed location, but can't semantically verify that it's actually a mitigation.
+Searches the specified file for the concrete `pattern`, optionally at the claimed line. This is a presence heuristic: it cannot semantically verify that the matching code is actually a mitigation.
 
 ### ENTRY_POINT
 

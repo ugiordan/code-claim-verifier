@@ -1,17 +1,17 @@
 # Code Claim Verifier
 
-**Deterministic verification of LLM claims about source code.**
+**Non-LLM, tool-backed verification of LLM claims about source code.**
 
 LLMs reason about code and make factual assertions: "function X has no callers," "package version is 2.4.1," "this file is auto-generated." These assertions drive real decisions. But LLMs hallucinate, and nobody checks whether their claims about the code are actually true.
 
-CCV extracts typed claims from LLM reasoning and verifies each one against the actual codebase. One LLM call for extraction. Zero LLM calls for verification. Grep doesn't hallucinate.
+CCV extracts typed claims from LLM reasoning and checks each one against the actual codebase. One LLM call is used for extraction; verification uses repository tools and reports evidence. These checks are repeatable, but heuristic checks are not automatically complete or sound.
 
 ```mermaid
 graph LR
     A["LLM Reasoning<br/>(natural language)"] --> B["Claim Extraction<br/>(1 LLM call)"]
     B --> C["17 Typed Claims"]
     C --> D["Dependency Graph<br/>+ Topological Sort"]
-    D --> E["Deterministic Verification<br/>grep | file read | lockfile parse"]
+    D --> E["Tool-backed Verification<br/>grep | file read | lockfile parse"]
     E --> F["SUSPECT Propagation"]
     F --> G["Confidence Calibration"]
     G --> H["BOOST | FLAG | OVERRIDE"]
@@ -26,15 +26,15 @@ graph LR
 
 - **17 claim types** across 5 categories: file/path, function/symbol, dependency, code patterns, and auth chain
 - **Claim chaining** infers dependencies between claims, synthesizes missing prerequisites, and propagates refutation through the dependency graph
-- **CPG integration**: load a `code-graph.json` from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) to use AST-level queries for function claims (~95% accuracy vs ~65% with grep). Optional, graceful fallback to grep.
+- **CPG integration**: load a `code-graph.json` from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) to use AST-level queries for selected function and dependency claims. Optional, with graceful fallback to grep; accuracy must be established against independent ground truth.
 - **CVE verification via OSV**: CVE_AFFECTS_VERSION queries the [OSV API](https://osv.dev/) to check if a CVE affects a specific package version. No API key needed.
 - **Language-aware** grep patterns for Python, Go, TypeScript, Java, C/C++, Rust
 - **Batch verification** with adaptive batching and shared caches (thread-safe via contextvars)
 - **Custom claim types** via registration API with extraction hints
 - **CLI** with verify, verify-batch, list-types, and eval subcommands
 
-!!! info "Evaluation results (CyberGym benchmark)"
-    On 21 real-world C/C++ vulnerability repos with 2 models: **22-31% of LLM claims about code are hallucinated**. CCV achieves 99.3% verification accuracy with zero false-verified errors. On disagreements with an LLM-as-judge baseline, CCV was correct 97% of the time.
+!!! warning "Evaluation status"
+    The collected CyberGym and Multi-SWE-bench runs are undergoing a provenance and ground-truth audit. Their legacy headline numbers are not currently treated as validated accuracy or hallucination results. See [Evaluation Status](experiments.md).
 
 ## What It Checks
 
@@ -120,15 +120,15 @@ Here's what happens when an LLM analyzes a vulnerability in `libxml2` and CCV ve
             numpy is 1.24.0 not 2.0.0. Review before acting."
     ```
 
-This is from a real CyberGym evaluation run. The LLM correctly identified the vulnerable functions but hallucinated a file (`config.py`) and a package version (`numpy 2.0.0`). CCV caught both.
+This is an illustrative fixture example. It shows the report shape, but it is not a current benchmark result.
 
-See [full evaluation results](experiments.md) from 21 CyberGym repos across 2 models.
+See the [evaluation status and reproduction policy](experiments.md).
 
 ## Verification Actions
 
 | Rate | Action | Meaning |
 |---|---|---|
-| 80-100% | **BOOST** | Claims check out. Trust the LLM's conclusion. |
+| 80-100% | **BOOST** | Claims pass the configured review gate. |
 | 50-79% | **FLAG** | Some claims failed. Human should review. |
 | <50% | **OVERRIDE** | Majority wrong. Don't trust this output. |
 

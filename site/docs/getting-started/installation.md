@@ -59,7 +59,7 @@ pip install -e ".[anthropic,test]"
 - Python 3.9+
 - `grep` available on your `PATH` (ships with macOS and Linux, use Git Bash or WSL on Windows)
 
-No other system dependencies. The verification engine uses `subprocess` to call `grep` and reads files directly from disk. No database, no network calls (except for the single LLM extraction call).
+No other system dependencies. Most verification uses `grep` and local file reads. `CVE_AFFECTS_VERSION` also queries the OSV API unless its advisory response is supplied from a pinned cache. LLM extraction makes the configured provider call.
 
 ## Verify the installation
 
@@ -67,4 +67,4 @@ No other system dependencies. The verification engine uses `subprocess` to call 
 ccv list-types
 ```
 
-This prints the JSON schemas for all 14 built-in claim types. If it works, you're good to go.
+This prints the JSON schemas for all 17 built-in claim types. If it works, you're good to go.

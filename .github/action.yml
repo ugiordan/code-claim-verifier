@@ -40,7 +40,7 @@ outputs:
     description: 'Total number of claims extracted'
     value: ${{ steps.verify.outputs.total-claims }}
   hallucination-rate:
-    description: 'Hallucination rate (1 - verification_rate)'
+    description: 'Refutation rate among verifiable claims; not a model hallucination rate'
     value: ${{ steps.verify.outputs.hallucination-rate }}
 
 runs:
@@ -54,7 +54,7 @@ runs:
     - name: Install CCV
       shell: bash
       run: |
-        pip install code-claim-verifier
+        pip install "${{ github.action_path }}"
         # Install provider SDK based on llm-provider
         case "${{ inputs.llm-provider }}" in
           anthropic|anthropic-vertex) pip install anthropic ;;

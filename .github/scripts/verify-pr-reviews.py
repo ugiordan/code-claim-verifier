@@ -149,8 +149,8 @@ def format_results(reports: list[dict], tag: str) -> str:
         f"**{total_claims}** claims extracted from review comments. "
         f"**{total_verified}** verified, **{total_refuted}** refuted.",
         "",
-        f"| Metric | Value |",
-        f"|---|---|",
+        "| Metric | Value |",
+        "|---|---|",
         f"| Verification rate | {rate:.0%} |",
         f"| Action | **{action}** |",
         f"| Claims verified | {total_verified} |",
@@ -169,7 +169,7 @@ def format_results(reports: list[dict], tag: str) -> str:
 
     lines.append("---")
     lines.append("*Verified by [CodeClaimVerifier](https://ugiordan.github.io/code-claim-verifier/). "
-                 "Grep doesn't hallucinate.*")
+                 "Repository evidence is repeatable; heuristic checks may be incomplete.*")
 
     return "\n".join(lines)
 

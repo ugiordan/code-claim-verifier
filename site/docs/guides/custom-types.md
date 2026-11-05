@@ -1,6 +1,6 @@
 # Custom Claim Types
 
-The 14 built-in types cover common assertions about files, functions, dependencies, and code patterns. When you need domain-specific verification, you can register custom claim types.
+The 17 built-in types cover common assertions about files, functions, dependencies, code patterns, and authentication/configuration chains. When you need domain-specific verification, you can register custom claim types.
 
 ## The register() API
 
@@ -151,7 +151,7 @@ Custom types are automatically included when you call `verifier.as_tools()`:
 ```python
 tools = verifier.as_tools()
 # Returns tool definitions that include HAS_DECORATOR
-# alongside the 14 built-in types
+# alongside the 17 built-in types
 ```
 
 This is useful when integrating CCV into an LLM tool-use loop where the LLM can invoke verification tools directly.

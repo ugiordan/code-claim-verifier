@@ -1,6 +1,6 @@
 # Architecture Overview
 
-CCV's architecture separates the one part that requires an LLM (claim extraction) from everything else (verification, which is fully deterministic). This page covers the pipeline, the key components, and how caching works.
+CCV's architecture separates the one part that requires an LLM (claim extraction) from the rest of the pipeline (verification, which uses non-LLM, tool-backed checks). Reproducibility still requires a pinned repository snapshot, backend version, and advisory-data snapshot.
 
 ## Pipeline
 
@@ -22,7 +22,7 @@ graph TD
     style J fill:#ff9,stroke:#333
 ```
 
-**Pink** = LLM call (only one). **Green** = deterministic verification. **Yellow** = score computation.
+**Pink** = LLM call (only one). **Green** = non-LLM verification. **Yellow** = score computation.
 
 ## Component breakdown
 
@@ -30,7 +30,7 @@ graph TD
 
 Responsible for the single LLM call. Takes reasoning text and produces a list of `TypedClaim` objects.
 
-The extractor sends a system prompt describing all 14 claim types (plus any custom types) and asks the LLM to output a JSON array of claims. Each claim has a `claim_type`, `parameters`, and `source_sentence`.
+The extractor sends a system prompt describing all 17 claim types (plus any custom types) and asks the LLM to output a JSON array of claims. Each claim has a `claim_type`, `parameters`, and `source_sentence`.
 
 The prompt includes rules about what to extract and what to skip:
 
@@ -140,7 +140,7 @@ CCV has two verification backends:
 
 1. **Grep backend** (default): language-aware regex patterns, file reads, lockfile parsing. Always available, no setup. Works for all 17 claim types.
 
-2. **CPG backend** (optional): uses the code property graph and architecture JSON from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer). AST-level queries, call graph traversal, dependency data. Covers 14 of 17 claim types with higher confidence.
+2. **CPG backend** (optional): uses the code property graph and architecture JSON from [architecture-analyzer](https://github.com/ugiordan/architecture-analyzer) for selected AST-level queries, call graph traversal, and dependency data.
 
 ### Decision flow
 
@@ -173,9 +173,9 @@ verifier = CodeClaimVerifier(llm_function=my_llm, repo_path="/path/to/repo")
 verifier.load_cpg("/path/to/output/code-graph.json")
 ```
 
-When loaded, the engine tries CPG queries first for supported claim types. If the CPG query returns no result (e.g., function not in the graph), it falls back to grep. This means the CPG backend is purely additive: it can only improve results, never degrade them.
+When loaded, the engine tries CPG queries first for supported, repository-scoped claim types. Unsupported or explicitly scoped claims fall back to the registry verifier. A CPG result is not automatically more accurate than the registry verifier and must be evaluated against independent ground truth.
 
-### CPG coverage (14 of 17 claim types)
+### CPG-supported claim types
 
 | Claim Type | CPG Method | CPG Conf. | Grep Conf. |
 |---|---|---|---|
@@ -194,4 +194,4 @@ When loaded, the engine tries CPG queries first for supported claim types. If th
 | DEPENDENCY_TYPE | Architecture JSON go_modules | 0.92 | 0.85 |
 | CVE_AFFECTS_VERSION | (falls back to OSV API) | --- | 0.75-0.85 |
 
-**Not CPG-enhanced** (3 types): FILE_EXISTS (`os.path.isfile` is already exact), LINE_CONTENT (CPG doesn't store line text), GENERATED_OR_VENDORED (CPG doesn't track file metadata).
+FILE_EXISTS, LINE_CONTENT, and GENERATED_OR_VENDORED use the registry verifier. CVE_AFFECTS_VERSION uses the OSV API and is not deterministic unless the advisory response is pinned or cached.

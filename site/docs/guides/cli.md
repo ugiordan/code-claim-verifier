@@ -127,7 +127,7 @@ JSON array of verification reports (one per input item):
 
 ## ccv list-types
 
-Output JSON schemas for all 14 built-in claim types. No API key required.
+Output JSON schemas for all 17 built-in claim types. No API key required.
 
 ```bash
 ccv list-types

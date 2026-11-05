@@ -21,7 +21,7 @@ Complete parameter schemas for all 17 built-in claim types. These describe what 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `path` | string | yes | Relative file path |
-| `line` | integer | no | Expected line number (1-based, approximate) |
+| `line` | integer | yes | Expected line number (1-based, approximate) |
 | `content` | string | yes | Expected content substring |
 
 **Extraction produces:** `{"path": "model.py", "line": 42, "content": "torch.load"}`
@@ -169,11 +169,11 @@ Complete parameter schemas for all 17 built-in claim types. These describe what 
 |-----------|------|----------|-------------|
 | `cve` | string | no | CVE identifier (e.g., CVE-2024-1234) |
 | `package` | string | yes | Package name |
-| `version` | string | no | Installed version |
+| `version` | string | yes | Installed version |
 
 **Extraction produces:** `{"cve": "CVE-2024-1234", "package": "PyYAML", "version": "5.3.1"}`
 
-**Verifier returns:** always UNVERIFIABLE. CVE version range checking requires an external advisory database.
+**Verifier checks:** queries OSV for the package and version. A matching advisory is VERIFIED, a non-matching advisory is REFUTED, and network or schema failures are UNVERIFIABLE. For reproducible evaluation, cache and pin the advisory response.
 
 ---
 
@@ -198,14 +198,14 @@ Complete parameter schemas for all 17 built-in claim types. These describe what 
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `mitigation` | string | yes | Description of the mitigation |
+| `mitigation` | string | no | Optional prose description of the mitigation |
 | `file` | string | yes | File where mitigation should exist |
-| `pattern` | string | no | Code pattern to search for |
+| `pattern` | string | yes | Concrete source-code string to search for |
 | `line` | integer | no | Line number where mitigation is expected |
 
-**Extraction produces:** `{"mitigation": "input sanitization", "file": "handler.go", "line": 58}`
+**Extraction produces:** `{"mitigation": "input sanitization", "file": "handler.go", "pattern": "validateInput("}`
 
-**Verifier checks:** reads the file, checks that the specified line exists and contains non-trivial content (> 5 characters). This is a presence heuristic, not a semantic check.
+**Verifier checks:** searches the specified file for the fixed `pattern`, optionally restricted to `line`. Prose alone is not executable evidence, and this remains a presence heuristic rather than a semantic check.
 
 ---
 
