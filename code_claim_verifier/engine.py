@@ -6,7 +6,7 @@ from collections import defaultdict, deque
 from typing import Callable
 
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
-from code_claim_verifier.verifiers import VERIFIER_REGISTRY
+from code_claim_verifier.verifiers import VERIFIER_REGISTRY, derive_verification_source
 from code_claim_verifier import grep as grep_module
 from code_claim_verifier.cpg_backend import CpgBackend
 from code_claim_verifier.cymbal_backend import CymbalBackend
@@ -440,42 +440,44 @@ class VerificationEngine:
         self, claim: TypedClaim, repo_path: str, language: str
     ) -> VerifiedClaim:
         """Dispatch to CPG backend if available, else registry with error handling."""
+        result: VerifiedClaim | None = None
         if not isinstance(claim.parameters, dict):
-            return VerifiedClaim(
+            result = VerifiedClaim(
                 claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
                 evidence="Claim parameters must be an object", method="schema",
             )
-        if self.cpg:
-            cpg_result = self._try_cpg_verify(claim, repo_path)
-            if cpg_result:
-                return cpg_result
+        if result is None and self.cpg:
+            result = self._try_cpg_verify(claim, repo_path)
 
-        if self.cymbal:
-            cymbal_result = self._try_cymbal_verify(claim, repo_path)
-            if cymbal_result:
-                return cymbal_result
+        if result is None and self.cymbal:
+            result = self._try_cymbal_verify(claim, repo_path)
 
-        verifier = self.registry.get(claim.claim_type)
-        if not verifier:
-            return VerifiedClaim(
-                claim=claim,
-                verdict="UNVERIFIABLE",
-                method_confidence=0.0,
-                evidence=f"Unknown claim type: {claim.claim_type}",
-                method="error",
-                error="unknown_type",
-            )
-        try:
-            return verifier(claim, repo_path, language)
-        except Exception as e:
-            return VerifiedClaim(
-                claim=claim,
-                verdict="UNVERIFIABLE",
-                method_confidence=0.0,
-                evidence="",
-                method="error",
-                error=f"{type(e).__name__}: {str(e)[:200]}",
-            )
+        if result is None:
+            verifier = self.registry.get(claim.claim_type)
+            if not verifier:
+                result = VerifiedClaim(
+                    claim=claim,
+                    verdict="UNVERIFIABLE",
+                    method_confidence=0.0,
+                    evidence=f"Unknown claim type: {claim.claim_type}",
+                    method="error",
+                    error="unknown_type",
+                )
+            else:
+                try:
+                    result = verifier(claim, repo_path, language)
+                except Exception as e:
+                    result = VerifiedClaim(
+                        claim=claim,
+                        verdict="UNVERIFIABLE",
+                        method_confidence=0.0,
+                        evidence="",
+                        method="error",
+                        error=f"{type(e).__name__}: {str(e)[:200]}",
+                    )
+        if result.verification_source is None:
+            result.verification_source = derive_verification_source(result.method)
+        return result
 
     def _try_cpg_verify(self, claim: TypedClaim, repo_path: str) -> VerifiedClaim | None:
         """Try to verify a claim using the CPG. Returns None to fall back to grep."""

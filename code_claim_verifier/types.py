@@ -8,6 +8,7 @@ CLAIM_TYPES = frozenset({
     "FILE_EXISTS", "LINE_CONTENT", "FILE_CLASSIFICATION", "GENERATED_OR_VENDORED",
     "FUNCTION_EXISTS", "FUNCTION_CALLED", "HAS_CALLERS",
     "IMPORT_EXISTS", "PACKAGE_VERSION", "PACKAGE_ABSENT", "DEPENDENCY_TYPE", "CVE_AFFECTS_VERSION",
+    "VERSION_IN_RANGE", "UPGRADE_FIXES",
     "ABSENCE", "MITIGATION_EXISTS", "ENTRY_POINT",
     "CALL_CHAIN", "DEFAULT_VALUE", "CONFIG_FLAG",
 })
@@ -35,6 +36,7 @@ class VerifiedClaim:
     error: str | None = None
     suspect_reason: str | None = None
     synthesized: bool = False
+    verification_source: str | None = None
 
 
 @dataclass
@@ -53,6 +55,10 @@ class VerificationReport:
     per_claim: list[VerifiedClaim] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
+        source_counts: dict[str, int] = {}
+        for vc in self.per_claim:
+            key = vc.verification_source or "unknown"
+            source_counts[key] = source_counts.get(key, 0) + 1
         return {
             "total_claims": self.total_claims,
             "verifiable_claims": self.verifiable_claims,
@@ -65,6 +71,7 @@ class VerificationReport:
             "calibrated_confidence": self.calibrated_confidence,
             "action": self.action,
             "reason": self.reason,
+            "verification_sources": source_counts,
             "claims": [
                 {
                     "type": vc.claim.claim_type,
@@ -74,6 +81,7 @@ class VerificationReport:
                     "confidence": vc.method_confidence,
                     "evidence": vc.evidence[:500],
                     "method": vc.method,
+                    "verification_source": vc.verification_source,
                     "suspect_reason": vc.suspect_reason,
                     "synthesized": vc.synthesized,
                 }

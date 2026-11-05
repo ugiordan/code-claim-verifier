@@ -7,6 +7,7 @@ from code_claim_verifier.extractor import extract_claims, LLMFunction
 from code_claim_verifier.calibrator import calibrate
 from code_claim_verifier.engine import VerificationEngine, VerifierFunction
 from code_claim_verifier.cpg_backend import load_cpg
+from code_claim_verifier.verifiers import derive_verification_source, VERIFICATION_SOURCES
 from code_claim_verifier.language import detect_language
 
 
@@ -267,4 +268,5 @@ __all__ = [
     "CodeClaimVerifier",
     "TypedClaim", "VerifiedClaim", "VerificationReport",
     "CLAIM_TYPES", "extract_claims", "calibrate", "load_cpg",
+    "derive_verification_source", "VERIFICATION_SOURCES",
 ]
