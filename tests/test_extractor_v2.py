@@ -1,5 +1,10 @@
 from __future__ import annotations
-from code_claim_verifier.extractor import extract_claims, _parse_extraction_output
+import json
+from code_claim_verifier.extractor import (
+    extract_claims,
+    _parse_batch_output,
+    _parse_extraction_output,
+)
 from code_claim_verifier.types import CLAIM_TYPES
 
 class TestValidTypes:
@@ -40,3 +45,28 @@ class TestCustomHintSection:
             return "[]"
         extract_claims(reasoning="test", evidence={}, llm_function=mock_llm)
         assert "CUSTOM CLAIM TYPES:" not in calls[0]
+
+    def test_parse_rejects_non_object_parameters(self):
+        raw = '[{"claim_type":"FILE_EXISTS","parameters":"main.py","source_sentence":"main.py exists"}]'
+        assert _parse_extraction_output(raw) == []
+
+    def test_parse_rejects_list_and_null_parameters(self):
+        raw = ('[{"claim_type":"FILE_EXISTS","parameters":["main.py"],"source_sentence":"a"},'
+               '{"claim_type":"FILE_EXISTS","parameters":null,"source_sentence":"b"},'
+               '{"claim_type":"FILE_EXISTS","parameters":{"path":"main.py"},"source_sentence":"c"}]')
+        claims = _parse_extraction_output(raw)
+        # Only the well-formed claim survives.
+        assert len(claims) == 1
+        assert claims[0].parameters == {"path": "main.py"}
+
+    def test_parse_batch_rejects_non_object_parameters(self):
+        raw = json.dumps([{
+            "finding_index": 0,
+            "claim_type": "FILE_EXISTS",
+            "parameters": "main.py",
+            "source_sentence": "main.py exists",
+        }])
+        result = _parse_batch_output(
+            raw, num_items=1, valid_types=frozenset({"FILE_EXISTS"}), fallback="FILE_EXISTS",
+        )
+        assert result == {0: []}

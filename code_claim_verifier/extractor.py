@@ -9,6 +9,7 @@ from code_claim_verifier.types import TypedClaim, CLAIM_TYPES
 logger = logging.getLogger(__name__)
 
 LLMFunction = Callable[[str, str], str]
+EXTRACTION_VERSION = "typed-claims-v1"
 
 _EXTRACTION_SYSTEM = """You are a claim extractor that identifies verifiable factual assertions about source code.
 
@@ -34,6 +35,9 @@ Rules:
 - Extract CALL_CHAIN when the LLM traces a multi-file function call path (authentication chains, request handling pipelines)
 - Extract DEFAULT_VALUE when the LLM claims a config/variable defaults to permissive or restrictive behavior when empty/nil
 - Extract CONFIG_FLAG when the LLM claims a specific flag is set to a specific value
+- For MITIGATION_EXISTS, include a concrete source-code string in "pattern" and
+  the containing relative "file". Put a prose explanation in "mitigation" only
+  as optional context; prose alone is not executable evidence.
 - Do NOT extract opinions, recommendations, or quality judgments
 - Do NOT extract claims about what SHOULD be done
 - Each claim must be independently verifiable against the codebase
@@ -88,14 +92,9 @@ def extract_claims(
     if not reasoning and not evidence:
         return []
 
-    system = _EXTRACTION_SYSTEM.format(domain_context=domain_context)
+    system, user_prompt = build_extraction_prompts(reasoning, evidence, domain_context)
     if custom_hints:
         system += "\n\nCUSTOM CLAIM TYPES:\n" + "\n".join(f"- {h}" for h in custom_hints)
-    evidence_str = json.dumps(evidence, indent=2, default=str)[:3000]
-    user_prompt = _EXTRACTION_USER.format(
-        reasoning=reasoning[:8000],
-        evidence=evidence_str,
-    )
 
     try:
         raw = llm_function(system, user_prompt)
@@ -104,6 +103,19 @@ def extract_claims(
         return []
 
     return _parse_extraction_output(raw, valid_types=valid_types)
+
+
+def build_extraction_prompts(
+    reasoning: str, evidence: dict[str, Any], domain_context: str = "",
+) -> tuple[str, str]:
+    """Build the exact default extraction prompts for provenance hashing."""
+    system = _EXTRACTION_SYSTEM.format(domain_context=domain_context)
+    evidence_str = json.dumps(evidence, indent=2, default=str)[:3000]
+    user_prompt = _EXTRACTION_USER.format(
+        reasoning=reasoning[:8000],
+        evidence=evidence_str,
+    )
+    return system, user_prompt
 
 
 def extract_claims_claimify(
@@ -229,9 +241,12 @@ def _parse_extraction_output(raw: str, valid_types: frozenset[str] = CLAIM_TYPES
         claim_type = item.get("claim_type", "")
         if claim_type not in valid_types:
             continue
+        parameters = item.get("parameters", {})
+        if not isinstance(parameters, dict):
+            continue
         claims.append(TypedClaim(
             claim_type=claim_type,
-            parameters=item.get("parameters", {}),
+            parameters=parameters,
             source_sentence=item.get("source_sentence", "")[:500],
         ))
 
@@ -316,6 +331,9 @@ def _parse_batch_output(
         claim_type = item.get("claim_type", "")
         if claim_type not in valid_types:
             continue
+        parameters = item.get("parameters", {})
+        if not isinstance(parameters, dict):
+            continue
         total += 1
 
         finding_index = item.get("finding_index")
@@ -328,7 +346,7 @@ def _parse_batch_output(
         if finding_index is not None and 0 <= finding_index < num_items:
             claim = TypedClaim(
                 claim_type=claim_type,
-                parameters=item.get("parameters", {}),
+                parameters=parameters,
                 source_sentence=item.get("source_sentence", "")[:500],
             )
             result[finding_index].append(claim)
