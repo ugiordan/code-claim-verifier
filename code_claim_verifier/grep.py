@@ -26,10 +26,19 @@ def _run_grep(pattern: str, path: str, fixed: bool = False) -> list[str]:
     Uses 120s timeout for large repos.
     """
     import os
-    cmd = ["grep", "-rn", "--binary-files=without-match"]
+    # -H forces the filename prefix on every match. GNU grep omits it when
+    # given a single file, which breaks the "path:line:text" parsing used
+    # throughout the verifiers; BSD grep always includes it.
+    cmd = ["grep", "-rnH", "--binary-files=without-match"]
     if fixed:
         cmd.append("-F")
     else:
+        # grep -E has no (?:...) groups: GNU grep treats the dangling ? as
+        # an error ("warning: ? at start of expression") and never matches.
+        # The verifiers' templates are shared with Python re, which needs
+        # them; translate to plain groups here, where numbering does not
+        # matter because only match presence is used.
+        pattern = pattern.replace("(?:", "(")
         cmd.append("-E")
     if os.path.isdir(path):
         for ext in _SOURCE_EXTENSIONS:

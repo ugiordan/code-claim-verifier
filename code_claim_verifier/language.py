@@ -8,6 +8,14 @@ LANG_MAP = {
     ".h": "c", ".hpp": "cpp", ".rs": "rust", ".rb": "ruby",
 }
 
+# These templates are consumed by BOTH grep -E and Python re (eval GT
+# generation compiles them with re), so they must stay valid Python re.
+# grep -E does not accept (?:...) groups (GNU prints "warning: ? at start
+# of expression" and never matches; the BSD grep on macOS accepts them),
+# so grep.py translates (?: to ( at the grep boundary. Capture-group
+# numbering matters to the Python re consumers: the {name} group must
+# stay the first group that can match non-empty text.
+# {{ and }} are str.format escapes for literal braces.
 FUNCTION_DEF_PATTERNS: dict[str, str] = {
     "python": r"def\s+{name}\s*\(",
     "go": r"func\s+(?:\([^)]*\)\s+)?{name}\s*\(",
