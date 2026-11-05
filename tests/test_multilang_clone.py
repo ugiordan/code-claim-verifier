@@ -5,7 +5,6 @@ import subprocess
 import tempfile
 
 from eval.multilang.clone_repos import _repo_dir_name, _count_source_files
-from eval.multilang.constants import CandidateStatus
 
 
 def test_repo_dir_name_from_url():
@@ -35,9 +34,6 @@ def test_clone_and_checkout_on_real_git_repo():
         f.write("package main\nfunc vulnerable() {}\n")
     subprocess.run(["git", "add", "."], cwd=repo_path, capture_output=True)
     subprocess.run(["git", "commit", "-m", "vuln code"], cwd=repo_path, capture_output=True)
-    vuln_commit = subprocess.run(
-        ["git", "rev-parse", "HEAD"], cwd=repo_path, capture_output=True, text=True,
-    ).stdout.strip()
     with open(os.path.join(repo_path, "main.go"), "w") as f:
         f.write("package main\nfunc fixed() {}\n")
     subprocess.run(["git", "add", "."], cwd=repo_path, capture_output=True)

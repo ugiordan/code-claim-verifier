@@ -1,0 +1,115 @@
+name: code-claim-verifier-eval
+description: >
+  Evaluate CCV's claim verification accuracy against fixture repos.
+  Uses CCV's built-in eval with 50 test cases across Python, Go, and
+  TypeScript repos. Measures extraction F1, verification accuracy,
+  calibration ECE, and overall score.
+
+skill: code-claim-verifier
+execution:
+  mode: batch
+  arguments: --dataset eval/dataset.jsonl --fixtures eval/fixtures --output {workspace}/results/eval-result.json
+  timeout: 300
+runner:
+  type: cli
+  command:
+  - bash
+  - -c
+  - cd /Users/ugogiordano/workdir/rhoai/code-claim-verifier && mkdir -p {workspace}/results && python3 -m code_claim_verifier eval --dataset eval/dataset.jsonl --fixtures eval/fixtures --output {workspace}/results/eval-result.json
+models:
+  skill: null
+  judge: claude-opus-4-6
+dataset:
+  path: eval
+  schema: >
+    Single JSONL dataset (eval/dataset.jsonl) with 50 cases. Each case has:
+    id, reasoning (LLM text), evidence (dict), finding_file, fixture_repo
+    (python_repo|go_repo|ts_repo), ground_truth_claims (array of typed claims
+    with expected_verdict VERIFIED|REFUTED).
+    Fixture repos in eval/fixtures/ contain real source code.
+outputs:
+- path: results
+  schema: >
+    eval-result.json with per_case results, aggregate metrics
+    (extraction_f1, verification_accuracy, calibration_ece, overall_score),
+    and per_type breakdown.
+traces:
+  stdout: true
+  stderr: true
+  metrics: false
+judges:
+- name: verification_accuracy
+  description: Check verification accuracy is above 90%
+  check: |
+    import json
+    from pathlib import Path
+    result_path = None
+    for k, v in outputs.get("files", {}).items():
+        if "eval-result" in k and v:
+            try:
+                data = json.loads(v)
+                acc = data.get("summary", {}).get("verification_accuracy", 0)
+                return acc >= 0.90, f"Verification accuracy: {acc:.1%}"
+            except json.JSONDecodeError:
+                pass
+    case_dir = outputs.get("case_dir", "")
+    if case_dir:
+        for p in Path(case_dir).rglob("eval-result.json"):
+            try:
+                data = json.loads(p.read_text())
+                acc = data["summary"]["verification_accuracy"]
+                return acc >= 0.90, f"Verification accuracy: {acc:.1%}"
+            except:
+                pass
+    return False, "eval-result.json not found"
+- name: extraction_f1
+  description: Check claim extraction F1 score
+  check: |
+    import json
+    from pathlib import Path
+    case_dir = outputs.get("case_dir", "")
+    if case_dir:
+        for p in Path(case_dir).rglob("eval-result.json"):
+            try:
+                data = json.loads(p.read_text())
+                f1 = data["summary"]["extraction_f1"]
+                return f1 >= 0.80, f"Extraction F1: {f1:.1%}"
+            except:
+                pass
+    for k, v in outputs.get("files", {}).items():
+        if "eval-result" in k and v:
+            try:
+                data = json.loads(v)
+                f1 = data["summary"]["extraction_f1"]
+                return f1 >= 0.80, f"Extraction F1: {f1:.1%}"
+            except:
+                pass
+    return False, "eval-result.json not found"
+- name: overall_score
+  description: Check overall score above 85%
+  check: |
+    import json
+    from pathlib import Path
+    case_dir = outputs.get("case_dir", "")
+    if case_dir:
+        for p in Path(case_dir).rglob("eval-result.json"):
+            try:
+                data = json.loads(p.read_text())
+                score = data["summary"]["overall_score"]
+                return score >= 0.85, f"Overall score: {score:.1%}"
+            except:
+                pass
+    for k, v in outputs.get("files", {}).items():
+        if "eval-result" in k and v:
+            try:
+                data = json.loads(v)
+                score = data["summary"]["overall_score"]
+                return score >= 0.85, f"Overall score: {score:.1%}"
+            except:
+                pass
+    return False, "eval-result.json not found"
+thresholds:
+  verification_accuracy:
+    min_mean: 0.90
+  overall_score:
+    min_mean: 0.85

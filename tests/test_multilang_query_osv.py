@@ -1,8 +1,5 @@
 from __future__ import annotations
 
-import json
-from unittest.mock import patch, MagicMock
-
 from eval.multilang.query_osv import (
     _parse_osv_entry,
     _extract_fix_info,
@@ -41,7 +38,7 @@ def _make_osv_entry(
                 ],
             }
         ],
-        "severity": [{"type": "CVSS_V3", "score": f"CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"}],
+        "severity": [{"type": "CVSS_V3", "score": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"}],
         "aliases": ["CVE-2023-99999"],
     }
     return entry

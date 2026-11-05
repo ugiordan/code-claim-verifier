@@ -3,7 +3,11 @@ import os
 import tempfile
 import shutil
 
-from eval.cybergym.verify import run_ccv_verification, match_claims_to_gt
+from eval.cybergym.verify import (
+    compare_claims_to_gt,
+    match_claims_to_gt,
+    run_ccv_verification,
+)
 
 
 class TestClaimMatching:
@@ -29,6 +33,23 @@ class TestClaimMatching:
         matched = match_claims_to_gt([vc], gt)
         assert len(matched) == 1
 
+    def test_line_content_aliases_match_without_retaining_alias_keys(self):
+        from code_claim_verifier.types import TypedClaim, VerifiedClaim
+        gt = [{
+            "claim_type": "LINE_CONTENT",
+            "parameters": {"path": "main.c", "line": 1, "expected": "return 0"},
+            "expected_verdict": "VERIFIED",
+        }]
+        vc = VerifiedClaim(
+            claim=TypedClaim(
+                claim_type="LINE_CONTENT",
+                parameters={"filename": "main.c", "line": 1, "content": "return 0"},
+                source_sentence="",
+            ),
+            verdict="VERIFIED", method_confidence=0.9, evidence="", method="test",
+        )
+        assert len(match_claims_to_gt([vc], gt)) == 1
+
     def test_no_match(self):
         gt = [{"claim_type": "FILE_EXISTS", "parameters": {"path": "other.c"}, "expected_verdict": "VERIFIED"}]
         from code_claim_verifier.types import TypedClaim, VerifiedClaim
@@ -38,6 +59,29 @@ class TestClaimMatching:
         )
         matched = match_claims_to_gt([vc], gt)
         assert len(matched) == 0
+
+    def test_full_comparison_retains_unmatched_items(self):
+        from code_claim_verifier.types import TypedClaim, VerifiedClaim
+
+        vc = VerifiedClaim(
+            claim=TypedClaim(
+                claim_type="FILE_EXISTS",
+                parameters={"filename": "main.c"},
+                source_sentence="",
+            ),
+            verdict="VERIFIED", method_confidence=0.99,
+            evidence="exists", method="test",
+        )
+        gt = [
+            {"claim_type": "FILE_EXISTS", "parameters": {"path": "main.c"},
+             "expected_verdict": "VERIFIED"},
+            {"claim_type": "FUNCTION_EXISTS", "parameters": {"name": "foo"},
+             "expected_verdict": "VERIFIED"},
+        ]
+        compared = compare_claims_to_gt([vc], gt)
+        assert compared[0]["status"] == "matched"
+        assert compared[1]["status"] == "unmatched_ground_truth"
+        assert all(item["status"] != "unmatched_prediction" for item in compared)
 
 
 class TestCCVVerification:

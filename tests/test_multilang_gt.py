@@ -8,7 +8,6 @@ from eval.multilang.generate_gt import (
     generate_refuted_gt,
     validate_negatives,
     _extract_imports,
-    _extract_call_sites,
 )
 
 
