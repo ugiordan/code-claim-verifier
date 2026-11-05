@@ -16,8 +16,8 @@ _EXTRACTION_SYSTEM = """You are a claim extractor that identifies verifiable fac
 Given an LLM's reasoning about a codebase, extract every factual claim it makes that can be checked against the actual code. Each claim must be one of these types:
 
 FILE CLAIMS: FILE_EXISTS, LINE_CONTENT, FILE_CLASSIFICATION, GENERATED_OR_VENDORED
-FUNCTION CLAIMS: FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS
-DEPENDENCY CLAIMS: IMPORT_EXISTS, PACKAGE_VERSION, PACKAGE_ABSENT, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION, VERSION_IN_RANGE, UPGRADE_FIXES
+FUNCTION CLAIMS: FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS, VULNERABLE_SYMBOL_CALLED
+DEPENDENCY CLAIMS: IMPORT_EXISTS, PACKAGE_VERSION, PACKAGE_ABSENT, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION, VERSION_IN_RANGE, UPGRADE_FIXES, REDHAT_VEX_STATUS
 CODE CLAIMS: ABSENCE, MITIGATION_EXISTS, ENTRY_POINT
 AUTH/CONFIG CLAIMS: CALL_CHAIN, DEFAULT_VALUE, CONFIG_FLAG
 
@@ -34,6 +34,8 @@ Rules:
 - Extract PACKAGE_ABSENT when the LLM says a package is NOT a dependency of the project ("we don't use X", "X was removed")
 - Extract VERSION_IN_RANGE when the LLM claims a version is inside or outside an advisory's affected range; include "version", "range", and "ecosystem"
 - Extract UPGRADE_FIXES when the LLM claims upgrading to a version fixes a CVE; include "upgrade" and "fixed_in"
+- Extract VULNERABLE_SYMBOL_CALLED when the LLM claims a specific vulnerable function in a package is (or is not) called from shipped code; include "function" and "package"
+- Extract REDHAT_VEX_STATUS when the LLM cites a Red Hat Product Security assessment; include "cve_id", "expected_status", "product_prefix", and "component"
 - Extract CALL_CHAIN when the LLM traces a multi-file function call path (authentication chains, request handling pipelines)
 - Extract DEFAULT_VALUE when the LLM claims a config/variable defaults to permissive or restrictive behavior when empty/nil
 - Extract CONFIG_FLAG when the LLM claims a specific flag is set to a specific value

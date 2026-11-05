@@ -537,6 +537,21 @@ class VerificationEngine:
                     method_confidence=conf,
                     evidence=f"CPG: {len(callers)} callers",
                     method="cpg_callers",
+                    reachability_detail="symbol_called",
+                )
+            # The symbol is indexed but has no callers in the graph:
+            # a comprehensive zero-call-site determination, stronger
+            # than falling through to grep.
+            node = cpg.function_exists(name)
+            if node:
+                return VerifiedClaim(
+                    claim=claim,
+                    verdict="VERIFIED" if not expected else "REFUTED",
+                    method_confidence=0.90,
+                    evidence=(f"CPG: {name} at {node['file']}:{node['line']} "
+                              "has zero callers in the call graph"),
+                    method="cpg_callers",
+                    reachability_detail="no_call_sites",
                 )
             return None
 
@@ -857,6 +872,21 @@ class VerificationEngine:
                     method_confidence=0.90,
                     evidence=f"cymbal: {len(callers)} callers ({caller_names})",
                     method="cymbal_callers",
+                    reachability_detail="symbol_called",
+                )
+            # The symbol is in the AST index with no callers: the
+            # static analysis confirms zero call sites.
+            node = cymbal.function_exists(name)
+            if node:
+                return VerifiedClaim(
+                    claim=claim,
+                    verdict="VERIFIED" if not expected else "REFUTED",
+                    method_confidence=0.90,
+                    evidence=(f"cymbal: {name} defined at "
+                              f"{node.get('rel_path', '')}:"
+                              f"{node.get('start_line', '')} has zero callers"),
+                    method="cymbal_callers",
+                    reachability_detail="no_call_sites",
                 )
             return None
 

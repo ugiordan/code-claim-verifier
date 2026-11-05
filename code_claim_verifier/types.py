@@ -8,7 +8,7 @@ CLAIM_TYPES = frozenset({
     "FILE_EXISTS", "LINE_CONTENT", "FILE_CLASSIFICATION", "GENERATED_OR_VENDORED",
     "FUNCTION_EXISTS", "FUNCTION_CALLED", "HAS_CALLERS",
     "IMPORT_EXISTS", "PACKAGE_VERSION", "PACKAGE_ABSENT", "DEPENDENCY_TYPE", "CVE_AFFECTS_VERSION",
-    "VERSION_IN_RANGE", "UPGRADE_FIXES",
+    "VERSION_IN_RANGE", "UPGRADE_FIXES", "VULNERABLE_SYMBOL_CALLED", "REDHAT_VEX_STATUS",
     "ABSENCE", "MITIGATION_EXISTS", "ENTRY_POINT",
     "CALL_CHAIN", "DEFAULT_VALUE", "CONFIG_FLAG",
 })
@@ -37,6 +37,13 @@ class VerifiedClaim:
     suspect_reason: str | None = None
     synthesized: bool = False
     verification_source: str | None = None
+    # Presence-vs-reachability distinction for call-path claims:
+    # "symbol_called"    the specific symbol appears in a call path
+    # "package_imported" the package is imported but the symbol has no
+    #                    call sites (presence, not reachability)
+    # "no_call_sites"    static analysis confirms zero call sites
+    # None               no call-graph evidence for this claim
+    reachability_detail: str | None = None
 
 
 @dataclass
@@ -82,6 +89,7 @@ class VerificationReport:
                     "evidence": vc.evidence[:500],
                     "method": vc.method,
                     "verification_source": vc.verification_source,
+                    "reachability_detail": vc.reachability_detail,
                     "suspect_reason": vc.suspect_reason,
                     "synthesized": vc.synthesized,
                 }

@@ -94,6 +94,7 @@ def verify_function_called(claim: TypedClaim, repo_path: str, language: str) -> 
         evidence=f"{'Found' if found else 'No'} call sites ({len(call_only)} matches). "
                  + (call_only[0][:200] if call_only else ""),
         method="grep_call_site",
+        reachability_detail="symbol_called" if found else "no_call_sites",
     )
 
 
@@ -125,4 +126,5 @@ def verify_has_callers(claim: TypedClaim, repo_path: str, language: str) -> Veri
         method_confidence=0.65,
         evidence=f"callers={'yes' if has else 'no'} ({len(call_only)} call sites)",
         method="grep_callers",
+        reachability_detail="symbol_called" if has else "no_call_sites",
     )

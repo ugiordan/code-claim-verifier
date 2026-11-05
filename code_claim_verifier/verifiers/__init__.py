@@ -2,6 +2,8 @@ from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.verifiers.file_claims import verify_file_exists, verify_line_content, verify_file_classification, verify_generated_or_vendored
 from code_claim_verifier.verifiers.symbol_claims import verify_function_exists, verify_function_called, verify_has_callers
 from code_claim_verifier.verifiers.import_claims import verify_import_exists, verify_package_version, verify_package_absent, verify_dependency_type, verify_cve_affects, verify_version_in_range, verify_upgrade_fixes
+from code_claim_verifier.verifiers.reachability_claims import verify_vulnerable_symbol_called
+from code_claim_verifier.verifiers.vex_claims import verify_redhat_vex_status
 from code_claim_verifier.verifiers.security_claims import verify_absence, verify_mitigation_exists, verify_entry_point
 from code_claim_verifier.verifiers.auth_claims import verify_call_chain, verify_default_value, verify_config_flag
 
@@ -11,7 +13,8 @@ from code_claim_verifier.verifiers.auth_claims import verify_call_chain, verify_
 # stale; "source_code" covers direct file reads and grep-based checks.
 VERIFICATION_SOURCES = frozenset({
     "source_code", "lockfile", "manifest", "cpg", "cymbal",
-    "call_graph", "osv_api", "version_compare", "config", "unknown",
+    "call_graph", "osv_api", "vex_api", "version_compare", "config",
+    "unknown",
 })
 
 _METHOD_SOURCE_PREFIXES = (
@@ -25,6 +28,8 @@ _METHOD_SOURCE_EXACT = {
     "lockfile_parse": "lockfile",
     "manifest_parse": "manifest",
     "osv_api": "osv_api",
+    "vex_api": "vex_api",
+    "reachability_trace": "source_code",
     "version_compare": "version_compare",
     "call_chain": "call_graph",
     "file_read": "source_code",
@@ -62,6 +67,8 @@ VERIFIER_REGISTRY: dict[str, callable] = {
     "PACKAGE_ABSENT": verify_package_absent,
     "VERSION_IN_RANGE": verify_version_in_range,
     "UPGRADE_FIXES": verify_upgrade_fixes,
+    "VULNERABLE_SYMBOL_CALLED": verify_vulnerable_symbol_called,
+    "REDHAT_VEX_STATUS": verify_redhat_vex_status,
     "DEPENDENCY_TYPE": verify_dependency_type,
     "CVE_AFFECTS_VERSION": verify_cve_affects,
     "ABSENCE": verify_absence,
