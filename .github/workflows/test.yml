@@ -1,0 +1,28 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package and test dependencies
+        run: python -m pip install ".[test,lint]"
+
+      - name: Run tests
+        run: python -m pytest
+
+      - name: Run lint
+        run: ruff check code_claim_verifier eval/cybergym eval/multiswe eval/multilang/*.py eval/provenance.py eval/audit_results.py tests --exclude 'tests/fixtures/**'

@@ -73,7 +73,6 @@ def _extract_severity(entry: dict) -> str:
             for part in parts:
                 if part.startswith("AV:"):
                     continue
-            base = float(score_str.split("/")[0].split(":")[-1]) if ":" in score_str else 0
         except (ValueError, IndexError):
             pass
         # Bug #8 fix: Only parse CVSS v3.x, skip v4.0 and v2.0
@@ -332,13 +331,11 @@ def query_ecosystem(ecosystem: str, min_stars: int = 100,
     if min_stars > 0:
         filtered = []
         seen_repos: dict[str, int | None] = {}
-        gh_missing = False
         for c in candidates:
             repo = c["repo_url"]
             if repo not in seen_repos:
                 stars = _get_star_count(repo)
                 if stars is None:
-                    gh_missing = True
                     filtered = candidates
                     break
                 seen_repos[repo] = stars

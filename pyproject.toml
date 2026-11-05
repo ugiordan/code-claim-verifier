@@ -5,9 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "code-claim-verifier"
 version = "0.5.0"
-description = "Deterministic verification of LLM security triage claims against source code"
+description = "Tool-backed verification of LLM security triage claims against source code"
 readme = "README.md"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 requires-python = ">=3.9"
 authors = [
     {name = "Ugo Giordano"},
@@ -32,9 +32,23 @@ Repository = "https://github.com/ugiordan/code-claim-verifier"
 anthropic = ["anthropic>=0.20"]
 openai = ["openai>=1.0"]
 test = ["pytest>=7.0"]
+lint = ["ruff>=0.15"]
 
 [project.scripts]
 ccv = "code_claim_verifier.cli:main"
 
-[tool.setuptools.packages.find]
-include = ["code_claim_verifier*"]
+[tool.setuptools]
+packages = [
+    "code_claim_verifier",
+    "code_claim_verifier.eval",
+    "code_claim_verifier.providers",
+    "code_claim_verifier.verifiers",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff.lint.per-file-ignores]
+"eval/cybergym/*.py" = ["E402"]
+"eval/multiswe/*.py" = ["E402"]

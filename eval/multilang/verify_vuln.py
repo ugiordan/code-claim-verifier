@@ -5,7 +5,6 @@ import os
 import subprocess
 
 from code_claim_verifier.engine import VerificationEngine
-from code_claim_verifier.types import TypedClaim
 from eval.cybergym.utils import load_jsonl, save_jsonl, SOURCE_EXTENSIONS
 from eval.multilang.constants import CandidateStatus
 
@@ -77,7 +76,6 @@ def _verify_via_ccv(description: str, source_path: str, language: str) -> tuple[
 
 
 def verify_vulnerability(candidate: dict, base_dir: str) -> dict:
-    osv_id = candidate["osv_id"]
     source_root = candidate.get("source_root", "")
     fix_commit = candidate.get("fix_commit", "")
     language = candidate.get("language", "unknown")
