@@ -9,9 +9,10 @@ class TestRQ1:
             {"model": "claude", "ccv": {"total_claims": 3, "verified": 1, "refuted": 2, "verification_rate": 0.33}},
         ]
         rq1 = compute_rq1(results)
-        assert "claude" in rq1
-        assert rq1["claude"]["total_claims"] == 8
-        assert rq1["claude"]["total_refuted"] == 3
+        assert "claude/informed" in rq1
+        assert rq1["claude/informed"]["total_claims"] == 8
+        assert rq1["claude/informed"]["total_refuted"] == 3
+        assert rq1["claude/informed"]["refutation_rate"] == 0.375
 
 
 class TestRQ2:

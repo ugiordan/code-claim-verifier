@@ -4,7 +4,6 @@ import tempfile
 import shutil
 
 from eval.cybergym.prepare import scan_repo, build_manifest
-from eval.cybergym.utils import find_source_root
 
 
 class TestScanRepo:
@@ -37,7 +36,7 @@ class TestBuildManifest:
         with open(os.path.join(src_vul, "main.c"), "w") as f:
             f.write("void foo() {}\n")
         try:
-            manifest = build_manifest(d)
+            manifest = build_manifest(d, dataset_revision="a" * 40)
             assert len(manifest) == 1
             assert manifest[0]["vuln_id"] == "proj-arvo-100"
         finally:
