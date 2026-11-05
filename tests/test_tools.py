@@ -24,8 +24,8 @@ class TestToolSchemas:
         v = CodeClaimVerifier(llm_function=mock_llm, repo_path=FIXTURE)
         v.register(
             "MY_TYPE",
-            lambda c, r, l: VerifiedClaim(
-                claim=c, verdict="VERIFIED", method_confidence=0.5,
+            lambda claim, repo, language: VerifiedClaim(
+                claim=claim, verdict="VERIFIED", method_confidence=0.5,
                 evidence="", method="test",
             ),
             extraction_hint="MY_TYPE: {x: str} - test",

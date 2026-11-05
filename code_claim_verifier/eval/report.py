@@ -24,7 +24,10 @@ def generate_report(
     extraction_f1 = extraction.get("f1", 0.0)
     verification_acc = verification.get("accuracy", 0.0)
     calibration_ece = calibration.get("ece", 0.0)
-    calibration_score = 1.0 - calibration_ece
+    calibration_score = (
+        1.0 - calibration_ece
+        if verification.get("total", 0) > 0 else 0.0
+    )
 
     components = [extraction_f1, verification_acc, calibration_score]
     overall = sum(components) / len(components) if components else 0.0

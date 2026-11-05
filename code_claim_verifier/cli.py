@@ -21,7 +21,7 @@ CLAIM_SCHEMAS: dict[str, dict] = {
             "line": {"type": "integer", "description": "Expected line number (approximate)"},
             "content": {"type": "string", "description": "Expected content substring"},
         },
-        "required": ["path", "content"],
+        "required": ["path", "line", "content"],
     },
     "FILE_CLASSIFICATION": {
         "description": "Assert a file's classification (e.g., test, config, source)",
@@ -105,13 +105,13 @@ CLAIM_SCHEMAS: dict[str, dict] = {
         "required": ["pattern"],
     },
     "MITIGATION_EXISTS": {
-        "description": "Assert that a security mitigation or safeguard exists",
+        "description": "Assert that a concrete mitigation code pattern exists",
         "parameters": {
-            "mitigation": {"type": "string", "description": "Description of the mitigation"},
+            "mitigation": {"type": "string", "description": "Optional description of the mitigation"},
             "file": {"type": "string", "description": "File where mitigation should exist"},
             "pattern": {"type": "string", "description": "Code pattern to search for"},
         },
-        "required": ["mitigation"],
+        "required": ["pattern", "file"],
     },
     "ENTRY_POINT": {
         "description": "Assert that a function or endpoint is an entry point (externally reachable)",
@@ -189,6 +189,11 @@ def _cmd_eval(args: argparse.Namespace) -> None:
         dataset_path=args.dataset,
         fixtures_path=args.fixtures,
         mock_extraction=args.mock_extraction,
+        llm_function=(
+            _make_llm_function(args.llm_provider, args.model)
+            if not args.mock_extraction else None
+        ),
+        domain_context=args.domain_context or "",
     )
     if args.output:
         write_report(report, args.output)
@@ -316,6 +321,12 @@ def main(argv: list[str] | None = None) -> None:
         "--no-mock-extraction", action="store_false", dest="mock_extraction",
         help="Disable mock extraction and use LLM extraction instead",
     )
+    sub_eval.add_argument(
+        "--llm-provider", choices=["anthropic", "openai", "opencode"],
+        default="anthropic", help="Provider for non-mock extraction",
+    )
+    sub_eval.add_argument("--model", default=None, help="Model for non-mock extraction")
+    sub_eval.add_argument("--domain-context", default="", help="Extraction context")
     sub_eval.set_defaults(mock_extraction=True)
     sub_eval.set_defaults(func=_cmd_eval)
 

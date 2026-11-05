@@ -1,12 +1,15 @@
 """Tests for the evaluation framework."""
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from code_claim_verifier.types import TypedClaim
 from code_claim_verifier.eval.extraction_eval import claims_match, compute_extraction_metrics
 from code_claim_verifier.eval.verification_eval import compute_verification_metrics
 from code_claim_verifier.eval.calibration_eval import compute_calibration_metrics
+from code_claim_verifier.eval.runner import run_evaluation
 
 
 # ------------------------------------------------------------------
@@ -161,3 +164,73 @@ class TestCalibrationMetrics:
         metrics = compute_calibration_metrics([])
         assert metrics["ece"] == 0.0
         assert metrics["per_type_accuracy"] == {}
+
+
+class TestEvaluationRunner:
+    def test_non_mock_requires_an_extractor(self, tmp_path):
+        dataset = tmp_path / "dataset.jsonl"
+        dataset.write_text(json.dumps({
+            "id": "one",
+            "fixture_repo": "python_repo",
+            "finding_file": "main.py",
+            "reasoning": "main.py exists",
+            "ground_truth_claims": [{
+                "claim_type": "FILE_EXISTS",
+                "parameters": {"path": "main.py"},
+                "expected_verdict": "VERIFIED",
+            }],
+        }) + "\n")
+        with pytest.raises(ValueError, match="llm_function"):
+            run_evaluation(
+                str(dataset), "eval/fixtures", mock_extraction=False,
+            )
+
+    def test_non_mock_runs_real_extraction(self, tmp_path):
+        dataset = tmp_path / "dataset.jsonl"
+        dataset.write_text(json.dumps({
+            "id": "one",
+            "fixture_repo": "python_repo",
+            "finding_file": "main.py",
+            "reasoning": "main.py exists",
+            "ground_truth_claims": [{
+                "claim_type": "FILE_EXISTS",
+                "parameters": {"path": "main.py"},
+                "expected_verdict": "VERIFIED",
+            }],
+        }) + "\n")
+
+        def fake_llm(_system, _user):
+            return '[{"claim_type":"FILE_EXISTS","parameters":{"path":"main.py"},"source_sentence":"main.py exists"}]'
+
+        report = run_evaluation(
+            str(dataset), "eval/fixtures", mock_extraction=False,
+            llm_function=fake_llm,
+        )
+        assert report["extraction"]["f1"] == 1.0
+        assert report["verification"]["total"] == 1
+        assert report["summary"]["overall_score"] > 0
+
+    def test_non_mock_reports_unmatched_claims_without_inflating_accuracy(self, tmp_path):
+        dataset = tmp_path / "dataset.jsonl"
+        dataset.write_text(json.dumps({
+            "id": "one",
+            "fixture_repo": "python_repo",
+            "finding_file": "main.py",
+            "reasoning": "other.py exists",
+            "ground_truth_claims": [{
+                "claim_type": "FILE_EXISTS",
+                "parameters": {"path": "main.py"},
+                "expected_verdict": "VERIFIED",
+            }],
+        }) + "\n")
+
+        def fake_llm(_system, _user):
+            return '[{"claim_type":"FILE_EXISTS","parameters":{"path":"other.py"},"source_sentence":"other.py exists"}]'
+
+        report = run_evaluation(
+            str(dataset), "eval/fixtures", mock_extraction=False,
+            llm_function=fake_llm,
+        )
+        assert report["verification"]["total"] == 0
+        assert report["verification"]["unmatched_predictions"] == 1
+        assert report["verification"]["unmatched_ground_truth"] == 1
