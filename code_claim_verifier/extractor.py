@@ -17,7 +17,7 @@ Given an LLM's reasoning about a codebase, extract every factual claim it makes 
 
 FILE CLAIMS: FILE_EXISTS, LINE_CONTENT, FILE_CLASSIFICATION, GENERATED_OR_VENDORED
 FUNCTION CLAIMS: FUNCTION_EXISTS, FUNCTION_CALLED, HAS_CALLERS
-DEPENDENCY CLAIMS: IMPORT_EXISTS, PACKAGE_VERSION, PACKAGE_ABSENT, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION
+DEPENDENCY CLAIMS: IMPORT_EXISTS, PACKAGE_VERSION, PACKAGE_ABSENT, DEPENDENCY_TYPE, CVE_AFFECTS_VERSION, VERSION_IN_RANGE, UPGRADE_FIXES
 CODE CLAIMS: ABSENCE, MITIGATION_EXISTS, ENTRY_POINT
 AUTH/CONFIG CLAIMS: CALL_CHAIN, DEFAULT_VALUE, CONFIG_FLAG
 
@@ -32,6 +32,8 @@ Examples of AUTH/CONFIG claims:
 Rules:
 - Extract ABSENCE claims when the LLM says something does NOT exist
 - Extract PACKAGE_ABSENT when the LLM says a package is NOT a dependency of the project ("we don't use X", "X was removed")
+- Extract VERSION_IN_RANGE when the LLM claims a version is inside or outside an advisory's affected range; include "version", "range", and "ecosystem"
+- Extract UPGRADE_FIXES when the LLM claims upgrading to a version fixes a CVE; include "upgrade" and "fixed_in"
 - Extract CALL_CHAIN when the LLM traces a multi-file function call path (authentication chains, request handling pipelines)
 - Extract DEFAULT_VALUE when the LLM claims a config/variable defaults to permissive or restrictive behavior when empty/nil
 - Extract CONFIG_FLAG when the LLM claims a specific flag is set to a specific value

@@ -12,6 +12,7 @@ from code_claim_verifier.lockfiles import (
     find_lockfiles,
     parse_lockfile,
 )
+from code_claim_verifier.versioning import compare, fixes, in_range, normalize_ecosystem
 
 
 def verify_import_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
@@ -264,6 +265,26 @@ def verify_cve_affects(claim: TypedClaim, repo_path: str, language: str) -> Veri
             evidence="Missing package or version parameter", method="osv_api",
         )
 
+    # Offline first: when the claim carries the advisory's affected range,
+    # compare deterministically without a network round-trip.
+    range_spec = (claim.parameters.get("affected_range")
+                  or claim.parameters.get("range")
+                  or "")
+    if isinstance(range_spec, str) and range_spec:
+        ecosystem = _claim_ecosystem(claim, language)
+        try:
+            affected = in_range(version, range_spec, ecosystem)
+            return VerifiedClaim(
+                claim=claim,
+                verdict="VERIFIED" if affected else "REFUTED",
+                method_confidence=0.95,
+                evidence=(f"offline range check ({ecosystem}): {version} "
+                          f"{'is' if affected else 'is not'} in '{range_spec}'"),
+                method="version_compare", verification_source="version_compare",
+            )
+        except ValueError:
+            pass  # fall through to the OSV API
+
     try:
         import urllib.request
         import json as _json
@@ -316,3 +337,93 @@ def verify_cve_affects(claim: TypedClaim, repo_path: str, language: str) -> Veri
             evidence=f"OSV API error: {str(e)[:200]}", method="osv_api",
             error=str(e)[:200],
         )
+
+
+def _claim_ecosystem(claim: TypedClaim, language: str) -> str:
+    return normalize_ecosystem(
+        claim.parameters.get("ecosystem") or language or "semver"
+    )
+
+
+def verify_version_in_range(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
+    """Offline affected-range check: "version X is in range R" (or not)."""
+    version = (claim.parameters.get("version")
+               or claim.parameters.get("installed")
+               or "")
+    range_spec = (claim.parameters.get("range")
+                  or claim.parameters.get("affected_range")
+                  or claim.parameters.get("range_spec")
+                  or "")
+    expected = claim.parameters.get("expected", True)
+
+    if not version or not range_spec or not isinstance(version, str) \
+            or not isinstance(range_spec, str):
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence="Version and range are required for a range check",
+            method="version_compare", verification_source="version_compare",
+        )
+
+    ecosystem = _claim_ecosystem(claim, language)
+    try:
+        affected = in_range(version, range_spec, ecosystem)
+    except ValueError as exc:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Unparsable version or range: {exc}", method="version_compare",
+            error=str(exc)[:200], verification_source="version_compare",
+        )
+
+    matches = affected == bool(expected)
+    cve = claim.parameters.get("cve", "")
+    cve_text = f" for {cve}" if cve else ""
+    return VerifiedClaim(
+        claim=claim, verdict="VERIFIED" if matches else "REFUTED",
+        method_confidence=0.95,
+        evidence=(f"{version} {'is' if affected else 'is not'} in range "
+                  f"'{range_spec}' ({ecosystem}){cve_text}"),
+        method="version_compare", verification_source="version_compare",
+    )
+
+
+def verify_upgrade_fixes(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
+    """Offline fixed-in check: "upgrading to X fixes the CVE"."""
+    upgrade = (claim.parameters.get("upgrade")
+               or claim.parameters.get("version")
+               or "")
+    fixed_in = (claim.parameters.get("fixed_in")
+                or claim.parameters.get("fixed_version")
+                or "")
+    installed = claim.parameters.get("installed", "")
+
+    if not isinstance(upgrade, str) or not isinstance(fixed_in, str) \
+            or not upgrade or not fixed_in:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence="Upgrade and fixed_in versions are required",
+            method="version_compare", verification_source="version_compare",
+        )
+
+    ecosystem = _claim_ecosystem(claim, language)
+    try:
+        reaches = fixes(upgrade, fixed_in, ecosystem)
+    except ValueError as exc:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Unparsable version: {exc}", method="version_compare",
+            error=str(exc)[:200], verification_source="version_compare",
+        )
+
+    evidence = (f"{upgrade} {'reaches' if reaches else 'does not reach'} "
+                f"fixed version {fixed_in} ({ecosystem})")
+    if isinstance(installed, str) and installed:
+        try:
+            below = compare(installed, fixed_in, ecosystem) < 0
+            evidence += f"; installed {installed} is {'below' if below else 'at or above'} the fix"
+        except ValueError:
+            pass
+    return VerifiedClaim(
+        claim=claim, verdict="VERIFIED" if reaches else "REFUTED",
+        method_confidence=0.95, evidence=evidence, method="version_compare",
+        verification_source="version_compare",
+    )
