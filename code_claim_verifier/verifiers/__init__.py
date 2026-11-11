@@ -3,7 +3,11 @@ from code_claim_verifier.verifiers.file_claims import verify_file_exists, verify
 from code_claim_verifier.verifiers.symbol_claims import verify_function_exists, verify_function_called, verify_has_callers
 from code_claim_verifier.verifiers.import_claims import verify_import_exists, verify_package_version, verify_package_absent, verify_dependency_type, verify_cve_affects, verify_version_in_range, verify_upgrade_fixes
 from code_claim_verifier.verifiers.reachability_claims import verify_vulnerable_symbol_called
-from code_claim_verifier.verifiers.vex_claims import verify_redhat_vex_status
+from code_claim_verifier.verifiers.vex_claims import (
+    VexAssessment as VexAssessment,
+    fetch_redhat_vex_assessment as fetch_redhat_vex_assessment,
+    verify_redhat_vex_status,
+)
 from code_claim_verifier.verifiers.security_claims import verify_absence, verify_mitigation_exists, verify_entry_point
 from code_claim_verifier.verifiers.auth_claims import verify_call_chain, verify_default_value, verify_config_flag
 

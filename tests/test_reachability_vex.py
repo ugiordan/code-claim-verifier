@@ -7,9 +7,10 @@ import urllib.request
 
 
 from code_claim_verifier.engine import VerificationEngine
+from code_claim_verifier import VexAssessment, fetch_redhat_vex_assessment
 from code_claim_verifier.types import TypedClaim
 from code_claim_verifier.verifiers import safe_verify
-from code_claim_verifier.verifiers.vex_claims import clear_vex_cache
+from code_claim_verifier.verifiers.vex_claims import VEX_BASE_URL, clear_vex_cache
 
 
 def _claim(claim_type: str, parameters: dict) -> TypedClaim:
@@ -207,6 +208,60 @@ class TestRedhatVexStatus:
                 raise response
             return _FakeResponse(response)
         monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+
+    def test_public_assessment_returns_structured_match(self, monkeypatch):
+        document = _csaf(
+            {"known_not_affected": [f"{_PREFIX}:ncurses-libs"]},
+            flags=[{"label": "component_not_present",
+                    "product_ids": [f"{_PREFIX}:ncurses-libs"]}],
+        )
+        self._install(monkeypatch, document)
+
+        assessment = fetch_redhat_vex_assessment(
+            "CVE-2026-1234", _PREFIX, "ncurses-libs",
+        )
+
+        assert isinstance(assessment, VexAssessment)
+        assert assessment.cve_id == "CVE-2026-1234"
+        assert assessment.requested_product_id == f"{_PREFIX}:ncurses-libs"
+        assert assessment.status == "known_not_affected"
+        assert assessment.justification == "component_not_present"
+        assert assessment.product_id == f"{_PREFIX}:ncurses-libs"
+        assert assessment.match_quality == "exact"
+        assert assessment.gap_reason is None
+        assert assessment.source_url == (
+            f"{VEX_BASE_URL}/2026/cve-2026-1234.json"
+        )
+
+    def test_public_assessment_reports_ambiguous_product(self, monkeypatch):
+        self._install(
+            monkeypatch,
+            _csaf({"known_not_affected": ["red_hat_enterprise_linux_8:ncurses-libs"]}),
+        )
+
+        assessment = fetch_redhat_vex_assessment(
+            "CVE-2026-1234", _PREFIX, "ncurses-libs",
+        )
+
+        assert assessment.status is None
+        assert assessment.product_id is None
+        assert assessment.match_quality == "ambiguous"
+        assert assessment.gap_reason == "component_under_different_product_prefix"
+        assert assessment.other_product_prefixes == ("red_hat_enterprise_linux_8",)
+
+    def test_public_assessment_reports_missing_document(self, monkeypatch):
+        self._install(
+            monkeypatch,
+            urllib.error.HTTPError("u", 404, "Not Found", None, None),
+        )
+
+        assessment = fetch_redhat_vex_assessment(
+            "CVE-2026-1234", _PREFIX, "ncurses-libs",
+        )
+
+        assert assessment.match_quality == "unavailable"
+        assert assessment.gap_reason == "no_vex_document"
+        assert assessment.source_url is not None
 
     def test_exact_match_with_justification_verifies(self, monkeypatch, tmp_path):
         document = _csaf(

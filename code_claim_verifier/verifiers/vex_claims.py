@@ -26,6 +26,8 @@ import json
 import re
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
+from typing import Literal
 
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 
@@ -46,10 +48,33 @@ _STATUS_PRIORITY = ("known_affected", "under_investigation",
 # confirmed miss. Network errors are not cached; each claim retries.
 _VEX_CACHE: dict[str, dict | None] = {}
 
+VexMatchQuality = Literal["exact", "ambiguous", "none", "unavailable"]
+
+
+@dataclass(frozen=True)
+class VexAssessment:
+    cve_id: str
+    requested_product_id: str
+    status: str | None
+    justification: str | None
+    product_id: str | None
+    match_quality: VexMatchQuality
+    gap_reason: str | None
+    source_url: str | None
+    total_products: int = 0
+    other_product_prefixes: tuple[str, ...] = ()
+
 
 def clear_vex_cache() -> None:
     """Reset the per-run VEX document cache (used by tests)."""
     _VEX_CACHE.clear()
+
+
+def _vex_document_url(cve_id: str) -> str | None:
+    match = _CVE_RE.match(cve_id.strip())
+    if match is None:
+        return None
+    return f"{VEX_BASE_URL}/{match.group(1)}/{cve_id.strip().lower()}.json"
 
 
 def _fetch_vex_document(cve_id: str) -> tuple[dict | None, str | None]:
@@ -58,10 +83,9 @@ def _fetch_vex_document(cve_id: str) -> tuple[dict | None, str | None]:
     Returns (document, None) or (None, reason) where reason is one of
     "no_vex_document" (confirmed 404) or "vex_unreachable".
     """
-    match = _CVE_RE.match(cve_id.strip())
-    if match is None:
+    url = _vex_document_url(cve_id)
+    if url is None:
         return None, "invalid_cve_id"
-    url = f"{VEX_BASE_URL}/{match.group(1)}/{cve_id.strip().lower()}.json"
     if url in _VEX_CACHE:
         cached = _VEX_CACHE[url]
         return cached, None if cached is not None else "no_vex_document"
@@ -94,6 +118,118 @@ def _find_vulnerability(document: dict, cve_id: str) -> dict | None:
     return None
 
 
+def fetch_redhat_vex_assessment(
+    cve_id: str, product_prefix: str, component: str,
+) -> VexAssessment:
+    """Fetch Red Hat CSAF/VEX data and assess one product component."""
+    requested_product_id = f"{product_prefix}:{component}"
+    source_url = _vex_document_url(cve_id)
+    if not (cve_id and product_prefix and component):
+        return VexAssessment(
+            cve_id=cve_id,
+            requested_product_id=requested_product_id,
+            status=None,
+            justification=None,
+            product_id=None,
+            match_quality="unavailable",
+            gap_reason="missing_parameters",
+            source_url=source_url,
+        )
+
+    document, reason = _fetch_vex_document(cve_id)
+    if document is None:
+        return VexAssessment(
+            cve_id=cve_id,
+            requested_product_id=requested_product_id,
+            status=None,
+            justification=None,
+            product_id=None,
+            match_quality="unavailable",
+            gap_reason=reason or "vex_unreachable",
+            source_url=source_url,
+        )
+
+    vulnerability = _find_vulnerability(document, cve_id)
+    if vulnerability is None:
+        return VexAssessment(
+            cve_id=cve_id,
+            requested_product_id=requested_product_id,
+            status=None,
+            justification=None,
+            product_id=None,
+            match_quality="none",
+            gap_reason="cve_not_in_document",
+            source_url=source_url,
+        )
+
+    product_status = vulnerability.get("product_status") or {}
+    exact_id = requested_product_id
+    exact_statuses: list[str] = []
+    component_elsewhere: set[str] = set()
+    total_products = 0
+    for branch, ids in product_status.items():
+        if branch not in _BRANCH_STATUSES:
+            continue
+        for product_id in ids or []:
+            total_products += 1
+            if product_id == exact_id:
+                exact_statuses.append(branch)
+            elif product_id.rsplit(":", 1)[-1] == component:
+                component_elsewhere.add(product_id.rsplit(":", 1)[0])
+
+    if not exact_statuses:
+        if component_elsewhere:
+            return VexAssessment(
+                cve_id=cve_id,
+                requested_product_id=requested_product_id,
+                status=None,
+                justification=None,
+                product_id=None,
+                match_quality="ambiguous",
+                gap_reason="component_under_different_product_prefix",
+                source_url=source_url,
+                total_products=total_products,
+                other_product_prefixes=tuple(sorted(component_elsewhere)),
+            )
+        return VexAssessment(
+            cve_id=cve_id,
+            requested_product_id=requested_product_id,
+            status=None,
+            justification=None,
+            product_id=None,
+            match_quality="none",
+            gap_reason="product_not_in_document",
+            source_url=source_url,
+            total_products=total_products,
+        )
+
+    actual = next(
+        (status for status in _STATUS_PRIORITY if status in exact_statuses),
+        exact_statuses[0],
+    )
+
+    justification = None
+    if actual == "known_not_affected":
+        for flag in vulnerability.get("flags") or []:
+            if exact_id in (flag.get("product_ids") or []):
+                justification = flag.get("label")
+                break
+
+    return VexAssessment(
+        cve_id=cve_id,
+        requested_product_id=requested_product_id,
+        status=actual,
+        justification=justification,
+        product_id=exact_id,
+        match_quality="exact",
+        gap_reason=("missing_justification"
+                    if actual == "known_not_affected" and justification is None
+                    else None),
+        source_url=source_url,
+        total_products=total_products,
+    )
+
+
 def verify_redhat_vex_status(
     claim: TypedClaim, repo_path: str, language: str,
 ) -> VerifiedClaim:
@@ -114,108 +250,84 @@ def verify_redhat_vex_status(
             method="vex_api",
         )
 
-    document, reason = _fetch_vex_document(cve_id)
-    if document is None:
-        if reason == "invalid_cve_id":
-            return VerifiedClaim(
-                claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-                evidence=f"Invalid CVE id: {cve_id!r}", method="vex_api",
-            )
+    assessment = fetch_redhat_vex_assessment(cve_id, product_prefix, component)
+    if assessment.gap_reason == "invalid_cve_id":
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Invalid CVE id: {cve_id!r}", method="vex_api",
+        )
+    if assessment.gap_reason in {"no_vex_document", "vex_unreachable"}:
         detail = ("no VEX document exists for this CVE"
-                  if reason == "no_vex_document"
+                  if assessment.gap_reason == "no_vex_document"
                   else "VEX file unreachable")
         return VerifiedClaim(
             claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-            evidence=f"{detail} ({VEX_BASE_URL}/...)",
-            method="vex_api",
+            evidence=f"{detail} ({VEX_BASE_URL}/...)", method="vex_api",
         )
-
-    vulnerability = _find_vulnerability(document, cve_id)
-    if vulnerability is None:
+    if assessment.gap_reason == "cve_not_in_document":
         return VerifiedClaim(
             claim=claim, verdict="REFUTED", method_confidence=0.80,
             evidence=f"VEX document for {cve_id} does not list this CVE",
             method="vex_api",
         )
-
-    product_status = vulnerability.get("product_status") or {}
-    exact_id = f"{product_prefix}:{component}"
-    exact_statuses: list[str] = []
-    component_elsewhere: set[str] = set()
-    total_products = 0
-    for branch, ids in product_status.items():
-        if branch not in _BRANCH_STATUSES:
-            continue
-        for product_id in ids or []:
-            total_products += 1
-            if product_id == exact_id:
-                exact_statuses.append(branch)
-            elif product_id.rsplit(":", 1)[-1] == component:
-                component_elsewhere.add(product_id.rsplit(":", 1)[0])
-
-    stripped = cve_id.strip()
-    url_note = (f"{VEX_BASE_URL}/{_CVE_RE.match(stripped).group(1)}/"
-                f"{stripped.lower()}.json")
-
-    if not exact_statuses:
-        if component_elsewhere:
-            return VerifiedClaim(
-                claim=claim, verdict="UNVERIFIABLE", method_confidence=0.70,
-                evidence=(f"AMBIGUOUS_VEX_PRODUCT: component {component} found "
-                          f"only under other product prefix(es) "
-                          f"{sorted(component_elsewhere)}, not "
-                          f"{product_prefix}; the status does not apply to "
-                          f"this product ({url_note})"),
-                method="vex_api",
-            )
+    if assessment.match_quality == "ambiguous":
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.70,
+            evidence=(f"AMBIGUOUS_VEX_PRODUCT: component {component} found "
+                      f"only under other product prefix(es) "
+                      f"{list(assessment.other_product_prefixes)}, not "
+                      f"{product_prefix}; the status does not apply to "
+                      f"this product ({assessment.source_url})"),
+            method="vex_api",
+        )
+    if assessment.gap_reason == "product_not_in_document":
         return VerifiedClaim(
             claim=claim, verdict="REFUTED", method_confidence=0.80,
             evidence=(f"no VEX entry for {product_prefix}:{component} "
-                      f"({url_note}); document lists {total_products} "
-                      f"other products"),
+                      f"({assessment.source_url}); document lists "
+                      f"{assessment.total_products} other products"),
+            method="vex_api",
+        )
+    if assessment.status is None:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"VEX assessment unavailable ({assessment.gap_reason})",
             method="vex_api",
         )
 
-    actual = next(
-        (status for status in _STATUS_PRIORITY if status in exact_statuses),
-        exact_statuses[0],
-    )
-    anomaly_note = (f"; document covers {total_products} products in total "
+    actual = assessment.status
+    anomaly_note = (f"; document covers {assessment.total_products} products in total "
                     f"(cross-component entries are normal for Red Hat CSAF "
                     f"and do not affect this match)")
 
     if actual != expected_status:
         return VerifiedClaim(
             claim=claim, verdict="REFUTED", method_confidence=0.85,
-            evidence=(f"VEX lists {exact_id} as {actual}, not "
-                      f"{expected_status} ({url_note}){anomaly_note}"),
+            evidence=(f"VEX lists {assessment.product_id} as {actual}, not "
+                      f"{expected_status} ({assessment.source_url}){anomaly_note}"),
             method="vex_api",
         )
 
     if expected_status == "known_not_affected":
-        justification = None
-        for flag in vulnerability.get("flags") or []:
-            if exact_id in (flag.get("product_ids") or []):
-                justification = flag.get("label")
-                break
-        if justification is None:
+        if assessment.justification is None:
             return VerifiedClaim(
                 claim=claim, verdict="REFUTED", method_confidence=0.85,
-                evidence=(f"VEX lists {exact_id} as known_not_affected but "
+                evidence=(f"VEX lists {assessment.product_id} as known_not_affected but "
                           f"without a justification code; a bare status is "
-                          f"insufficient ({url_note})"),
+                          f"insufficient ({assessment.source_url})"),
                 method="vex_api",
             )
         return VerifiedClaim(
             claim=claim, verdict="VERIFIED", method_confidence=0.90,
-            evidence=(f"VEX: {exact_id} is known_not_affected with "
-                      f"justification {justification} ({url_note})"
+            evidence=(f"VEX: {assessment.product_id} is known_not_affected with "
+                      f"justification {assessment.justification} ({assessment.source_url})"
                       f"{anomaly_note}"),
             method="vex_api",
         )
 
     return VerifiedClaim(
         claim=claim, verdict="VERIFIED", method_confidence=0.90,
-        evidence=f"VEX: {exact_id} is {actual} ({url_note}){anomaly_note}",
+        evidence=(f"VEX: {assessment.product_id} is {actual} "
+                  f"({assessment.source_url}){anomaly_note}"),
         method="vex_api",
     )
