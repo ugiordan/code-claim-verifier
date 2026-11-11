@@ -148,15 +148,16 @@ Checks whether a CVE affects the installed version of a package by querying the 
 
 | Field | Value |
 |-------|-------|
-| **Parameters** | `cve` (string, optional), `package` (string, required), `version` (string, required) |
-| **Verification method** | OSV API query (`api.osv.dev/v1/query`) |
-| **Confidence** | 0.85 (VERIFIED with specific CVE match), 0.80 (VERIFIED without CVE), 0.75 (REFUTED) |
+| **Parameters** | `cve` (string, optional), `package` (string, required), `version` (string, required), `clair_report` (path, optional) |
+| **Verification method** | Clair report ingestion (offline, when `clair_report` is given), otherwise OSV API query (`api.osv.dev/v1/query`) |
+| **Confidence** | 0.90 (VERIFIED via Clair report), 0.85 (VERIFIED with specific CVE match), 0.80 (VERIFIED without CVE), 0.75 (REFUTED) |
 | **Triggers on reasoning like** | "CVE-2024-1234 affects PyYAML < 6.0" |
 
 Queries the OSV (Open Source Vulnerabilities) database with the package name and version. No authentication required.
 
 **Behavior:**
 
+- If `clair_report` is provided: the claim is checked offline against that pinned Clair (claircore) vulnerability report JSON instead of the OSV API. The report must list the CVE and the package; the verdict follows the report's package-to-vulnerability edges, and the installed version from the report is compared against the claimed `version`. Repo-relative paths must stay inside the repo; absolute paths are accepted for artifacts outside the source tree.
 - If `cve` is provided: checks whether that specific CVE ID appears in the vulnerability list (including aliases) for `package@version`. Returns VERIFIED if found, REFUTED if the package has vulns but not that CVE.
 - If `cve` is omitted: checks whether any known vulnerabilities affect `package@version`. Returns VERIFIED if vulns exist, REFUTED if none found.
 - On network errors or missing parameters: falls back to UNVERIFIABLE with the error details.

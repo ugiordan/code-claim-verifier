@@ -7,6 +7,13 @@ from code_claim_verifier.extractor import extract_claims, LLMFunction
 from code_claim_verifier.calibrator import calibrate
 from code_claim_verifier.engine import VerificationEngine, VerifierFunction
 from code_claim_verifier.cpg_backend import load_cpg
+from code_claim_verifier.clair import (
+    ClairAssessment,
+    ClairReport,
+    fetch_clair_assessment,
+    load_clair_report,
+    parse_clair_report,
+)
 from code_claim_verifier.verifiers import (
     OsvAssessment,
     VexAssessment,
@@ -278,4 +285,6 @@ __all__ = [
     "derive_verification_source", "VERIFICATION_SOURCES",
     "VexAssessment", "fetch_redhat_vex_assessment",
     "OsvAssessment", "fetch_osv_assessment",
+    "ClairAssessment", "ClairReport",
+    "fetch_clair_assessment", "load_clair_report", "parse_clair_report",
 ]

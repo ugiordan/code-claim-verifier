@@ -28,7 +28,7 @@ from code_claim_verifier.verifiers.auth_claims import verify_call_chain, verify_
 VERIFICATION_SOURCES = frozenset({
     "source_code", "lockfile", "manifest", "cpg", "cymbal",
     "call_graph", "osv_api", "vex_api", "version_compare", "config",
-    "unknown",
+    "clair_report", "unknown",
 })
 
 _METHOD_SOURCE_PREFIXES = (
@@ -45,6 +45,7 @@ _METHOD_SOURCE_EXACT = {
     "vex_api": "vex_api",
     "reachability_trace": "source_code",
     "version_compare": "version_compare",
+    "clair_report": "clair_report",
     "call_chain": "call_graph",
     "file_read": "source_code",
     "file_scope": "source_code",

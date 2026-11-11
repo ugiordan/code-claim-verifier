@@ -13,6 +13,7 @@ from code_claim_verifier.lockfiles import (
     find_lockfiles,
     parse_lockfile,
 )
+from code_claim_verifier.clair import fetch_clair_assessment, load_clair_report
 from code_claim_verifier.versioning import compare, fixes, in_range, normalize_ecosystem
 
 OSV_QUERY_URL = "https://api.osv.dev/v1/query"
@@ -355,6 +356,12 @@ def verify_cve_affects(claim: TypedClaim, repo_path: str, language: str) -> Veri
             evidence="Missing package or version parameter", method="osv_api",
         )
 
+    clair_report_path = claim.parameters.get("clair_report") or ""
+    if clair_report_path:
+        return _verify_cve_affects_clair(
+            claim, clair_report_path, repo_path, cve, package, version,
+        )
+
     # Offline first: when the claim carries the advisory's affected range,
     # compare deterministically without a network round-trip.
     range_spec = (claim.parameters.get("affected_range")
@@ -416,6 +423,93 @@ def verify_cve_affects(claim: TypedClaim, repo_path: str, language: str) -> Veri
 def _claim_ecosystem(claim: TypedClaim, language: str) -> str:
     return normalize_ecosystem(
         claim.parameters.get("ecosystem") or language or "semver"
+    )
+
+
+def _resolve_clair_report_path(claim_path: str, repo_path: str) -> str | None:
+    """Resolve a claim's Clair report path.
+
+    Repo-relative paths must stay inside the repo (same traversal rules
+    as file claims); absolute paths are accepted for report artifacts
+    that live outside the source tree.
+    """
+    resolved = safe_path(claim_path, repo_path)
+    if resolved and os.path.isfile(resolved):
+        return resolved
+    if os.path.isabs(claim_path) and os.path.isfile(claim_path):
+        return claim_path
+    return None
+
+
+def _verify_cve_affects_clair(
+    claim: TypedClaim, report_path: str, repo_path: str,
+    cve: str, package: str, version: str,
+) -> VerifiedClaim:
+    if not cve:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence="clair_report evidence requires the cve parameter",
+            method="clair_report", verification_source="clair_report",
+        )
+
+    resolved = _resolve_clair_report_path(report_path, repo_path)
+    if resolved is None:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Clair report not found: {report_path}",
+            method="clair_report", verification_source="clair_report",
+        )
+    try:
+        report = load_clair_report(resolved)
+    except (OSError, ValueError) as exc:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Clair report unreadable: {str(exc)[:150]}",
+            method="clair_report", verification_source="clair_report",
+            error=str(exc)[:200],
+        )
+
+    assessment = fetch_clair_assessment(report, cve, package)
+    origin = (f"Clair report {assessment.manifest_hash}"
+              if assessment.manifest_hash else "Clair report")
+    if assessment.gap_reason == "cve_not_in_report":
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"{origin} does not list {cve}",
+            method="clair_report", verification_source="clair_report",
+        )
+    if assessment.gap_reason == "package_not_in_report":
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"{origin} does not list package {package}",
+            method="clair_report", verification_source="clair_report",
+        )
+    if assessment.affected is None:
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=f"Clair assessment unavailable ({assessment.gap_reason})",
+            method="clair_report", verification_source="clair_report",
+        )
+
+    version_note = ""
+    if version and assessment.installed_version and version != assessment.installed_version:
+        version_note = (f"; claimed version {version} differs from installed "
+                        f"{assessment.installed_version}")
+
+    if assessment.affected:
+        return VerifiedClaim(
+            claim=claim, verdict="VERIFIED", method_confidence=0.90,
+            evidence=(f"{origin}: {package}@{assessment.installed_version} "
+                      f"affected by {cve} ({assessment.distro}, updater "
+                      f"{assessment.updater}){version_note}"),
+            method="clair_report", verification_source="clair_report",
+        )
+    return VerifiedClaim(
+        claim=claim, verdict="REFUTED", method_confidence=0.85,
+        evidence=(f"{origin} lists {cve} but not for "
+                  f"{package}@{assessment.installed_version} "
+                  f"({assessment.distro}){version_note}"),
+        method="clair_report",
     )
 
 
