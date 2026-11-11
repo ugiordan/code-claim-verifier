@@ -1,8 +1,13 @@
 """Tests for offline version comparison and the range/upgrade claim types."""
 from __future__ import annotations
 
+import io
+import json
+import urllib.request
+
 import pytest
 
+from code_claim_verifier import OsvAssessment, fetch_osv_assessment
 from code_claim_verifier.types import TypedClaim
 from code_claim_verifier.verifiers.import_claims import (
     verify_cve_affects,
@@ -232,11 +237,87 @@ class TestCveAffectsOffline:
         assert result.method == "version_compare"
         assert result.verification_source == "version_compare"
 
-    def test_no_range_still_uses_osv(self):
-        # Without a range the claim goes to the live OSV API; verify only
-        # that the offline path did not preempt it.
+    def test_no_range_uses_public_osv_assessment(self, monkeypatch):
+        assessment = OsvAssessment(
+            package="x",
+            version="1.0",
+            cve_id=None,
+            vulnerability_count=0,
+            vulnerability_ids=(),
+            matching_cve=None,
+            source_url="https://api.osv.dev/v1/query",
+        )
+        monkeypatch.setattr(
+            "code_claim_verifier.verifiers.import_claims.fetch_osv_assessment",
+            lambda package, version, cve_id=None: assessment,
+        )
         result = verify_cve_affects(
             _claim("CVE_AFFECTS_VERSION", {"package": "x", "version": "1.0"}),
             "/tmp", "python",
         )
         assert result.method == "osv_api"
+
+
+class TestOsvAssessment:
+    def test_public_query_matches_cve_alias(self, monkeypatch):
+        requests = []
+
+        def fake_urlopen(request, timeout=None):
+            requests.append(request)
+            return io.BytesIO(json.dumps({
+                "vulns": [{
+                    "id": "GHSA-test-0001",
+                    "aliases": ["CVE-2026-0001"],
+                }],
+            }).encode())
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+        assessment = fetch_osv_assessment(
+            "requests", "2.0.0", "CVE-2026-0001",
+        )
+
+        assert assessment.package == "requests"
+        assert assessment.version == "2.0.0"
+        assert assessment.cve_id == "CVE-2026-0001"
+        assert assessment.vulnerability_count == 1
+        assert assessment.vulnerability_ids == ("GHSA-test-0001",)
+        assert assessment.matching_cve is True
+        assert assessment.gap_reason is None
+        assert requests[0].full_url == "https://api.osv.dev/v1/query"
+        assert json.loads(requests[0].data) == {
+            "package": {"name": "requests"}, "version": "2.0.0",
+        }
+
+    def test_empty_result_is_no_osv_match_not_unaffected(self, monkeypatch):
+        monkeypatch.setattr(
+            urllib.request,
+            "urlopen",
+            lambda request, timeout=None: io.BytesIO(b'{"vulns": []}'),
+        )
+
+        assessment = fetch_osv_assessment("requests", "2.0.0", "CVE-2026-0001")
+
+        assert assessment.vulnerability_count == 0
+        assert assessment.matching_cve is False
+        assert assessment.gap_reason is None
+
+    def test_query_error_returns_gap(self, monkeypatch):
+        def fail(*args, **kwargs):
+            raise OSError("offline")
+
+        monkeypatch.setattr(urllib.request, "urlopen", fail)
+        assessment = fetch_osv_assessment("requests", "2.0.0")
+
+        assert assessment.matching_cve is None
+        assert assessment.gap_reason == "osv_query_failed"
+        assert assessment.error == "offline"
+
+    def test_missing_parameters_do_not_query(self, monkeypatch):
+        def fail(*args, **kwargs):
+            raise AssertionError("OSV must not be queried without package and version")
+
+        monkeypatch.setattr(urllib.request, "urlopen", fail)
+        assessment = fetch_osv_assessment("", "2.0.0")
+
+        assert assessment.matching_cve is None
+        assert assessment.gap_reason == "missing_parameters"

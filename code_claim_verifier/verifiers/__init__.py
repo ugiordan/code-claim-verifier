@@ -1,7 +1,17 @@
 from code_claim_verifier.types import TypedClaim, VerifiedClaim
 from code_claim_verifier.verifiers.file_claims import verify_file_exists, verify_line_content, verify_file_classification, verify_generated_or_vendored
 from code_claim_verifier.verifiers.symbol_claims import verify_function_exists, verify_function_called, verify_has_callers
-from code_claim_verifier.verifiers.import_claims import verify_import_exists, verify_package_version, verify_package_absent, verify_dependency_type, verify_cve_affects, verify_version_in_range, verify_upgrade_fixes
+from code_claim_verifier.verifiers.import_claims import (
+    OsvAssessment as OsvAssessment,
+    fetch_osv_assessment as fetch_osv_assessment,
+    verify_cve_affects,
+    verify_dependency_type,
+    verify_import_exists,
+    verify_package_absent,
+    verify_package_version,
+    verify_upgrade_fixes,
+    verify_version_in_range,
+)
 from code_claim_verifier.verifiers.reachability_claims import verify_vulnerable_symbol_called
 from code_claim_verifier.verifiers.vex_claims import (
     VexAssessment as VexAssessment,

@@ -8,8 +8,10 @@ from code_claim_verifier.calibrator import calibrate
 from code_claim_verifier.engine import VerificationEngine, VerifierFunction
 from code_claim_verifier.cpg_backend import load_cpg
 from code_claim_verifier.verifiers import (
+    OsvAssessment,
     VexAssessment,
     derive_verification_source,
+    fetch_osv_assessment,
     fetch_redhat_vex_assessment,
     VERIFICATION_SOURCES,
 )
@@ -275,4 +277,5 @@ __all__ = [
     "CLAIM_TYPES", "extract_claims", "calibrate", "load_cpg",
     "derive_verification_source", "VERIFICATION_SOURCES",
     "VexAssessment", "fetch_redhat_vex_assessment",
+    "OsvAssessment", "fetch_osv_assessment",
 ]
