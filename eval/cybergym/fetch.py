@@ -87,14 +87,30 @@ def stratified_sample(
 
 
 def _safe_extract(tar: tarfile.TarFile, dest: str) -> None:
-    """Extract a tarball rejecting path traversal and link members."""
+    """Extract a tarball rejecting path traversal and escaping links.
+
+    Symlinks and hardlinks are legitimate repo content (test fixtures,
+    man pages) and are allowed when their targets resolve inside the
+    extraction destination; absolute or escaping targets are rejected.
+    """
     dest_real = os.path.realpath(dest)
     for member in tar.getmembers():
         target = os.path.realpath(os.path.join(dest, member.name))
         if target != dest_real and not target.startswith(dest_real + os.sep):
             raise ValueError(f"unsafe path in tarball: {member.name!r}")
         if member.issym() or member.islnk():
-            raise ValueError(f"link member in tarball: {member.name!r}")
+            link = member.linkname or ""
+            if os.path.isabs(link):
+                raise ValueError(f"absolute link target: {member.name!r} -> {link!r}")
+            # Symlink targets resolve against the link's directory;
+            # hardlink targets are archive-root relative.
+            base = (
+                os.path.dirname(os.path.join(dest, member.name))
+                if member.issym() else dest
+            )
+            resolved = os.path.realpath(os.path.join(base, link))
+            if resolved != dest_real and not resolved.startswith(dest_real + os.sep):
+                raise ValueError(f"escaping link target: {member.name!r} -> {link!r}")
     try:
         tar.extractall(dest, filter="data")
     except TypeError:
@@ -144,6 +160,9 @@ def fetch_instance(
             with tarfile.open(os.path.join(inst_dir, "repo-vul.tar.gz")) as tar:
                 _safe_extract(tar, inst_dir)
     except (OSError, ValueError, tarfile.TarError) as exc:
+        # Remove the partial instance so a re-run retries it instead of
+        # mistaking a half-extracted src-vul/ for a complete one.
+        shutil.rmtree(inst_dir, ignore_errors=True)
         logger.warning("Fetch failed for %s: %s", task.get("task_id"), exc)
         return None
 
