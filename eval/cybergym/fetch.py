@@ -95,7 +95,10 @@ def _safe_extract(tar: tarfile.TarFile, dest: str) -> None:
             raise ValueError(f"unsafe path in tarball: {member.name!r}")
         if member.issym() or member.islnk():
             raise ValueError(f"link member in tarball: {member.name!r}")
-    tar.extractall(dest)
+    try:
+        tar.extractall(dest, filter="data")
+    except TypeError:
+        tar.extractall(dest)
 
 
 def _sha256(path: str) -> str:

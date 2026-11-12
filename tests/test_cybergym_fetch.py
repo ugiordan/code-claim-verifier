@@ -4,8 +4,10 @@ from __future__ import annotations
 import io
 import os
 import shutil
+import sys
 import tarfile
 import tempfile
+import types
 from pathlib import Path
 
 from eval.cybergym.fetch import (
@@ -161,7 +163,9 @@ class TestFetchInstance:
                 downloads.append(filename)
                 return os.path.join(cache, os.path.basename(filename))
 
-            monkeypatch.setattr("huggingface_hub.hf_hub_download", fake_download)
+            fake_hub = types.ModuleType("huggingface_hub")
+            fake_hub.hf_hub_download = fake_download
+            monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
 
             task = {"task_id": "arvo:424242", "project_name": "proj", "project_language": "c"}
             record = fetch_instance(task, dest_root, revision="a" * 40)
