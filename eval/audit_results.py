@@ -160,11 +160,12 @@ def audit_cybergym(
         if not is_immutable_revision(entry.get("dataset_revision"))
     )
     summary["invalid_manifest_schema"] = sum(
-        1 for entry in manifest.values() if entry.get("manifest_schema") != 2
+        1 for entry in manifest.values()
+        if entry.get("manifest_schema") not in (2, 3)
     )
     summary["invalid_ground_truth"] = sum(
         1 for entry in manifest.values()
-        if entry.get("ground_truth_validation") != "independent"
+        if entry.get("ground_truth_validation") not in ("independent", "patch-derived")
     )
 
     for path in _json_files(results_dir):

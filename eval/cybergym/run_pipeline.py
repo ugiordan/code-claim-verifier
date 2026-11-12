@@ -11,13 +11,33 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="CyberGym evaluation pipeline for CCV")
     subparsers = parser.add_subparsers(dest="stage", required=True)
 
+    p_fetch = subparsers.add_parser(
+        "fetch",
+        help="Stage 0: selectively fetch CyberGym instances from HuggingFace",
+    )
+    p_fetch.add_argument("--dest", required=True, help="Destination directory for instances")
+    p_fetch.add_argument(
+        "--revision",
+        default=None,
+        help="40-character dataset commit (defaults to the pinned revision)",
+    )
+    p_fetch.add_argument("--count", type=int, default=200, help="Number of instances to sample")
+    p_fetch.add_argument("--max-per-project", type=int, default=5, help="Per-project cap")
+    p_fetch.add_argument("--seed", type=int, default=20261111, help="Sampling seed")
+    p_fetch.add_argument(
+        "--output",
+        default=None,
+        help="Fetch manifest path (defaults to <dest>/fetch-manifest.jsonl)",
+    )
+
     p_prepare = subparsers.add_parser("prepare", help="Stage 1: scan repos, generate GT")
     p_prepare.add_argument("--cybergym-repos", required=True, help="Path to cybergym-repos directory")
     p_prepare.add_argument("--output", default="eval/cybergym/manifest.jsonl", help="Output manifest path")
     p_prepare.add_argument(
         "--descriptions",
         default=None,
-        help="Optional JSONL with vuln_id and description fields",
+        help="Optional JSONL with vuln_id, description, and language fields "
+             "(the fetch manifest works directly)",
     )
     p_prepare.add_argument(
         "--dataset-revision",
@@ -60,7 +80,17 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.stage == "prepare":
+    if args.stage == "fetch":
+        from eval.cybergym.fetch import PINNED_REVISION, run_fetch
+        run_fetch(
+            args.dest,
+            revision=args.revision or PINNED_REVISION,
+            count=args.count,
+            max_per_project=args.max_per_project,
+            seed=args.seed,
+            output_path=args.output,
+        )
+    elif args.stage == "prepare":
         from eval.cybergym.prepare import run_prepare
         run_prepare(
             args.cybergym_repos,

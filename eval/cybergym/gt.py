@@ -57,6 +57,12 @@ _LANG_EXCLUSIONS: dict[str, frozenset[str]] = {
 }
 
 _MAX_FILE_SIZE = 1024 * 1024  # 1 MB cap for file reads
+_MAX_PATCH_SIZE = 4 * 1024 * 1024  # 4 MB cap for patch reads
+_MAX_PATCH_LINE_GT = 15  # LINE_CONTENT claims per polarity per file
+_MIN_PATCH_LINE_LENGTH = 8
+
+_HUNK_RE = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@ ?(.*)$")
+_FUNC_CONTEXT_RE = re.compile(r"([A-Za-z_]\w*)\s*\(")
 
 
 def _read_file_safe(path: str, max_size: int = _MAX_FILE_SIZE) -> str:
@@ -257,3 +263,175 @@ def _extract_functions(source_root: str, language: str) -> list[tuple[str, str]]
                     continue
                 functions.append((name, rel))
     return functions
+
+
+def parse_unified_diff(text: str) -> list[dict]:
+    """Parse a unified diff into per-file hunks.
+
+    Removed lines carry their exact pre-patch (old-side) line number;
+    added lines carry the old-side line number where their hunk begins.
+    Files created or deleted by the patch (a /dev/null side) are
+    skipped because their pre-patch content is trivially empty.
+    """
+    files: list[dict] = []
+    current: dict | None = None
+    hunk: dict | None = None
+    old_line = 0
+
+    for line in text.splitlines():
+        if line.startswith("--- "):
+            old_side = line[4:]
+            current = {
+                "path": None,
+                "hunks": [],
+                "skip": old_side == "/dev/null",
+            }
+            files.append(current)
+            hunk = None
+        elif line.startswith("+++ "):
+            if current is not None:
+                new_side = line[4:]
+                if new_side == "/dev/null":
+                    current["skip"] = True
+                if current.get("path") is None:
+                    path = new_side[2:] if new_side.startswith("b/") else new_side
+                    current["path"] = path
+        elif line.startswith("@@") and current is not None:
+            match = _HUNK_RE.match(line)
+            if match is None:
+                continue
+            old_line = int(match.group(1))
+            hunk = {
+                "context": match.group(5) or "",
+                "anchor": old_line,
+                "removed": [],
+                "added": [],
+            }
+            current["hunks"].append(hunk)
+        elif hunk is None or current is None:
+            continue
+        elif line.startswith("-"):
+            hunk["removed"].append({"line": old_line, "text": line[1:]})
+            old_line += 1
+        elif line.startswith("+"):
+            hunk["added"].append({"line": hunk["anchor"], "text": line[1:]})
+        elif line.startswith("\\"):
+            continue
+        else:
+            old_line += 1
+
+    return [
+        entry for entry in files
+        if not entry.get("skip") and entry.get("path") and entry["hunks"]
+    ]
+
+
+def _meaningful_patch_line(text: str) -> bool:
+    stripped = text.strip()
+    return (
+        len(stripped) >= _MIN_PATCH_LINE_LENGTH
+        and any(char.isalpha() for char in stripped)
+    )
+
+
+def _function_from_context(context: str) -> str | None:
+    """Extract the enclosing function name from a hunk context header."""
+    matches = _FUNC_CONTEXT_RE.findall(context)
+    if not matches:
+        return None
+    name = matches[-1]
+    exclusions = _LANG_EXCLUSIONS.get("c", _COMMON_EXCLUSIONS)
+    if name in exclusions or len(name) < 3:
+        return None
+    return name
+
+
+def _function_defined_in_file(name: str, path: str, language: str) -> bool:
+    template = FUNCTION_DEF_PATTERNS.get(language, FUNCTION_DEF_PATTERNS["unknown"])
+    regex = re.compile(template.format(name=re.escape(name)))
+    return bool(regex.search(_read_file_safe(path)))
+
+
+def _resolve_patch_file(source_root: str, patch_path: str) -> str | None:
+    """Resolve a patch-relative path against the unpacked repo.
+
+    Patch paths are relative to the project root, which is the source
+    root; the src-vul parent is tried as a fallback for harness files.
+    """
+    candidates = [
+        os.path.join(source_root, patch_path),
+        os.path.join(os.path.dirname(source_root), patch_path),
+    ]
+    for candidate in candidates:
+        if os.path.isfile(candidate):
+            return candidate
+    return None
+
+
+def generate_patch_gt(source_root: str, patch_path: str, language: str = "c") -> list[dict]:
+    """Derive ground-truth claims from the upstream fix patch.
+
+    The patch adjudicates independently of CCV's matchers: removed
+    lines and patched functions must exist pre-patch, fix-code lines
+    must not. Every claim is validated against the pre-patch file
+    before emission, so fuzzy patch context cannot produce wrong GT.
+    """
+    text = _read_file_safe(patch_path, max_size=_MAX_PATCH_SIZE)
+    if not text:
+        return []
+
+    claims: list[dict] = []
+    seen: set[tuple] = set()
+
+    def _add(claim_type: str, params: dict, verdict: str) -> None:
+        key = (claim_type, tuple(sorted(params.items())), verdict)
+        if key in seen:
+            return
+        seen.add(key)
+        claims.append({
+            "claim_type": claim_type,
+            "parameters": params,
+            "expected_verdict": verdict,
+            "gt_tier": "patch",
+        })
+
+    for file_entry in parse_unified_diff(text):
+        repo_file = _resolve_patch_file(source_root, file_entry["path"])
+        if repo_file is None:
+            continue
+        rel = os.path.relpath(repo_file, source_root)
+        try:
+            with open(repo_file, encoding="utf-8", errors="replace") as handle:
+                pre_lines = handle.readlines()
+        except OSError:
+            continue
+
+        _add("FILE_EXISTS", {"path": rel}, "VERIFIED")
+
+        removed_count = 0
+        added_count = 0
+        for hunk in file_entry["hunks"]:
+            fn = _function_from_context(hunk["context"])
+            if fn and _function_defined_in_file(fn, repo_file, language):
+                _add("FUNCTION_EXISTS", {"name": fn, "file": rel}, "VERIFIED")
+
+            for item in hunk["removed"]:
+                if removed_count >= _MAX_PATCH_LINE_GT or not _meaningful_patch_line(item["text"]):
+                    continue
+                number = item["line"]
+                content = item["text"].strip()
+                if 1 <= number <= len(pre_lines) and content in pre_lines[number - 1]:
+                    _add("LINE_CONTENT", {"file": rel, "line": number, "content": content}, "VERIFIED")
+                    removed_count += 1
+
+            for item in hunk["added"]:
+                if added_count >= _MAX_PATCH_LINE_GT or not _meaningful_patch_line(item["text"]):
+                    continue
+                number = item["line"]
+                content = item["text"].strip()
+                actual = pre_lines[number - 1].strip() if 1 <= number <= len(pre_lines) else ""
+                if content not in actual:
+                    _add("LINE_CONTENT", {"file": rel, "line": number, "content": content}, "REFUTED")
+                    added_count += 1
+
+    return claims
