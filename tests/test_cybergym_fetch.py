@@ -120,44 +120,46 @@ class TestSafeExtract:
             shutil.rmtree(dest)
             os.unlink(tar_path)
 
-    def test_rejects_symlink_member(self):
+    def test_skips_absolute_symlink_member(self):
         fd, tar_path = tempfile.mkstemp(suffix=".tar.gz")
         os.close(fd)
         with tarfile.open(tar_path, "w:gz") as tar:
-            info = tarfile.TarInfo(name="link")
-            info.type = tarfile.SYMTYPE
-            info.linkname = "/etc/passwd"
-            tar.addfile(info)
+            payload = b"int main() {}\n"
+            info = tarfile.TarInfo(name="src-vul/proj/main.c")
+            info.size = len(payload)
+            tar.addfile(info, io.BytesIO(payload))
+            link = tarfile.TarInfo(name="link")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "/etc/passwd"
+            tar.addfile(link)
         dest = tempfile.mkdtemp()
         try:
             with tarfile.open(tar_path) as tar:
-                try:
-                    _safe_extract(tar, dest)
-                except ValueError as exc:
-                    assert "absolute link target" in str(exc)
-                else:
-                    raise AssertionError("absolute link must be rejected")
+                _safe_extract(tar, dest)
+            assert os.path.isfile(os.path.join(dest, "src-vul", "proj", "main.c"))
+            assert not os.path.lexists(os.path.join(dest, "link"))
         finally:
             shutil.rmtree(dest)
             os.unlink(tar_path)
 
-    def test_rejects_escaping_symlink_member(self):
+    def test_skips_escaping_symlink_member(self):
         fd, tar_path = tempfile.mkstemp(suffix=".tar.gz")
         os.close(fd)
         with tarfile.open(tar_path, "w:gz") as tar:
-            info = tarfile.TarInfo(name="src-vul/proj/link")
-            info.type = tarfile.SYMTYPE
-            info.linkname = "../../../../etc/passwd"
-            tar.addfile(info)
+            payload = b"int main() {}\n"
+            info = tarfile.TarInfo(name="src-vul/proj/main.c")
+            info.size = len(payload)
+            tar.addfile(info, io.BytesIO(payload))
+            link = tarfile.TarInfo(name="src-vul/proj/link")
+            link.type = tarfile.SYMTYPE
+            link.linkname = "../../../../etc/passwd"
+            tar.addfile(link)
         dest = tempfile.mkdtemp()
         try:
             with tarfile.open(tar_path) as tar:
-                try:
-                    _safe_extract(tar, dest)
-                except ValueError as exc:
-                    assert "escaping link target" in str(exc)
-                else:
-                    raise AssertionError("escaping link must be rejected")
+                _safe_extract(tar, dest)
+            assert os.path.isfile(os.path.join(dest, "src-vul", "proj", "main.c"))
+            assert not os.path.lexists(os.path.join(dest, "src-vul", "proj", "link"))
         finally:
             shutil.rmtree(dest)
             os.unlink(tar_path)
@@ -228,6 +230,42 @@ class TestFetchInstance:
             assert second is not None
             assert second["artifact_digests"] == record["artifact_digests"]
             assert len(downloads) == 3  # no re-download on second call
+        finally:
+            shutil.rmtree(cache)
+            shutil.rmtree(dest_root)
+
+    def test_fetch_uses_task_prefix_in_path_and_name(self, monkeypatch):
+        cache = tempfile.mkdtemp()
+        dest_root = tempfile.mkdtemp()
+        try:
+            with tarfile.open(os.path.join(cache, "repo-vul.tar.gz"), "w:gz") as tar:
+                info = tarfile.TarInfo(name="src-vul/proj/main.c")
+                payload = b"int main() {}\n"
+                info.size = len(payload)
+                tar.addfile(info, io.BytesIO(payload))
+            for fname in ("description.txt", "patch.diff"):
+                with open(os.path.join(cache, fname), "w") as f:
+                    f.write("x")
+
+            requested = []
+
+            def fake_download(repo_id, filename, repo_type, revision):
+                requested.append(filename)
+                return os.path.join(cache, os.path.basename(filename))
+
+            fake_hub = types.ModuleType("huggingface_hub")
+            fake_hub.hf_hub_download = fake_download
+            monkeypatch.setitem(sys.modules, "huggingface_hub", fake_hub)
+
+            task = {
+                "task_id": "oss-fuzz:42536279",
+                "project_name": "proj",
+                "project_language": "c",
+            }
+            record = fetch_instance(task, dest_root, revision="a" * 40)
+            assert record is not None
+            assert record["vuln_id"] == "proj-oss-fuzz-42536279"
+            assert all(p.startswith("data/oss-fuzz/42536279/") for p in requested)
         finally:
             shutil.rmtree(cache)
             shutil.rmtree(dest_root)

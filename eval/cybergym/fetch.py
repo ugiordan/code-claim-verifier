@@ -87,21 +87,22 @@ def stratified_sample(
 
 
 def _safe_extract(tar: tarfile.TarFile, dest: str) -> None:
-    """Extract a tarball rejecting path traversal and escaping links.
+    """Extract a tarball rejecting path traversal, skipping unsafe links.
 
     Symlinks and hardlinks are legitimate repo content (test fixtures,
     man pages) and are allowed when their targets resolve inside the
-    extraction destination; absolute or escaping targets are rejected.
+    extraction destination. Absolute or escaping targets (build
+    scripts pointing at system paths) cannot be materialized safely
+    and are skipped rather than failing the whole instance.
     """
     dest_real = os.path.realpath(dest)
+    safe_members = []
     for member in tar.getmembers():
         target = os.path.realpath(os.path.join(dest, member.name))
         if target != dest_real and not target.startswith(dest_real + os.sep):
             raise ValueError(f"unsafe path in tarball: {member.name!r}")
         if member.issym() or member.islnk():
             link = member.linkname or ""
-            if os.path.isabs(link):
-                raise ValueError(f"absolute link target: {member.name!r} -> {link!r}")
             # Symlink targets resolve against the link's directory;
             # hardlink targets are archive-root relative.
             base = (
@@ -109,12 +110,16 @@ def _safe_extract(tar: tarfile.TarFile, dest: str) -> None:
                 if member.issym() else dest
             )
             resolved = os.path.realpath(os.path.join(base, link))
-            if resolved != dest_real and not resolved.startswith(dest_real + os.sep):
-                raise ValueError(f"escaping link target: {member.name!r} -> {link!r}")
+            if os.path.isabs(link) or (
+                resolved != dest_real and not resolved.startswith(dest_real + os.sep)
+            ):
+                logger.warning("skipping unsafe link %r -> %r", member.name, link)
+                continue
+        safe_members.append(member)
     try:
-        tar.extractall(dest, filter="data")
+        tar.extractall(dest, members=safe_members, filter="data")
     except TypeError:
-        tar.extractall(dest)
+        tar.extractall(dest, members=safe_members)
 
 
 def _sha256(path: str) -> str:
@@ -125,13 +130,18 @@ def _sha256(path: str) -> str:
     return "sha256:" + digest.hexdigest()
 
 
-def _instance_dir(dest_root: str, task: dict) -> tuple[str, str, str]:
+def _instance_dir(dest_root: str, task: dict) -> tuple[str, str, str, str]:
     task_id = task.get("task_id", "")
     if ":" not in task_id:
         raise ValueError(f"malformed task_id: {task_id!r}")
-    arvo_id = task_id.split(":", 1)[1]
+    prefix, arvo_id = task_id.split(":", 1)
     project = re.sub(r"[^A-Za-z0-9._-]+", "-", task.get("project_name", "unknown"))
-    return os.path.join(dest_root, f"{project}-arvo-{arvo_id}"), project, arvo_id
+    return (
+        os.path.join(dest_root, f"{project}-{prefix}-{arvo_id}"),
+        project,
+        arvo_id,
+        prefix,
+    )
 
 
 def fetch_instance(
@@ -143,7 +153,7 @@ def fetch_instance(
     is not re-downloaded, but digests are always recomputed so the
     returned record reflects the on-disk artifacts.
     """
-    inst_dir, project, arvo_id = _instance_dir(dest_root, task)
+    inst_dir, project, arvo_id, prefix = _instance_dir(dest_root, task)
     try:
         os.makedirs(inst_dir, exist_ok=True)
         if not os.path.isdir(os.path.join(inst_dir, "src-vul")):
@@ -152,7 +162,7 @@ def fetch_instance(
             for fname in INSTANCE_FILES:
                 local = hf_hub_download(
                     DATASET_REPO,
-                    f"data/arvo/{arvo_id}/{fname}",
+                    f"data/{prefix}/{arvo_id}/{fname}",
                     repo_type="dataset",
                     revision=revision,
                 )
