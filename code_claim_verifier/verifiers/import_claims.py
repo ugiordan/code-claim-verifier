@@ -36,8 +36,14 @@ class OsvAssessment:
 
 def fetch_osv_assessment(
     package: str, version: str, cve_id: str | None = None,
+    ecosystem: str | None = None,
 ) -> OsvAssessment:
-    """Query OSV for a package/version and optionally match a CVE identifier."""
+    """Query OSV for a package/version and optionally match a CVE identifier.
+
+    The OSV v1/query contract requires package.ecosystem when the
+    package is identified by name, so callers should forward one
+    whenever it is known. Follows next_page_token pagination.
+    """
     if not package or not version:
         return OsvAssessment(
             package=package,
@@ -54,21 +60,34 @@ def fetch_osv_assessment(
         import json as _json
         import urllib.request
 
-        payload = _json.dumps({
-            "package": {"name": package}, "version": version,
-        }).encode()
-        req = urllib.request.Request(
-            OSV_QUERY_URL,
-            data=payload,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            data = _json.loads(resp.read())
+        package_spec: dict[str, str] = {"name": package}
+        if ecosystem:
+            package_spec["ecosystem"] = ecosystem
+        vulnerabilities: list = []
+        page_token = ""
+        pages = 0
+        while pages < 10:
+            body: dict = {"package": package_spec, "version": version}
+            if page_token:
+                body["page_token"] = page_token
+            payload = _json.dumps(body).encode()
+            req = urllib.request.Request(
+                OSV_QUERY_URL,
+                data=payload,
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = _json.loads(resp.read())
 
-        vulnerabilities = data.get("vulns", [])
-        if not isinstance(vulnerabilities, list):
-            raise ValueError("OSV response field 'vulns' is not a list")
+            page_vulns = data.get("vulns", [])
+            if not isinstance(page_vulns, list):
+                raise ValueError("OSV response field 'vulns' is not a list")
+            vulnerabilities.extend(page_vulns)
+            page_token = data.get("next_page_token", "")
+            pages += 1
+            if not page_token:
+                break
 
         vulnerability_ids: list[str] = []
         matching_cve = False if cve_id else None
@@ -382,7 +401,9 @@ def verify_cve_affects(claim: TypedClaim, repo_path: str, language: str) -> Veri
         except ValueError:
             pass  # fall through to the OSV API
 
-    assessment = fetch_osv_assessment(package, version, cve or None)
+    assessment = fetch_osv_assessment(
+        package, version, cve or None, _osv_ecosystem(claim, language),
+    )
     if assessment.gap_reason:
         error = assessment.error or assessment.gap_reason
         return VerifiedClaim(
@@ -424,6 +445,31 @@ def _claim_ecosystem(claim: TypedClaim, language: str) -> str:
     return normalize_ecosystem(
         claim.parameters.get("ecosystem") or language or "semver"
     )
+
+
+# OSV v1/query ecosystem names, keyed by the CCV-normalized ecosystem
+# or language. Claim parameters may carry either form.
+_OSV_ECOSYSTEMS = {
+    "python": "PyPI",
+    "pypi": "PyPI",
+    "go": "Go",
+    "golang": "Go",
+    "javascript": "npm",
+    "npm": "npm",
+    "typescript": "npm",
+    "java": "Maven",
+    "maven": "Maven",
+    "rust": "crates.io",
+    "crates.io": "crates.io",
+}
+
+
+def _osv_ecosystem(claim: TypedClaim, language: str) -> str | None:
+    """Map the claim's ecosystem or language to an OSV ecosystem name."""
+    raw = (claim.parameters.get("ecosystem") or language or "").strip()
+    if not raw:
+        return None
+    return _OSV_ECOSYSTEMS.get(raw.lower(), raw)
 
 
 def _resolve_clair_report_path(claim_path: str, repo_path: str) -> str | None:
@@ -487,28 +533,36 @@ def _verify_cve_affects_clair(
     if assessment.affected is None:
         return VerifiedClaim(
             claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
-            evidence=f"Clair assessment unavailable ({assessment.gap_reason})",
+            evidence=(f"{origin} lists {cve} but does not link it to "
+                      f"package {package}; a missing link is an evidence "
+                      f"gap, not proof of safety ({assessment.gap_reason})"),
             method="clair_report", verification_source="clair_report",
         )
 
-    version_note = ""
     if version and assessment.installed_version and version != assessment.installed_version:
-        version_note = (f"; claimed version {version} differs from installed "
-                        f"{assessment.installed_version}")
+        # The report only assessed the installed version; a claim about
+        # a different version has no evidence either way.
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=(f"{origin} assessed {package}@{assessment.installed_version}; "
+                      f"the claim names version {version}, which the report "
+                      f"did not assess"),
+            method="clair_report", verification_source="clair_report",
+        )
 
     if assessment.affected:
         return VerifiedClaim(
             claim=claim, verdict="VERIFIED", method_confidence=0.90,
             evidence=(f"{origin}: {package}@{assessment.installed_version} "
                       f"affected by {cve} ({assessment.distro}, updater "
-                      f"{assessment.updater}){version_note}"),
+                      f"{assessment.updater})"),
             method="clair_report", verification_source="clair_report",
         )
     return VerifiedClaim(
         claim=claim, verdict="REFUTED", method_confidence=0.85,
         evidence=(f"{origin} lists {cve} but not for "
                   f"{package}@{assessment.installed_version} "
-                  f"({assessment.distro}){version_note}"),
+                  f"({assessment.distro})"),
         method="clair_report",
     )
 

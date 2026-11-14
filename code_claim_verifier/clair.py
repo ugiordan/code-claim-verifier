@@ -74,6 +74,10 @@ def parse_clair_report(data: object) -> ClairReport:
     """
     if not isinstance(data, dict):
         raise ValueError("Clair report must be a JSON object")
+    for field in ("packages", "vulnerabilities", "package_vulnerabilities"):
+        value = data.get(field)
+        if value is not None and not isinstance(value, dict):
+            raise ValueError(f"Clair report field {field!r} must be an object")
 
     packages: dict[str, ClairPackage] = {}
     for pid, raw in (data.get("packages") or {}).items():
@@ -147,7 +151,8 @@ def fetch_clair_assessment(
         or cve in {alias.upper() for alias in vuln.aliases}
     ]
     pkg_ids = [pid for pid, pkg in report.packages.items() if pkg.name == package]
-    installed = report.packages[pkg_ids[0]].version if pkg_ids else None
+    pkg_versions = {report.packages[pid].version for pid in pkg_ids}
+    installed = pkg_versions.pop() if len(pkg_versions) == 1 else None
 
     if not matched:
         return ClairAssessment(
@@ -176,8 +181,33 @@ def fetch_clair_assessment(
             updater=chosen.updater, gap_reason="package_not_in_report",
         )
 
+    if linked:
+        # The installed version must come from the package the report
+        # actually linked to the vulnerability, not from an arbitrary
+        # same-named package.
+        linked_versions = {
+            report.packages[pid].version
+            for pid in pkg_ids
+            if linked_ids.intersection(report.package_vulnerabilities.get(pid, ()))
+        }
+        if len(linked_versions) == 1:
+            installed = linked_versions.pop()
+
+    if not linked:
+        # A CVE that the report does not link to an installed package
+        # is an evidence gap, not proof of safety.
+        return ClairAssessment(
+            cve_id=cve_id, package=package, affected=None,
+            installed_version=installed,
+            fixed_in_version=chosen.fixed_in_version,
+            severity=chosen.severity,
+            normalized_severity=chosen.normalized_severity,
+            distro=report.distro, manifest_hash=report.manifest_hash,
+            updater=chosen.updater, gap_reason="cve_not_linked_to_package",
+        )
+
     return ClairAssessment(
-        cve_id=cve_id, package=package, affected=bool(linked),
+        cve_id=cve_id, package=package, affected=True,
         installed_version=installed,
         fixed_in_version=chosen.fixed_in_version,
         severity=chosen.severity,

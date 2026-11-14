@@ -119,6 +119,14 @@ def _safe_extract(tar: tarfile.TarFile, dest: str) -> None:
     try:
         tar.extractall(dest, members=safe_members, filter="data")
     except TypeError:
+        # Without the data filter, link chains created during
+        # extraction can escape the destination; only plain files,
+        # whose names preflight validated, are safe to extract.
+        if any(m.issym() or m.islnk() for m in safe_members):
+            raise ValueError(
+                "tarball contains link members and this Python lacks "
+                "the tar extraction filter"
+            )
         tar.extractall(dest, members=safe_members)
 
 
@@ -154,9 +162,23 @@ def fetch_instance(
     returned record reflects the on-disk artifacts.
     """
     inst_dir, project, arvo_id, prefix = _instance_dir(dest_root, task)
+    receipt_path = os.path.join(inst_dir, ".fetch-receipt")
     try:
         os.makedirs(inst_dir, exist_ok=True)
-        if not os.path.isdir(os.path.join(inst_dir, "src-vul")):
+        receipt_ok = False
+        if os.path.isfile(receipt_path):
+            try:
+                with open(receipt_path, encoding="utf-8") as handle:
+                    receipt_ok = handle.read().strip() == revision
+            except OSError:
+                receipt_ok = False
+        if not receipt_ok:
+            # No completion receipt, or one from a different dataset
+            # revision: the directory may hold partial artifacts, so
+            # re-fetch from scratch.
+            shutil.rmtree(inst_dir, ignore_errors=True)
+            os.makedirs(inst_dir, exist_ok=True)
+        if not os.path.isfile(receipt_path):
             from huggingface_hub import hf_hub_download
 
             for fname in INSTANCE_FILES:
@@ -169,6 +191,8 @@ def fetch_instance(
                 shutil.copyfile(local, os.path.join(inst_dir, fname))
             with tarfile.open(os.path.join(inst_dir, "repo-vul.tar.gz")) as tar:
                 _safe_extract(tar, inst_dir)
+            with open(receipt_path, "w", encoding="utf-8") as handle:
+                handle.write(revision)
     except (OSError, ValueError, tarfile.TarError) as exc:
         # Remove the partial instance so a re-run retries it instead of
         # mistaking a half-extracted src-vul/ for a complete one.

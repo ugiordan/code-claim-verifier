@@ -249,7 +249,7 @@ class TestCveAffectsOffline:
         )
         monkeypatch.setattr(
             "code_claim_verifier.verifiers.import_claims.fetch_osv_assessment",
-            lambda package, version, cve_id=None: assessment,
+            lambda package, version, cve_id=None, ecosystem=None: assessment,
         )
         result = verify_cve_affects(
             _claim("CVE_AFFECTS_VERSION", {"package": "x", "version": "1.0"}),
@@ -321,3 +321,67 @@ class TestOsvAssessment:
 
         assert assessment.matching_cve is None
         assert assessment.gap_reason == "missing_parameters"
+
+
+class TestOsvEcosystemAndPagination:
+    def test_ecosystem_forwarded_to_payload(self, monkeypatch):
+        import io as _io
+        import urllib.request
+
+        requests = []
+
+        def fake_urlopen(request, timeout=None):
+            requests.append(request)
+            return _io.BytesIO(b'{"vulns": []}')
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+        import json as _json
+        assessment = fetch_osv_assessment("pkg", "1.0", ecosystem="PyPI")
+        assert assessment.gap_reason is None
+        body = _json.loads(requests[0].data)
+        assert body["package"] == {"name": "pkg", "ecosystem": "PyPI"}
+
+    def test_pagination_followed(self, monkeypatch):
+        import io as _io
+        import urllib.request
+        import json as _json
+
+        pages = [
+            {"vulns": [{"id": "GHSA-1"}], "next_page_token": "tok2"},
+            {"vulns": [{"id": "GHSA-2", "aliases": ["CVE-2026-0001"]}]},
+        ]
+        calls = []
+
+        def fake_urlopen(request, timeout=None):
+            calls.append(_json.loads(request.data))
+            return _io.BytesIO(_json.dumps(pages[len(calls) - 1]).encode())
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+        assessment = fetch_osv_assessment("pkg", "1.0", cve_id="CVE-2026-0001")
+        assert assessment.matching_cve is True
+        assert assessment.vulnerability_ids == ("GHSA-1", "GHSA-2")
+        assert calls[1].get("page_token") == "tok2"
+
+    def test_verifier_forwards_claim_ecosystem(self, monkeypatch):
+        captured = {}
+
+        def fake_fetch(package, version, cve_id=None, ecosystem=None):
+            captured["ecosystem"] = ecosystem
+            return OsvAssessment(
+                package=package, version=version, cve_id=cve_id,
+                vulnerability_count=0, vulnerability_ids=(),
+                matching_cve=None, source_url="x",
+            )
+
+        monkeypatch.setattr(
+            "code_claim_verifier.verifiers.import_claims.fetch_osv_assessment",
+            fake_fetch,
+        )
+        result = verify_cve_affects(
+            _claim("CVE_AFFECTS_VERSION", {
+                "package": "x", "version": "1.0", "ecosystem": "pypi",
+            }),
+            "/tmp", "python",
+        )
+        assert result.method == "osv_api"
+        assert captured["ecosystem"] == "PyPI"

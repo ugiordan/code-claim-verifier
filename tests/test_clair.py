@@ -102,14 +102,16 @@ class TestFetchClairAssessment:
     def test_cve_known_but_not_linked_to_package(self):
         report = load_clair_report(str(FIXTURE))
         assessment = fetch_clair_assessment(report, "CVE-2005-2541", "gpgv")
-        assert assessment.affected is False
+        assert assessment.affected is None
+        assert assessment.gap_reason == "cve_not_linked_to_package"
         assert assessment.installed_version == GPGV_VERSION
         assert assessment.severity is not None
 
     def test_clean_package_is_not_affected(self):
         report = load_clair_report(str(FIXTURE))
         assessment = fetch_clair_assessment(report, "CVE-2025-30258", "base-files")
-        assert assessment.affected is False
+        assert assessment.affected is None
+        assert assessment.gap_reason == "cve_not_linked_to_package"
         assert assessment.installed_version == "12.4+deb12u15"
 
     def test_cve_not_in_report(self):
@@ -148,7 +150,7 @@ class TestCveAffectsViaClair:
         assert MANIFEST in result.evidence
         assert GPGV_VERSION in result.evidence
 
-    def test_version_mismatch_is_flagged_in_evidence(self):
+    def test_version_mismatch_is_unverifiable(self):
         result = verify_cve_affects(
             _claim({
                 "cve": "CVE-2025-30258", "package": "gpgv",
@@ -156,10 +158,11 @@ class TestCveAffectsViaClair:
             }),
             "/tmp", "python",
         )
-        assert result.verdict == "VERIFIED"
-        assert "differs from installed" in result.evidence
+        assert result.verdict == "UNVERIFIABLE"
+        assert "did not assess" in result.evidence
+        assert GPGV_VERSION in result.evidence
 
-    def test_not_linked_refutes(self):
+    def test_not_linked_is_unverifiable(self):
         result = verify_cve_affects(
             _claim({
                 "cve": "CVE-2005-2541", "package": "gpgv",
@@ -167,8 +170,9 @@ class TestCveAffectsViaClair:
             }),
             "/tmp", "python",
         )
-        assert result.verdict == "REFUTED"
-        assert "not for gpgv" in result.evidence
+        assert result.verdict == "UNVERIFIABLE"
+        assert "does not link" in result.evidence
+        assert "not proof of safety" in result.evidence
 
     def test_missing_report_unverifiable(self):
         result = verify_cve_affects(
@@ -241,3 +245,49 @@ class TestCveAffectsViaClair:
             "/tmp", "python",
         )
         assert result.verdict == "VERIFIED"
+
+
+class TestReviewFixes:
+    def test_malformed_collections_raise(self, tmp_path):
+        bad = tmp_path / "bad.json"
+        bad.write_text('{"packages": [], "vulnerabilities": {}, "package_vulnerabilities": {}}')
+        result = verify_cve_affects(
+            _claim({
+                "cve": "CVE-2025-30258", "package": "gpgv",
+                "version": GPGV_VERSION, "clair_report": str(bad),
+            }),
+            "/tmp", "python",
+        )
+        assert result.verdict == "UNVERIFIABLE"
+        assert "unreadable" in result.evidence
+
+    def test_duplicate_package_names_use_matched_edge_version(self):
+        report = parse_clair_report({
+            "manifest_hash": "sha256:dup",
+            "packages": {
+                "1": {"name": "dup", "version": "2.0", "kind": "binary"},
+                "2": {"name": "dup", "version": "1.0", "kind": "binary"},
+            },
+            "vulnerabilities": {"9": {"name": "CVE-2026-0001"}},
+            "package_vulnerabilities": {"2": ["9"]},
+            "environments": {"1": [{"distribution_id": "7"}], "2": [{"distribution_id": "7"}]},
+            "distributions": {"7": {"did": "debian", "version_id": "12"}},
+        })
+        assessment = fetch_clair_assessment(report, "CVE-2026-0001", "dup")
+        assert assessment.affected is True
+        assert assessment.installed_version == "1.0"
+
+    def test_duplicate_package_names_unlinked_ambiguous_version(self):
+        report = parse_clair_report({
+            "manifest_hash": "sha256:dup2",
+            "packages": {
+                "1": {"name": "dup", "version": "2.0", "kind": "binary"},
+                "2": {"name": "dup", "version": "1.0", "kind": "binary"},
+            },
+            "vulnerabilities": {"9": {"name": "CVE-2026-0001"}},
+            "package_vulnerabilities": {},
+        })
+        assessment = fetch_clair_assessment(report, "CVE-2026-0001", "dup")
+        assert assessment.affected is None
+        assert assessment.gap_reason == "cve_not_linked_to_package"
+        assert assessment.installed_version is None

@@ -290,7 +290,9 @@ def parse_unified_diff(text: str) -> list[dict]:
             hunk = None
         elif line.startswith("+++ "):
             if current is not None:
-                new_side = line[4:]
+                # Diff headers may append a tab-separated timestamp;
+                # only the filename identifies the patched file.
+                new_side = line[4:].split("\t")[0]
                 if new_side == "/dev/null":
                     current["skip"] = True
                 if current.get("path") is None:

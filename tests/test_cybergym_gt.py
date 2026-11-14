@@ -205,3 +205,19 @@ class TestGeneratePatchGt:
 
     def test_missing_patch_file_returns_empty(self):
         assert generate_patch_gt("/tmp", "/no/such/patch.diff", "c") == []
+
+
+class TestDiffHeaderTimestamps:
+    def test_timestamp_suffix_stripped_from_path(self):
+        patch = (
+            "diff --git a/src/funcs.c b/src/funcs.c\n"
+            "--- a/src/funcs.c\t2026-01-01 10:00:00.000000000 +0000\n"
+            "+++ b/src/funcs.c\t2026-01-02 11:00:00.000000000 +0000\n"
+            "@@ -1,3 +1,3 @@\n"
+            " context\n"
+            "-int vulnerable_check(const char *s) { return 1; }\n"
+            "+int vulnerable_check(const char *s) { return 0; }\n"
+        )
+        parsed = parse_unified_diff(patch)
+        assert len(parsed) == 1
+        assert parsed[0]["path"] == "src/funcs.c"
