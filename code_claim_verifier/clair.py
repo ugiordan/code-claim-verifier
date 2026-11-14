@@ -183,12 +183,13 @@ def fetch_clair_assessment(
 
     if linked:
         # The installed version must come from the package the report
-        # actually linked to the vulnerability, not from an arbitrary
-        # same-named package.
+        # actually linked to this vulnerability, not from an arbitrary
+        # same-named package or an unrelated edge.
+        matched_ids = {vuln.id for vuln in linked}
         linked_versions = {
             report.packages[pid].version
             for pid in pkg_ids
-            if linked_ids.intersection(report.package_vulnerabilities.get(pid, ()))
+            if matched_ids.intersection(report.package_vulnerabilities.get(pid, ()))
         }
         if len(linked_versions) == 1:
             installed = linked_versions.pop()

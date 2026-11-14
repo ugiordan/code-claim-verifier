@@ -89,6 +89,16 @@ def fetch_osv_assessment(
             if not page_token:
                 break
 
+        if page_token:
+            # The page cap stopped pagination; the collected pages are
+            # not exhaustive evidence.
+            return OsvAssessment(
+                package=package, version=version, cve_id=cve_id,
+                vulnerability_count=0, vulnerability_ids=(),
+                matching_cve=None, source_url=OSV_QUERY_URL,
+                gap_reason="osv_pagination_incomplete",
+            )
+
         vulnerability_ids: list[str] = []
         matching_cve = False if cve_id else None
         for vulnerability in vulnerabilities:
@@ -536,6 +546,16 @@ def _verify_cve_affects_clair(
             evidence=(f"{origin} lists {cve} but does not link it to "
                       f"package {package}; a missing link is an evidence "
                       f"gap, not proof of safety ({assessment.gap_reason})"),
+            method="clair_report", verification_source="clair_report",
+        )
+
+    if version and not assessment.installed_version:
+        # Duplicate same-named packages with different linked versions:
+        # the report cannot establish which version was assessed.
+        return VerifiedClaim(
+            claim=claim, verdict="UNVERIFIABLE", method_confidence=0.0,
+            evidence=(f"{origin} links {cve} to {package} but the report "
+                      f"cannot establish a unique installed version for it"),
             method="clair_report", verification_source="clair_report",
         )
 
