@@ -395,6 +395,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                with_judge: bool = False,
                with_cymbal: bool = False,
                judge_model: str = "gpt-4o",
+               backend: str = "auto",
                force: bool = False) -> dict | None:
     try:
         vuln_id = entry["vuln_id"]
@@ -490,15 +491,28 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             return result
 
         cpg = None
-        qi_path = os.path.join(source_root, "quick-index.json")
-        if os.path.isfile(qi_path):
-            from code_claim_verifier.cpg_backend import load_quick_index
-            cpg = load_quick_index(qi_path)
-
         cymbal = None
-        if with_cymbal:
-            from code_claim_verifier.cymbal_backend import load_cymbal
-            cymbal = load_cymbal(source_root)
+        backend = backend or "auto"
+        if backend in ("auto", "cpg"):
+            qi_path = os.path.join(source_root, "quick-index.json")
+            if os.path.isfile(qi_path):
+                from code_claim_verifier.cpg_backend import load_quick_index
+                cpg = load_quick_index(qi_path)
+            elif backend == "cpg":
+                logger.warning(
+                    "no quick-index.json for %s; CPG condition falls back "
+                    "to grep for this repo", source_root,
+                )
+        if backend in ("auto", "cymbal") or with_cymbal:
+            try:
+                from code_claim_verifier.cymbal_backend import load_cymbal
+                cymbal = load_cymbal(source_root)
+            except Exception as exc:
+                if backend == "cymbal":
+                    logger.warning(
+                        "cymbal unavailable for %s (%s); falling back to "
+                        "grep for this repo", source_root, str(exc)[:120],
+                    )
         verified = run_ccv_verification(claims, source_root, language,
                                         cymbal_backend=cymbal, cpg=cpg)
         report = calibrate(verified)
@@ -537,7 +551,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
             "provenance": {
                 **expected_provenance,
                 "extraction_model": extraction_llm,
-                "verification_backend": "cpg+grep" if cpg else "grep",
+                "verification_backend": _backend_label(backend, cpg, cymbal),
             },
             "gt_comparison": {
                 "matched": sum(
@@ -577,10 +591,24 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
         return None
 
 
+def _backend_label(backend: str, cpg, cymbal) -> str:
+    """Human-readable backend provenance for a verification run."""
+    if backend == "grep":
+        return "grep"
+    if cpg and cymbal:
+        return "cpg+cymbal+grep"
+    if cpg:
+        return "cpg+grep"
+    if cymbal:
+        return "cymbal+grep"
+    return "grep"
+
+
 def run_verify(manifest_path: str, reasoning_dir: str, output_dir: str,
                extraction_llm: str = "claude-sonnet-4",
                with_judge: bool = False,
                with_cymbal: bool = False,
+               backend: str = "auto",
                force: bool = False) -> None:
     manifest = load_jsonl(manifest_path)
     manifest_by_id = {e["vuln_id"]: e for e in manifest}
@@ -606,6 +634,7 @@ def run_verify(manifest_path: str, reasoning_dir: str, output_dir: str,
                                extraction_llm=extraction_llm,
                                with_judge=with_judge,
                                with_cymbal=with_cymbal,
+                               backend=backend,
                                force=force)
                 except Exception:
                     logger.exception("Unexpected error processing %s", fname)

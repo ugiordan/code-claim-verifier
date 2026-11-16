@@ -63,6 +63,22 @@ def main() -> None:
         help="Use the optional AST backend; requires a Git checkout and may be slow",
     )
     p_verify.add_argument(
+        "--backend",
+        default="auto",
+        choices=["auto", "grep", "cpg", "cymbal"],
+        help="Verification backend condition for backend-ablation runs: "
+             "grep (no AST evidence), cpg (arch-analyzer quick-index), "
+             "cymbal (tree-sitter AST). auto keeps legacy behavior "
+             "(quick-index if present, --with-cymbal honored).",
+    )
+    p_verify.add_argument(
+        "--pre-index",
+        action="store_true",
+        help="Before verifying, build quick-index.json for every manifest "
+             "repo lacking one (requires arch-analyzer on PATH) and git-init "
+             "tarball checkouts for the cymbal condition",
+    )
+    p_verify.add_argument(
         "--force",
         action="store_true",
         help="Recompute existing result files instead of reusing them",
@@ -103,9 +119,12 @@ def main() -> None:
         run_generate(args.manifest, args.model, args.condition, args.output_dir)
     elif args.stage == "verify":
         from eval.cybergym.verify import run_verify
+        if args.pre_index:
+            from eval.cybergym.preindex import run_preindex
+            run_preindex(args.manifest)
         run_verify(args.manifest, args.reasoning_dir, args.output_dir,
                    args.extraction_llm, args.with_judge, args.with_cymbal,
-                   args.force)
+                   force=args.force, backend=args.backend)
     elif args.stage == "analyze":
         from eval.cybergym.analyze import run_analyze
         run_analyze(args.results_dir, args.output_dir, args.manifest, args.allow_invalid)
