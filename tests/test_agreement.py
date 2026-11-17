@@ -80,3 +80,18 @@ class TestClassify:
         out = classify(self._result(osv_match=None, vex_gap=None))
         assert out["clair_vs_osv"] == "osv_indeterminate"
         assert out["vex_view"] == "vex_indeterminate"
+
+
+class TestTempIds:
+    def _result(self, osv_match=None, osv_gap=None, vex_status=None, vex_gap=None):
+        return {
+            "osv": {"matching_cve": osv_match, "gap_reason": osv_gap},
+            "vex": {"status": vex_status, "gap_reason": vex_gap},
+        }
+
+    def test_temp_id_classified_as_no_cve(self):
+        out = classify(self._result(osv_match=False))
+        assert out["clair_vs_osv"] == "disagree_affectedness"
+        out = classify({**self._result(osv_match=False), "cve": "TEMP-0517018-A83CE6"})
+        assert out["clair_vs_osv"] == "no_cve_assigned"
+        assert out["vex_view"] == "vex_gap:no_cve_assigned"

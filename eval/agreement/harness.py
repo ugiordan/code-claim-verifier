@@ -123,9 +123,14 @@ def assess_triples(
 
 def classify(result: dict) -> dict:
     """Classify pairwise agreement and the VEX coverage view."""
+    cve = result.get("cve", "")
     osv_match = result["osv"]["matching_cve"]
     osv_gap = result["osv"]["gap_reason"]
-    if osv_gap:
+    if cve.startswith("TEMP-"):
+        # Debian tracks issues under TEMP-* ids before CVE assignment;
+        # OSV and VEX cannot see them. Not a disagreement.
+        clair_osv = "no_cve_assigned"
+    elif osv_gap:
         clair_osv = f"osv_gap:{osv_gap}"
     elif osv_match is True:
         clair_osv = "agree_affected"
@@ -137,6 +142,8 @@ def classify(result: dict) -> dict:
     vex = result["vex"]
     if vex["status"] is not None:
         vex_view = f"status:{vex['status']}"
+    elif cve.startswith("TEMP-"):
+        vex_view = "vex_gap:no_cve_assigned"
     elif vex["gap_reason"]:
         vex_view = f"vex_gap:{vex['gap_reason']}"
     else:
