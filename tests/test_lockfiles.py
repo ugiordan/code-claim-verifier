@@ -336,3 +336,20 @@ class TestPackageAbsent:
             str(tmp_path), "python",
         )
         assert result.verdict == "REFUTED"
+
+    def test_go_mod_replace_only_applies_to_required(self, tmp_path):
+        """A replace directive for a module that is NOT required must
+        not inject that module into the version map: iterating
+        replaces made the in-replaces guard vacuous."""
+        go_mod = tmp_path / "go.mod"
+        go_mod.write_text(
+            "module example.com/m\n\n"
+            "go 1.22\n\n"
+            "require github.com/kept/dep v1.0.0\n\n"
+            "replace github.com/not/required => github.com/not/required v9.9.9\n"
+        )
+        info = LockfileInfo(path=str(go_mod), rel="go.mod",
+                            ecosystem="go", kind="manifest")
+        versions = parse_lockfile(info)
+        assert versions["github.com/kept/dep"] == "1.0.0"
+        assert "github.com/not/required" not in versions

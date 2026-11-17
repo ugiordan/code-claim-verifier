@@ -163,7 +163,11 @@ def _parse_go_mod(path: str) -> dict[str, str]:
         elif in_replace:
             _go_mod_replace(line, replaces)
     for original, replacement_version in replaces.items():
-        if original in versions or original in replaces:
+        # A replace only applies to a module the build actually
+        # requires: iterating replaces.items() made "original in
+        # replaces" always true, injecting non-required modules into
+        # the version map.
+        if original in versions:
             versions[original] = replacement_version
     return versions
 
