@@ -385,3 +385,36 @@ class TestOsvEcosystemAndPagination:
         )
         assert result.method == "osv_api"
         assert captured["ecosystem"] == "PyPI"
+
+
+class TestOsvCveMatching:
+    def test_debian_prefixed_id_matches(self, monkeypatch):
+        import io as _io
+        import urllib.request
+
+        def fake_urlopen(request, timeout=None):
+            return _io.BytesIO(
+                b'{"vulns": [{"id": "DEBIAN-CVE-2025-8941", "aliases": []}]}'
+            )
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+        assessment = fetch_osv_assessment(
+            "pam", "1.5.2-6+deb12u2", "CVE-2025-8941", ecosystem="Debian:12",
+        )
+        assert assessment.matching_cve is True
+        assert assessment.vulnerability_ids == ("DEBIAN-CVE-2025-8941",)
+
+    def test_suffix_match_not_overbroad(self, monkeypatch):
+        import io as _io
+        import urllib.request
+
+        def fake_urlopen(request, timeout=None):
+            return _io.BytesIO(
+                b'{"vulns": [{"id": "DEBIAN-CVE-2025-8940", "aliases": []}]}'
+            )
+
+        monkeypatch.setattr(urllib.request, "urlopen", fake_urlopen)
+        assessment = fetch_osv_assessment(
+            "pam", "1.5.2-6+deb12u2", "CVE-2025-8941", ecosystem="Debian:12",
+        )
+        assert assessment.matching_cve is False

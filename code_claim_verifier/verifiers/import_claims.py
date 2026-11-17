@@ -34,6 +34,23 @@ class OsvAssessment:
     error: str | None = None
 
 
+def _cve_matches(cve_id: str, vulnerability_id: str, aliases: list) -> bool:
+    """Match a CVE id against an OSV record's id and aliases.
+
+    Distro-prefixed records (DEBIAN-CVE-...) often carry the CVE only
+    as a suffix of the record id with an empty aliases list, so an
+    exact-match against id and aliases is not sufficient.
+    """
+    target = (cve_id or "").upper()
+    if not target:
+        return False
+    for candidate in [vulnerability_id, *aliases]:
+        value = str(candidate or "").upper()
+        if value == target or value.endswith("-" + target):
+            return True
+    return False
+
+
 def fetch_osv_assessment(
     package: str, version: str, cve_id: str | None = None,
     ecosystem: str | None = None,
@@ -106,9 +123,7 @@ def fetch_osv_assessment(
             if vulnerability_id:
                 vulnerability_ids.append(vulnerability_id)
             if cve_id:
-                cve_ids = {vulnerability_id}
-                cve_ids.update(vulnerability.get("aliases", []))
-                if cve_id in cve_ids:
+                if _cve_matches(cve_id, vulnerability_id, vulnerability.get("aliases", [])):
                     matching_cve = True
 
         return OsvAssessment(
