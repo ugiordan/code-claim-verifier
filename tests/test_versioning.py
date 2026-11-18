@@ -418,3 +418,60 @@ class TestOsvCveMatching:
             "pam", "1.5.2-6+deb12u2", "CVE-2025-8941", ecosystem="Debian:12",
         )
         assert assessment.matching_cve is False
+
+
+class TestEnmaasFactory:
+    def test_missing_key_raises(self, monkeypatch):
+        monkeypatch.delenv("ENMAAS_API_KEY", raising=False)
+        from eval.cybergym.models import make_enmaas
+        try:
+            make_enmaas("rits/zai-org/glm-5-3")
+        except RuntimeError as exc:
+            assert "ENMAAS_API_KEY" in str(exc)
+        else:
+            raise AssertionError("must raise without ENMAAS_API_KEY")
+
+    def test_default_base_url_and_call(self, monkeypatch):
+        import openai as _openai
+        monkeypatch.setenv("ENMAAS_API_KEY", "test-key")
+        captured = {}
+
+        class FakeCompletions:
+            def create(self, **kwargs):
+                captured.update(kwargs)
+
+                class Msg:
+                    content = "hello"
+
+                class Choice:
+                    message = Msg()
+
+                class Resp:
+                    choices = [Choice()]
+
+                return Resp()
+
+        class FakeChat:
+            completions = FakeCompletions()
+
+        class FakeClient:
+            chat = FakeChat()
+
+            def __init__(self, **kwargs):
+                captured["client_kwargs"] = kwargs
+
+        monkeypatch.setattr(_openai, "OpenAI", FakeClient)
+
+        from eval.cybergym.models import make_enmaas
+        call = make_enmaas("rits/test/model")
+        result = call("system prompt", "user prompt")
+        assert result == "hello"
+        assert captured["model"] == "rits/test/model"
+        assert captured["client_kwargs"]["base_url"] == "https://api.enmaas.devshift.net/v1"
+        assert captured["messages"][0]["role"] == "system"
+
+    def test_registry_dispatch(self, monkeypatch):
+        monkeypatch.setenv("ENMAAS_API_KEY", "k")
+        from eval.cybergym.models import MODEL_REGISTRY
+        assert "glm-5.3" in MODEL_REGISTRY
+        assert MODEL_REGISTRY["deepseek-v4.1-flash"]["model"] == "rits/deepseek-ai/DeepSeek-V4.1-Flash-1017"

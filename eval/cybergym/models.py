@@ -185,6 +185,44 @@ def make_models_corp(model_id: str, registry_name: str = "") -> LLMFunction:
     return call
 
 
+def make_enmaas(model: str) -> LLMFunction:
+    """Create an LLM function for an EnMaaS-hosted model.
+
+    OpenAI-compatible endpoint; set ENMAAS_API_KEY (required) and
+    ENMAAS_BASE_URL (defaults to the public EnMaaS API).
+    """
+    import openai
+    api_key = os.environ.get("ENMAAS_API_KEY")
+    if not api_key:
+        raise RuntimeError(
+            "ENMAAS_API_KEY not set. Export it before running the eval pipeline."
+        )
+    base_url = os.environ.get("ENMAAS_BASE_URL", "https://api.enmaas.devshift.net/v1")
+    client = openai.OpenAI(
+        base_url=base_url, api_key=api_key,
+        timeout=httpx.Timeout(600.0, connect=15.0),
+    )
+
+    def call(system: str, user: str) -> str:
+        response = client.chat.completions.create(
+            model=model, max_tokens=MAX_TOKENS, temperature=0,
+            messages=[
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        )
+        msg = response.choices[0].message
+        content = msg.content
+        if content is None:
+            raw = msg.model_dump() if hasattr(msg, "model_dump") else {}
+            content = raw.get("reasoning") or raw.get("reasoning_content")
+        if content is None:
+            raise RuntimeError(f"None content from {model}")
+        return content
+
+    return call
+
+
 def make_generic_openai(base_url: str, api_key: str,
                         model: str) -> LLMFunction:
     import openai
@@ -213,6 +251,16 @@ MODEL_REGISTRY: dict[str, dict] = {
 
     # OpenAI
     "gpt-4o": {"factory": "openai", "model": "gpt-4o"},
+
+    # EnMaaS (free hosted models)
+    "glm-5.3": {
+        "factory": "enmaas",
+        "model": "rits/zai-org/glm-5-3",
+    },
+    "deepseek-v4.1-flash": {
+        "factory": "enmaas",
+        "model": "rits/deepseek-ai/DeepSeek-V4.1-Flash-1017",
+    },
 
     # models-corp (Red Hat internal, VPN required)
     # Set MODEL_API and USER_KEY env vars before use.
@@ -258,6 +306,8 @@ def get_model(name: str) -> LLMFunction:
         return make_openai(config["model"])
     elif config["factory"] == "models-corp":
         return make_models_corp(config["model"], registry_name=name)
+    elif config["factory"] == "enmaas":
+        return make_enmaas(config["model"])
     else:
         raise ValueError(f"Unknown factory: {config['factory']}")
 
