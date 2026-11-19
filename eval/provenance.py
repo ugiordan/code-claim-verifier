@@ -9,10 +9,17 @@ from collections.abc import Iterator
 
 
 def iter_snapshot_files(root: str) -> Iterator[tuple[str, str]]:
-    """Yield stable relative paths and files while excluding VCS metadata."""
+    """Yield stable relative paths and files while excluding VCS metadata.
+
+    quick-index.json is excluded as CCV's own derived verification
+    artifact: writing it into a checkout must not change the source
+    snapshot identity.
+    """
     for directory, dirs, files in os.walk(root, followlinks=False):
         dirs[:] = sorted(d for d in dirs if d not in {".git", "__pycache__"})
         for filename in sorted(files):
+            if filename == "quick-index.json":
+                continue
             path = os.path.join(directory, filename)
             if os.path.islink(path) or not os.path.isfile(path):
                 continue

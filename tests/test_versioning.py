@@ -475,3 +475,15 @@ class TestEnmaasFactory:
         from eval.cybergym.models import MODEL_REGISTRY
         assert "glm-5.3" in MODEL_REGISTRY
         assert MODEL_REGISTRY["deepseek-v4.1-flash"]["model"] == "rits/deepseek-ai/DeepSeek-V4.1-Flash-1017"
+
+
+class TestSnapshotDigestExcludesDerived:
+    def test_quick_index_excluded(self, tmp_path):
+        from eval.provenance import snapshot_digest
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        (repo / "main.c").write_text("int main() {}\n")
+        before = snapshot_digest(str(repo))
+        (repo / "quick-index.json").write_text('{"derived": true}')
+        after = snapshot_digest(str(repo))
+        assert before == after
