@@ -462,6 +462,13 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
 
         extractor_llm = get_model(extraction_llm)
         claims = extract_claims(reasoning, {}, extractor_llm)
+        extraction_retried = False
+        if not claims:
+            # extract_claims returns [] both for genuinely claim-free
+            # reasoning and for transient LLM failures; retry once so
+            # the coverage metric does not conflate the two.
+            claims = extract_claims(reasoning, {}, extractor_llm)
+            extraction_retried = True
         claims = _normalize_claims(claims)
 
         if not claims:
@@ -479,6 +486,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                     **expected_provenance,
                     "extraction_model": extraction_llm,
                     "verification_backend": "none",
+                    "extraction_retried": extraction_retried,
                 },
                 "gt_comparison": {
                     "matched": 0,
@@ -552,6 +560,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                 **expected_provenance,
                 "extraction_model": extraction_llm,
                 "verification_backend": _backend_label(backend, cpg, cymbal),
+                "extraction_retried": extraction_retried,
             },
             "gt_comparison": {
                 "matched": sum(
