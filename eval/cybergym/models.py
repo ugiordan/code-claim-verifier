@@ -251,6 +251,7 @@ MODEL_REGISTRY: dict[str, dict] = {
 
     # OpenAI
     "gpt-4o": {"factory": "openai", "model": "gpt-4o"},
+    "gpt-6-luna": {"factory": "openai", "model": "gpt-6-luna"},
 
     # EnMaaS (free hosted models)
     "glm-5.3": {

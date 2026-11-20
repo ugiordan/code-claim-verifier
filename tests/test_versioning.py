@@ -487,3 +487,11 @@ class TestSnapshotDigestExcludesDerived:
         (repo / "quick-index.json").write_text('{"derived": true}')
         after = snapshot_digest(str(repo))
         assert before == after
+
+
+class TestOpenAiRegistry:
+    def test_gpt6_luna_registered(self):
+        from eval.cybergym.models import MODEL_REGISTRY
+        assert MODEL_REGISTRY["gpt-6-luna"] == {
+            "factory": "openai", "model": "gpt-6-luna",
+        }
