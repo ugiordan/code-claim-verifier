@@ -20,6 +20,23 @@ import subprocess
 logger = logging.getLogger(__name__)
 
 
+def _as_result_list(data: object) -> list[dict]:
+    """Normalize cymbal results, which arrive as a list or a dict.
+
+    Some cymbal subcommands return results keyed by name; slicing or
+    iterating the raw value then fails with unhashable-type errors in
+    the engine. Always hand callers a list of dicts.
+    """
+    if not isinstance(data, dict):
+        return []
+    results = data.get("results", [])
+    if isinstance(results, dict):
+        return [v for v in results.values() if isinstance(v, dict)]
+    if isinstance(results, list):
+        return [v for v in results if isinstance(v, dict)]
+    return []
+
+
 class CymbalBackend:
     """Query interface using cymbal CLI for tree-sitter-based symbol lookups."""
 
@@ -71,15 +88,11 @@ class CymbalBackend:
 
     def function_callers(self, name: str) -> list[dict]:
         data = self._run("impact", name)
-        if not data:
-            return []
-        return data.get("results", [])
+        return _as_result_list(data)
 
     def function_callees(self, name: str) -> list[dict]:
         data = self._run("trace", name)
-        if not data:
-            return []
-        return data.get("results", [])
+        return _as_result_list(data)
 
     def investigate(self, name: str) -> dict | None:
         data = self._run("investigate", name)
