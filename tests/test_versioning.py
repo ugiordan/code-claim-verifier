@@ -495,3 +495,47 @@ class TestOpenAiRegistry:
         assert MODEL_REGISTRY["gpt-6-luna"] == {
             "factory": "openai", "model": "gpt-6-luna",
         }
+
+
+class TestEnmaasMaxCompletionTokens:
+    def test_falls_back_on_bad_request(self, monkeypatch):
+        import openai as _openai
+        monkeypatch.setenv("ENMAAS_API_KEY", "k")
+        calls = []
+
+        class FakeCompletions:
+            def create(self, **kwargs):
+                calls.append(kwargs)
+                if "max_tokens" in kwargs:
+                    raise _openai.BadRequestError(
+                        "Unsupported parameter: 'max_tokens' is not supported "
+                        "with this model. Use 'max_completion_tokens' instead.",
+                        response=None, body=None,
+                    )
+
+                class Msg:
+                    content = "ok"
+
+                class Choice:
+                    message = Msg()
+
+                class Resp:
+                    choices = [Choice()]
+
+                return Resp()
+
+        class FakeChat:
+            completions = FakeCompletions()
+
+        class FakeClient:
+            chat = FakeChat()
+
+            def __init__(self, **kwargs):
+                pass
+
+        monkeypatch.setattr(_openai, "OpenAI", FakeClient)
+        from eval.cybergym.models import make_enmaas
+        result = make_enmaas("gpt-6-luna")("s", "u")
+        assert result == "ok"
+        assert "max_tokens" in calls[0]
+        assert "max_completion_tokens" in calls[1]

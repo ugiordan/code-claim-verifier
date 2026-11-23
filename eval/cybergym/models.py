@@ -204,13 +204,23 @@ def make_enmaas(model: str) -> LLMFunction:
     )
 
     def call(system: str, user: str) -> str:
-        response = client.chat.completions.create(
-            model=model, max_tokens=MAX_TOKENS, temperature=0,
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        )
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        try:
+            response = client.chat.completions.create(
+                model=model, max_tokens=MAX_TOKENS, temperature=0,
+                messages=messages,
+            )
+        except openai.BadRequestError as exc:
+            # Newer OpenAI models require max_completion_tokens.
+            if "max_completion_tokens" not in str(exc):
+                raise
+            response = client.chat.completions.create(
+                model=model, max_completion_tokens=MAX_TOKENS, temperature=0,
+                messages=messages,
+            )
         msg = response.choices[0].message
         content = msg.content
         if content is None:
