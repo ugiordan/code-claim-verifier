@@ -493,7 +493,7 @@ class TestOpenAiRegistry:
     def test_gpt6_luna_registered(self):
         from eval.cybergym.models import MODEL_REGISTRY
         assert MODEL_REGISTRY["gpt-6-luna"] == {
-            "factory": "openai", "model": "gpt-6-luna",
+            "factory": "enmaas", "model": "gpt-6-luna",
         }
 
 
