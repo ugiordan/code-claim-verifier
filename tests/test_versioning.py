@@ -499,6 +499,7 @@ class TestOpenAiRegistry:
 
 class TestEnmaasMaxCompletionTokens:
     def test_falls_back_on_bad_request(self, monkeypatch):
+        import httpx
         import openai as _openai
         monkeypatch.setenv("ENMAAS_API_KEY", "k")
         calls = []
@@ -507,10 +508,13 @@ class TestEnmaasMaxCompletionTokens:
             def create(self, **kwargs):
                 calls.append(kwargs)
                 if "max_tokens" in kwargs:
+                    response = httpx.Response(
+                        400, request=httpx.Request("POST", "https://x"),
+                    )
                     raise _openai.BadRequestError(
                         "Unsupported parameter: 'max_tokens' is not supported "
                         "with this model. Use 'max_completion_tokens' instead.",
-                        response=None, body=None,
+                        response=response, body=None,
                     )
 
                 class Msg:
