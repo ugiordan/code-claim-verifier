@@ -208,19 +208,27 @@ def make_enmaas(model: str) -> LLMFunction:
             {"role": "system", "content": system},
             {"role": "user", "content": user},
         ]
-        try:
-            response = client.chat.completions.create(
-                model=model, max_tokens=MAX_TOKENS, temperature=0,
-                messages=messages,
-            )
-        except openai.BadRequestError as exc:
-            # Newer OpenAI models require max_completion_tokens.
-            if "max_completion_tokens" not in str(exc):
-                raise
-            response = client.chat.completions.create(
-                model=model, max_completion_tokens=MAX_TOKENS, temperature=0,
-                messages=messages,
-            )
+        kwargs: dict = {
+            "model": model, "max_tokens": MAX_TOKENS, "temperature": 0,
+            "messages": messages,
+        }
+        for _ in range(3):
+            try:
+                response = client.chat.completions.create(**kwargs)
+                break
+            except openai.BadRequestError as exc:
+                message = str(exc)
+                if "max_completion_tokens" in message:
+                    # Newer OpenAI reasoning models use the renamed
+                    # parameter and only support the default
+                    # temperature.
+                    kwargs.pop("max_tokens", None)
+                    kwargs["max_completion_tokens"] = MAX_TOKENS
+                    kwargs.pop("temperature", None)
+                elif "temperature" in message:
+                    kwargs.pop("temperature", None)
+                else:
+                    raise
         msg = response.choices[0].message
         content = msg.content
         if content is None:
