@@ -61,7 +61,7 @@ class TestFunctionExists:
     def test_string_literal_not_a_definition(self, backend, python_repo):
         """The critical test: a name inside a string is not a function."""
         result = backend.function_exists("documented_function", str(python_repo))
-        assert result is None
+        assert result == {}
 
     def test_comment_not_a_definition(self, backend, python_repo):
         result = backend.function_exists("commented_function", str(python_repo))
