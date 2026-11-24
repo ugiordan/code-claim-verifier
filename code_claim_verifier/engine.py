@@ -99,11 +99,21 @@ class VerificationEngine:
     """
 
     def __init__(self, cpg: CpgBackend | None = None,
-                 cymbal: CymbalBackend | None = None) -> None:
+                 cymbal: CymbalBackend | None = None,
+                 treesitter=None) -> None:
         self.registry: dict[str, VerifierFunction] = dict(VERIFIER_REGISTRY)
         self.dependency_rules: list[tuple[str, str, str, str]] = list(BUILTIN_RULES)
         self.cpg = cpg
         self.cymbal = cymbal
+        if treesitter is None:
+            try:
+                from code_claim_verifier.treesitter_backend import TreeSitterBackend
+                treesitter = TreeSitterBackend()
+                if not treesitter.available_languages:
+                    treesitter = None
+            except Exception:
+                treesitter = None
+        self.treesitter = treesitter
 
     # ------------------------------------------------------------------
     # Registry management
@@ -451,6 +461,9 @@ class VerificationEngine:
 
         if result is None and self.cymbal:
             result = self._try_cymbal_verify(claim, repo_path)
+
+        if result is None and self.treesitter:
+            result = self._try_treesitter_verify(claim, repo_path)
 
         if result is None:
             verifier = self.registry.get(claim.claim_type)
@@ -828,6 +841,68 @@ class VerificationEngine:
                     method="cpg_config",
                 )
             return None
+
+        return None
+
+    def _try_treesitter_verify(self, claim: TypedClaim, repo_path: str) -> VerifiedClaim | None:
+        """Try to verify using the Python-native tree-sitter backend."""
+        ts = self.treesitter
+        if ts is None:
+            return None
+        ct = claim.claim_type
+        params = claim.parameters if isinstance(claim.parameters, dict) else {}
+
+        if ct == "FUNCTION_EXISTS":
+            name = params.get("name", "") or params.get("function", "")
+            if not name:
+                return None
+            result = ts.function_exists(name, repo_path, params.get("file", ""))
+            if result is None:
+                return None
+            if result == {}:
+                # Searched and not defined: a confident negative that
+                # grep must not override (a name in a string literal
+                # is not a definition).
+                return VerifiedClaim(
+                    claim=claim, verdict="REFUTED", method_confidence=0.92,
+                    evidence=(f"tree-sitter: {name} is not defined in any "
+                              f"parsed source file"),
+                    method="treesitter_function",
+                )
+            return VerifiedClaim(
+                claim=claim, verdict="VERIFIED", method_confidence=0.92,
+                evidence=(f"tree-sitter: {result['name']} at "
+                          f"{result['file']}:{result['line']}"),
+                method="treesitter_function",
+            )
+
+        if ct in ("FUNCTION_CALLED", "HAS_CALLERS"):
+            name = (params.get("name", "") or params.get("callee", "")
+                    or params.get("function", ""))
+            expected = params.get("expected", True)
+            if not name:
+                return None
+            callers = ts.function_callers(name, repo_path, params.get("file", ""))
+            if callers:
+                caller_names = ", ".join(
+                    c.get("caller", "?") for c in callers[:3]
+                )
+                return VerifiedClaim(
+                    claim=claim,
+                    verdict="VERIFIED" if expected else "REFUTED",
+                    method_confidence=0.90,
+                    evidence=f"tree-sitter: {len(callers)} callers ({caller_names})",
+                    method="treesitter_callers",
+                    reachability_detail="symbol_called",
+                )
+            return VerifiedClaim(
+                claim=claim,
+                verdict="REFUTED" if expected else "VERIFIED",
+                method_confidence=0.90,
+                evidence=f"tree-sitter: no call sites for {name}",
+                method="treesitter_callers",
+                reachability_detail="no_call_sites",
+            )
 
         return None
 
