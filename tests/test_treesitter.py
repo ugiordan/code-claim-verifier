@@ -156,3 +156,87 @@ class TestEngineDispatch:
         # The engine keeps the empty backend; its dispatch methods
         # return None for every query, so grep handles everything.
         assert engine.treesitter is empty
+
+
+class TestGrepFallbackFiltering:
+    """Fix 2: comment lines must not count as function definitions."""
+
+    def test_comment_line_filtered(self):
+        from code_claim_verifier.verifiers.symbol_claims import (
+            _filter_definition_matches,
+        )
+        matches = [
+            "/repo/main.c:10:void real_function(int x) {",
+            "/repo/main.c:5:// void commented_function(int x) {",
+            "/repo/main.c:7:    /* void block_comment_function(void) {",
+            "/repo/main.c:20:     * void star_comment_function(void) {",
+        ]
+        filtered = _filter_definition_matches(matches, "c")
+        assert len(filtered) == 1
+        assert "real_function" in filtered[0]
+
+    def test_python_comment_filtered(self):
+        from code_claim_verifier.verifiers.symbol_claims import (
+            _filter_definition_matches,
+        )
+        matches = [
+            "/repo/main.py:10:def real_function():",
+            "/repo/main.py:3:# def commented_function():",
+        ]
+        filtered = _filter_definition_matches(matches, "python")
+        assert len(filtered) == 1
+
+    def test_unknown_language_passthrough(self):
+        from code_claim_verifier.verifiers.symbol_claims import (
+            _filter_definition_matches,
+        )
+        matches = ["/repo/main.xyz:1:anything"]
+        assert _filter_definition_matches(matches, "unknown") == matches
+
+    def test_function_exists_downgrades_verified_confidence(self, tmp_path):
+        """Fix 3: grep-only VERIFIED gets 0.70, not 0.85."""
+        from code_claim_verifier.types import TypedClaim
+        from code_claim_verifier.verifiers.symbol_claims import verify_function_exists
+
+        (tmp_path / "main.py").write_text("def found_function():\n    pass\n")
+        claim = TypedClaim(
+            claim_type="FUNCTION_EXISTS",
+            parameters={"name": "found_function"},
+            source_sentence="",
+        )
+        result = verify_function_exists(claim, str(tmp_path), "python")
+        assert result.verdict == "VERIFIED"
+        assert result.method_confidence == 0.70
+
+    def test_refuted_keeps_higher_confidence(self, tmp_path):
+        from code_claim_verifier.types import TypedClaim
+        from code_claim_verifier.verifiers.symbol_claims import verify_function_exists
+
+        (tmp_path / "main.py").write_text("def other():\n    pass\n")
+        claim = TypedClaim(
+            claim_type="FUNCTION_EXISTS",
+            parameters={"name": "missing_function"},
+            source_sentence="",
+        )
+        result = verify_function_exists(claim, str(tmp_path), "python")
+        assert result.verdict == "REFUTED"
+        assert result.method_confidence == 0.85
+
+    def test_comment_only_function_is_refuted(self, tmp_path):
+        """A function that exists only in a comment is not a definition."""
+        from code_claim_verifier.types import TypedClaim
+        from code_claim_verifier.verifiers.symbol_claims import verify_function_exists
+
+        (tmp_path / "main.c").write_text(
+            "#include <stdio.h>\n"
+            "// void ghost_function(int x) {\n"
+            "//     printf(\"ghost\");\n"
+            "// }\n"
+        )
+        claim = TypedClaim(
+            claim_type="FUNCTION_EXISTS",
+            parameters={"name": "ghost_function"},
+            source_sentence="",
+        )
+        result = verify_function_exists(claim, str(tmp_path), "c")
+        assert result.verdict == "REFUTED"

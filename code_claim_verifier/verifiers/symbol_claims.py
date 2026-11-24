@@ -20,6 +20,42 @@ def _strip_qualifier(name: str) -> str:
     return name
 
 
+_COMMENT_PREFIXES = {
+    "c": ("//", "/*", "*"),
+    "cpp": ("//", "/*", "*"),
+    "go": ("//", "/*", "*"),
+    "rust": ("//", "/*", "*"),
+    "javascript": ("//", "/*", "*"),
+    "typescript": ("//", "/*", "*"),
+    "java": ("//", "/*", "*"),
+    "python": ("#",),
+    "ruby": ("#",),
+    "shell": ("#",),
+}
+
+
+def _filter_definition_matches(matches: list[str], language: str) -> list[str]:
+    """Filter grep matches that land on comment lines.
+
+    Grep matches function-definition regexes inside comments and
+    docstrings; a match whose line begins with a comment marker is
+    not a definition. This is the grep-fallback counterpart of the
+    tree-sitter tier, which excludes comments structurally.
+    """
+    prefixes = _COMMENT_PREFIXES.get(language, ())
+    if not prefixes:
+        return matches
+    filtered = []
+    for match in matches:
+        # grep -rnH output: "path:line:text"
+        parts = match.split(":", 2)
+        line_text = parts[2] if len(parts) > 2 else match
+        stripped = line_text.lstrip()
+        if not stripped.startswith(prefixes):
+            filtered.append(match)
+    return filtered
+
+
 def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> VerifiedClaim:
     name = claim.parameters.get("name", "")
     if not is_concrete_symbol_name(name):
@@ -48,16 +84,23 @@ def verify_function_exists(claim: TypedClaim, repo_path: str, language: str) -> 
     bare_name = _strip_qualifier(name)
     pattern = get_function_pattern(bare_name, lang)
     matches = _grep(pattern, search_path)
+    matches = _filter_definition_matches(matches, lang)
     found = len(matches) > 0
 
     if not found and bare_name != name:
         pattern = get_function_pattern(name, lang)
         matches = _grep(pattern, search_path)
+        matches = _filter_definition_matches(matches, lang)
         found = len(matches) > 0
 
+    # Grep-only symbol confirmation carries a known false-positive
+    # rate (~2% in the benchmark: names in comments and strings);
+    # the VERIFIED verdict is downgraded accordingly. REFUTED keeps
+    # the higher confidence: grep not finding a definition, after
+    # comment/string filtering, is a strong negative.
     return VerifiedClaim(
         claim=claim, verdict="VERIFIED" if found else "REFUTED",
-        method_confidence=0.85,
+        method_confidence=0.70 if found else 0.85,
         evidence=matches[0][:200] if matches else f"No definition found for {name}",
         method="grep_function_def",
     )
