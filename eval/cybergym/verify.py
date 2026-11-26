@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import logging
 import os
 
@@ -390,6 +391,72 @@ def _normalize_claims(claims: list[TypedClaim]) -> list[TypedClaim]:
     return claims
 
 
+_EXTRACTION_CACHE_DIR: str | None = None
+
+
+def set_extraction_cache_dir(path: str | None) -> None:
+    """Set the directory for cached extraction results (or None to disable)."""
+    global _EXTRACTION_CACHE_DIR
+    _EXTRACTION_CACHE_DIR = path
+    if path:
+        os.makedirs(path, exist_ok=True)
+
+
+def _extraction_cache_key(reasoning_path: str, extraction_provenance: dict) -> str:
+    """Composite key: reasoning file + extraction config + prompt digests."""
+    import hashlib
+
+    parts = [
+        os.path.abspath(reasoning_path),
+        str(extraction_provenance.get("registry_name", "")),
+        str(extraction_provenance.get("resolved_model", "")),
+        str(extraction_provenance.get("extraction_version", "")),
+        str(extraction_provenance.get("system_prompt_digest", "")),
+        str(extraction_provenance.get("user_prompt_digest", "")),
+    ]
+    return hashlib.sha256("|".join(parts).encode()).hexdigest()[:24]
+
+
+def _load_cached_extraction(cache_key: str) -> list[TypedClaim] | None:
+    if _EXTRACTION_CACHE_DIR is None:
+        return None
+    cache_path = os.path.join(_EXTRACTION_CACHE_DIR, f"{cache_key}.json")
+    if not os.path.isfile(cache_path):
+        return None
+    try:
+        cached = json.load(open(cache_path))
+        claims = []
+        for c in cached.get("claims", []):
+            claims.append(TypedClaim(
+                claim_type=c["claim_type"],
+                parameters=c["parameters"],
+                source_sentence=c.get("source_sentence", ""),
+            ))
+        return claims
+    except (json.JSONDecodeError, KeyError, OSError):
+        return None
+
+
+def _store_cached_extraction(cache_key: str, claims: list[TypedClaim],
+                             extraction_retried: bool) -> None:
+    if _EXTRACTION_CACHE_DIR is None:
+        return
+    cache_path = os.path.join(_EXTRACTION_CACHE_DIR, f"{cache_key}.json")
+    try:
+        serializable = [
+            {
+                "claim_type": c.claim_type,
+                "parameters": c.parameters,
+                "source_sentence": c.source_sentence,
+            }
+            for c in claims
+        ]
+        json.dump({"claims": serializable, "extraction_retried": extraction_retried},
+                  open(cache_path, "w"))
+    except OSError:
+        pass
+
+
 def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                extraction_llm: str = "claude-sonnet-4",
                with_judge: bool = False,
@@ -460,16 +527,24 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
 
         language = entry.get("language", "c")
 
-        extractor_llm = get_model(extraction_llm)
-        claims = extract_claims(reasoning, {}, extractor_llm)
+        cache_key = _extraction_cache_key(reasoning_path, extraction_provenance)
+        cached_claims = _load_cached_extraction(cache_key)
         extraction_retried = False
-        if not claims:
-            # extract_claims returns [] both for genuinely claim-free
-            # reasoning and for transient LLM failures; retry once so
-            # the coverage metric does not conflate the two.
+        if cached_claims is not None:
+            claims = cached_claims
+            extraction_cached = True
+        else:
+            extractor_llm = get_model(extraction_llm)
             claims = extract_claims(reasoning, {}, extractor_llm)
-            extraction_retried = True
-        claims = _normalize_claims(claims)
+            if not claims:
+                # extract_claims returns [] both for genuinely claim-free
+                # reasoning and for transient LLM failures; retry once so
+                # the coverage metric does not conflate the two.
+                claims = extract_claims(reasoning, {}, extractor_llm)
+                extraction_retried = True
+            claims = _normalize_claims(claims)
+            _store_cached_extraction(cache_key, claims, extraction_retried)
+            extraction_cached = False
 
         if not claims:
             missing_gt = compare_claims_to_gt([], entry.get("gt_claims", []))
@@ -487,6 +562,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                     "extraction_model": extraction_llm,
                     "verification_backend": "none",
                     "extraction_retried": extraction_retried,
+                    "extraction_cached": extraction_cached,
                 },
                 "gt_comparison": {
                     "matched": 0,
@@ -561,6 +637,7 @@ def verify_one(entry: dict, reasoning_path: str, output_dir: str,
                 "extraction_model": extraction_llm,
                 "verification_backend": _backend_label(backend, cpg, cymbal),
                 "extraction_retried": extraction_retried,
+                "extraction_cached": extraction_cached,
             },
             "gt_comparison": {
                 "matched": sum(

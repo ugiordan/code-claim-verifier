@@ -83,6 +83,13 @@ def main() -> None:
         action="store_true",
         help="Recompute existing result files instead of reusing them",
     )
+    p_verify.add_argument(
+        "--extraction-cache",
+        default=None,
+        help="Directory for cached extraction results; claims are extracted "
+             "once per reasoning file and shared across backend runs, "
+             "eliminating extraction variance in backend comparisons",
+    )
 
     p_analyze = subparsers.add_parser("analyze", help="Stage 4: compute metrics")
     p_analyze.add_argument("--results-dir", default="eval/cybergym/results")
@@ -118,7 +125,8 @@ def main() -> None:
         from eval.cybergym.generate import run_generate
         run_generate(args.manifest, args.model, args.condition, args.output_dir)
     elif args.stage == "verify":
-        from eval.cybergym.verify import run_verify
+        from eval.cybergym.verify import run_verify, set_extraction_cache_dir
+        set_extraction_cache_dir(args.extraction_cache)
         if args.pre_index:
             from eval.cybergym.preindex import run_preindex
             run_preindex(args.manifest)

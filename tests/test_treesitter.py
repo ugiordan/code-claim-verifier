@@ -240,3 +240,83 @@ class TestGrepFallbackFiltering:
         )
         result = verify_function_exists(claim, str(tmp_path), "c")
         assert result.verdict == "REFUTED"
+
+
+class TestExtractionCache:
+    def test_cache_roundtrip(self, tmp_path, monkeypatch):
+        """Claims extracted once are reused on the second call."""
+        from eval.cybergym.verify import (
+            set_extraction_cache_dir, _extraction_cache_key,
+            _load_cached_extraction, _store_cached_extraction,
+        )
+        from code_claim_verifier.types import TypedClaim
+
+        set_extraction_cache_dir(str(tmp_path / "cache"))
+        provenance = {
+            "registry_name": "test-model",
+            "resolved_model": "test-model-v1",
+            "extraction_version": "v1",
+            "system_prompt_digest": "abc123",
+            "user_prompt_digest": "def456",
+        }
+        key = _extraction_cache_key("/fake/reasoning.json", provenance)
+
+        # Store claims
+        claims = [
+            TypedClaim(claim_type="FILE_EXISTS",
+                       parameters={"path": "main.py"},
+                       source_sentence="main.py exists"),
+            TypedClaim(claim_type="FUNCTION_EXISTS",
+                       parameters={"name": "hello"},
+                       source_sentence="hello is defined"),
+        ]
+        _store_cached_extraction(key, claims, False)
+
+        # Load and verify
+        loaded = _load_cached_extraction(key)
+        assert loaded is not None
+        assert len(loaded) == 2
+        assert loaded[0].claim_type == "FILE_EXISTS"
+        assert loaded[0].parameters == {"path": "main.py"}
+        assert loaded[1].claim_type == "FUNCTION_EXISTS"
+
+        # Different key = cache miss
+        other_key = _extraction_cache_key("/other/reasoning.json", provenance)
+        assert _load_cached_extraction(other_key) is None
+
+        set_extraction_cache_dir(None)
+
+    def test_cache_disabled_returns_none(self):
+        from eval.cybergym.verify import _load_cached_extraction
+        assert _load_cached_extraction("any-key") is None
+
+    def test_empty_claims_cached(self, tmp_path):
+        """An empty extraction result is cached (zero-claim after retry)."""
+        from eval.cybergym.verify import (
+            set_extraction_cache_dir, _extraction_cache_key,
+            _load_cached_extraction, _store_cached_extraction,
+        )
+
+        set_extraction_cache_dir(str(tmp_path / "cache"))
+        provenance = {"registry_name": "m", "extraction_version": "v",
+                      "system_prompt_digest": "a", "user_prompt_digest": "b"}
+        key = _extraction_cache_key("/r.json", provenance)
+        _store_cached_extraction(key, [], True)
+
+        loaded = _load_cached_extraction(key)
+        assert loaded is not None
+        assert loaded == []
+
+        set_extraction_cache_dir(None)
+
+    def test_different_prompts_different_cache(self):
+        """Prompt digest changes invalidate the cache."""
+        from eval.cybergym.verify import _extraction_cache_key
+
+        prov1 = {"registry_name": "m", "extraction_version": "v",
+                 "system_prompt_digest": "digest1", "user_prompt_digest": "d"}
+        prov2 = {"registry_name": "m", "extraction_version": "v",
+                 "system_prompt_digest": "digest2", "user_prompt_digest": "d"}
+        key1 = _extraction_cache_key("/r.json", prov1)
+        key2 = _extraction_cache_key("/r.json", prov2)
+        assert key1 != key2
